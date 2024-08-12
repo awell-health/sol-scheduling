@@ -1,12 +1,12 @@
-import { FC } from "react";
-import classes from "./AppointmentTypeOverview.module.scss";
+import { FC } from 'react';
+import classes from './AppointmentTypeOverview.module.scss';
 import {
   CalendarIcon,
   ClockIcon,
   GlobeAltIcon,
-  PhoneIcon,
-} from "@heroicons/react/24/outline";
-import { addMinutes, format } from "date-fns";
+  PhoneIcon
+} from '@heroicons/react/24/outline';
+import { addMinutes, format } from 'date-fns';
 
 export type AppointmentTypeOverviewProps = {
   bookedSlot?: Date;
@@ -21,24 +21,24 @@ export const AppointmentTypeOverview: FC<AppointmentTypeOverviewProps> = ({
   name,
   length,
   contactType,
-  timezone,
+  timezone
 }) => {
   const formatAppointmentDate = (startDate: Date, lengthInMinutes: number) => {
     const endDate = addMinutes(startDate, lengthInMinutes);
 
-    const startTime = new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
+    const startTime = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
     }).format(startDate);
 
-    const endTime = new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
+    const endTime = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
     }).format(endDate);
 
-    const formattedDate = format(startDate, "EEEE, MMMM d, yyyy");
+    const formattedDate = format(startDate, 'EEEE, MMMM d, yyyy');
 
     return (
       <>

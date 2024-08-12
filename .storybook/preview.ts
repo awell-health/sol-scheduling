@@ -1,15 +1,15 @@
-import type { Preview } from "@storybook/react";
-import "@awell-health/ui-library/dist/index.css";
+import type { Preview } from '@storybook/react';
+import '@awell-health/ui-library/dist/index.css';
 
 const preview: Preview = {
   parameters: {
     controls: {
       matchers: {
         color: /(background|color)$/i,
-        date: /Date$/i,
-      },
-    },
-  },
+        date: /Date$/i
+      }
+    }
+  }
 };
 
 export default preview;

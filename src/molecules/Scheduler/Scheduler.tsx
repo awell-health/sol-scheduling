@@ -1,6 +1,6 @@
-import { FC } from "react";
-import classes from "./Scheduler.module.scss";
-import { AppointmentTypeOverview, Slots, Calendar } from "../../atoms";
+import { FC } from 'react';
+import classes from './Scheduler.module.scss';
+import { AppointmentTypeOverview, Slots, Calendar } from '../../atoms';
 
 export type SchedulerProps = {
   appointmentName: string;
@@ -29,7 +29,7 @@ export const Scheduler: FC<SchedulerProps> = ({
   loadingAvailableDays,
   loadingAvailableSlots,
   onDateSelect,
-  onSlotSelect,
+  onSlotSelect
 }) => {
   return (
     <div className={classes.container}>

@@ -1,1 +1,1 @@
-export { Slots } from "./Slots";
+export { Slots } from './Slots';

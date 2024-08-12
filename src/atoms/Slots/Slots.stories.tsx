@@ -1,19 +1,19 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Slots as SlotsComponent } from "./Slots";
-import { ThemeProvider } from "@awell-health/ui-library";
-import { fn } from "@storybook/test";
+import type { Meta, StoryObj } from '@storybook/react';
+import { Slots as SlotsComponent } from './Slots';
+import { ThemeProvider } from '@awell-health/ui-library';
+import { fn } from '@storybook/test';
 
 const meta: Meta<typeof SlotsComponent> = {
-  title: "Atoms/Slots",
+  title: 'Atoms/Slots',
   component: SlotsComponent,
   args: { onSelect: fn() },
   decorators: [
     (Story) => (
-      <ThemeProvider accentColor="#A45128">
+      <ThemeProvider accentColor='#A45128'>
         <Story />
       </ThemeProvider>
-    ),
-  ],
+    )
+  ]
 };
 
 export default meta;
@@ -24,13 +24,13 @@ export const Slots: Story = {
     slotDate: new Date(),
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     slots: [
-      new Date("2024-07-12 00:00:00 +0200"),
-      new Date("2024-07-12 00:15:00 +0200"),
-      new Date("2024-07-12 00:30:00 +0200"),
-      new Date("2024-07-12 00:45:00 +0200"),
-      new Date("2024-07-12 01:00:00 +0200"),
-      new Date("2024-07-12 01:15:00 +0200"),
-      new Date("2024-07-12 01:30:00 +0200"),
-    ],
-  },
+      new Date('2024-07-12 00:00:00 +0200'),
+      new Date('2024-07-12 00:15:00 +0200'),
+      new Date('2024-07-12 00:30:00 +0200'),
+      new Date('2024-07-12 00:45:00 +0200'),
+      new Date('2024-07-12 01:00:00 +0200'),
+      new Date('2024-07-12 01:15:00 +0200'),
+      new Date('2024-07-12 01:30:00 +0200')
+    ]
+  }
 };

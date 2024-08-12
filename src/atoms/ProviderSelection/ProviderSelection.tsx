@@ -1,13 +1,13 @@
-import { FC } from "react";
-import classes from "./ProviderSelection.module.scss";
-import { Field, Radio, RadioGroup } from "@headlessui/react";
+import { FC } from 'react';
+import classes from './ProviderSelection.module.scss';
+import { Field, Radio, RadioGroup } from '@headlessui/react';
 
 interface Provider {
-  id: string
-  firstName: string
-  lastName: string
-  profileImageUrl: string
-  firstAvailability: Date
+  id: string;
+  firstName: string;
+  lastName: string;
+  profileImageUrl: string;
+  firstAvailability: Date;
 }
 
 export type ProviderSelectionProps = {
@@ -19,10 +19,10 @@ export type ProviderSelectionProps = {
 export const ProviderSelection: FC<ProviderSelectionProps> = ({
   value,
   providers,
-  onSelect,
+  onSelect
 }) => {
   return (
-    <fieldset className={classes.fieldset} aria-label="Appointment type">
+    <fieldset className={classes.fieldset} aria-label='Appointment type'>
       <RadioGroup value={value} onChange={onSelect} className={classes.group}>
         {providers.map((provider) => (
           <Field key={provider.id}>
@@ -35,7 +35,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
               <div className={classes.flex_container}>
                 <span className={classes.flex_col}>
                   <span className={classes.appointmentName}>
-                  {provider.lastName} {provider.firstName}
+                    {provider.lastName} {provider.firstName}
                   </span>
                 </span>
               </div>

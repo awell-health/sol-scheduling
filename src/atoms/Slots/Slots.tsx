@@ -1,9 +1,9 @@
-import { FC } from "react";
-import classes from "./Slots.module.scss";
-import { Field, Radio, RadioGroup } from "@headlessui/react";
-import { format } from "date-fns";
-import { isEmpty } from "lodash";
-import { CircularSpinner } from "@awell-health/ui-library";
+import { FC } from 'react';
+import classes from './Slots.module.scss';
+import { Field, Radio, RadioGroup } from '@headlessui/react';
+import { format } from 'date-fns';
+import { isEmpty } from 'lodash';
+import { CircularSpinner } from '@awell-health/ui-library';
 
 export interface SlotsProps {
   value?: Date;
@@ -26,28 +26,28 @@ export const Slots: FC<SlotsProps> = ({
   timeZone,
   loading,
   onSelect,
-  text,
+  text
 }) => {
   const {
-    slotsLabel = "Slots",
-    selectDateLabel = "Select a date first",
-    noSlotsLabel = "No slots available",
+    slotsLabel = 'Slots',
+    selectDateLabel = 'Select a date first',
+    noSlotsLabel = 'No slots available'
   } = text || {};
 
   const formatSlotTime = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
-      hour: "numeric",
-      minute: "numeric",
+      hour: 'numeric',
+      minute: 'numeric',
       hour12: true,
-      timeZone,
+      timeZone
     };
 
     // Always format in US format (12h notation + AM/PM)
-    return new Intl.DateTimeFormat("en-US", options).format(date);
+    return new Intl.DateTimeFormat('en-US', options).format(date);
   };
 
   const formatTitleDate = (date: Date) => {
-    return format(date, "MMMM d, yyyy");
+    return format(date, 'MMMM d, yyyy');
   };
 
   const handleSlotSelect = (date: Date) => {
@@ -63,7 +63,7 @@ export const Slots: FC<SlotsProps> = ({
       )}
       {loading && (
         <div className={classes.loading}>
-          <CircularSpinner size="sm" />
+          <CircularSpinner size='sm' />
         </div>
       )}
       {!loading && !slotDate && (
@@ -78,7 +78,7 @@ export const Slots: FC<SlotsProps> = ({
             <div className={classes.scrollBar}>
               <fieldset
                 className={classes.fieldset}
-                aria-label="Appointment type"
+                aria-label='Appointment type'
               >
                 <RadioGroup
                   value={value}

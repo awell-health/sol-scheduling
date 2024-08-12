@@ -1,7 +1,7 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import { FC, useState } from "react";
-import classes from "./Calendar.module.scss";
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import clsx from 'clsx';
+import { FC, useState } from 'react';
+import classes from './Calendar.module.scss';
 import {
   format,
   addMonths,
@@ -14,9 +14,9 @@ import {
   isSameMonth,
   isToday,
   isSameDay,
-  isBefore,
-} from "date-fns";
-import { CircularSpinner } from "@awell-health/ui-library";
+  isBefore
+} from 'date-fns';
+import { CircularSpinner } from '@awell-health/ui-library';
 
 export interface CalendarProps {
   value?: Date;
@@ -24,7 +24,7 @@ export interface CalendarProps {
   month?: Date;
   availableDates?: Date[];
   loading?: boolean;
-  weekStartsOn?: "sunday" | "monday";
+  weekStartsOn?: 'sunday' | 'monday';
 }
 
 export const Calendar: FC<CalendarProps> = ({
@@ -33,7 +33,7 @@ export const Calendar: FC<CalendarProps> = ({
   month = new Date(),
   availableDates = [],
   loading,
-  weekStartsOn = "sunday",
+  weekStartsOn = 'sunday'
 }) => {
   const [currentMonth, setCurrentMonth] = useState(month);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
@@ -55,7 +55,7 @@ export const Calendar: FC<CalendarProps> = ({
 
   const isAvailable = (date: Date) => {
     return availableDates.some((availableDate) =>
-      isSameDay(date, availableDate),
+      isSameDay(date, availableDate)
     );
   };
 
@@ -64,12 +64,12 @@ export const Calendar: FC<CalendarProps> = ({
   };
 
   const generateDays = (month: Date) => {
-    const weekStartsOnIndex = weekStartsOn === "sunday" ? 0 : 1;
+    const weekStartsOnIndex = weekStartsOn === 'sunday' ? 0 : 1;
     const start = startOfWeek(startOfMonth(month), {
-      weekStartsOn: weekStartsOnIndex,
+      weekStartsOn: weekStartsOnIndex
     });
     const end = endOfWeek(endOfMonth(month), {
-      weekStartsOn: weekStartsOnIndex,
+      weekStartsOn: weekStartsOnIndex
     });
 
     return eachDayOfInterval({ start, end }).map((date) => ({
@@ -78,7 +78,7 @@ export const Calendar: FC<CalendarProps> = ({
       isToday: isToday(date),
       isSelected: selectedDate ? isSameDay(date, selectedDate) : false,
       isDisabled: isDisabled(date),
-      isAvailable: isAvailable(date),
+      isAvailable: isAvailable(date)
     }));
   };
 
@@ -86,9 +86,9 @@ export const Calendar: FC<CalendarProps> = ({
 
   const renderWeekDaysHeader = () => {
     const weekDays =
-      weekStartsOn === "sunday"
-        ? ["S", "M", "T", "W", "T", "F", "S"]
-        : ["M", "T", "W", "T", "F", "S", "S"];
+      weekStartsOn === 'sunday'
+        ? ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+        : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
     return weekDays.map((day, index) => <div key={index}>{day}</div>);
   };
@@ -97,28 +97,28 @@ export const Calendar: FC<CalendarProps> = ({
     <div className={classes.calendarContainer}>
       {loading && (
         <div className={classes.loadingOverlay}>
-          <CircularSpinner size="sm" />
+          <CircularSpinner size='sm' />
         </div>
       )}
       <div className={classes.calendarNavigation}>
         <button
-          type="button"
+          type='button'
           className={classes.navButton}
           onClick={handlePreviousMonth}
         >
           <span className={classes.srOnly}>Previous month</span>
-          <ChevronLeftIcon className={classes.navIcon} aria-hidden="true" />
+          <ChevronLeftIcon className={classes.navIcon} aria-hidden='true' />
         </button>
         <div className={classes.activeMonth}>
-          {format(currentMonth, "MMMM yyyy")}
+          {format(currentMonth, 'MMMM yyyy')}
         </div>
         <button
-          type="button"
+          type='button'
           className={classes.navButton}
           onClick={handleNextMonth}
         >
           <span className={classes.srOnly}>Next month</span>
-          <ChevronRightIcon className={classes.navIcon} aria-hidden="true" />
+          <ChevronRightIcon className={classes.navIcon} aria-hidden='true' />
         </button>
       </div>
       <div className={classes.calendarDaysHeader}>{renderWeekDaysHeader()}</div>
@@ -126,7 +126,7 @@ export const Calendar: FC<CalendarProps> = ({
         {days.map((day, dayIdx) => (
           <button
             key={day.date.toString()}
-            type="button"
+            type='button'
             onClick={() => handleDateClick(day.date)}
             disabled={day.isDisabled}
             className={clsx(
@@ -154,7 +154,7 @@ export const Calendar: FC<CalendarProps> = ({
               dayIdx === 0 && classes.topLeftDay,
               dayIdx === 6 && classes.topRightDay,
               dayIdx === days.length - 7 && classes.bottomLeftDay,
-              dayIdx === days.length - 1 && classes.bottomRightDay,
+              dayIdx === days.length - 1 && classes.bottomRightDay
             )}
           >
             <time
@@ -173,7 +173,7 @@ export const Calendar: FC<CalendarProps> = ({
                   classes.availableDayNumberSelected,
                 day.isAvailable &&
                   day.isDisabled &&
-                  classes.availableDayNumberDisabled,
+                  classes.availableDayNumberDisabled
               )}
             >
               {day.date.getDate()}

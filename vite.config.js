@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { peerDependencies } from "./package.json";
@@ -5,8 +6,8 @@ import { peerDependencies } from "./package.json";
 export default defineConfig({
   build: {
     lib: {
-      entry: "./src/index.ts",
-      name: "vite-react-sol-scheduling",
+      entry: resolve(__dirname, "src/index.ts"),
+      name: "sol-scheduling-components",
       fileName: (format) => `index.${format}.js`,
       formats: ["cjs", "es"],
     },

@@ -1,6 +1,6 @@
-import { FC } from "react";
-import classes from "./AppointmentTypes.module.scss";
-import { Field, Radio, RadioGroup } from "@headlessui/react";
+import { FC } from 'react';
+import classes from './AppointmentTypes.module.scss';
+import { Field, Radio, RadioGroup } from '@headlessui/react';
 
 export type AppointmentTypesProps = {
   value?: string;
@@ -17,10 +17,10 @@ export type AppointmentTypesProps = {
 export const AppointmentTypes: FC<AppointmentTypesProps> = ({
   value,
   appointmentTypes,
-  onSelect,
+  onSelect
 }) => {
   return (
-    <fieldset className={classes.fieldset} aria-label="Appointment type">
+    <fieldset className={classes.fieldset} aria-label='Appointment type'>
       <RadioGroup value={value} onChange={onSelect} className={classes.group}>
         {appointmentTypes.map((appointmentType) => (
           <Field key={appointmentType.id} disabled={appointmentType.disabled}>
@@ -29,7 +29,7 @@ export const AppointmentTypes: FC<AppointmentTypesProps> = ({
               value={appointmentType.id}
               aria-label={appointmentType.name}
               className={`${classes.radio_option} ${
-                appointmentType.disabled ? classes.noAvailability : ""
+                appointmentType.disabled ? classes.noAvailability : ''
               }`}
               disabled={appointmentType.disabled}
             >
@@ -44,7 +44,7 @@ export const AppointmentTypes: FC<AppointmentTypesProps> = ({
                 </span>
               </div>
               <div className={classes.appointmentTypes}>
-                {appointmentType.availableContactTypes.join(" or ")}
+                {appointmentType.availableContactTypes.join(' or ')}
               </div>
             </Radio>
           </Field>
