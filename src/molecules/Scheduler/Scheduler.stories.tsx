@@ -10,18 +10,28 @@ const meta: Meta<typeof SchedulerComponent> = {
   args: { onDateSelect: fn(), onSlotSelect: fn() },
   decorators: [
     (Story, context) => {
-      const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+      const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+        undefined,
+      );
 
       const handleDateSelect = (date: Date) => {
         setSelectedDate(date);
         context.args.onDateSelect(date); // Trigger the action in Storybook
       };
 
-      return <ThemeProvider accentColor="#004ac2">
-                  <Story {...context} args={{ ...context.args, onDateSelect: handleDateSelect, date: selectedDate }} />
-
-      </ThemeProvider>
-    }
+      return (
+        <ThemeProvider accentColor="#004ac2">
+          <Story
+            {...context}
+            args={{
+              ...context.args,
+              onDateSelect: handleDateSelect,
+              date: selectedDate,
+            }}
+          />
+        </ThemeProvider>
+      );
+    },
   ],
 };
 
