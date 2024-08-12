@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: "./src/index.ts",
-      name: "vite-react-project",
+      name: "vite-react-sol-scheduling",
       fileName: (format) => `index.${format}.js`,
       formats: ["cjs", "es"],
     },
