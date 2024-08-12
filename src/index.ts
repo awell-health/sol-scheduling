@@ -1,1 +1,1 @@
-export { Button } from "./scheduling/Button";
+export * from "./atoms";

@@ -21,6 +21,7 @@
        "noFallthroughCasesInSwitch":true,
        "declaration":true
     },
+    "files": ["globals.d.ts"],
     "include":[
        "src"
     ],
