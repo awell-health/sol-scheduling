@@ -1,6 +1,15 @@
 {
-  "name": "sol-scheduling",
+  "name": "@awell-health/sol-scheduling",
   "packageManager": "yarn@4.4.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/awell-samples/sol-scheduling.git"
+  },
+  "author": {
+    "name": "awellHealth"
+  },
+  "license": "UNLICENSED",
   "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
@@ -58,11 +67,5 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "lodash": "^4.17.21"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "yarn lint",
-      "yarn format"
-    ]
   }
 }
