@@ -1,46 +1,37 @@
-# Getting Started with Create React App
+# SOL scheduling
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project contains SOL's scheduling front-end component which is used in Hosted Pages to let a patient schedule an appointment with a provider. 
 
-## Available Scripts
+This repository only contains the front-end. All the logic and interaction with APIs happens within the extension and the Hosted Pages app.
 
-In the project directory, you can run:
+## Installation
 
-### `yarn start`
+Note that we use [yarn PnP](https://yarnpkg.com/features/pnp) which might require [additional configuration](https://yarnpkg.com/getting-started/editor-sdks) in your IDE to work properly. You can follow the installation instructions below to get the repository running locally.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+If you use a different IDE, check the yarn documentation for instructions on IDE setup.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Installation (VSCode)
 
-### `yarn test`
+**Follow the steps below to set up the extensions repository locally on your machine:**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Check out the repository locally
+2. Install the [ZipFS extension](https://marketplace.visualstudio.com/items?itemName=arcanis.vscode-zipfs) in VSCode
+3. Explicitly set the Typescript version in VSCode:
+   - Press `ctrl+shift+p` in a TypeScript file
+   - Choose "Select TypeScript Version"
+   - Pick "Use Workspace Version"
 
-### `yarn build`
+## Storybook
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Browse and test all components in this repository via [Storybook](https://66b9e64731d191aeb07ea92e-tknjtscxrj.chromatic.com/).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Or run `yarn storybook` locally.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Prerequisites
 
-### `yarn eject`
+This repository currently uses UI components from Awell's [ui-library](https://github.com/awell-health/ui-library) to build the front-end faster. These components will be be unstyled if your app is not wrapped in Awell's [ThemeProvider](https://github.com/awell-health/ui-library/blob/main/src/atoms/themeProvider/ThemeProvider.tsx) and you are not importing [the styles from ui-library](https://github.com/awell-health/hosted-pages/blob/main/pages/_app.tsx#L2).
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+In this repository, this is handled by:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Importing the stylesheet in `.storybook/preview.ts`
+- All stories are decorated with the `<ThemeProvider />` component
