@@ -31,6 +31,7 @@
     "@types/react": "^18.3.3",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
+    "chromatic": "^11.7.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -47,5 +48,6 @@
   },
   "dependencies": {
     "@awell-health/ui-library": "^0.1.65"
-  }
+  },
+  "version": ""
 }
