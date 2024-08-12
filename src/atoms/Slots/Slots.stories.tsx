@@ -9,7 +9,7 @@ const meta: Meta<typeof SlotsComponent> = {
   args: { onSelect: fn() },
   decorators: [
     (Story) => (
-      <ThemeProvider accentColor="#004ac2">
+      <ThemeProvider accentColor="#A45128">
         <Story />
       </ThemeProvider>
     ),

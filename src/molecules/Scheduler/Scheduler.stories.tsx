@@ -20,7 +20,7 @@ const meta: Meta<typeof SchedulerComponent> = {
       };
 
       return (
-        <ThemeProvider accentColor="#004ac2">
+        <ThemeProvider accentColor="#A45128">
           <Story
             {...context}
             args={{

@@ -10,7 +10,7 @@ const meta: Meta<typeof CalendarComponent> = {
   args: { onSelect: fn() },
   decorators: [
     (Story) => (
-      <ThemeProvider accentColor="#004ac2">
+      <ThemeProvider accentColor="#A45128">
         <Story />
       </ThemeProvider>
     ),

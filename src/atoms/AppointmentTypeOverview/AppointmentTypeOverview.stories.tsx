@@ -7,7 +7,7 @@ const meta: Meta<typeof AppointmentTypeOverviewComponent> = {
   component: AppointmentTypeOverviewComponent,
   decorators: [
     (Story) => (
-      <ThemeProvider accentColor="#004ac2">
+      <ThemeProvider accentColor="#A45128">
         <Story />
       </ThemeProvider>
     ),

@@ -9,7 +9,7 @@ const meta: Meta<typeof AppointmentTypesComponent> = {
   args: { onSelect: fn() },
   decorators: [
     (Story) => (
-      <ThemeProvider accentColor="#004ac2">
+      <ThemeProvider accentColor="#A45128">
         <Story />
       </ThemeProvider>
     ),
