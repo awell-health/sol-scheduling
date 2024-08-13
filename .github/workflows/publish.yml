@@ -1,0 +1,36 @@
+name: Publish package
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@awell-health'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable yarn latest using corepack
+        run: corepack enable
+      
+      - name: Install dependencies
+        run: yarn
+      
+      - name: Build
+        run: yarn build
+
+      - name: Publish private package
+        run: yarn npm publish --access restricted
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AWELL_SOL_SCHEDULING_CI }}
