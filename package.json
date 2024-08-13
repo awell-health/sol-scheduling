@@ -5,7 +5,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/awell-samples/sol-scheduling.git"
+    "url": "git+https://github.com/awell-health/sol-scheduling.git"
   },
   "author": {
     "name": "awellHealth"
