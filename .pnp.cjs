@@ -68,7 +68,8 @@ const RAW_RUNTIME_STATE =
           ["typescript", "patch:typescript@npm%3A5.5.4#optional!builtin<compat/typescript>::version=5.5.4&hash=379a07"],\
           ["typescript-eslint", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:8.0.1"],\
           ["vite", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:5.4.0"],\
-          ["vite-plugin-dts", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.2"]\
+          ["vite-plugin-dts", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.2"],\
+          ["zod", "npm:3.23.8"]\
         ],\
         "linkType": "SOFT"\
       }]\
@@ -139,7 +140,8 @@ const RAW_RUNTIME_STATE =
           ["typescript", "patch:typescript@npm%3A5.5.4#optional!builtin<compat/typescript>::version=5.5.4&hash=379a07"],\
           ["typescript-eslint", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:8.0.1"],\
           ["vite", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:5.4.0"],\
-          ["vite-plugin-dts", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.2"]\
+          ["vite-plugin-dts", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.2"],\
+          ["zod", "npm:3.23.8"]\
         ],\
         "linkType": "SOFT"\
       }]\
@@ -14880,6 +14882,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/cache/yocto-queue-npm-0.1.0-c6c9a7db29-dceb44c285.zip/node_modules/yocto-queue/",\
         "packageDependencies": [\
           ["yocto-queue", "npm:0.1.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["zod", [\
+      ["npm:3.23.8", {\
+        "packageLocation": "./.yarn/cache/zod-npm-3.23.8-11c49c85b5-8f14c87d6b.zip/node_modules/zod/",\
+        "packageDependencies": [\
+          ["zod", "npm:3.23.8"]\
         ],\
         "linkType": "HARD"\
       }]\
