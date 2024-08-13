@@ -13,8 +13,6 @@ export interface SlotsProps {
   loading?: boolean;
   orientation?: 'vertical' | 'horizontal';
   text?: {
-    slotsLabel?: string;
-    selectDateLabel?: string;
     noSlotsLabel?: string;
   };
 }
@@ -29,11 +27,7 @@ export const Slots: FC<SlotsProps> = ({
   onSelect,
   text
 }) => {
-  const {
-    slotsLabel = 'Slots',
-    selectDateLabel = 'Select a date first',
-    noSlotsLabel = 'No slots available'
-  } = text || {};
+  const { noSlotsLabel = 'No slots available' } = text || {};
 
   const formatSlotTime = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
