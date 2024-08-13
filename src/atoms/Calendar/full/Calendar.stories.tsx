@@ -5,7 +5,7 @@ import { fn } from '@storybook/test';
 import { addDays } from 'date-fns';
 
 const meta: Meta<typeof CalendarComponent> = {
-  title: 'Atoms/Calendar',
+  title: 'Atoms/Calendar/Full',
   component: CalendarComponent,
   args: { onSelect: fn() },
   decorators: [
@@ -20,7 +20,7 @@ const meta: Meta<typeof CalendarComponent> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Calendar: Story = {
+export const Full: Story = {
   args: {
     loading: false,
     weekStartsOn: 'sunday',

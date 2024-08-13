@@ -1,0 +1,17 @@
+.main {
+  flex: 1;
+}
+
+.container {
+  max-width: 650px;
+  padding: 0 var(--awell-spacing-4);
+  margin: 0 auto;
+}
+
+.button_wrapper {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  align-items: center;
+  width: 100%;
+}

@@ -15,6 +15,7 @@
   padding: 0;
   border: 0;
   width: 100%;
+  overflow: visible;
 }
 
 .slotList {
@@ -23,9 +24,16 @@
 }
 
 .group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--awell-spacing-2);
+  &.horizontal {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+    gap: var(--awell-spacing-3);
+  }
+  &.vertical {
+    display: flex;
+    flex-direction: column;
+    gap: var(--awell-spacing-3);
+  }
 }
 
 .radio_option {
@@ -33,16 +41,18 @@
   display: block;
   cursor: pointer;
   border-radius: var(--awell-border-radius-md);
-  border: 1px solid var(--awell-slate300);
-  background-color: #ffffff;
-  padding: var(--awell-spacing-3) var(--awell-spacing-4);
+  border: 1px solid var(--awell-slate200);
+  background-color: #fff;
+  padding: var(--awell-spacing-3\.5) var(--awell-spacing-4);
   box-shadow: var(--awell-shadow-sm);
   outline: none;
   text-align: center;
-  font-size: var(--awell-font-size-sm);
-  color: var(--awell-slate900);
+  font-size: var(--awell-font-size-base);
+  color: var(--awell-slate600);
+  font-weight: var(--awell-font-medium);
   &:hover {
-    background-color: #f8fafc;
+    background-color: var(--awell-secondary-color);
+    border-color: var(--awell-accent-color);
   }
 }
 
@@ -54,29 +64,10 @@
 
 .radio_option[data-checked] {
   border-color: var(--awell-accent-color);
-  background-color: #f0f9ff;
-  box-shadow: 0 0 0 1px var(--awell-accent-color);
+  color: var(--awell-accent-color);
+  outline: 4px solid var(--awell-secondary-color);
 }
 
 .radio_option[data-disabled] {
   cursor: not-allowed;
-}
-
-.scrollContainer {
-  flex-grow: 1;
-  overflow: auto;
-}
-
-.scrollBar {
-  height: 100%;
-  width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 1px;
-}
-
-@media (min-width: 768px) {
-  .scrollContainer {
-    height: 400px;
-  }
 }

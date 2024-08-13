@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import classes from './Slots.module.scss';
 import { Field, Radio, RadioGroup } from '@headlessui/react';
-import { format } from 'date-fns';
 import { isEmpty } from 'lodash';
 import { CircularSpinner } from '@awell-health/ui-library';
 
@@ -12,6 +11,7 @@ export interface SlotsProps {
   timeZone: string;
   onSelect: (date: Date) => void;
   loading?: boolean;
+  orientation?: 'vertical' | 'horizontal';
   text?: {
     slotsLabel?: string;
     selectDateLabel?: string;
@@ -20,10 +20,11 @@ export interface SlotsProps {
 }
 
 export const Slots: FC<SlotsProps> = ({
-  value,
+  value = undefined,
   slotDate,
   slots,
   timeZone,
+  orientation = 'horizontal',
   loading,
   onSelect,
   text
@@ -46,56 +47,39 @@ export const Slots: FC<SlotsProps> = ({
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
 
-  const formatTitleDate = (date: Date) => {
-    return format(date, 'MMMM d, yyyy');
-  };
-
   const handleSlotSelect = (date: Date) => {
     onSelect(date);
   };
 
   return (
     <div>
-      <h3 className={classes.title}>
-        {slotDate ? formatTitleDate(slotDate) : slotsLabel}
-      </h3>
       {loading && (
         <div className={classes.loading}>
           <CircularSpinner size='sm' />
         </div>
       )}
-      {!loading && !slotDate && <p>{selectDateLabel}</p>}
       {!loading && slotDate && isEmpty(slots) && <div>{noSlotsLabel}</div>}
       {!loading && slotDate && !isEmpty(slots) && (
-        <div className={classes.slotList}>
-          <div className={classes.scrollContainer}>
-            <div className={classes.scrollBar}>
-              <fieldset
-                className={classes.fieldset}
-                aria-label='Appointment type'
-              >
-                <RadioGroup
-                  value={value}
-                  onChange={handleSlotSelect}
-                  className={classes.group}
+        <fieldset className={classes.fieldset} aria-label='Appointment type'>
+          <RadioGroup
+            value={value}
+            onChange={handleSlotSelect}
+            className={`${classes.group} ${classes[orientation]}`}
+          >
+            {slots?.map((slot) => (
+              <Field key={slot.toISOString()}>
+                <Radio
+                  key={slot.toISOString()}
+                  value={slot}
+                  aria-label={slot.toISOString()}
+                  className={classes.radio_option}
                 >
-                  {slots?.map((slot) => (
-                    <Field key={slot.toISOString()}>
-                      <Radio
-                        key={slot.toISOString()}
-                        value={slot}
-                        aria-label={slot.toISOString()}
-                        className={classes.radio_option}
-                      >
-                        {formatSlotTime(slot)}
-                      </Radio>
-                    </Field>
-                  ))}
-                </RadioGroup>
-              </fieldset>
-            </div>
-          </div>
-        </div>
+                  {formatSlotTime(slot)}
+                </Radio>
+              </Field>
+            ))}
+          </RadioGroup>
+        </fieldset>
       )}
     </div>
   );

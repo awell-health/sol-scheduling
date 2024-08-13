@@ -10,7 +10,9 @@ const meta: Meta<typeof ProviderSelectionComponent> = {
   decorators: [
     (Story) => (
       <ThemeProvider accentColor='#A45128'>
-        <Story />
+        <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+          <Story />
+        </div>
       </ThemeProvider>
     )
   ]
@@ -24,27 +26,33 @@ export const ProviderSelection: Story = {
     providers: [
       {
         id: '1',
-        firstName: 'Nick',
-        lastName: 'Hellemans',
-        profileImageUrl:
-          'https://static.vecteezy.com/system/resources/previews/010/871/290/original/3d-avatar-doctor-png.png',
-        firstAvailability: new Date()
+        name: 'Nick Hellemans',
+        gender: 'F',
+        ethnicity: 'Arab',
+        language: 'ar',
+        therapeuticModality: 'Psychiatry',
+        clinicalFocus: ['Panic disorder', 'stress'],
+        deliveryMethod: 'Virtual'
       },
       {
         id: '2',
-        firstName: 'Rik',
-        lastName: 'Renard',
-        profileImageUrl:
-          'https://static.vecteezy.com/system/resources/previews/010/871/290/original/3d-avatar-doctor-png.png',
-        firstAvailability: new Date()
+        name: 'Rik Renard',
+        gender: 'M',
+        ethnicity: 'Arab',
+        language: 'ar',
+        therapeuticModality: 'Psychiatry',
+        clinicalFocus: ['Panic disorder', 'stress'],
+        deliveryMethod: 'Virtual'
       },
       {
         id: '3',
-        firstName: 'Jonathan',
-        lastName: 'Belanger',
-        profileImageUrl:
-          'https://static.vecteezy.com/system/resources/previews/010/871/290/original/3d-avatar-doctor-png.png',
-        firstAvailability: new Date()
+        name: 'Jonathan Belanger',
+        gender: 'F',
+        ethnicity: 'Arab',
+        language: 'ar',
+        therapeuticModality: 'Psychiatry',
+        clinicalFocus: ['Panic disorder', 'stress'],
+        deliveryMethod: 'Virtual'
       }
     ]
   }

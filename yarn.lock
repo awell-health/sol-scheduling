@@ -55,8 +55,10 @@ __metadata:
     eslint-plugin-storybook: "npm:^0.8.0"
     globals: "npm:^15.9.0"
     husky: "npm:^9.1.4"
+    iso-639-1: "npm:^3.1.2"
     lint-staged: "npm:^15.2.9"
     lodash: "npm:^4.17.21"
+    moment-timezone: "npm:^0.5.45"
     prettier: "npm:^3.3.3"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
@@ -6969,6 +6971,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"iso-639-1@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "iso-639-1@npm:3.1.2"
+  checksum: 10c0/ebfd65da0bf46be60f1a34b772fc50624b5eac33752a2da1a265b05d7aa3d26a19523b7424bee099406f6aa1580efd057010c9251cba8abc7b24c8bf6fd574bd
+  languageName: node
+  linkType: hard
+
 "isobject@npm:^3.0.1":
   version: 3.0.1
   resolution: "isobject@npm:3.0.1"
@@ -8294,6 +8303,22 @@ __metadata:
     pkg-types: "npm:^1.1.1"
     ufo: "npm:^1.5.3"
   checksum: 10c0/d836a7b0adff4d118af41fb93ad4d9e57f80e694a681185280ba220a4607603c19e86c80f9a6c57512b04280567f2599e3386081705c5b5fd74c9ddfd571d0fa
+  languageName: node
+  linkType: hard
+
+"moment-timezone@npm:^0.5.45":
+  version: 0.5.45
+  resolution: "moment-timezone@npm:0.5.45"
+  dependencies:
+    moment: "npm:^2.29.4"
+  checksum: 10c0/7497f23c4b8c875dbf07c03f9a1253f79edaeedc29d5732e36bfd3c5577e25aed1924fbd84cbb713ce1920dbe822be0e21bd487851a7d13907226f289a5e568b
+  languageName: node
+  linkType: hard
+
+"moment@npm:^2.29.4":
+  version: 2.30.1
+  resolution: "moment@npm:2.30.1"
+  checksum: 10c0/865e4279418c6de666fca7786607705fd0189d8a7b7624e2e56be99290ac846f90878a6f602e34b4e0455c549b85385b1baf9966845962b313699e7cb847543a
   languageName: node
   linkType: hard
 

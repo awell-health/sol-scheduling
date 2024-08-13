@@ -1,64 +1,95 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import classes from './Scheduler.module.scss';
-import { AppointmentTypeOverview, Slots, Calendar } from '../../atoms';
+import { Slots, WeekCalendar } from '../../atoms';
+import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
+import { isSameDay } from 'date-fns';
+import { Button } from '@awell-health/ui-library';
 
 export type SchedulerProps = {
-  appointmentName: string;
-  appointmentLength: number;
-  appointmentCallType: string;
+  provider: {
+    name: string;
+    profileImageUrl?: string;
+  };
   timeZone: string;
   date?: Date;
   slot?: Date;
-  availableDays?: Date[];
-  availableSlots?: Date[];
-  loadingAvailableDays?: boolean;
-  loadingAvailableSlots?: boolean;
+  availabilities: Date[];
+  loadingAvailabilities?: boolean;
   onDateSelect: (date: Date) => void;
   onSlotSelect: (date: Date) => void;
+  onBooking: (date: Date) => void;
+  text?: {
+    title?: string;
+    selectSlot?: string;
+    button?: string;
+  };
 };
 
 export const Scheduler: FC<SchedulerProps> = ({
   date,
   slot,
   timeZone,
-  appointmentName,
-  appointmentLength,
-  appointmentCallType,
-  availableDays,
-  availableSlots,
-  loadingAvailableDays,
-  loadingAvailableSlots,
+  provider,
+  availabilities,
+  loadingAvailabilities,
   onDateSelect,
-  onSlotSelect
+  onSlotSelect,
+  onBooking,
+  text
 }) => {
+  const {
+    title = 'Schedule an appointment with',
+    selectSlot = 'Select a time slot',
+    button = 'Confirm booking'
+  } = text || {};
+
+  const filteredSlots = useMemo(() => {
+    return availabilities.filter((availableSlot) =>
+      date ? isSameDay(availableSlot, date) : false
+    );
+  }, [availabilities, date]);
+
   return (
     <div className={classes.container}>
-      <div className={classes.meta}>
-        <AppointmentTypeOverview
-          name={appointmentName}
-          length={appointmentLength}
-          contactType={appointmentCallType}
-          timezone={timeZone}
+      <div className={classes.header}>
+        <h4 className={classes.title}>
+          {title}
+          <br />
+          <span>{provider.name}</span>
+        </h4>
+        <img
+          alt={provider.name}
+          src={provider.profileImageUrl ?? DEFAULT_PROFILE_IMAGE}
+          className={classes.headshot}
         />
       </div>
-      <div className={classes.main}>
-        <Calendar
+      <div className={classes.calendar}>
+        <WeekCalendar
           value={date}
           onSelect={onDateSelect}
-          loading={loadingAvailableDays}
-          availableDates={availableDays}
+          loading={loadingAvailabilities}
+          availabilities={availabilities}
         />
       </div>
-      <div className={classes.timeslots}>
-        <Slots
-          value={slot}
-          slotDate={date}
-          onSelect={onSlotSelect}
-          slots={availableSlots}
-          timeZone={timeZone}
-          loading={loadingAvailableSlots}
-        />
-      </div>
+      {date && (
+        <div className={classes.timeslots}>
+          <h3 className={`${classes.title} ${classes.center}`}>{selectSlot}</h3>
+          <Slots
+            value={slot}
+            slotDate={date}
+            onSelect={onSlotSelect}
+            slots={filteredSlots}
+            timeZone={timeZone}
+          />
+        </div>
+      )}
+      {date && slot && (
+        <div className={classes.confirm}>
+          <Button fullWidth={true} onClick={() => onBooking(slot)}>
+            {button}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
