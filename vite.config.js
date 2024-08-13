@@ -1,6 +1,7 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
+import react from '@vitejs/plugin-react';
 import { peerDependencies } from "./package.json";
 
 export default defineConfig({
@@ -12,10 +13,21 @@ export default defineConfig({
       formats: ["cjs", "es"],
     },
     rollupOptions: {
-      external: [...Object.keys(peerDependencies), "react/jsx-runtime"],
+      external: ['react', 'react-dom'],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM'
+        }
+      }
     },
     sourcemap: true,
     emptyOutDir: true,
   },
-  plugins: [dts()],
+  plugins: [
+    react(),
+    dts({
+      exclude: ['**/*.stories.*', 'tests']
+    })
+  ],
 });

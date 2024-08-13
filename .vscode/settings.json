@@ -20,10 +20,8 @@
     "**/CVS": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
-    "**/*.d.ts": true,
     "**/*.js.map": true,
     "**/.retool_types/**": true,
-    "**/*tsconfig.json": true,
     ".cache": true
   },
   "eslint.nodePath": ".yarn/sdks",
