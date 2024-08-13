@@ -22,7 +22,8 @@
     "lint": "yarn eslint '**/*.{ts,tsx}' --ignore-pattern .gitignore --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "prepare": "husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
