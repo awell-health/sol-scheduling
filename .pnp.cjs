@@ -55,7 +55,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-storybook", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:0.8.0"],\
           ["globals", "npm:15.9.0"],\
           ["husky", "npm:9.1.4"],\
-          ["lint-staged", "npm:15.2.8"],\
+          ["lint-staged", "npm:15.2.9"],\
           ["lodash", "npm:4.17.21"],\
           ["prettier", "npm:3.3.3"],\
           ["react", "npm:18.3.1"],\
@@ -123,7 +123,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-storybook", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:0.8.0"],\
           ["globals", "npm:15.9.0"],\
           ["husky", "npm:9.1.4"],\
-          ["lint-staged", "npm:15.2.8"],\
+          ["lint-staged", "npm:15.2.9"],\
           ["lodash", "npm:4.17.21"],\
           ["prettier", "npm:3.3.3"],\
           ["react", "npm:18.3.1"],\
@@ -9982,10 +9982,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["lint-staged", [\
-      ["npm:15.2.8", {\
-        "packageLocation": "../../../.yarn/berry/cache/lint-staged-npm-15.2.8-cf794cd20d-10c0.zip/node_modules/lint-staged/",\
+      ["npm:15.2.9", {\
+        "packageLocation": "../../../.yarn/berry/cache/lint-staged-npm-15.2.9-092f307382-10c0.zip/node_modules/lint-staged/",\
         "packageDependencies": [\
-          ["lint-staged", "npm:15.2.8"],\
+          ["lint-staged", "npm:15.2.9"],\
           ["chalk", "npm:5.3.0"],\
           ["commander", "npm:12.1.0"],\
           ["debug", "virtual:1ff4b5f90832ba0a9c93ba1223af226e44ba70c1126a3740d93562b97bc36544e896a5e95908196f7458713e6a6089a34bfc67362fc6df7fa093bd06c878be47#npm:4.3.6"],\
