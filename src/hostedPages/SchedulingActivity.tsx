@@ -6,50 +6,42 @@ import {
   HostedPageFooter,
   Button
 } from '@awell-health/ui-library';
-import {
-  mockProviderAvailabilityResponse,
-  mockProvidersResponse
-} from '../__mocks__';
 import { BookingConfirmation, ProviderSelection } from '../atoms';
 import { Scheduler } from '../molecules';
-import classes from './Preview.module.scss';
+import classes from './SchedulingActivity.module.scss';
+import {
+  BookAppointmentResponseType,
+  GetAvailabilitiesResponseType,
+  GetProvidersResponseType
+} from 'lib/api';
 
-interface PreviewProps {
+interface SchedulingActivityProps {
   onProviderSelect: (id: string) => void;
   onDateSelect: (date: Date) => void;
   onSlotSelect: (date: Date) => void;
-  onBooking: (date: Date) => void;
+  onBooking: (date: Date) => Promise<BookAppointmentResponseType>;
+  fetchProviders: () => Promise<GetProvidersResponseType>;
+  fetchAvailability: () => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: () => void;
 }
 
-const mockFetchProviders = (): Promise<typeof mockProvidersResponse> =>
-  new Promise((resolve) =>
-    setTimeout(() => resolve(mockProvidersResponse), 750)
-  );
-
-const mockFetchAvailability = (): Promise<
-  typeof mockProviderAvailabilityResponse
-> =>
-  new Promise((resolve) =>
-    setTimeout(() => resolve(mockProviderAvailabilityResponse), 750)
-  );
-
-const mockBookAppointment = () =>
-  new Promise((resolve) => setTimeout(() => resolve(true), 1500));
-
-export const Preview: FC<PreviewProps> = ({
+export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   onProviderSelect,
   onDateSelect,
   onSlotSelect,
   onBooking,
+  fetchProviders,
+  fetchAvailability,
   onCompleteActivity
 }) => {
   const { updateLayoutMode, resetLayoutMode } = useTheme();
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const [providers, setProviders] = useState<typeof mockProvidersResponse>([]);
+  const [providers, setProviders] = useState<GetProvidersResponseType['data']>(
+    []
+  );
   const [availabilities, setAvailabilities] = useState<
-    typeof mockProviderAvailabilityResponse | undefined
+    GetAvailabilitiesResponseType['data'] | undefined
   >(undefined);
   const [loadingProviders, setLoadingProviders] = useState(true);
   const [loadingAvailabilities, setLoadingAvailabilities] = useState(false);
@@ -65,8 +57,8 @@ export const Preview: FC<PreviewProps> = ({
   useEffect(() => {
     updateLayoutMode('flexible');
 
-    mockFetchProviders().then((providers) => {
-      setProviders(providers);
+    fetchProviders().then((providers) => {
+      setProviders(providers.data);
       setLoadingProviders(false);
     });
 
@@ -83,8 +75,8 @@ export const Preview: FC<PreviewProps> = ({
       setSelectedProviderId(id);
       onProviderSelect(id);
 
-      mockFetchAvailability().then((availabilities) => {
-        setAvailabilities(availabilities);
+      fetchAvailability().then((availabilities) => {
+        setAvailabilities(availabilities.data);
         setLoadingAvailabilities(false);
       });
     },
@@ -112,9 +104,8 @@ export const Preview: FC<PreviewProps> = ({
     (date: Date) => {
       setLoadingConfirmation(true);
       setSelectedSlot(date);
-      onBooking(date);
 
-      mockBookAppointment().then(() => {
+      onBooking(date).then(() => {
         setBookingConfirmed(true);
         setLoadingConfirmation(false);
       });
@@ -125,13 +116,11 @@ export const Preview: FC<PreviewProps> = ({
   const providerAvailabilities = useMemo(() => {
     if (selectedProviderId === undefined) return [];
 
-    //@ts-expect-error fix later
     const availabilitiesForProvider = availabilities?.[selectedProviderId];
 
     if (!availabilitiesForProvider) return [];
 
     return availabilitiesForProvider.flatMap(
-      //@ts-expect-error fix later
       (availability) => new Date(availability.startDate)
     );
   }, [selectedProviderId, availabilities]);
