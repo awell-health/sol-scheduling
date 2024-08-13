@@ -56,21 +56,15 @@ export const Slots: FC<SlotsProps> = ({
 
   return (
     <div>
-      {slotDate ? (
-        <h3 className={classes.title}>{formatTitleDate(slotDate)}</h3>
-      ) : (
-        <h3 className={classes.title}>{slotsLabel}</h3>
-      )}
+      <h3 className={classes.title}>
+        {slotDate ? formatTitleDate(slotDate) : slotsLabel}
+      </h3>
       {loading && (
         <div className={classes.loading}>
           <CircularSpinner size='sm' />
         </div>
       )}
-      {!loading && !slotDate && (
-        <>
-          <p>{selectDateLabel}</p>
-        </>
-      )}
+      {!loading && !slotDate && <p>{selectDateLabel}</p>}
       {!loading && slotDate && isEmpty(slots) && <div>{noSlotsLabel}</div>}
       {!loading && slotDate && !isEmpty(slots) && (
         <div className={classes.slotList}>

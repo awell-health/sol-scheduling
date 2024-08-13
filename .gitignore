@@ -16,6 +16,7 @@
 storybook-static
 
 dist
+node_modules
 
 *storybook.log
 .DS_Store

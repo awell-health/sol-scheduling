@@ -22,7 +22,17 @@
     "lint": "yarn eslint '**/*.{ts,tsx}' --ignore-pattern .gitignore --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build": "yarn tsc && vite build"
+    "build": "tsc && vite build",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --quiet --fix",
+      "prettier --write --ignore-unknown"
+    ],
+    "*.{json,html}": [
+      "prettier --write --ignore-unknown"
+    ]
   },
   "peerDependencies": {
     "react": "^18.3.1",
@@ -43,6 +53,7 @@
     "@types/react": "^18.3.3",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
+    "@vitejs/plugin-react": "^4.3.1",
     "chromatic": "^11.7.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -52,7 +63,7 @@
     "eslint-plugin-storybook": "^0.8.0",
     "globals": "^15.9.0",
     "husky": "^9.1.4",
-    "lint-staged": "^15.2.8",
+    "lint-staged": "^15.2.9",
     "prettier": "^3.3.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
