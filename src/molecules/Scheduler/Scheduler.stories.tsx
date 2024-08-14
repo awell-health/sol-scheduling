@@ -4,7 +4,7 @@ import { ThemeProvider } from '@awell-health/ui-library';
 import { fn } from '@storybook/test';
 import { addDays } from 'date-fns';
 import { useState } from 'react';
-import { SlotType } from 'atoms/Slots';
+import { SlotType } from '../../atoms/Slots';
 
 const meta: Meta<typeof SchedulerComponent> = {
   title: 'Molecules/Scheduler',

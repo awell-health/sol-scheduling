@@ -1,4 +1,4 @@
-import { GetProvidersResponseType } from 'lib/api';
+import { GetProvidersResponseType } from '../../api';
 
 export const mockProvidersResponse: GetProvidersResponseType = {
   data: [

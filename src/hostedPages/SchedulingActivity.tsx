@@ -12,8 +12,8 @@ import {
   BookAppointmentResponseType,
   GetAvailabilitiesResponseType,
   GetProvidersResponseType
-} from 'lib/api';
-import { SlotType } from 'atoms/Slots';
+} from '../lib/api';
+import { SlotType } from '../atoms/Slots';
 
 interface SchedulingActivityProps {
   onProviderSelect: (id: string) => void;

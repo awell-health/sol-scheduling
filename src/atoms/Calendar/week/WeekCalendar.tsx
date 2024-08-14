@@ -14,7 +14,7 @@ import {
   isBefore
 } from 'date-fns';
 import { CircularSpinner, Button } from '@awell-health/ui-library';
-import { GetAvailabilitiesResponseType } from 'lib/api';
+import { GetAvailabilitiesResponseType } from '../../../lib/api';
 
 export type AvailabilityType = Pick<
   GetAvailabilitiesResponseType['data'][0],

@@ -1,5 +1,5 @@
 import { addDays } from 'date-fns';
-import { GetAvailabilitiesResponseType } from 'lib/api/availabilities.schema';
+import { GetAvailabilitiesResponseType } from '../../api';
 
 export const mockProviderAvailabilityResponse: GetAvailabilitiesResponseType = {
   data: [
