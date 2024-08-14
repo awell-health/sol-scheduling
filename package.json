@@ -2,7 +2,6 @@
   "name": "@awell-health/sol-scheduling",
   "version": "0.1.0",
   "packageManager": "yarn@4.4.0",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/awell-health/sol-scheduling.git"
