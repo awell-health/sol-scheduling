@@ -11,9 +11,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'sol-scheduling-components',
+      name: 'sol-scheduling',
       fileName: (format) => `index.${format}.js`,
-      formats: ['cjs', 'es']
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
