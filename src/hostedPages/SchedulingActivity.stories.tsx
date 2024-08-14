@@ -1,13 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ThemeProvider } from '@awell-health/ui-library';
+import { ThemeProvider, useTheme } from '@awell-health/ui-library';
 import { SchedulingActivity as SchedulingActivityComponent } from './SchedulingActivity';
 import { fn } from '@storybook/test';
 import {
   mockProviderAvailabilityResponse,
   mockProvidersResponse
 } from '../lib/api/__mocks__';
+import { useEffect } from 'react';
 
-const meta: Meta = {
+const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity',
   component: SchedulingActivityComponent,
   parameters: {
@@ -27,7 +28,8 @@ const meta: Meta = {
         setTimeout(() => resolve(mockProviderAvailabilityResponse), 750)
       ),
     onBooking: fn(
-      () => new Promise((resolve) => setTimeout(() => resolve(true), 1500))
+      () =>
+        new Promise((resolve) => setTimeout(() => resolve({ data: [] }), 1500))
     )
   },
   decorators: [
@@ -43,5 +45,18 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const SchedulingActivity: Story = {
+  render: (args) => {
+    const { updateLayoutMode, resetLayoutMode } = useTheme();
+
+    useEffect(() => {
+      updateLayoutMode('flexible');
+
+      return () => {
+        // Reset to default mode on unmount
+        resetLayoutMode();
+      };
+    }, []);
+    return <SchedulingActivityComponent {...args} />;
+  },
   args: {}
 };

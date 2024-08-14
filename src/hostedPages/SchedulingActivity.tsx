@@ -1,7 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   HostedPageLayout,
-  useTheme,
   CircularSpinner,
   HostedPageFooter,
   Button
@@ -35,7 +34,6 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   fetchAvailability,
   onCompleteActivity
 }) => {
-  const { updateLayoutMode, resetLayoutMode } = useTheme();
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const [providers, setProviders] = useState<GetProvidersResponseType['data']>(
@@ -58,17 +56,10 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
 
   useEffect(() => {
-    updateLayoutMode('flexible');
-
     fetchProviders().then((providers) => {
       setProviders(providers.data);
       setLoadingProviders(false);
     });
-
-    return () => {
-      // Reset to default mode on unmount
-      resetLayoutMode();
-    };
   }, []);
 
   const handleProviderSelect = useCallback(
