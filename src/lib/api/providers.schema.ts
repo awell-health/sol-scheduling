@@ -1,16 +1,27 @@
 import { z } from 'zod';
 import { errorSchema } from './shared.schema';
 
+const ethnicitySchema = z.enum(['Hispanic', 'Caucasian', 'African American']);
+const languageSchema = z.enum(['en', 'sp', 'fr', 'de', 'it']);
+const agePreferenceSchema = z.enum(['18-25', '26-50', '50-60']);
+const genderSchema = z.enum(['M', 'F']);
+const deliveryMethodSchema = z.enum(['Virtual', 'In-Person', 'Hybrid']);
+const facilitySchema = z.enum(['f1', 'f2', 'f3']); // "f1" = "Broomfield", "f2" = "Colorado", "f3" = "New York".
+const clinicalFocusSchema = z.array(
+  z.enum(['Panic Disorder', 'Acute Stress', 'Generalized Anxiety'])
+);
+const therapeuticModality = z.enum(['Psychiatry', 'Therapy']);
+
 export const GetProvidersInputSchema = z.object({
-  agePreference: z.string(),
-  gender: z.enum(['M', 'F']),
-  ethnicity: z.string(),
-  language: z.string(),
-  therapeuticModality: z.enum(['Psychiatry', 'therapy', 'both', 'not sure']),
-  clinicalFocus: z.array(z.string()),
-  deliveryMethod: z.enum(['virtual', 'in-person', 'hybrid']),
+  agePreference: agePreferenceSchema,
+  gender: genderSchema,
+  ethnicity: ethnicitySchema,
+  language: languageSchema,
+  therapeuticModality: therapeuticModality,
+  clinicalFocus: clinicalFocusSchema,
+  deliveryMethod: deliveryMethodSchema,
   location: z.object({
-    facility: z.string(),
+    facility: facilitySchema,
     state: z.string()
   })
 });
@@ -22,12 +33,16 @@ export const GetProvidersResponseSchema = z
     data: z.array(
       z.object({
         name: z.string().min(1),
-        providerId: z.string().min(1),
-        providerResourceId: z.string().optional(),
-        gender: z.string().optional(),
-        ethnicity: z.string().optional(),
-        language: z.string().optional(),
-        location: z.string()
+        email: z.string().min(1),
+        Id: z.string().min(1),
+        ResourceId: z.string().min(1),
+        gender: genderSchema,
+        ethnicity: ethnicitySchema,
+        language: languageSchema,
+        location: z.object({
+          facility: facilitySchema,
+          state: z.string().min(1)
+        })
       })
     )
   })

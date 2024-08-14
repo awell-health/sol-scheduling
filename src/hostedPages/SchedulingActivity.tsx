@@ -116,7 +116,9 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const providerAvailabilities = useMemo(() => {
     if (selectedProviderId === undefined) return [];
 
-    const availabilitiesForProvider = availabilities?.[selectedProviderId];
+    const availabilitiesForProvider = availabilities?.filter(
+      (_) => _.providerId === selectedProviderId
+    );
 
     if (!availabilitiesForProvider) return [];
 
@@ -126,9 +128,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   }, [selectedProviderId, availabilities]);
 
   const selectedProvider = useMemo(() => {
-    return providers.find(
-      (provider) => provider.providerId === selectedProviderId
-    );
+    return providers.find((provider) => provider.Id === selectedProviderId);
   }, [providers, selectedProviderId]);
 
   return (
@@ -150,7 +150,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
                 <ProviderSelection
                   onSelect={handleProviderSelect}
                   providers={providers.map((provider) => ({
-                    id: provider.providerId,
+                    id: provider.Id,
                     name: provider.name,
                     language: provider.language,
                     gender: provider.gender,
