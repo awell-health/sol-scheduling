@@ -14,12 +14,13 @@ import {
   GetAvailabilitiesResponseType,
   GetProvidersResponseType
 } from 'lib/api';
+import { SlotType } from 'atoms/Slots';
 
 interface SchedulingActivityProps {
   onProviderSelect: (id: string) => void;
   onDateSelect: (date: Date) => void;
-  onSlotSelect: (date: Date) => void;
-  onBooking: (date: Date) => Promise<BookAppointmentResponseType>;
+  onSlotSelect: (slot: SlotType) => void;
+  onBooking: (slot: SlotType) => Promise<BookAppointmentResponseType>;
   fetchProviders: () => Promise<GetProvidersResponseType>;
   fetchAvailability: () => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: () => void;
@@ -51,7 +52,9 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     string | undefined
   >(undefined);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedSlot, setSelectedSlot] = useState<Date | undefined>(undefined);
+  const [selectedSlot, setSelectedSlot] = useState<SlotType | undefined>(
+    undefined
+  );
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
 
   useEffect(() => {
@@ -93,7 +96,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   );
 
   const handleSlotSelect = useCallback(
-    (slot: Date) => {
+    (slot: SlotType) => {
       setSelectedSlot(slot);
       onSlotSelect(slot);
     },
@@ -101,11 +104,11 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   );
 
   const handleBooking = useCallback(
-    (date: Date) => {
+    (slot: SlotType) => {
       setLoadingConfirmation(true);
-      setSelectedSlot(date);
+      setSelectedSlot(slot);
 
-      onBooking(date).then(() => {
+      onBooking(slot).then(() => {
         setBookingConfirmed(true);
         setLoadingConfirmation(false);
       });
@@ -122,9 +125,11 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
 
     if (!availabilitiesForProvider) return [];
 
-    return availabilitiesForProvider.flatMap(
-      (availability) => new Date(availability.startDate)
-    );
+    return availabilitiesForProvider.map((availability) => ({
+      eventId: availability.eventId,
+      startDate: new Date(availability.startDate),
+      duration: availability.duration
+    }));
   }, [selectedProviderId, availabilities]);
 
   const selectedProvider = useMemo(() => {
@@ -190,7 +195,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
             <div>
               <BookingConfirmation
                 providerName={selectedProvider?.name ?? 'No name'}
-                date={selectedSlot}
+                slot={selectedSlot}
               />
             </div>
           )}

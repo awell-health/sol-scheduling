@@ -3,13 +3,18 @@ import classes from './Slots.module.scss';
 import { Field, Radio, RadioGroup } from '@headlessui/react';
 import { isEmpty } from 'lodash';
 import { CircularSpinner } from '@awell-health/ui-library';
+import { GetAvailabilitiesResponseType } from 'lib/api';
+
+export type SlotType = Pick<
+  GetAvailabilitiesResponseType['data'][0],
+  'startDate' | 'eventId' | 'duration'
+>;
 
 export interface SlotsProps {
-  value?: Date;
-  slotDate?: Date;
-  slots?: Date[];
+  value?: SlotType;
+  slots?: SlotType[];
   timeZone: string;
-  onSelect: (date: Date) => void;
+  onSelect: (slot: SlotType) => void;
   loading?: boolean;
   orientation?: 'vertical' | 'horizontal';
   text?: {
@@ -19,7 +24,6 @@ export interface SlotsProps {
 
 export const Slots: FC<SlotsProps> = ({
   value = undefined,
-  slotDate,
   slots,
   timeZone,
   orientation = 'horizontal',
@@ -37,12 +41,13 @@ export const Slots: FC<SlotsProps> = ({
       timeZone
     };
 
-    // Always format in US format (12h notation + AM/PM)
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
 
-  const handleSlotSelect = (date: Date) => {
-    onSelect(date);
+  const handleSlotSelect = (eventId: string) => {
+    const selectedSlot = slots?.find((_) => _.eventId === eventId) as SlotType;
+
+    onSelect(selectedSlot);
   };
 
   return (
@@ -52,23 +57,23 @@ export const Slots: FC<SlotsProps> = ({
           <CircularSpinner size='sm' />
         </div>
       )}
-      {!loading && slotDate && isEmpty(slots) && <div>{noSlotsLabel}</div>}
-      {!loading && slotDate && !isEmpty(slots) && (
+      {!loading && isEmpty(slots) && <div>{noSlotsLabel}</div>}
+      {!loading && !isEmpty(slots) && (
         <fieldset className={classes.fieldset} aria-label='Appointment type'>
           <RadioGroup
-            value={value}
+            value={value?.eventId}
             onChange={handleSlotSelect}
             className={`${classes.group} ${classes[orientation]}`}
           >
             {slots?.map((slot) => (
-              <Field key={slot.toISOString()}>
+              <Field key={slot.eventId}>
                 <Radio
-                  key={slot.toISOString()}
-                  value={slot}
-                  aria-label={slot.toISOString()}
+                  key={slot.eventId}
+                  value={slot.eventId}
+                  aria-label={slot.startDate.toISOString()}
                   className={classes.radio_option}
                 >
-                  {formatSlotTime(slot)}
+                  {formatSlotTime(slot.startDate)}
                 </Radio>
               </Field>
             ))}

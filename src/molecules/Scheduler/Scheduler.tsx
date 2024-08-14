@@ -4,6 +4,8 @@ import { Slots, WeekCalendar } from '../../atoms';
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { isSameDay } from 'date-fns';
 import { Button } from '@awell-health/ui-library';
+import { AvailabilityType } from 'atoms/Calendar/week';
+import { SlotType } from 'atoms/Slots';
 
 export type SchedulerProps = {
   provider: {
@@ -12,12 +14,12 @@ export type SchedulerProps = {
   };
   timeZone: string;
   date?: Date;
-  slot?: Date;
-  availabilities: Date[];
+  slot?: SlotType;
+  availabilities: AvailabilityType[];
   loadingAvailabilities?: boolean;
   onDateSelect: (date: Date) => void;
-  onSlotSelect: (date: Date) => void;
-  onBooking: (date: Date) => void;
+  onSlotSelect: (slot: SlotType) => void;
+  onBooking: (slot: SlotType) => void;
   text?: {
     title?: string;
     selectSlot?: string;
@@ -45,7 +47,7 @@ export const Scheduler: FC<SchedulerProps> = ({
 
   const filteredSlots = useMemo(() => {
     return availabilities.filter((availableSlot) =>
-      date ? isSameDay(availableSlot, date) : false
+      date ? isSameDay(availableSlot.startDate, date) : false
     );
   }, [availabilities, date]);
 
@@ -76,7 +78,6 @@ export const Scheduler: FC<SchedulerProps> = ({
           <h3 className={`${classes.title} ${classes.center}`}>{selectSlot}</h3>
           <Slots
             value={slot}
-            slotDate={date}
             onSelect={onSlotSelect}
             slots={filteredSlots}
             timeZone={timeZone}

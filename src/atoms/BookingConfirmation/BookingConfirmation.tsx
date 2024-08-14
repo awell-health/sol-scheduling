@@ -2,12 +2,12 @@ import { FC } from 'react';
 import classes from './BookingConfirmation.module.scss';
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { upperFirst } from 'lodash';
+import { SlotType } from 'atoms/Slots';
 
 export type BookingConfirmationProps = {
   providerName: string;
-  date: Date;
+  slot: SlotType;
   profileImageUrl?: string;
-  duration?: number;
   otherBookingData?: Record<string, unknown>;
   text?: {
     bookingConfirmed?: string;
@@ -16,9 +16,8 @@ export type BookingConfirmationProps = {
 
 export const BookingConfirmation: FC<BookingConfirmationProps> = ({
   providerName,
-  date,
+  slot,
   profileImageUrl = DEFAULT_PROFILE_IMAGE,
-  duration,
   otherBookingData,
   text
 }) => {
@@ -44,17 +43,19 @@ export const BookingConfirmation: FC<BookingConfirmationProps> = ({
         <ul className={classes.overview}>
           <li>
             <span>Time: </span>
-            <time dateTime={date.toISOString()}>{date.toLocaleString()}</time>
+            <time dateTime={slot.startDate.toISOString()}>
+              {slot.startDate.toLocaleString()}
+            </time>
           </li>
-          {duration && (
+          {slot.duration && (
             <li>
               <span>Duration: </span>
-              <div>{duration} minutes</div>
+              <div>{slot.duration} minutes</div>
             </li>
           )}
           {otherBookingData &&
             Object.entries(otherBookingData).map(([key, value]) => (
-              <li>
+              <li key={key}>
                 <span>{upperFirst(key)}: </span>
                 <div>{String(value)}</div>
               </li>

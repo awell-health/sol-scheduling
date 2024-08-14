@@ -14,12 +14,17 @@ import {
   isBefore
 } from 'date-fns';
 import { CircularSpinner, Button } from '@awell-health/ui-library';
+import { GetAvailabilitiesResponseType } from 'lib/api';
 
+export type AvailabilityType = Pick<
+  GetAvailabilitiesResponseType['data'][0],
+  'startDate' | 'eventId' | 'duration'
+>;
 export interface WeekCalendarProps {
   value?: Date;
   onSelect: (date: Date) => void;
   week?: Date;
-  availabilities?: Date[];
+  availabilities?: AvailabilityType[];
   loading?: boolean;
   weekStartsOn?: 'sunday' | 'monday';
   hideWeekends?: boolean;
@@ -69,7 +74,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const isAvailable = useCallback(
     (date: Date) => {
       return availabilities.some((availableSlot) =>
-        isSameDay(date, availableSlot)
+        isSameDay(date, availableSlot.startDate)
       );
     },
     [availabilities]
@@ -81,7 +86,8 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
 
   const countavailabilities = useCallback(
     (date: Date) => {
-      return availabilities.filter((slot) => isSameDay(slot, date)).length;
+      return availabilities.filter((slot) => isSameDay(slot.startDate, date))
+        .length;
     },
     [availabilities]
   );

@@ -4,6 +4,7 @@ import { ThemeProvider } from '@awell-health/ui-library';
 import { fn } from '@storybook/test';
 import { addDays } from 'date-fns';
 import { useState } from 'react';
+import { SlotType } from 'atoms/Slots';
 
 const meta: Meta<typeof SchedulerComponent> = {
   title: 'Molecules/Scheduler',
@@ -28,7 +29,7 @@ export const Scheduler: Story = {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(
       args.date || undefined
     );
-    const [selectedSlot, setSelectedSlot] = useState<Date | undefined>(
+    const [selectedSlot, setSelectedSlot] = useState<SlotType | undefined>(
       args.slot || undefined
     );
 
@@ -38,7 +39,7 @@ export const Scheduler: Story = {
       args.onDateSelect(date);
     };
 
-    const handleSlotSelect = (slot: Date) => {
+    const handleSlotSelect = (slot: SlotType) => {
       setSelectedSlot(slot);
       args.onSlotSelect(slot);
     };
@@ -59,21 +60,81 @@ export const Scheduler: Story = {
     },
     timeZone: 'Europe/Brussels',
     availabilities: [
-      addDays(new Date().setUTCHours(9, 0), 1),
-      addDays(new Date().setUTCHours(11, 0), 1),
-      addDays(new Date().setUTCHours(14, 0), 1),
-      addDays(new Date().setUTCHours(16, 0), 1),
-      addDays(new Date().setUTCHours(9, 0), 2),
-      addDays(new Date().setUTCHours(10, 0), 2),
-      addDays(new Date().setUTCHours(12, 0), 3),
-      addDays(new Date().setUTCHours(9, 0), 5),
-      addDays(new Date().setUTCHours(9, 0), 9),
-      addDays(new Date().setUTCHours(10, 0), 9),
-      addDays(new Date().setUTCHours(9, 0), 10),
-      addDays(new Date().setUTCHours(9, 0), 11),
-      addDays(new Date().setUTCHours(10, 0), 11),
-      addDays(new Date().setUTCHours(9, 0), 12),
-      addDays(new Date().setUTCHours(9, 0), 13)
+      {
+        eventId: 'event-1',
+        startDate: addDays(new Date().setUTCHours(9, 0, 0), 1),
+        duration: 30
+      },
+      {
+        eventId: 'event-2',
+        startDate: addDays(new Date().setUTCHours(11, 0, 0), 1),
+        duration: 30
+      },
+      {
+        eventId: 'event-3',
+        startDate: addDays(new Date().setUTCHours(14, 0, 0), 1),
+        duration: 30
+      },
+      {
+        eventId: 'event-4',
+        startDate: addDays(new Date().setUTCHours(16, 0, 0), 1),
+        duration: 30
+      },
+      {
+        eventId: 'event-5',
+        startDate: addDays(new Date().setUTCHours(9, 0, 0), 2),
+        duration: 30
+      },
+      {
+        eventId: 'event-6',
+        startDate: addDays(new Date().setUTCHours(10, 0, 0), 2),
+        duration: 30
+      },
+      {
+        eventId: 'event-7',
+        startDate: addDays(new Date().setUTCHours(12, 0, 0), 3),
+        duration: 30
+      },
+      {
+        eventId: 'event-8',
+        startDate: addDays(new Date().setUTCHours(9, 0, 0), 5),
+        duration: 30
+      },
+      {
+        eventId: 'event-9',
+        startDate: addDays(new Date().setUTCHours(9, 0, 0), 9),
+        duration: 30
+      },
+      {
+        eventId: 'event-10',
+        startDate: addDays(new Date().setUTCHours(10, 0, 0), 9),
+        duration: 30
+      },
+      {
+        eventId: 'event-11',
+        startDate: addDays(new Date().setUTCHours(9, 0, 0), 10),
+        duration: 30
+      },
+      {
+        eventId: 'event-12',
+        startDate: addDays(new Date().setUTCHours(9, 0, 0), 11),
+        duration: 30
+      },
+      {
+        eventId: 'event-13',
+        startDate: addDays(new Date().setUTCHours(10, 0, 0), 11),
+        duration: 30
+      },
+      {
+        eventId: 'event-14',
+        startDate: addDays(new Date().setUTCHours(9, 0, 0), 12),
+        duration: 30
+      },
+      {
+        eventId: 'event-15',
+        startDate: addDays(new Date().setUTCHours(9, 0, 0), 13),
+        duration: 30
+      }
     ]
   }
 };

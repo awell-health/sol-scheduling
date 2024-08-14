@@ -26,8 +26,9 @@ const meta: Meta = {
       new Promise((resolve) =>
         setTimeout(() => resolve(mockProviderAvailabilityResponse), 750)
       ),
-    onBooking: () =>
-      new Promise((resolve) => setTimeout(() => resolve(true), 1500))
+    onBooking: fn(
+      () => new Promise((resolve) => setTimeout(() => resolve(true), 1500))
+    )
   },
   decorators: [
     (StoryComponent) => (
