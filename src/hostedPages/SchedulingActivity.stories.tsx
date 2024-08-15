@@ -10,7 +10,8 @@ import {
   mockProviderAvailabilityResponse,
   mockProvidersResponse
 } from '../lib/api/__mocks__';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { SlotType } from 'atoms/Slots';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity',
@@ -19,10 +20,10 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     layout: 'fullscreen'
   },
   args: {
-    onProviderSelect: fn(),
-    onDateSelect: fn(),
-    onSlotSelect: fn(),
-    onCompleteActivity: fn(),
+    // onProviderSelect: fn(),
+    // onDateSelect: fn(),
+    // onSlotSelect: fn(),
+    // onCompleteActivity: fn(),
     fetchProviders: () =>
       new Promise((resolve) =>
         setTimeout(() => resolve(mockProvidersResponse), 750)
@@ -58,6 +59,9 @@ type Story = StoryObj<typeof meta>;
 export const SchedulingActivity: Story = {
   render: (args) => {
     const { updateLayoutMode, resetLayoutMode } = useTheme();
+    const [provider, setProvider] = useState<string | undefined>(undefined);
+    const [date, setDate] = useState<Date | undefined>(undefined);
+    const [slot, setSlot] = useState<SlotType | undefined>(undefined);
 
     useEffect(() => {
       updateLayoutMode('flexible');
@@ -67,7 +71,43 @@ export const SchedulingActivity: Story = {
         resetLayoutMode();
       };
     }, []);
-    return <SchedulingActivityComponent {...args} />;
+
+    const fetchProvidersFn = useCallback(() => args.fetchProviders(), []);
+
+    const fetchAvailabilityFn = useCallback(() => {
+      if (!provider)
+        throw new Error('No provider selected to fetch availabilities for');
+
+      return new Promise((resolve) =>
+        setTimeout(() => {
+          console.log(`Fetching availabilities provider ${provider}`);
+          return resolve(mockProvidersResponse);
+        }, 750)
+      );
+    }, [provider]);
+
+    const bookAppointmentFn = useCallback(() => {
+      if (!slot) throw new Error('No slot was selected');
+
+      return args.onBooking(slot);
+    }, []);
+
+    const completeActivity = useCallback(() => {
+      return args.onCompleteActivity();
+    }, []);
+
+    return (
+      <SchedulingActivityComponent
+        onProviderSelect={(id) => setProvider(id)}
+        onDateSelect={(date) => setDate(date)}
+        onSlotSelect={(slot) => setSlot(slot)}
+        fetchProviders={fetchProvidersFn}
+        onCompleteActivity={completeActivity}
+        onBooking={bookAppointmentFn}
+        //@ts-expect-error fine for the story
+        fetchAvailability={fetchAvailabilityFn}
+      />
+    );
   },
   args: {}
 };

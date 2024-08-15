@@ -63,10 +63,16 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
 
   const handleProviderSelect = useCallback(
     (id: string) => {
-      setAvailabilities(undefined);
-      setLoadingAvailabilities(true);
       setSelectedProviderId(id);
       onProviderSelect(id);
+
+      if (!id) {
+        console.error('No provider selected');
+        return;
+      }
+
+      setAvailabilities(undefined);
+      setLoadingAvailabilities(true);
 
       fetchAvailability().then((availabilities) => {
         setAvailabilities(availabilities.data);
