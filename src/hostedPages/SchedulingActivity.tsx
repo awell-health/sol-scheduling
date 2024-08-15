@@ -20,7 +20,9 @@ interface SchedulingActivityProps {
   onSlotSelect: (slot: SlotType) => void;
   onBooking: (slot: SlotType) => Promise<BookAppointmentResponseType>;
   fetchProviders: () => Promise<GetProvidersResponseType>;
-  fetchAvailability: () => Promise<GetAvailabilitiesResponseType>;
+  fetchAvailability: (
+    providerId: string
+  ) => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: () => void;
 }
 
@@ -65,16 +67,10 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     (id: string) => {
       setSelectedProviderId(id);
       onProviderSelect(id);
-
-      if (!id) {
-        console.error('No provider selected');
-        return;
-      }
-
-      setAvailabilities(undefined);
+      setAvailabilities(undefined); // Reset availabilities
       setLoadingAvailabilities(true);
 
-      fetchAvailability().then((availabilities) => {
+      fetchAvailability(id).then((availabilities) => {
         setAvailabilities(availabilities.data);
         setLoadingAvailabilities(false);
       });
@@ -85,7 +81,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const handleDateSelect = useCallback(
     (date: Date) => {
       setSelectedDate(date);
-      setSelectedSlot(undefined);
+      setSelectedSlot(undefined); // Reset slot
       onDateSelect(date);
     },
     [onDateSelect]

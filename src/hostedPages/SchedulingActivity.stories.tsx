@@ -20,22 +20,28 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     layout: 'fullscreen'
   },
   args: {
-    // onProviderSelect: fn(),
-    // onDateSelect: fn(),
-    // onSlotSelect: fn(),
-    // onCompleteActivity: fn(),
-    fetchProviders: () =>
-      new Promise((resolve) =>
+    onProviderSelect: fn(),
+    onDateSelect: fn(),
+    onSlotSelect: fn(),
+    onCompleteActivity: fn(),
+    fetchProviders: () => {
+      console.log('Fetching providers');
+      return new Promise((resolve) =>
         setTimeout(() => resolve(mockProvidersResponse), 750)
-      ),
-    fetchAvailability: () =>
-      new Promise((resolve) =>
+      );
+    },
+    fetchAvailability: (providerId: string) => {
+      console.log('Fetching availability for provider', providerId);
+      return new Promise((resolve) =>
         setTimeout(() => resolve(mockProviderAvailabilityResponse), 750)
-      ),
-    onBooking: fn(
-      () =>
-        new Promise((resolve) => setTimeout(() => resolve({ data: [] }), 1500))
-    )
+      );
+    },
+    onBooking: fn((slot: SlotType) => {
+      console.log('Booking slot', slot);
+      return new Promise((resolve) =>
+        setTimeout(() => resolve({ data: [] }), 1500)
+      );
+    })
   },
   decorators: [
     (StoryComponent) => (
@@ -56,6 +62,9 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * Story resembles the implemntation in Hosted Pages
+ */
 export const SchedulingActivity: Story = {
   render: (args) => {
     const { updateLayoutMode, resetLayoutMode } = useTheme();
@@ -74,37 +83,41 @@ export const SchedulingActivity: Story = {
 
     const fetchProvidersFn = useCallback(() => args.fetchProviders(), []);
 
-    const fetchAvailabilityFn = useCallback(() => {
-      if (!provider)
-        throw new Error('No provider selected to fetch availabilities for');
+    const fetchAvailabilityFn = useCallback(
+      (_providerId: string) => args.fetchAvailability(_providerId),
+      []
+    );
 
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          console.log(`Fetching availabilities provider ${provider}`);
-          return resolve(mockProvidersResponse);
-        }, 750)
-      );
-    }, [provider]);
-
-    const bookAppointmentFn = useCallback(() => {
-      if (!slot) throw new Error('No slot was selected');
-
-      return args.onBooking(slot);
+    const bookAppointmentFn = useCallback((_slot: SlotType) => {
+      return args.onBooking(_slot);
     }, []);
 
     const completeActivity = useCallback(() => {
+      console.log('Complete activity', {
+        provider,
+        date,
+        slot
+      });
       return args.onCompleteActivity();
-    }, []);
+    }, [slot, provider, date]);
 
     return (
       <SchedulingActivityComponent
-        onProviderSelect={(id) => setProvider(id)}
-        onDateSelect={(date) => setDate(date)}
-        onSlotSelect={(slot) => setSlot(slot)}
+        onProviderSelect={(id) => {
+          setProvider(id);
+          args.onProviderSelect(id);
+        }}
+        onDateSelect={(date) => {
+          setDate(date);
+          args.onDateSelect(date);
+        }}
+        onSlotSelect={(slot) => {
+          setSlot(slot);
+          args.onSlotSelect(slot);
+        }}
         fetchProviders={fetchProvidersFn}
         onCompleteActivity={completeActivity}
         onBooking={bookAppointmentFn}
-        //@ts-expect-error fine for the story
         fetchAvailability={fetchAvailabilityFn}
       />
     );
