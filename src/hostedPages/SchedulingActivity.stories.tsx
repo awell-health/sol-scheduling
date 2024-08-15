@@ -1,5 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ThemeProvider, useTheme } from '@awell-health/ui-library';
+import {
+  HostedPageLayout,
+  ThemeProvider,
+  useTheme
+} from '@awell-health/ui-library';
 import { SchedulingActivity as SchedulingActivityComponent } from './SchedulingActivity';
 import { fn } from '@storybook/test';
 import {
@@ -35,7 +39,14 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
   decorators: [
     (StoryComponent) => (
       <ThemeProvider accentColor='#A45128'>
-        <StoryComponent />
+        <HostedPageLayout
+          logo={
+            'https://res.cloudinary.com/da7x4rzl4/image/upload/v1710884206/Developer%20portal/awell_logo.svg'
+          }
+          onCloseHostedPage={() => alert('Stop session')}
+        >
+          <StoryComponent />
+        </HostedPageLayout>
       </ThemeProvider>
     )
   ]

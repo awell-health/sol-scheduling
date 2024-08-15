@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  HostedPageLayout,
   CircularSpinner,
   HostedPageFooter,
   Button
@@ -128,12 +127,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   }, [providers, selectedProviderId]);
 
   return (
-    <HostedPageLayout
-      logo={
-        'https://res.cloudinary.com/da7x4rzl4/image/upload/v1710884206/Developer%20portal/awell_logo.svg'
-      }
-      onCloseHostedPage={() => alert('Stop session')}
-    >
+    <>
       <main id='ahp_main_content_with_scroll_hint' className={classes.main}>
         <div className={classes.container}>
           {selectedProvider === undefined && (
@@ -201,6 +195,6 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
           </div>
         </HostedPageFooter>
       )}
-    </HostedPageLayout>
+    </>
   );
 };
