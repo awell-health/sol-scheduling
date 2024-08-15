@@ -28,6 +28,7 @@ export interface WeekCalendarProps {
   loading?: boolean;
   weekStartsOn?: 'sunday' | 'monday';
   hideWeekends?: boolean;
+  allowSchedulingInThePast?: boolean;
 }
 
 const Slot: FC<{ count: number }> = ({ count }) => {
@@ -48,7 +49,8 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   availabilities = [],
   loading,
   weekStartsOn = 'sunday',
-  hideWeekends = true
+  hideWeekends = true,
+  allowSchedulingInThePast = false
 }) => {
   const [currentWeek, setCurrentWeek] = useState(week);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
@@ -80,9 +82,16 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     [availabilities]
   );
 
-  const isDisabled = useCallback((date: Date) => {
-    return isBefore(date, new Date()) && !isToday(date);
-  }, []);
+  const isDisabled = useCallback(
+    (date: Date) => {
+      const dateIsInThePast = isBefore(date, new Date()) && !isToday(date);
+
+      if (dateIsInThePast && !allowSchedulingInThePast) return true;
+
+      return false;
+    },
+    [allowSchedulingInThePast]
+  );
 
   const countavailabilities = useCallback(
     (date: Date) => {

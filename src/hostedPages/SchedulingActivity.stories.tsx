@@ -122,5 +122,9 @@ export const SchedulingActivity: Story = {
       />
     );
   },
-  args: {}
+  args: {
+    opts: {
+      allowSchedulingInThePast: false
+    }
+  }
 };

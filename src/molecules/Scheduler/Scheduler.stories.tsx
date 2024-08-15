@@ -61,6 +61,11 @@ export const Scheduler: Story = {
     timeZone: 'Europe/Brussels',
     availabilities: [
       {
+        eventId: 'event-0',
+        startDate: addDays(new Date().setUTCHours(9, 0, 0), -1),
+        duration: 30
+      },
+      {
         eventId: 'event-1',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), 1),
         duration: 30

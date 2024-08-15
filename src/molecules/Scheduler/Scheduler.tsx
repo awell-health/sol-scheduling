@@ -20,6 +20,9 @@ export type SchedulerProps = {
   onDateSelect: (date: Date) => void;
   onSlotSelect: (slot: SlotType) => void;
   onBooking: (slot: SlotType) => void;
+  opts?: {
+    allowSchedulingInThePast?: boolean;
+  };
   text?: {
     title?: string;
     selectSlot?: string;
@@ -37,6 +40,7 @@ export const Scheduler: FC<SchedulerProps> = ({
   onDateSelect,
   onSlotSelect,
   onBooking,
+  opts,
   text
 }) => {
   const {
@@ -44,6 +48,8 @@ export const Scheduler: FC<SchedulerProps> = ({
     selectSlot = 'Select a time slot',
     button = 'Confirm booking'
   } = text || {};
+
+  const { allowSchedulingInThePast = false } = opts || {};
 
   const filteredSlots = useMemo(() => {
     return availabilities.filter((availableSlot) =>
@@ -71,6 +77,7 @@ export const Scheduler: FC<SchedulerProps> = ({
           onSelect={onDateSelect}
           loading={loadingAvailabilities}
           availabilities={availabilities}
+          allowSchedulingInThePast={allowSchedulingInThePast}
         />
       </div>
       {date && (

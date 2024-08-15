@@ -25,6 +25,7 @@ export const Week: Story = {
     loading: false,
     weekStartsOn: 'monday',
     availabilities: [
+      { eventId: 'event-0', startDate: addDays(new Date(), -2), duration: 30 },
       { eventId: 'event-1', startDate: addDays(new Date(), 1), duration: 30 },
       { eventId: 'event-2', startDate: addDays(new Date(), 1), duration: 30 },
       { eventId: 'event-3', startDate: addDays(new Date(), 1), duration: 30 },

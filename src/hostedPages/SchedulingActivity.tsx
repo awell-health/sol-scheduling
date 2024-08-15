@@ -24,6 +24,9 @@ interface SchedulingActivityProps {
     providerId: string
   ) => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: () => void;
+  opts?: {
+    allowSchedulingInThePast?: boolean;
+  };
 }
 
 export const SchedulingActivity: FC<SchedulingActivityProps> = ({
@@ -33,8 +36,11 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   onBooking,
   fetchProviders,
   fetchAvailability,
-  onCompleteActivity
+  onCompleteActivity,
+  opts
 }) => {
+  const { allowSchedulingInThePast = false } = opts || {};
+
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const [providers, setProviders] = useState<GetProvidersResponseType['data']>(
@@ -172,6 +178,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
                     onDateSelect={handleDateSelect}
                     onSlotSelect={handleSlotSelect}
                     onBooking={handleBooking}
+                    opts={{ allowSchedulingInThePast }}
                   />
                 </div>
               )}
