@@ -10,7 +10,8 @@ import {
   mockProviderAvailabilityResponse,
   mockProvidersResponse
 } from '../lib/api/__mocks__';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { SlotType } from 'atoms/Slots';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity',
@@ -23,18 +24,24 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     onDateSelect: fn(),
     onSlotSelect: fn(),
     onCompleteActivity: fn(),
-    fetchProviders: () =>
-      new Promise((resolve) =>
+    fetchProviders: () => {
+      console.log('Fetching providers');
+      return new Promise((resolve) =>
         setTimeout(() => resolve(mockProvidersResponse), 750)
-      ),
-    fetchAvailability: () =>
-      new Promise((resolve) =>
+      );
+    },
+    fetchAvailability: (providerId: string) => {
+      console.log('Fetching availability for provider', providerId);
+      return new Promise((resolve) =>
         setTimeout(() => resolve(mockProviderAvailabilityResponse), 750)
-      ),
-    onBooking: fn(
-      () =>
-        new Promise((resolve) => setTimeout(() => resolve({ data: [] }), 1500))
-    )
+      );
+    },
+    onBooking: fn((slot: SlotType) => {
+      console.log('Booking slot', slot);
+      return new Promise((resolve) =>
+        setTimeout(() => resolve({ data: [] }), 1500)
+      );
+    })
   },
   decorators: [
     (StoryComponent) => (
@@ -55,9 +62,15 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * Story resembles the implemntation in Hosted Pages
+ */
 export const SchedulingActivity: Story = {
   render: (args) => {
     const { updateLayoutMode, resetLayoutMode } = useTheme();
+    const [provider, setProvider] = useState<string | undefined>(undefined);
+    const [date, setDate] = useState<Date | undefined>(undefined);
+    const [slot, setSlot] = useState<SlotType | undefined>(undefined);
 
     useEffect(() => {
       updateLayoutMode('flexible');
@@ -67,7 +80,47 @@ export const SchedulingActivity: Story = {
         resetLayoutMode();
       };
     }, []);
-    return <SchedulingActivityComponent {...args} />;
+
+    const fetchProvidersFn = useCallback(() => args.fetchProviders(), []);
+
+    const fetchAvailabilityFn = useCallback(
+      (_providerId: string) => args.fetchAvailability(_providerId),
+      []
+    );
+
+    const bookAppointmentFn = useCallback((_slot: SlotType) => {
+      return args.onBooking(_slot);
+    }, []);
+
+    const completeActivity = useCallback(() => {
+      console.log('Complete activity', {
+        provider,
+        date,
+        slot
+      });
+      return args.onCompleteActivity();
+    }, [slot, provider, date]);
+
+    return (
+      <SchedulingActivityComponent
+        onProviderSelect={(id) => {
+          setProvider(id);
+          args.onProviderSelect(id);
+        }}
+        onDateSelect={(date) => {
+          setDate(date);
+          args.onDateSelect(date);
+        }}
+        onSlotSelect={(slot) => {
+          setSlot(slot);
+          args.onSlotSelect(slot);
+        }}
+        fetchProviders={fetchProvidersFn}
+        onCompleteActivity={completeActivity}
+        onBooking={bookAppointmentFn}
+        fetchAvailability={fetchAvailabilityFn}
+      />
+    );
   },
   args: {}
 };
