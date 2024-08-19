@@ -18,7 +18,7 @@ import { GetAvailabilitiesResponseType } from '../../../lib/api';
 
 export type AvailabilityType = Pick<
   GetAvailabilitiesResponseType['data'][0],
-  'startDate' | 'eventId' | 'duration' | 'providerId'
+  'slotstart' | 'eventId' | 'duration' | 'providerId'
 >;
 export interface WeekCalendarProps {
   value?: Date;
@@ -76,7 +76,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const isAvailable = useCallback(
     (date: Date) => {
       return availabilities.some((availableSlot) =>
-        isSameDay(date, availableSlot.startDate)
+        isSameDay(date, availableSlot.slotstart)
       );
     },
     [availabilities]
@@ -95,7 +95,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
 
   const countavailabilities = useCallback(
     (date: Date) => {
-      return availabilities.filter((slot) => isSameDay(slot.startDate, date))
+      return availabilities.filter((slot) => isSameDay(slot.slotstart, date))
         .length;
     },
     [availabilities]

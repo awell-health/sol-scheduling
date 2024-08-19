@@ -22,7 +22,7 @@ export const BookingConfirmation: Story = {
   args: {
     slot: {
       eventId: 'event-1',
-      startDate: new Date(),
+      slotstart: new Date(),
       duration: 30,
       providerId: 'provider-1'
     },

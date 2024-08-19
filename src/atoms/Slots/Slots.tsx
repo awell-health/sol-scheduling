@@ -7,7 +7,7 @@ import { GetAvailabilitiesResponseType } from '../../lib/api';
 
 export type SlotType = Pick<
   GetAvailabilitiesResponseType['data'][0],
-  'startDate' | 'eventId' | 'duration' | 'providerId'
+  'slotstart' | 'eventId' | 'duration' | 'providerId'
 >;
 
 export interface SlotsProps {
@@ -75,10 +75,10 @@ export const Slots: FC<SlotsProps> = ({
                 <Radio
                   key={slot.eventId}
                   value={slot.eventId}
-                  aria-label={slot.startDate.toISOString()}
+                  aria-label={slot.slotstart.toISOString()}
                   className={classes.radio_option}
                 >
-                  {formatSlotTime(slot.startDate)}
+                  {formatSlotTime(slot.slotstart)}
                 </Radio>
               </Field>
             ))}
