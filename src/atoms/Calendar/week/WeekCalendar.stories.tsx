@@ -25,22 +25,102 @@ export const Week: Story = {
     loading: false,
     weekStartsOn: 'monday',
     availabilities: [
-      { eventId: 'event-0', startDate: addDays(new Date(), -2), duration: 30 },
-      { eventId: 'event-1', startDate: addDays(new Date(), 1), duration: 30 },
-      { eventId: 'event-2', startDate: addDays(new Date(), 1), duration: 30 },
-      { eventId: 'event-3', startDate: addDays(new Date(), 1), duration: 30 },
-      { eventId: 'event-4', startDate: addDays(new Date(), 1), duration: 30 },
-      { eventId: 'event-5', startDate: addDays(new Date(), 2), duration: 30 },
-      { eventId: 'event-6', startDate: addDays(new Date(), 2), duration: 30 },
-      { eventId: 'event-6', startDate: addDays(new Date(), 3), duration: 30 },
-      { eventId: 'event-8', startDate: addDays(new Date(), 5), duration: 30 },
-      { eventId: 'event-9', startDate: addDays(new Date(), 13), duration: 30 },
-      { eventId: 'event-10', startDate: addDays(new Date(), 12), duration: 30 },
-      { eventId: 'event-11', startDate: addDays(new Date(), 11), duration: 30 },
-      { eventId: 'event-12', startDate: addDays(new Date(), 11), duration: 30 },
-      { eventId: 'event-13', startDate: addDays(new Date(), 10), duration: 30 },
-      { eventId: 'event-14', startDate: addDays(new Date(), 9), duration: 30 },
-      { eventId: 'event-15', startDate: addDays(new Date(), 9), duration: 30 }
+      {
+        eventId: 'event-0',
+        startDate: addDays(new Date(), -2),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-1',
+        startDate: addDays(new Date(), 1),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-2',
+        startDate: addDays(new Date(), 1),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-3',
+        startDate: addDays(new Date(), 1),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-4',
+        startDate: addDays(new Date(), 1),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-5',
+        startDate: addDays(new Date(), 2),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-6',
+        startDate: addDays(new Date(), 2),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-6',
+        startDate: addDays(new Date(), 3),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-8',
+        startDate: addDays(new Date(), 5),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-9',
+        startDate: addDays(new Date(), 13),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-10',
+        startDate: addDays(new Date(), 12),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-11',
+        startDate: addDays(new Date(), 11),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-12',
+        startDate: addDays(new Date(), 11),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-13',
+        startDate: addDays(new Date(), 10),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-14',
+        startDate: addDays(new Date(), 9),
+        duration: 30,
+        providerId: 'provider-1'
+      },
+      {
+        eventId: 'event-15',
+        startDate: addDays(new Date(), 9),
+        duration: 30,
+        providerId: 'provider-1'
+      }
     ],
     hideWeekends: true
   }

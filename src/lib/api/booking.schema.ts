@@ -4,8 +4,7 @@ import { errorSchema } from './shared.schema';
 export const BookAppointmentInputSchema = z.object({
   eventId: z.string(),
   userInfo: z.object({
-    userName: z.string(),
-    userEmail: z.string().email()
+    userName: z.string()
   })
 });
 

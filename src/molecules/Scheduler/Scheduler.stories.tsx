@@ -63,82 +63,98 @@ export const Scheduler: Story = {
       {
         eventId: 'event-0',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), -1),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-1',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), 1),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-2',
         startDate: addDays(new Date().setUTCHours(11, 0, 0), 1),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-3',
         startDate: addDays(new Date().setUTCHours(14, 0, 0), 1),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-4',
         startDate: addDays(new Date().setUTCHours(16, 0, 0), 1),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-5',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), 2),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-6',
         startDate: addDays(new Date().setUTCHours(10, 0, 0), 2),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-7',
         startDate: addDays(new Date().setUTCHours(12, 0, 0), 3),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-8',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), 5),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-9',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), 9),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-10',
         startDate: addDays(new Date().setUTCHours(10, 0, 0), 9),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-11',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), 10),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-12',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), 11),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-13',
         startDate: addDays(new Date().setUTCHours(10, 0, 0), 11),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-14',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), 12),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-15',
         startDate: addDays(new Date().setUTCHours(9, 0, 0), 13),
-        duration: 30
+        duration: 30,
+        providerId: 'provider-1'
       }
     ]
   }

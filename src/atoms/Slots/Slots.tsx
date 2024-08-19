@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import classes from './Slots.module.scss';
 import { Field, Radio, RadioGroup } from '@headlessui/react';
 import { isEmpty } from 'lodash';
@@ -7,7 +7,7 @@ import { GetAvailabilitiesResponseType } from '../../lib/api';
 
 export type SlotType = Pick<
   GetAvailabilitiesResponseType['data'][0],
-  'startDate' | 'eventId' | 'duration'
+  'startDate' | 'eventId' | 'duration' | 'providerId'
 >;
 
 export interface SlotsProps {
@@ -44,11 +44,16 @@ export const Slots: FC<SlotsProps> = ({
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
 
-  const handleSlotSelect = (eventId: string) => {
-    const selectedSlot = slots?.find((_) => _.eventId === eventId) as SlotType;
+  const handleSlotSelect = useCallback(
+    (eventId: string) => {
+      const selectedSlot = slots?.find(
+        (_) => _.eventId === eventId
+      ) as SlotType;
 
-    onSelect(selectedSlot);
-  };
+      onSelect(selectedSlot);
+    },
+    [onSelect]
+  );
 
   return (
     <div>

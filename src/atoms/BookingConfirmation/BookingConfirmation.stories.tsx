@@ -20,7 +20,12 @@ type Story = StoryObj<typeof meta>;
 
 export const BookingConfirmation: Story = {
   args: {
-    slot: { eventId: 'event-1', startDate: new Date(), duration: 30 },
+    slot: {
+      eventId: 'event-1',
+      startDate: new Date(),
+      duration: 30,
+      providerId: 'provider-1'
+    },
     providerName: 'Nick Hellemans',
     otherBookingData: {
       mode: 'Virtual'

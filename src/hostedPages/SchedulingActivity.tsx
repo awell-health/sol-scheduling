@@ -126,7 +126,8 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     return availabilitiesForProvider.map((availability) => ({
       eventId: availability.eventId,
       startDate: new Date(availability.startDate),
-      duration: availability.duration
+      duration: availability.duration,
+      providerId: availability.providerId
     }));
   }, [selectedProviderId, availabilities]);
 

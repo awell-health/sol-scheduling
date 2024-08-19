@@ -18,7 +18,7 @@ import { GetAvailabilitiesResponseType } from '../../../lib/api';
 
 export type AvailabilityType = Pick<
   GetAvailabilitiesResponseType['data'][0],
-  'startDate' | 'eventId' | 'duration'
+  'startDate' | 'eventId' | 'duration' | 'providerId'
 >;
 export interface WeekCalendarProps {
   value?: Date;
