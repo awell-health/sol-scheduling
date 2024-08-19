@@ -20,6 +20,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     layout: 'fullscreen'
   },
   args: {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     onProviderSelect: fn(),
     onDateSelect: fn(),
     onSlotSelect: fn(),
@@ -103,6 +104,7 @@ export const SchedulingActivity: Story = {
 
     return (
       <SchedulingActivityComponent
+        timeZone={args.timeZone}
         onProviderSelect={(id) => {
           setProvider(id);
           args.onProviderSelect(id);

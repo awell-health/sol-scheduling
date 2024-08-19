@@ -15,6 +15,7 @@ import {
 import { type SlotType } from '../lib/api';
 
 interface SchedulingActivityProps {
+  timeZone: string;
   onProviderSelect: (id: string) => void;
   onDateSelect: (date: Date) => void;
   onSlotSelect: (slot: SlotType) => void;
@@ -24,12 +25,29 @@ interface SchedulingActivityProps {
     providerId: string
   ) => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: () => void;
+  text?: {
+    selectProvider?: {
+      button?: string;
+    };
+    selectSlot?: {
+      title?: string;
+      selectSlot?: string;
+      button?: string;
+    };
+    bookingConfirmation?: {
+      bookingConfirmed?: string;
+    };
+    completeActivity?: {
+      nextButton?: string;
+    };
+  };
   opts?: {
     allowSchedulingInThePast?: boolean;
   };
 }
 
 export const SchedulingActivity: FC<SchedulingActivityProps> = ({
+  timeZone,
   onProviderSelect,
   onDateSelect,
   onSlotSelect,
@@ -37,11 +55,12 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   fetchProviders,
   fetchAvailability,
   onCompleteActivity,
+  text,
   opts
 }) => {
-  const { allowSchedulingInThePast = false } = opts || {};
+  const { completeActivity: { nextButton = 'Next' } = {} } = text || {};
 
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const { allowSchedulingInThePast = false } = opts || {};
 
   const [providers, setProviders] = useState<GetProvidersResponseType['data']>(
     []
@@ -153,6 +172,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
                     gender: provider.gender,
                     ethnicity: provider.ethnicity
                   }))}
+                  text={{ button: text?.selectProvider?.button }}
                 />
               )}
             </>
@@ -177,6 +197,11 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
                     onDateSelect={handleDateSelect}
                     onSlotSelect={handleSlotSelect}
                     onBooking={handleBooking}
+                    text={{
+                      title: text?.selectSlot?.title,
+                      selectSlot: text?.selectSlot?.selectSlot,
+                      button: text?.selectSlot?.button
+                    }}
                     opts={{ allowSchedulingInThePast }}
                   />
                 </div>
@@ -189,6 +214,9 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
               <BookingConfirmation
                 providerName={selectedProvider?.name ?? 'No name'}
                 slot={selectedSlot}
+                text={{
+                  bookingConfirmed: text?.bookingConfirmation?.bookingConfirmed
+                }}
               />
             </div>
           )}
@@ -198,7 +226,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
         <HostedPageFooter>
           <div className={`${classes.button_wrapper} ${classes.container}`}>
             <Button variant='primary' onClick={onCompleteActivity}>
-              Next
+              {nextButton}
             </Button>
           </div>
         </HostedPageFooter>

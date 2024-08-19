@@ -9,7 +9,12 @@ import { type SlotType } from '../../lib/api';
 const meta: Meta<typeof SchedulerComponent> = {
   title: 'Molecules/Scheduler',
   component: SchedulerComponent,
-  args: { onDateSelect: fn(), onSlotSelect: fn(), onBooking: fn() },
+  args: {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    onDateSelect: fn(),
+    onSlotSelect: fn(),
+    onBooking: fn()
+  },
   decorators: [
     (Story) => (
       <ThemeProvider accentColor='#A45128'>

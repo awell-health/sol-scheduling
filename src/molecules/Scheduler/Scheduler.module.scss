@@ -11,8 +11,16 @@
   padding-top: var(--awell-spacing-6);
   margin-top: var(--awell-spacing-6);
   border-top: 1px solid var(--awell-slate200);
-  .title {
+  .heading {
     margin-bottom: var(--awell-spacing-4);
+  }
+  .timeZone {
+    text-align: center;
+    color: var(--awell-accent-color);
+    font-weight: var(--awell-font-base);
+    font-size: var(--awell-font-size-base);
+    margin: 0;
+    margin-top: var(--awell-spacing-1);
   }
 }
 

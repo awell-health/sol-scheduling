@@ -81,7 +81,12 @@ export const Scheduler: FC<SchedulerProps> = ({
       </div>
       {date && (
         <div className={classes.timeslots}>
-          <h3 className={`${classes.title} ${classes.center}`}>{selectSlot}</h3>
+          <div className={classes.heading}>
+            <h3 className={`${classes.title} ${classes.center}`}>
+              {selectSlot}
+            </h3>
+            <p className={classes.timeZone}>Times in {timeZone}</p>
+          </div>
           <Slots
             value={slot}
             onSelect={onSlotSelect}
