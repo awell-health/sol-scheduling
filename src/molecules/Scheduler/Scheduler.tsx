@@ -53,7 +53,7 @@ export const Scheduler: FC<SchedulerProps> = ({
 
   const filteredSlots = useMemo(() => {
     return availabilities.filter((availableSlot) =>
-      date ? isSameDay(availableSlot.startDate, date) : false
+      date ? isSameDay(availableSlot.slotstart, date) : false
     );
   }, [availabilities, date]);
 

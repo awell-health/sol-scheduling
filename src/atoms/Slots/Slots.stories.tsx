@@ -25,38 +25,45 @@ export const Slots: Story = {
     slots: [
       {
         eventId: 'event-1',
-        startDate: new Date('2024-07-12 00:00:00 +0200'),
-        duration: 30
+        slotstart: new Date('2024-07-12 00:00:00 +0200'),
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-2',
-        startDate: new Date('2024-07-12 00:15:00 +0200'),
-        duration: 30
+        slotstart: new Date('2024-07-12 00:15:00 +0200'),
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-3',
-        startDate: new Date('2024-07-12 00:30:00 +0200'),
-        duration: 30
+        slotstart: new Date('2024-07-12 00:30:00 +0200'),
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-4',
-        startDate: new Date('2024-07-12 00:45:00 +0200'),
-        duration: 30
+        slotstart: new Date('2024-07-12 00:45:00 +0200'),
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-5',
-        startDate: new Date('2024-07-12 01:00:00 +0200'),
-        duration: 30
+        slotstart: new Date('2024-07-12 01:00:00 +0200'),
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-6',
-        startDate: new Date('2024-07-12 01:15:00 +0200'),
-        duration: 30
+        slotstart: new Date('2024-07-12 01:15:00 +0200'),
+        duration: 30,
+        providerId: 'provider-1'
       },
       {
         eventId: 'event-7',
-        startDate: new Date('2024-07-12 01:30:00 +0200'),
-        duration: 30
+        slotstart: new Date('2024-07-12 01:30:00 +0200'),
+        duration: 30,
+        providerId: 'provider-1'
       }
     ]
   }

@@ -43,8 +43,8 @@ export const BookingConfirmation: FC<BookingConfirmationProps> = ({
         <ul className={classes.overview}>
           <li>
             <span>Time: </span>
-            <time dateTime={slot.startDate.toISOString()}>
-              {slot.startDate.toLocaleString()}
+            <time dateTime={slot.slotstart.toISOString()}>
+              {slot.slotstart.toLocaleString()}
             </time>
           </li>
           {slot.duration && (

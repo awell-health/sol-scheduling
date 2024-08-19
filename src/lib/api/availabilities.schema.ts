@@ -16,9 +16,8 @@ export const GetAvailabilitiesResponseSchema = z
         eventId: z.string(),
         date: ISO8601DateStringSchema,
         providerId: z.string(),
-        startDate: ISO8601DateStringSchema,
-        duration: z.number(),
-        Booked: z.number()
+        slotstart: ISO8601DateStringSchema,
+        duration: z.number()
       })
     )
   })
