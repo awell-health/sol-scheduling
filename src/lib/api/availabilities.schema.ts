@@ -11,14 +11,17 @@ export type GetAvailabilitiesInputType = z.infer<
 
 export const GetAvailabilitiesResponseSchema = z
   .object({
-    data: z.array(
-      z.object({
-        eventId: z.string(),
-        date: ISO8601DateStringSchema,
-        providerId: z.string(),
-        slotstart: ISO8601DateStringSchema,
-        duration: z.number()
-      })
+    data: z.record(
+      z.string(),
+      z.array(
+        z.object({
+          eventId: z.string(),
+          date: ISO8601DateStringSchema,
+          providerId: z.string(),
+          slotstart: ISO8601DateStringSchema,
+          duration: z.number()
+        })
+      )
     )
   })
   .merge(errorSchema);

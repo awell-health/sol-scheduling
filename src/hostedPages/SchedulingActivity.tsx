@@ -117,9 +117,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const providerAvailabilities = useMemo(() => {
     if (selectedProviderId === undefined) return [];
 
-    const availabilitiesForProvider = availabilities?.filter(
-      (_) => _.providerId === selectedProviderId
-    );
+    const availabilitiesForProvider = availabilities?.[selectedProviderId];
 
     if (!availabilitiesForProvider) return [];
 

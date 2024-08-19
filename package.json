@@ -1,6 +1,6 @@
 {
   "name": "@awell-health/sol-scheduling",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "packageManager": "yarn@4.4.0",
   "repository": {
     "type": "git",
