@@ -1,1 +1,1 @@
-export { Slots, type SlotType } from './Slots';
+export { Slots } from './Slots';

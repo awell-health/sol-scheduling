@@ -3,12 +3,7 @@ import classes from './Slots.module.scss';
 import { Field, Radio, RadioGroup } from '@headlessui/react';
 import { isEmpty } from 'lodash';
 import { CircularSpinner } from '@awell-health/ui-library';
-import { GetAvailabilitiesResponseType } from '../../lib/api';
-
-export type SlotType = Pick<
-  GetAvailabilitiesResponseType['data'][0],
-  'slotstart' | 'eventId' | 'duration' | 'providerId'
->;
+import { type SlotType } from '../../lib/api';
 
 export interface SlotsProps {
   value?: SlotType;

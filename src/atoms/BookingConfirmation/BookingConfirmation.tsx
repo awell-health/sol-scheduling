@@ -2,7 +2,7 @@ import { FC } from 'react';
 import classes from './BookingConfirmation.module.scss';
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { upperFirst } from 'lodash';
-import { SlotType } from '../../atoms/Slots';
+import { type SlotType } from '../../lib/api';
 
 export type BookingConfirmationProps = {
   providerName: string;

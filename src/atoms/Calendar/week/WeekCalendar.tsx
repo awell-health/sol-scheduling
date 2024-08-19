@@ -14,17 +14,13 @@ import {
   isBefore
 } from 'date-fns';
 import { CircularSpinner, Button } from '@awell-health/ui-library';
-import { GetAvailabilitiesResponseType } from '../../../lib/api';
+import { type SlotType } from '../../../lib/api';
 
-export type AvailabilityType = Pick<
-  GetAvailabilitiesResponseType['data'][0],
-  'slotstart' | 'eventId' | 'duration' | 'providerId'
->;
 export interface WeekCalendarProps {
   value?: Date;
   onSelect: (date: Date) => void;
   week?: Date;
-  availabilities?: AvailabilityType[];
+  availabilities?: SlotType[];
   loading?: boolean;
   weekStartsOn?: 'sunday' | 'monday';
   hideWeekends?: boolean;

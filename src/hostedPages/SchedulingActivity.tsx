@@ -12,7 +12,7 @@ import {
   GetAvailabilitiesResponseType,
   GetProvidersResponseType
 } from '../lib/api';
-import { SlotType } from '../atoms/Slots';
+import { type SlotType } from '../lib/api';
 
 interface SchedulingActivityProps {
   onProviderSelect: (id: string) => void;

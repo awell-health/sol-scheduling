@@ -18,3 +18,5 @@ export {
   type BookAppointmentInputType,
   type BookAppointmentResponseType
 } from './booking.schema';
+
+export { type SlotType } from './shared.schema';

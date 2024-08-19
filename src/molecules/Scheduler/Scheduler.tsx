@@ -4,8 +4,7 @@ import { Slots, WeekCalendar } from '../../atoms';
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { isSameDay } from 'date-fns';
 import { Button } from '@awell-health/ui-library';
-import { type AvailabilityType } from '../../atoms/Calendar/week';
-import { SlotType } from '../../atoms/Slots';
+import { type SlotType } from '../../lib/api';
 
 export type SchedulerProps = {
   provider: {
@@ -15,7 +14,7 @@ export type SchedulerProps = {
   timeZone: string;
   date?: Date;
   slot?: SlotType;
-  availabilities: AvailabilityType[];
+  availabilities: SlotType[];
   loadingAvailabilities?: boolean;
   onDateSelect: (date: Date) => void;
   onSlotSelect: (slot: SlotType) => void;

@@ -11,7 +11,7 @@ import {
   mockProvidersResponse
 } from '../lib/api/__mocks__';
 import { useCallback, useEffect, useState } from 'react';
-import { SlotType } from 'atoms/Slots';
+import { type SlotType } from '../lib/api';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity',

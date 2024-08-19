@@ -1,1 +1,1 @@
-export { WeekCalendar, type AvailabilityType } from './WeekCalendar';
+export { WeekCalendar } from './WeekCalendar';
