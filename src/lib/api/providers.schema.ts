@@ -2,16 +2,58 @@ import { z } from 'zod';
 import { errorSchema } from './shared.schema';
 
 const ageSchema = z.string();
-export const genderSchema = z.enum(['M', 'F']);
-const ethnicitySchema = z.enum(['Hispanic', 'White', 'African American']);
-const languageSchema = z.enum(['en', 'sp', 'fr', 'de', 'it']);
+export const genderSchema = z.enum(['M', 'F', 'Non-binary/non-conforming']);
+const ethnicitySchema = z.enum([
+  'Asian',
+  'Black or African American',
+  'Hispanic or Latinx',
+  'White',
+  'Other'
+]);
+const languageSchema = z.string();
 const therapeuticModality = z.enum(['Psychiatric', 'Therapy']);
 const clinicalFocusSchema = z.array(
-  z.enum(['ADHD', 'Anxiety d/o', 'Autism spectrum', 'Gender dysphoria'])
+  z.enum([
+    'ADHD',
+    'Anxiety d/o',
+    'Autism spectrum',
+    'Gender dysphoria',
+    'Trauma (including PTSD)',
+    'Depressive d/o',
+    'Bipolar spectrum',
+    'Anger management',
+    'OCD',
+    'Personality d/o',
+    'Substance use',
+    'Eating d/o',
+    'Psychosis (e.g. schizophrenia)',
+    'Dissociative d/o',
+    'Developmental delay',
+    'Traumatic brain injury'
+  ])
 );
 const deliveryMethodSchema = z.enum(['virtual', 'in-person']);
 const facilitySchema = z.enum(['f1', 'f2', 'f3']); // "f1" = "Broomfield", "f2" = "Colorado", "f3" = "New York".
-export const stateSchema = z.enum(['CO', 'NY', 'TX', 'VA', 'MD', 'DC']);
+export const stateSchema = z.enum([
+  'AL',
+  'CO',
+  'CT',
+  'DC',
+  'FL',
+  'KS',
+  'MD',
+  'ME',
+  'MN',
+  'NC',
+  'NJ',
+  'NM',
+  'NV',
+  'NY',
+  'PA',
+  'TX',
+  'VA',
+  'WY'
+]);
 
 export const GetProvidersInputSchema = z.object({
   age: ageSchema.optional(),
