@@ -4,16 +4,13 @@ import classes from './ProviderSelection.module.scss';
 import { Button } from '@awell-health/ui-library';
 import ISO6391 from 'iso-639-1';
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
-interface Provider {
-  id: string;
-  name: string;
+import { GetProvidersResponseType } from 'lib/api';
+import { toFullNameState, toFullNameGender } from '../../lib/utils';
+
+export type BaseProvider = GetProvidersResponseType['data'][number];
+
+export interface Provider extends BaseProvider {
   profileImageUrl?: string;
-  language?: string;
-  gender?: string;
-  ethnicity?: string;
-  therapeuticModality?: string;
-  clinicalFocus?: string[];
-  deliveryMethod?: string;
 }
 
 export type ProviderSelectionProps = {
@@ -31,10 +28,16 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
 }) => {
   const { button = 'Book appointment' } = text || {};
 
+  const providersLabel = providers.length === 1 ? 'provider' : 'providers';
+
   return (
     <div>
       <h2 className={classes.title}>
-        We found <span>{providers.length} providers</span> for you
+        We found{' '}
+        <span>
+          {providers.length} {providersLabel}
+        </span>{' '}
+        for you
       </h2>
       <div className={classes.provider_group}>
         {providers.map((provider) => (
@@ -47,11 +50,9 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
               />
               <div>
                 <h3 className={classes.provider_name}>{provider.name}</h3>
-                {provider.clinicalFocus && (
+                {provider?.location?.state && (
                   <span className={classes.speciality}>
-                    {provider.clinicalFocus
-                      .map((_f) => upperFirst(_f))
-                      .join(', ')}
+                    {toFullNameState(provider.location.state)}
                   </span>
                 )}
               </div>
@@ -62,7 +63,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
                   {provider.gender && (
                     <li>
                       <span>Gender: </span>
-                      {provider.gender}
+                      {toFullNameGender(provider.gender)}
                     </li>
                   )}
                   {provider.language && (
@@ -77,16 +78,12 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
                       {provider.ethnicity}
                     </li>
                   )}
-                  {provider.therapeuticModality && (
+                  {provider.clinicalFocus && (
                     <li>
-                      <span>Modality: </span>
-                      {provider.therapeuticModality}
-                    </li>
-                  )}
-                  {provider.deliveryMethod && (
-                    <li>
-                      <span>Delivery method: </span>
-                      {provider.deliveryMethod}
+                      <span>Clinical focus: </span>
+                      {provider.clinicalFocus
+                        .map((_f) => upperFirst(_f))
+                        .join(', ')}
                     </li>
                   )}
                 </ul>

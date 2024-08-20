@@ -1,0 +1,1 @@
+export { toFullNameGender } from './toFullNameGender';

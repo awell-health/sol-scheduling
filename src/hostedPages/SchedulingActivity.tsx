@@ -149,7 +149,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   }, [selectedProviderId, availabilities]);
 
   const selectedProvider = useMemo(() => {
-    return providers.find((provider) => provider.Id === selectedProviderId);
+    return providers.find((provider) => provider.id === selectedProviderId);
   }, [providers, selectedProviderId]);
 
   return (
@@ -165,13 +165,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
               ) : (
                 <ProviderSelection
                   onSelect={handleProviderSelect}
-                  providers={providers.map((provider) => ({
-                    id: provider.Id,
-                    name: provider.name,
-                    language: provider.language,
-                    gender: provider.gender,
-                    ethnicity: provider.ethnicity
-                  }))}
+                  providers={providers}
                   text={{ button: text?.selectProvider?.button }}
                 />
               )}

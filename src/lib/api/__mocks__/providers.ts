@@ -3,30 +3,23 @@ import { GetProvidersResponseType } from '../../api';
 export const mockProvidersResponse: GetProvidersResponseType = {
   data: [
     {
-      name: '<provider_name1>',
-      Id: '<provider_id_1>',
-      email: 'nick@awellhealth.com',
-      ResourceId: '<provider_resouces_id1>',
-      gender: 'M',
-      ethnicity: 'Caucasian',
-      language: 'en',
+      gender: 'F',
+      ethnicity: 'White',
+      language: '',
       location: {
-        facility: 'f1',
-        state: 'California'
-      }
-    },
-    {
-      name: '<provider_name2>',
-      Id: '<provider_id2>',
-      email: 'nick@awellhealth.com',
-      ResourceId: '<provider_resouces_id2>',
-      gender: 'M',
-      ethnicity: 'African American',
-      language: 'en',
-      location: {
-        facility: 'f2',
-        state: 'New York'
-      }
+        facility: '',
+        state: 'CO'
+      },
+      name: 'Katherine Price',
+      email: '',
+      id: '1489',
+      clinicalFocus: [
+        'ADHD',
+        'Anxiety d/o',
+        'Autism spectrum',
+        'Gender dysphoria',
+        'Trauma (including PTSD)'
+      ]
     }
   ]
 };
