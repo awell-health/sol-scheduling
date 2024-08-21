@@ -20,7 +20,7 @@ interface SchedulingActivityProps {
   fetchAvailability: (
     providerId: string
   ) => Promise<GetAvailabilitiesResponseType>;
-  onCompleteActivity: () => void;
+  onCompleteActivity: (slot: SlotType) => void;
   text?: {
     selectProvider?: {
       button?: string;
@@ -127,7 +127,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
         setBookingConfirmed(true);
         setLoadingConfirmation(false);
 
-        onCompleteActivity();
+        onCompleteActivity(slot);
       });
     },
     [onBooking]
