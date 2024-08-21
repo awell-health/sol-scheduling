@@ -9,9 +9,11 @@ import {
   GetProvidersResponseType
 } from '../lib/api';
 import { type SlotType } from '../lib/api';
+import { isEmpty } from 'lodash';
 
 interface SchedulingActivityProps {
   timeZone: string;
+  providerId?: string;
   onProviderSelect: (id: string) => void;
   onDateSelect: (date: Date) => void;
   onSlotSelect: (slot: SlotType) => void;
@@ -44,6 +46,7 @@ interface SchedulingActivityProps {
 }
 
 export const SchedulingActivity: FC<SchedulingActivityProps> = ({
+  providerId: prefilledProviderId,
   timeZone,
   onProviderSelect,
   onDateSelect,
@@ -66,13 +69,13 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const [availabilities, setAvailabilities] = useState<
     GetAvailabilitiesResponseType['data'] | undefined
   >(undefined);
-  const [loadingProviders, setLoadingProviders] = useState(true);
+  const [loadingProviders, setLoadingProviders] = useState(false);
   const [loadingAvailabilities, setLoadingAvailabilities] = useState(false);
   const [loadingConfirmation, setLoadingConfirmation] = useState(false);
 
   const [selectedProviderId, setSelectedProviderId] = useState<
     string | undefined
-  >(undefined);
+  >(prefilledProviderId);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedSlot, setSelectedSlot] = useState<SlotType | undefined>(
     undefined
@@ -80,6 +83,16 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
 
   useEffect(() => {
+    if (selectedProviderId && !isEmpty(selectedProviderId)) {
+      setLoadingAvailabilities(true);
+      fetchAvailability(selectedProviderId).then((availabilities) => {
+        setAvailabilities(availabilities.data);
+        setLoadingAvailabilities(false);
+      });
+      return;
+    }
+
+    setLoadingProviders(true);
     fetchProviders().then((providers) => {
       setProviders(providers.data);
       setLoadingProviders(false);
@@ -163,7 +176,8 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     <>
       <main id='ahp_main_content_with_scroll_hint' className={classes.main}>
         <div className={classes.container}>
-          {selectedProvider === undefined && (
+          {(selectedProviderId === undefined ||
+            isEmpty(selectedProviderId)) && (
             <>
               {loadingProviders ? (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -179,43 +193,50 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
             </>
           )}
 
-          {selectedProvider !== undefined && bookingConfirmed !== true && (
-            <>
-              {loadingAvailabilities || loadingConfirmation ? (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <CircularSpinner size='sm' />
-                </div>
-              ) : (
-                <div>
-                  <button
-                    className={classes.back_button}
-                    onClick={handleBackNavigation}
-                    type='button'
-                  >
-                    &lt; {backToProviders}
-                  </button>
-                  <Scheduler
-                    provider={{
-                      name: selectedProvider?.name ?? 'No name'
-                    }}
-                    timeZone={timeZone}
-                    availabilities={providerAvailabilities}
-                    date={selectedDate}
-                    slot={selectedSlot}
-                    onDateSelect={handleDateSelect}
-                    onSlotSelect={handleSlotSelect}
-                    onBooking={handleBooking}
-                    text={{
-                      title: text?.selectSlot?.title,
-                      selectSlot: text?.selectSlot?.selectSlot,
-                      button: text?.selectSlot?.button
-                    }}
-                    opts={{ allowSchedulingInThePast }}
-                  />
-                </div>
-              )}
-            </>
-          )}
+          {selectedProviderId !== undefined &&
+            !isEmpty(selectedProviderId) &&
+            bookingConfirmed !== true && (
+              <>
+                {loadingAvailabilities || loadingConfirmation ? (
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <CircularSpinner size='sm' />
+                  </div>
+                ) : (
+                  <div>
+                    {isEmpty(prefilledProviderId) && (
+                      <button
+                        className={classes.back_button}
+                        onClick={handleBackNavigation}
+                        type='button'
+                      >
+                        &lt; {backToProviders}
+                      </button>
+                    )}
+                    <Scheduler
+                      provider={{
+                        name:
+                          selectedProvider?.name ??
+                          `Provider ${selectedProviderId} (missing endpoint to fetch provider info)`
+                      }}
+                      timeZone={timeZone}
+                      availabilities={providerAvailabilities}
+                      date={selectedDate}
+                      slot={selectedSlot}
+                      onDateSelect={handleDateSelect}
+                      onSlotSelect={handleSlotSelect}
+                      onBooking={handleBooking}
+                      loadingAvailabilities={loadingAvailabilities}
+                      text={{
+                        title: text?.selectSlot?.title,
+                        selectSlot: text?.selectSlot?.selectSlot,
+                        button: text?.selectSlot?.button
+                      }}
+                      opts={{ allowSchedulingInThePast }}
+                    />
+                  </div>
+                )}
+              </>
+            )}
         </div>
       </main>
     </>
