@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, CircularSpinner } from '@awell-health/ui-library';
+import { CircularSpinner } from '@awell-health/ui-library';
 import { ProviderSelection } from '../atoms';
 import { Scheduler } from '../molecules';
 import classes from './SchedulingActivity.module.scss';
