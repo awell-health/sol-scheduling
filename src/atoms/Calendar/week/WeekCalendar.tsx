@@ -174,7 +174,13 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
               <div className={classes.month}>{format(day.date, 'MMM')}</div>
             </time>
             <div className={classes.availabilities}>
-              <Slot count={!day.isAvailable ? 0 : day.availabilitiesCount} />
+              <Slot
+                count={
+                  !day.isAvailable || day.isDisabled
+                    ? 0
+                    : day.availabilitiesCount
+                }
+              />
             </div>
           </button>
         ))}
