@@ -1,10 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  CircularSpinner,
-  HostedPageFooter,
-  Button
-} from '@awell-health/ui-library';
-import { BookingConfirmation, ProviderSelection } from '../atoms';
+import { Button, CircularSpinner } from '@awell-health/ui-library';
+import { ProviderSelection } from '../atoms';
 import { Scheduler } from '../molecules';
 import classes from './SchedulingActivity.module.scss';
 import {
@@ -30,6 +26,7 @@ interface SchedulingActivityProps {
       button?: string;
     };
     selectSlot?: {
+      backToProviders?: string;
       title?: string;
       selectSlot?: string;
       button?: string;
@@ -58,7 +55,8 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   text,
   opts
 }) => {
-  const { completeActivity: { nextButton = 'Next' } = {} } = text || {};
+  const { selectSlot: { backToProviders = 'Back to providers' } = {} } =
+    text || {};
 
   const { allowSchedulingInThePast = false } = opts || {};
 
@@ -128,6 +126,8 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
       onBooking(slot).then(() => {
         setBookingConfirmed(true);
         setLoadingConfirmation(false);
+
+        onCompleteActivity();
       });
     },
     [onBooking]
@@ -151,6 +151,13 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const selectedProvider = useMemo(() => {
     return providers.find((provider) => provider.id === selectedProviderId);
   }, [providers, selectedProviderId]);
+
+  const handleBackNavigation = useCallback(() => {
+    setAvailabilities(undefined);
+    setSelectedDate(undefined);
+    setSelectedSlot(undefined);
+    setSelectedProviderId(undefined);
+  }, []);
 
   return (
     <>
@@ -180,6 +187,13 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
                 </div>
               ) : (
                 <div>
+                  <button
+                    className={classes.back_button}
+                    onClick={handleBackNavigation}
+                    type='button'
+                  >
+                    &lt; {backToProviders}
+                  </button>
                   <Scheduler
                     provider={{
                       name: selectedProvider?.name ?? 'No name'
@@ -202,29 +216,8 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
               )}
             </>
           )}
-
-          {bookingConfirmed && selectedSlot && (
-            <div>
-              <BookingConfirmation
-                providerName={selectedProvider?.name ?? 'No name'}
-                slot={selectedSlot}
-                text={{
-                  bookingConfirmed: text?.bookingConfirmation?.bookingConfirmed
-                }}
-              />
-            </div>
-          )}
         </div>
       </main>
-      {bookingConfirmed && selectedSlot && (
-        <HostedPageFooter>
-          <div className={`${classes.button_wrapper} ${classes.container}`}>
-            <Button variant='primary' onClick={onCompleteActivity}>
-              {nextButton}
-            </Button>
-          </div>
-        </HostedPageFooter>
-      )}
     </>
   );
 };
