@@ -10,7 +10,7 @@ import {
   mockProviderAvailabilityResponse,
   mockProvidersResponse
 } from '../lib/api/__mocks__';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { type SlotType } from '../lib/api';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
@@ -69,9 +69,6 @@ type Story = StoryObj<typeof meta>;
 export const SchedulingActivity: Story = {
   render: (args) => {
     const { updateLayoutMode, resetLayoutMode } = useTheme();
-    const [provider, setProvider] = useState<string | undefined>(undefined);
-    const [date, setDate] = useState<Date | undefined>(undefined);
-    const [slot, setSlot] = useState<SlotType | undefined>(undefined);
 
     useEffect(() => {
       updateLayoutMode('flexible');
@@ -93,33 +90,18 @@ export const SchedulingActivity: Story = {
       return args.onBooking(_slot);
     }, []);
 
-    const completeActivity = useCallback(
-      (_slot: SlotType) => {
-        console.log('Complete activity', {
-          provider,
-          date,
-          slot
-        });
-        return args.onCompleteActivity(_slot);
-      },
-      [slot, provider, date]
-    );
+    const completeActivity = useCallback((_slot: SlotType) => {
+      console.log('Complete activity with slot', _slot);
+      return args.onCompleteActivity(_slot);
+    }, []);
 
     return (
       <SchedulingActivityComponent
+        providerId={args.providerId}
         timeZone={args.timeZone}
-        onProviderSelect={(id) => {
-          setProvider(id);
-          args.onProviderSelect(id);
-        }}
-        onDateSelect={(date) => {
-          setDate(date);
-          args.onDateSelect(date);
-        }}
-        onSlotSelect={(slot) => {
-          setSlot(slot);
-          args.onSlotSelect(slot);
-        }}
+        onProviderSelect={args.onProviderSelect}
+        onDateSelect={args.onDateSelect}
+        onSlotSelect={args.onSlotSelect}
         fetchProviders={fetchProvidersFn}
         onCompleteActivity={completeActivity}
         onBooking={bookAppointmentFn}
@@ -130,6 +112,8 @@ export const SchedulingActivity: Story = {
   args: {
     opts: {
       allowSchedulingInThePast: false
-    }
+    },
+
+    providerId: '1489'
   }
 };

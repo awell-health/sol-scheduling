@@ -47,7 +47,7 @@ export const Slots: FC<SlotsProps> = ({
 
       onSelect(selectedSlot);
     },
-    [onSelect]
+    [onSelect, slots]
   );
 
   return (
