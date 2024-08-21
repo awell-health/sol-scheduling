@@ -93,14 +93,17 @@ export const SchedulingActivity: Story = {
       return args.onBooking(_slot);
     }, []);
 
-    const completeActivity = useCallback(() => {
-      console.log('Complete activity', {
-        provider,
-        date,
-        slot
-      });
-      return args.onCompleteActivity();
-    }, [slot, provider, date]);
+    const completeActivity = useCallback(
+      (_slot: SlotType) => {
+        console.log('Complete activity', {
+          provider,
+          date,
+          slot
+        });
+        return args.onCompleteActivity(_slot);
+      },
+      [slot, provider, date]
+    );
 
     return (
       <SchedulingActivityComponent
