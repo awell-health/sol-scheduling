@@ -93,8 +93,16 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     }
 
     setLoadingProviders(true);
-    fetchProviders().then((providers) => {
-      setProviders(providers.data);
+
+    void fetchProviders().then(async (providers) => {
+      const providersWithSlots = await Promise.all(
+        providers.data.map(async (p) => {
+          const avail = await fetchAvailability(p.id);
+          const slots = avail['data'][p.id].length;
+          return { ...p, numberOfSlotsAvailable: slots };
+        })
+      );
+      setProviders(providersWithSlots);
       setLoadingProviders(false);
     });
   }, []);
@@ -131,6 +139,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     [onSlotSelect]
   );
 
+  // TODO: why are we setting the selected slot here?
   const handleBooking = useCallback(
     (slot: SlotType) => {
       setLoadingConfirmation(true);
@@ -152,6 +161,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     const availabilitiesForProvider = availabilities?.[selectedProviderId];
 
     if (!availabilitiesForProvider) return [];
+    console.log('provider availabilities', availabilitiesForProvider);
 
     return availabilitiesForProvider.map((availability) => ({
       eventId: availability.eventId,

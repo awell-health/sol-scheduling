@@ -87,7 +87,8 @@ export const GetProvidersResponseSchema = z
         location: z.object({
           facility: z.string().optional(), // Not implemented
           state: stateSchema
-        })
+        }),
+        numberOfSlotsAvailable: z.number().optional()
       })
     )
   })
