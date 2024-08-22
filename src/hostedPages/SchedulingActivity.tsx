@@ -11,6 +11,8 @@ import {
 import { type SlotType } from '../lib/api';
 import { isEmpty } from 'lodash';
 
+const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
+
 interface SchedulingActivityProps {
   timeZone: string;
   providerId?: string;
@@ -98,7 +100,9 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
       const providersWithSlots = await Promise.all(
         providers.data.map(async (p) => {
           const avail = await fetchAvailability(p.id);
-          const slots = avail['data'][p.id].length;
+          const slots = avail['data'][p.id].filter(
+            (s) => s.date.valueOf() < new Date().valueOf() + ONE_WEEK_IN_MS
+          ).length;
           return { ...p, numberOfSlotsAvailable: slots };
         })
       );
