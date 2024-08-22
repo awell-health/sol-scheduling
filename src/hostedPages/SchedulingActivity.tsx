@@ -101,12 +101,19 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
         providers.data.map(async (p) => {
           const avail = await fetchAvailability(p.id);
           const slots = avail['data'][p.id].filter(
-            (s) => s.date.valueOf() < new Date().valueOf() + ONE_WEEK_IN_MS
+            (s) =>
+              new Date(s.slotstart).valueOf() <
+              new Date().valueOf() + ONE_WEEK_IN_MS
           ).length;
           return { ...p, numberOfSlotsAvailable: slots };
         })
       );
-      setProviders(providersWithSlots);
+      setProviders(
+        providersWithSlots.sort(
+          (a, b) =>
+            (b.numberOfSlotsAvailable ?? 0) - (a.numberOfSlotsAvailable ?? 0)
+        )
+      );
       setLoadingProviders(false);
     });
   }, []);
