@@ -11,6 +11,8 @@ import {
 import { type SlotType } from '../lib/api';
 import { isEmpty } from 'lodash';
 
+const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
+
 interface SchedulingActivityProps {
   timeZone: string;
   providerId?: string;
@@ -93,8 +95,18 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     }
 
     setLoadingProviders(true);
-    fetchProviders().then((providers) => {
-      setProviders(providers.data);
+
+    void fetchProviders().then(async (providers) => {
+      const providersWithSlots = await Promise.all(
+        providers.data.map(async (p) => {
+          const avail = await fetchAvailability(p.id);
+          const slots = avail['data'][p.id].filter(
+            (s) => s.date.valueOf() < new Date().valueOf() + ONE_WEEK_IN_MS
+          ).length;
+          return { ...p, numberOfSlotsAvailable: slots };
+        })
+      );
+      setProviders(providersWithSlots);
       setLoadingProviders(false);
     });
   }, []);
@@ -131,6 +143,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     [onSlotSelect]
   );
 
+  // TODO: why are we setting the selected slot here?
   const handleBooking = useCallback(
     (slot: SlotType) => {
       setLoadingConfirmation(true);
@@ -152,6 +165,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     const availabilitiesForProvider = availabilities?.[selectedProviderId];
 
     if (!availabilitiesForProvider) return [];
+    console.log('provider availabilities', availabilitiesForProvider);
 
     return availabilitiesForProvider.map((availability) => ({
       eventId: availability.eventId,

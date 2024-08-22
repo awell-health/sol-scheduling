@@ -19,7 +19,8 @@ export const mockProvidersResponse: GetProvidersResponseType = {
         'Autism spectrum',
         'Gender dysphoria',
         'Trauma (including PTSD)'
-      ]
+      ],
+      numberOfSlotsAvailable: 3
     }
   ]
 };

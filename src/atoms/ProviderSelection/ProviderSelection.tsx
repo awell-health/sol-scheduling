@@ -43,19 +43,34 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
         {providers.map((provider) => (
           <div key={provider.id} className={`${classes.provider}`}>
             <div className={classes.header}>
-              <img
-                alt={provider.name}
-                src={provider.profileImageUrl ?? DEFAULT_PROFILE_IMAGE}
-                className={classes.headshot}
-              />
-              <div>
-                <h3 className={classes.provider_name}>{provider.name}</h3>
-                {provider?.location?.state && (
-                  <span className={classes.speciality}>
-                    {toFullNameState(provider.location.state)}
-                  </span>
-                )}
+              <div className={classes.headerLeft}>
+                <img
+                  alt={provider.name}
+                  src={provider.profileImageUrl ?? DEFAULT_PROFILE_IMAGE}
+                  className={classes.headshot}
+                />
+                <div>
+                  <h3 className={classes.provider_name}>{provider.name}</h3>
+                  {provider?.location?.state && (
+                    <span className={classes.speciality}>
+                      {toFullNameState(provider.location.state)}
+                    </span>
+                  )}
+                </div>
               </div>
+              {provider.numberOfSlotsAvailable !== undefined && (
+                <div className={classes.headerRight}>
+                  <span
+                    className={
+                      provider.numberOfSlotsAvailable > 0
+                        ? classes.slotsSome
+                        : classes.slotsNone
+                    }
+                  >
+                    {provider.numberOfSlotsAvailable} slots available
+                  </span>
+                </div>
+              )}
             </div>
             <div className={classes.footer}>
               <div>

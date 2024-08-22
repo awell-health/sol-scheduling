@@ -15,8 +15,30 @@
 
 .header {
   display: flex;
+  justify-content: space-between;
   gap: var(--awell-spacing-4);
   align-items: center;
+}
+
+.headerLeft {
+  display: flex;
+  gap: var(--awell-spacing-4);
+  align-items: center;
+}
+.headerRight {
+  display: flex;
+  gap: var(--awell-spacing-4);
+  align-items: center;
+}
+.slotsNone {
+  color: var(--awell-slate600);
+  font-size: var(--awell-font-size-sm);
+}
+
+.slotsSome {
+  color: var(--awell-accent-color);
+  font-weight: bold;
+  font-size: var(--awell-font-size-sm);
 }
 
 .provider {
