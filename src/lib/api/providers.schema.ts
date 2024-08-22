@@ -78,7 +78,7 @@ export const GetProvidersResponseSchema = z
     data: z.array(
       z.object({
         name: z.string(),
-        email: z.string().email().optional(),
+        email: z.string().optional(),
         id: z.string(), // Data warehouse ID
         gender: genderSchema,
         ethnicity: ethnicitySchema,
