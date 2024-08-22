@@ -112,8 +112,6 @@ export const SchedulingActivity: Story = {
   args: {
     opts: {
       allowSchedulingInThePast: false
-    },
-
-    providerId: '1489'
+    }
   }
 };
