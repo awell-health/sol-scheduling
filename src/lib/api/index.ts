@@ -19,11 +19,4 @@ export {
   type BookAppointmentResponseType
 } from './booking.schema';
 
-export {
-  GetEventInputSchema,
-  GetEventResponseSchema,
-  type GetEventInputType,
-  type GetEventResponseType
-} from './event.schema';
-
 export { type SlotType } from './shared.schema';
