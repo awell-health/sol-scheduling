@@ -10,6 +10,11 @@ module.exports = {
   theme: {
     fontFamily: {
       inter: ['Inter', 'sans-serif']
+    },
+    extend: {
+      borderWidth: {
+        1: '1px'
+      }
     }
   },
   plugins: [require('daisyui'), require('tailwindcss-animate')],
@@ -17,12 +22,12 @@ module.exports = {
     themes: [
       {
         awell: {
-          primary: '#A45128',
+          primary: 'rgb(164, 81, 40)',
           'primary-focus': 'rgba(164, 81, 40, 0.9)',
           'primary-content': colors.white,
 
-          secondary: colors.white,
-          'secondary-focus': colors.slate[100],
+          secondary: '#f9e2da',
+          'secondary-focus': 'rgba(239, 155, 140, 0.9)',
           'secondary-content': colors.slate[600],
 
           accent: colors.blue[50],
