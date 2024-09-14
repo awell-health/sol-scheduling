@@ -1,5 +1,4 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { CircularSpinner } from '@awell-health/ui-library';
 import { ProviderSelection } from '../atoms';
 import { Scheduler } from '../molecules';
 import classes from './SchedulingActivity.module.scss';
@@ -8,8 +7,9 @@ import {
   type GetProvidersResponseType
 } from '../lib/api';
 import { type SlotType } from '../lib/api';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
+import '../../styles/globals.css';
 
 const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
 
@@ -196,7 +196,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
             <>
               {loadingProviders ? (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <CircularSpinner size='sm' />
+                  <span className='loading loading-spinner loading-lg text-primary'></span>
                 </div>
               ) : (
                 <ProviderSelection
@@ -212,7 +212,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
             <>
               {loadingAvailabilities || loadingConfirmation ? (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <CircularSpinner size='sm' />
+                  <span className='loading loading-spinner loading-lg text-primary'></span>
                 </div>
               ) : (
                 <div>

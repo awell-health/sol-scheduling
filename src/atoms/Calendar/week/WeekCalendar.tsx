@@ -13,7 +13,6 @@ import {
   isSameDay,
   isBefore
 } from 'date-fns';
-import { CircularSpinner, Button } from '@awell-health/ui-library';
 import { type SlotType } from '../../../lib/api';
 
 export interface WeekCalendarProps {
@@ -134,7 +133,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     <div className={classes.calendarContainer}>
       {loading && (
         <div className={classes.loadingOverlay}>
-          <CircularSpinner size='sm' />
+          <span className='loading loading-spinner loading-lg text-primary'></span>
         </div>
       )}
       <div className={classes.calendarHeader}>
@@ -142,14 +141,18 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           {`${format(currentWeek, 'MMMM yyyy')}`}
         </div>
         <div className={classes.calendarNavigation}>
-          <Button onClick={handlePreviousWeek} variant='tertiary' type='button'>
+          <button onClick={handlePreviousWeek} className='btn btn-primary'>
             <span className={classes.srOnly}>Previous week</span>
             <ChevronLeftIcon className={classes.navIcon} aria-hidden='true' />
-          </Button>
-          <Button onClick={handleNextWeek} variant='tertiary' type='button'>
+          </button>
+          <button
+            onClick={handleNextWeek}
+            className='btn btn-primary'
+            type='button'
+          >
             <span className={classes.srOnly}>Next week</span>
             <ChevronRightIcon className={classes.navIcon} aria-hidden='true' />
-          </Button>
+          </button>
         </div>
       </div>
       <div className={classes.calendarBody}>

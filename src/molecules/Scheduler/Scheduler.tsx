@@ -3,7 +3,6 @@ import classes from './Scheduler.module.scss';
 import { Slots, WeekCalendar } from '../../atoms';
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { isSameDay } from 'date-fns';
-import { Button } from '@awell-health/ui-library';
 import { type SlotType } from '../../lib/api';
 
 export type SchedulerProps = {
@@ -97,9 +96,12 @@ export const Scheduler: FC<SchedulerProps> = ({
       )}
       {date && slot && (
         <div className={classes.confirm}>
-          <Button fullWidth={true} onClick={() => onBooking(slot)}>
+          <button
+            className='button btn-primary w-full'
+            onClick={() => onBooking(slot)}
+          >
             {button}
-          </Button>
+          </button>
         </div>
       )}
     </div>

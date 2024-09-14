@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { upperFirst } from 'lodash';
+import { upperFirst } from 'lodash-es';
 import classes from './ProviderSelection.module.scss';
-import { Button } from '@awell-health/ui-library';
 import ISO6391 from 'iso-639-1';
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { GetProvidersResponseType } from 'lib/api';
 import { toFullNameState, toFullNameGender } from '../../lib/utils';
+import clsx from 'clsx';
 
 export type BaseProvider = GetProvidersResponseType['data'][number];
 
@@ -104,13 +104,12 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
                 </ul>
               </div>
               <div>
-                <Button
-                  fullWidth={true}
-                  variant='primary'
+                <button
                   onClick={() => onSelect(provider.id)}
+                  className={clsx('btn btn-primary w-full')}
                 >
                   {button}
-                </Button>
+                </button>
               </div>
             </div>
           </div>

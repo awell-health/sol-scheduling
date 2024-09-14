@@ -16,7 +16,6 @@ import {
   isSameDay,
   isBefore
 } from 'date-fns';
-import { CircularSpinner } from '@awell-health/ui-library';
 
 export interface CalendarProps {
   value?: Date;
@@ -97,7 +96,7 @@ export const Calendar: FC<CalendarProps> = ({
     <div className={classes.calendarContainer}>
       {loading && (
         <div className={classes.loadingOverlay}>
-          <CircularSpinner size='sm' />
+          <span className='loading loading-spinner loading-lg text-primary'></span>
         </div>
       )}
       <div className={classes.calendarNavigation}>

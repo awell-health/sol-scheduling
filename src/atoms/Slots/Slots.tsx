@@ -1,8 +1,7 @@
 import { FC, useCallback } from 'react';
 import classes from './Slots.module.scss';
 import { Field, Radio, RadioGroup } from '@headlessui/react';
-import { isEmpty } from 'lodash';
-import { CircularSpinner } from '@awell-health/ui-library';
+import { isEmpty } from 'lodash-es';
 import { type SlotType } from '../../lib/api';
 
 export interface SlotsProps {
@@ -54,7 +53,7 @@ export const Slots: FC<SlotsProps> = ({
     <div>
       {loading && (
         <div className={classes.loading}>
-          <CircularSpinner size='sm' />
+          <span className='loading loading-spinner loading-lg text-primary'></span>
         </div>
       )}
       {!loading && isEmpty(slots) && <div>{noSlotsLabel}</div>}
