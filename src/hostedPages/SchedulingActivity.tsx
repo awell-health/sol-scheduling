@@ -108,8 +108,6 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const handleDateSelect = useCallback(
     (date: Date) => {
       onDateSelect(date);
-
-      console.log('onDateSelect', date);
       setSelectedDate(date);
       setSelectedSlot(undefined); // Reset slot
     },
@@ -119,8 +117,6 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const handleSlotSelect = useCallback(
     (slot: SlotType) => {
       onSlotSelect(slot);
-
-      console.log('onSlotSelect', slot);
       setSelectedSlot(slot);
     },
     [onSlotSelect]
@@ -157,7 +153,6 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     const availabilitiesForProvider = availabilities?.[selectedProviderId];
 
     if (!availabilitiesForProvider) return [];
-    console.log('provider availabilities', availabilitiesForProvider);
 
     return availabilitiesForProvider.map((availability) => ({
       eventId: availability.eventId,
