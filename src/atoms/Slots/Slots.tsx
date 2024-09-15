@@ -78,11 +78,11 @@ export const Slots: FC<SlotsProps> = ({
                   value={slot.eventId}
                   aria-label={slot.slotstart.toISOString()}
                   className={clsx(
-                    'relative block cursor-pointer rounded-md  px-3 py-4 text-center outline-0 font-medium',
+                    'relative block cursor-pointer rounded-md px-3 py-4 text-center outline-0 font-medium hover:bg-secondary hover:border-1 hover:border-primary',
                     {
                       'text-slate-500 border-1 border-slate-200  bg-white':
                         selectedSlot?.eventId !== slot.eventId,
-                      'border-1 border-primary ring-4 ring-secondary':
+                      'border-1 border-primary ring-4 ring-secondary text-primary':
                         selectedSlot?.eventId === slot.eventId
                     }
                   )}

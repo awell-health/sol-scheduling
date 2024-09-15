@@ -1,7 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { ProviderSelection } from '../atoms';
 import { Scheduler } from '../molecules';
-import classes from './SchedulingActivity.module.scss';
 import {
   type GetAvailabilitiesResponseType,
   type GetProvidersResponseType
@@ -110,6 +109,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     (date: Date) => {
       onDateSelect(date);
 
+      console.log('onDateSelect', date);
       setSelectedDate(date);
       setSelectedSlot(undefined); // Reset slot
     },
@@ -120,6 +120,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     (slot: SlotType) => {
       onSlotSelect(slot);
 
+      console.log('onSlotSelect', slot);
       setSelectedSlot(slot);
     },
     [onSlotSelect]
@@ -190,8 +191,12 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
 
   return (
     <>
-      <main id='ahp_main_content_with_scroll_hint' className={classes.main}>
-        <div className={classes.container}>
+      <main
+        id='ahp_main_content_with_scroll_hint'
+        className='flex-1'
+        data-theme='sol'
+      >
+        <div className='max-w-[650px] px-4 py-0 mx-auto my-0'>
           {showProviderStage && (
             <>
               {loadingProviders ? (
@@ -217,13 +222,13 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
               ) : (
                 <div>
                   {isEmpty(prefilledProviderId) && (
-                    <button
-                      className={classes.back_button}
+                    <a
+                      className='link link-primary mb-4 text-sm no-underline hover:underline'
                       onClick={handleBackNavigation}
                       type='button'
                     >
                       &lt; {backToProviders}
-                    </button>
+                    </a>
                   )}
                   <Scheduler
                     provider={{

@@ -34,7 +34,10 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     fetchAvailability: (providerId: string) => {
       console.log('Fetching availability for provider', providerId);
       return new Promise((resolve) =>
-        setTimeout(() => resolve(mockProviderAvailabilityResponse), 750)
+        setTimeout(
+          () => resolve(mockProviderAvailabilityResponse(providerId)),
+          750
+        )
       );
     },
     onBooking: fn((slot: SlotType) => {

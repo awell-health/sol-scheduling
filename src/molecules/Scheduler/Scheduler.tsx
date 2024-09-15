@@ -1,9 +1,9 @@
 import { FC, useMemo } from 'react';
-import classes from './Scheduler.module.scss';
 import { Slots, WeekCalendar } from '../../atoms';
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { isSameDay } from 'date-fns';
 import { type SlotType } from '../../lib/api';
+import clsx from 'clsx';
 
 export type SchedulerProps = {
   provider: {
@@ -56,20 +56,23 @@ export const Scheduler: FC<SchedulerProps> = ({
   }, [availabilities, date]);
 
   return (
-    <div className={classes.container}>
-      <div className={classes.header}>
-        <h4 className={classes.title}>
+    <div>
+      <div className='flex justify-between align-center pb-6 mb-5 border-b-1 border-slate-200'>
+        <h4 className='font-semibold text-xl m-0 text-slate-800'>
           {title}
           <br />
-          <span>{provider.name}</span>
+          <span className='text-primary'>{provider.name}</span>
         </h4>
-        <img
-          alt={provider.name}
-          src={provider.profileImageUrl ?? DEFAULT_PROFILE_IMAGE}
-          className={classes.headshot}
-        />
+        <div className='avatar'>
+          <div className='w-24 rounded-full'>
+            <img
+              alt={provider.name}
+              src={provider.profileImageUrl ?? DEFAULT_PROFILE_IMAGE}
+            />
+          </div>
+        </div>
       </div>
-      <div className={classes.calendar}>
+      <div>
         <WeekCalendar
           value={date}
           onSelect={onDateSelect}
@@ -79,12 +82,12 @@ export const Scheduler: FC<SchedulerProps> = ({
         />
       </div>
       {date && (
-        <div className={classes.timeslots}>
-          <div className={classes.heading}>
-            <h3 className={`${classes.title} ${classes.center}`}>
+        <div className='pt-6 mt-6 border-t-1 border-slate-200'>
+          <div className='mb-4'>
+            <h3 className='font-semibold text-xl m-0 text-slate-800 text-center'>
               {selectSlot}
             </h3>
-            <p className={classes.timeZone}>Times in {timeZone}</p>
+            <p className='text-center mt-1'>Times in {timeZone}</p>
           </div>
           <Slots
             value={slot}
@@ -95,9 +98,9 @@ export const Scheduler: FC<SchedulerProps> = ({
         </div>
       )}
       {date && slot && (
-        <div className={classes.confirm}>
+        <div className='py-6 mt-6 border-t-1 border-slate-200'>
           <button
-            className='button btn-primary w-full'
+            className={clsx('btn btn-primary w-full')}
             onClick={() => onBooking(slot)}
           >
             {button}

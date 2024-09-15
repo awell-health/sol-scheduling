@@ -1,7 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 import { FC, useState, useMemo, useCallback } from 'react';
-import classes from './WeekCalendar.module.scss';
 import {
   format,
   addWeeks,
@@ -119,10 +118,13 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   ]);
 
   const chevronClasses = clsx(
-    'bg-none cursor-pointer b-0 m-1.5 p-1.5',
     'flex flex-none align-center justify-center',
-    'text-slate-50 size-8 font-bold hover:bg-blend-darken'
+    'text-primary size-8 font-bold'
   );
+
+  const cannotActivate = (day: (typeof days)[0]) => {
+    return day.isDisabled || !day.isAvailable || day.availabilitiesCount === 0;
+  };
 
   return (
     <div className={'relative'}>
@@ -136,13 +138,13 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           {`${format(currentWeek, 'MMMM yyyy')}`}
         </div>
         <div className='flex align-center text-center gap-2'>
-          <button onClick={handlePreviousWeek} className='btn btn-primary'>
+          <button onClick={handlePreviousWeek} className='btn btn-secondary'>
             <span className='hidden'>Previous week</span>
             <ChevronLeftIcon className={chevronClasses} aria-hidden='true' />
           </button>
           <button
             onClick={handleNextWeek}
-            className='btn btn-primary'
+            className='btn btn-secondary'
             type='button'
           >
             <span className='hidden'>Next week</span>
@@ -150,44 +152,42 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           </button>
         </div>
       </div>
-      <div className={clsx('flex cursor-pointer gap-4')}>
+      <div className={clsx('flex gap-2 lg:gap-4 flex-col md:flex-row')}>
         {days.map((day) => (
           <button
             key={day.date.toString()}
             type='button'
             onClick={() => handleDateClick(day.date)}
-            disabled={
-              day.isDisabled ||
-              !day.isAvailable ||
-              day.availabilitiesCount === 0
-            }
+            disabled={cannotActivate(day)}
             className={clsx(
-              'flex flex-1 flex-col justify-center align-center p-4',
+              'flex flex-1 md:flex-col justify-between md:justify-center align-center p-4',
               'font-bold text-lg text-center rounded-md',
               {
-                'border-slate-200 bg-white': !day.isSelected && !day.isDisabled,
-                'border-1 border-primary ring-4 ring-secondary': day.isSelected
-              },
-              {
+                'border-slate-200 border-1 bg-white': !day.isSelected,
+                'border-1 border-primary ring-4 ring-secondary': day.isSelected,
                 'bg-slate-100 cursor-not-allowed text-slate-300 border-2 border-slate-200':
                   day.isDisabled,
-                'hover:ring-primary hover:ring-1 hover:z-10': !day.isDisabled
+                'hover:z-10 hover:bg-secondary hover:border-primary cursor-pointer':
+                  !cannotActivate(day)
               }
             )}
           >
             <time
               dateTime={day.date.toISOString()}
-              className={clsx('self-center', {
-                'text-slate-400': day.isDisabled || !day.isAvailable,
-                'text-primary': !day.isDisabled
-              })}
+              className={clsx(
+                'flex flex-row md:flex-none md:block gap-1 md:self-center',
+                {
+                  'text-slate-400': day.isDisabled || !day.isAvailable,
+                  'text-primary': !day.isDisabled
+                }
+              )}
             >
               <div className='font-medium'>{day.shortDayName}</div>
               <div>{day.date.getDate()}</div>
               <div>{format(day.date, 'MMM')}</div>
             </time>
             <div
-              className={clsx('self-center', {
+              className={clsx('self-center flex', {
                 'text-slate-400': true
               })}
             >
@@ -208,11 +208,21 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
 
 const Slot: FC<{ count: number }> = ({ count }) => {
   const slotText = count === 1 ? 'slot' : 'slots';
-  const colorClass = count === 0 ? 'none' : count === 1 ? 'orange' : 'green';
-
   return (
-    <div className={`${classes.slot} ${classes[colorClass]}`}>
-      {count === 0 ? '-' : `${count} ${slotText}`}
+    <div className='flex mt-2 gap-2 md:gap-0 md:flex-col flex-row'>
+      <div
+        className={clsx(
+          'rounded-full text-sm text-white font-medium my-2 self-center px-4 py-1 w-[90px]',
+          {
+            'bg-slate-300': count === 0,
+            'bg-yellow-500': count > 0 && count <= 2,
+            'bg-green-600': count > 2
+          }
+        )}
+        aria-hidden='true'
+      >
+        {count === 0 ? 'No slots' : `${count} ${slotText}`}
+      </div>
     </div>
   );
 };

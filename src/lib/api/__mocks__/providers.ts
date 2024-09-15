@@ -175,7 +175,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
         state: 'CO'
       },
       name: 'Meggan Grant',
-      id: '1759',
+      id: '1489',
       clinicalFocus: [
         'ADHD',
         'Anger management',
