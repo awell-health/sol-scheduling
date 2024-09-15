@@ -5,14 +5,14 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
-import { peerDependencies } from './package.json';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'sol-scheduling',
-      fileName: (format) => `index.${format}.js`,
+      fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
@@ -30,6 +30,7 @@ export default defineConfig({
     react(),
     dts({
       exclude: ['**/*.stories.*', 'tests']
-    })
+    }),
+    visualizer()
   ]
 });

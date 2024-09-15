@@ -1,15 +1,14 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { CircularSpinner } from '@awell-health/ui-library';
 import { ProviderSelection } from '../atoms';
 import { Scheduler } from '../molecules';
-import classes from './SchedulingActivity.module.scss';
 import {
   type GetAvailabilitiesResponseType,
   type GetProvidersResponseType
 } from '../lib/api';
 import { type SlotType } from '../lib/api';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
+import '../../styles/globals.css';
 
 const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
 
@@ -109,7 +108,6 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const handleDateSelect = useCallback(
     (date: Date) => {
       onDateSelect(date);
-
       setSelectedDate(date);
       setSelectedSlot(undefined); // Reset slot
     },
@@ -119,7 +117,6 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   const handleSlotSelect = useCallback(
     (slot: SlotType) => {
       onSlotSelect(slot);
-
       setSelectedSlot(slot);
     },
     [onSlotSelect]
@@ -156,7 +153,6 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     const availabilitiesForProvider = availabilities?.[selectedProviderId];
 
     if (!availabilitiesForProvider) return [];
-    console.log('provider availabilities', availabilitiesForProvider);
 
     return availabilitiesForProvider.map((availability) => ({
       eventId: availability.eventId,
@@ -190,13 +186,17 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
 
   return (
     <>
-      <main id='ahp_main_content_with_scroll_hint' className={classes.main}>
-        <div className={classes.container}>
+      <main
+        id='ahp_main_content_with_scroll_hint'
+        className='flex-1'
+        data-theme='sol'
+      >
+        <div className='max-w-[650px] px-4 py-0 mx-auto my-0'>
           {showProviderStage && (
             <>
               {loadingProviders ? (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <CircularSpinner size='sm' />
+                  <span className='loading loading-spinner loading-lg text-primary'></span>
                 </div>
               ) : (
                 <ProviderSelection
@@ -212,18 +212,18 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
             <>
               {loadingAvailabilities || loadingConfirmation ? (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <CircularSpinner size='sm' />
+                  <span className='loading loading-spinner loading-lg text-primary'></span>
                 </div>
               ) : (
                 <div>
                   {isEmpty(prefilledProviderId) && (
-                    <button
-                      className={classes.back_button}
+                    <a
+                      className='link link-primary mb-4 text-sm no-underline hover:underline'
                       onClick={handleBackNavigation}
                       type='button'
                     >
                       &lt; {backToProviders}
-                    </button>
+                    </a>
                   )}
                   <Scheduler
                     provider={{

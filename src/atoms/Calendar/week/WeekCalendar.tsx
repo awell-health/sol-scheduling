@@ -1,7 +1,6 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 import { FC, useState, useMemo, useCallback } from 'react';
-import classes from './WeekCalendar.module.scss';
 import {
   format,
   addWeeks,
@@ -13,7 +12,6 @@ import {
   isSameDay,
   isBefore
 } from 'date-fns';
-import { CircularSpinner, Button } from '@awell-health/ui-library';
 import { type SlotType } from '../../../lib/api';
 
 export interface WeekCalendarProps {
@@ -26,17 +24,6 @@ export interface WeekCalendarProps {
   hideWeekends?: boolean;
   allowSchedulingInThePast?: boolean;
 }
-
-const Slot: FC<{ count: number }> = ({ count }) => {
-  const slotText = count === 1 ? 'slot' : 'slots';
-  const colorClass = count === 0 ? 'none' : count === 1 ? 'orange' : 'green';
-
-  return (
-    <div className={`${classes.slot} ${classes[colorClass]}`}>
-      {count === 0 ? '-' : `${count} ${slotText}`}
-    </div>
-  );
-};
 
 export const WeekCalendar: FC<WeekCalendarProps> = ({
   value,
@@ -130,50 +117,80 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     weekStartsOn
   ]);
 
+  const chevronClasses = clsx(
+    'flex flex-none align-center justify-center',
+    'text-primary size-8 font-bold'
+  );
+
+  const cannotActivate = (day: (typeof days)[0]) => {
+    return day.isDisabled || !day.isAvailable || day.availabilitiesCount === 0;
+  };
+
   return (
-    <div className={classes.calendarContainer}>
+    <div className={'relative'}>
       {loading && (
-        <div className={classes.loadingOverlay}>
-          <CircularSpinner size='sm' />
+        <div className='absolute w-full h-full top-0 left-0 flex items-center justify-center bg-opacity-70 bg-white'>
+          <span className='loading loading-spinner loading-lg text-primary'></span>
         </div>
       )}
-      <div className={classes.calendarHeader}>
-        <div className={classes.activeWeek}>
+      <div className='flex justify-between align-center mb-4 items-center'>
+        <div className='text-lg font-medium'>
           {`${format(currentWeek, 'MMMM yyyy')}`}
         </div>
-        <div className={classes.calendarNavigation}>
-          <Button onClick={handlePreviousWeek} variant='tertiary' type='button'>
-            <span className={classes.srOnly}>Previous week</span>
-            <ChevronLeftIcon className={classes.navIcon} aria-hidden='true' />
-          </Button>
-          <Button onClick={handleNextWeek} variant='tertiary' type='button'>
-            <span className={classes.srOnly}>Next week</span>
-            <ChevronRightIcon className={classes.navIcon} aria-hidden='true' />
-          </Button>
+        <div className='flex align-center text-center gap-2'>
+          <button onClick={handlePreviousWeek} className='btn btn-secondary'>
+            <span className='hidden'>Previous week</span>
+            <ChevronLeftIcon className={chevronClasses} aria-hidden='true' />
+          </button>
+          <button
+            onClick={handleNextWeek}
+            className='btn btn-secondary'
+            type='button'
+          >
+            <span className='hidden'>Next week</span>
+            <ChevronRightIcon className={chevronClasses} aria-hidden='true' />
+          </button>
         </div>
       </div>
-      <div className={classes.calendarBody}>
+      <div className={clsx('flex gap-2 lg:gap-4 flex-col md:flex-row')}>
         {days.map((day) => (
           <button
             key={day.date.toString()}
             type='button'
             onClick={() => handleDateClick(day.date)}
-            disabled={
-              day.isDisabled ||
-              !day.isAvailable ||
-              day.availabilitiesCount === 0
-            }
+            disabled={cannotActivate(day)}
             className={clsx(
-              classes.defaultDayStyle,
-              day.isSelected && classes.dayIsSelected
+              'flex flex-1 md:flex-col justify-between md:justify-center align-center p-4',
+              'font-bold text-lg text-center rounded-md',
+              {
+                'border-slate-200 border-1 bg-white': !day.isSelected,
+                'border-1 border-primary ring-4 ring-secondary': day.isSelected,
+                'bg-slate-100 cursor-not-allowed text-slate-300 border-2 border-slate-200':
+                  day.isDisabled,
+                'hover:z-10 hover:bg-secondary hover:border-primary cursor-pointer':
+                  !cannotActivate(day)
+              }
             )}
           >
-            <time dateTime={day.date.toISOString()}>
-              <div className={classes.dayName}>{day.shortDayName}</div>
-              <div className={classes.dayNumber}>{day.date.getDate()}</div>
-              <div className={classes.month}>{format(day.date, 'MMM')}</div>
+            <time
+              dateTime={day.date.toISOString()}
+              className={clsx(
+                'flex flex-row md:flex-none md:block gap-1 md:self-center',
+                {
+                  'text-slate-400': day.isDisabled || !day.isAvailable,
+                  'text-primary': !day.isDisabled
+                }
+              )}
+            >
+              <div className='font-medium'>{day.shortDayName}</div>
+              <div>{day.date.getDate()}</div>
+              <div>{format(day.date, 'MMM')}</div>
             </time>
-            <div className={classes.availabilities}>
+            <div
+              className={clsx('self-center flex', {
+                'text-slate-400': true
+              })}
+            >
               <Slot
                 count={
                   !day.isAvailable || day.isDisabled
@@ -184,6 +201,27 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
             </div>
           </button>
         ))}
+      </div>
+    </div>
+  );
+};
+
+const Slot: FC<{ count: number }> = ({ count }) => {
+  const slotText = count === 1 ? 'slot' : 'slots';
+  return (
+    <div className='flex mt-2 gap-2 md:gap-0 md:flex-col flex-row'>
+      <div
+        className={clsx(
+          'rounded-full text-sm text-white font-medium my-2 self-center px-4 py-1 w-[90px]',
+          {
+            'bg-slate-300': count === 0,
+            'bg-yellow-500': count > 0 && count <= 2,
+            'bg-green-600': count > 2
+          }
+        )}
+        aria-hidden='true'
+      >
+        {count === 0 ? 'No slots' : `${count} ${slotText}`}
       </div>
     </div>
   );

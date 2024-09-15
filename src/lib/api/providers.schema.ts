@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { errorSchema } from './shared.schema';
+import { Event } from './availabilities.schema';
 
 const ageSchema = z.string();
 export const genderSchema = z.enum(['M', 'F', 'Non-binary/non-conforming']);
@@ -82,13 +83,16 @@ export const GetProvidersResponseSchema = z
         id: z.string(), // Data warehouse ID
         gender: genderSchema,
         ethnicity: ethnicitySchema,
+        bio: z.string().optional(),
+        image: z.string().optional(),
         clinicalFocus: z.array(z.string()),
         language: z.string().optional(), // Not implemented
         location: z.object({
           facility: z.string().optional(), // Not implemented
           state: stateSchema
         }),
-        numberOfSlotsAvailable: z.number().optional()
+        numberOfSlotsAvailable: z.number().optional(),
+        events: z.array(Event).nullable()
       })
     )
   })

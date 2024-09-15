@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import moment from 'moment-timezone';
-import classes from './TimezoneSelector.module.scss';
 
 interface TimezoneSelectorProps {
   value: string;
@@ -25,7 +24,9 @@ export const TimezoneSelector: FC<TimezoneSelectorProps> = ({
         id='timezone-select'
         value={value}
         onChange={handleTimezoneChange}
-        className={classes.select_input}
+        className={
+          'select w-full text-slate-800 text-lg leading-5 border-1 border-slate-300 rounded-lg focus:outline-slate-300'
+        }
       >
         {moment.tz.names().map((timezone) => (
           <option key={timezone} value={timezone}>
