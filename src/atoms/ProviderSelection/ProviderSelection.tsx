@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { upperFirst } from 'lodash-es';
-import ISO6391 from 'iso-639-1';
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { GetProvidersResponseType } from 'lib/api';
 import { toFullNameState, toFullNameGender } from '../../lib/utils';
@@ -66,11 +65,11 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
               <div className='flex'>
                 <div
                   className={clsx('self-center', {
-                    'text-primary': provider.numberOfSlotsAvailable ?? 0 > 0,
-                    'text-slate-500': provider.numberOfSlotsAvailable ?? 0 === 0
+                    'text-primary': provider.events?.length ?? 0 > 0,
+                    'text-slate-500': provider.events?.length ?? 0 === 0
                   })}
                 >
-                  {provider.numberOfSlotsAvailable} slots available
+                  {provider.events?.length} slots available
                 </div>
               </div>
             </div>
@@ -81,12 +80,6 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
                     <ProvListItem
                       label='Gender'
                       value={toFullNameGender(provider.gender)}
-                    />
-                  )}
-                  {provider.language && (
-                    <ProvListItem
-                      label='Language'
-                      value={ISO6391.getName(provider.language)}
                     />
                   )}
                   {provider.ethnicity && (

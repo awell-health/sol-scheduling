@@ -10,6 +10,7 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "esModuleInterop": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": true,
@@ -17,9 +18,10 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "declaration": true,
-    "typeRoots": ["./dist/index.d.ts", "node_modules/@types"]
+    "typeRoots": ["./dist/index.d.ts", "node_modules/@types"],
+    "paths": {}
   },
   "files": ["globals.d.ts"],
   "include": ["src", "index.ts"],
-  "exclude": ["src/**/__docs__", "src/**/__test__"]
+  "exclude": ["src/**/__docs__", "src/**/__test__", "**/*.test.ts"]
 }

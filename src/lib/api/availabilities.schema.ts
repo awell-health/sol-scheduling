@@ -14,7 +14,8 @@ export const Event = z.object({
   date: ISO8601DateStringSchema,
   providerId: z.string(),
   slotstart: ISO8601DateStringSchema,
-  duration: z.number()
+  duration: z.number(),
+  facility: z.string()
 });
 
 export const GetAvailabilitiesResponseSchema = z
