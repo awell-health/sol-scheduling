@@ -80,7 +80,7 @@ export const Slots: FC<SlotsProps> = ({
                   className={clsx(
                     'relative block cursor-pointer rounded-md px-3 py-4 text-center outline-0 font-medium hover:bg-secondary hover:border-1 hover:border-primary',
                     {
-                      'text-slate-500 border-1 border-slate-200  bg-white':
+                      'text-slate-800 border-1 border-slate-200  bg-white':
                         selectedSlot?.eventId !== slot.eventId,
                       'border-1 border-primary ring-4 ring-secondary text-primary':
                         selectedSlot?.eventId === slot.eventId

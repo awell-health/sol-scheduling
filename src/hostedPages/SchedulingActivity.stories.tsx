@@ -51,9 +51,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     (StoryComponent) => (
       <ThemeProvider accentColor='#A45128'>
         <HostedPageLayout
-          logo={
-            'https://res.cloudinary.com/da7x4rzl4/image/upload/v1710884206/Developer%20portal/awell_logo.svg'
-          }
+          logo={undefined}
           onCloseHostedPage={() => alert('Stop session')}
         >
           <StoryComponent />
