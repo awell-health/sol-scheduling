@@ -12,7 +12,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: 'CO'
+          state: ['CO', 'NY']
         },
         name: 'Lauren Jouzapaitis',
         id: '1637',
@@ -62,7 +62,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: 'CO'
+          state: ['CO']
         },
         name: 'Jordan Gonzales',
         id: '1642',
@@ -110,7 +110,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: 'NY'
+          state: ['NY']
         },
         name: 'Summer Johnke',
         id: '1733',
@@ -158,7 +158,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: 'CO'
+          state: ['CO']
         },
         name: 'Meggan Grant',
         id: '1759',
@@ -177,30 +177,30 @@ export const getMockProvidersResponse = () => {
         image:
           'https://solmentalhealth.com/wp-content/uploads/2023/05/meggan-grant.jpg',
         events: [
-          {
-            eventId: 'pdmng9u1gmeh4fhg5mgjbfjpo8',
-            date: '2024-09-17',
-            providerId: '1759',
-            slotstart: '2024-09-17T00:00:00Z',
-            duration: 60,
-            facility: 'CO - Highlands Ranch'
-          },
-          {
-            eventId: '5qqivp0jghdep70h92eq842fvc',
-            date: '2024-09-17',
-            providerId: '1759',
-            slotstart: '2024-09-17T14:00:00Z',
-            duration: 60,
-            facility: 'CO - Highlands Ranch'
-          },
-          {
-            eventId: 'jpaba809bgt2lijp9tlaa4kcfo',
-            date: '2024-09-17',
-            providerId: '1759',
-            slotstart: '2024-09-17T15:00:00Z',
-            duration: 60,
-            facility: 'CO - Highlands Ranch'
-          }
+          // {
+          //   eventId: 'pdmng9u1gmeh4fhg5mgjbfjpo8',
+          //   date: '2024-09-17',
+          //   providerId: '1759',
+          //   slotstart: '2024-09-17T00:00:00Z',
+          //   duration: 60,
+          //   facility: 'CO - Highlands Ranch'
+          // },
+          // {
+          //   eventId: '5qqivp0jghdep70h92eq842fvc',
+          //   date: '2024-09-17',
+          //   providerId: '1759',
+          //   slotstart: '2024-09-17T14:00:00Z',
+          //   duration: 60,
+          //   facility: 'CO - Highlands Ranch'
+          // },
+          // {
+          //   eventId: 'jpaba809bgt2lijp9tlaa4kcfo',
+          //   date: '2024-09-17',
+          //   providerId: '1759',
+          //   slotstart: '2024-09-17T15:00:00Z',
+          //   duration: 60,
+          //   facility: 'CO - Highlands Ranch'
+          // }
         ]
       },
       {
@@ -209,7 +209,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: 'NY'
+          state: ['NY']
         },
         name: 'Monet Mindell',
         id: '1779',
@@ -239,15 +239,15 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T14:00:00Z',
             duration: 60,
             facility: 'NY - Brooklyn Heights'
-          },
-          {
-            eventId: 'dg6lq56bjmshods3cuo4oojtag',
-            date: '2024-09-17',
-            providerId: '1779',
-            slotstart: '2024-09-17T15:00:00Z',
-            duration: 60,
-            facility: 'NY - Brooklyn Heights'
           }
+          // {
+          //   eventId: 'dg6lq56bjmshods3cuo4oojtag',
+          //   date: '2024-09-17',
+          //   providerId: '1779',
+          //   slotstart: '2024-09-17T15:00:00Z',
+          //   duration: 60,
+          //   facility: 'NY - Brooklyn Heights'
+          // }
         ]
       },
       {
@@ -256,7 +256,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: 'NY'
+          state: ['NY']
         },
         name: 'Ioana Bontea',
         id: '1805',
@@ -303,7 +303,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: 'NY'
+          state: ['NY']
         },
         name: 'Luciana Forzisi',
         id: '1820',
@@ -354,7 +354,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: 'CO'
+          state: ['CO']
         },
         name: 'Melanie Hane',
         id: '1824',

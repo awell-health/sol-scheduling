@@ -46,14 +46,15 @@ export const ProviderCard: FC<ProviderProps> = ({
           </div>
         </div>
         <div className='flex'>
-          <div
+          <Slot count={provider.events?.length ?? 0} />
+          {/* <div
             className={clsx('self-center', {
               'text-primary': provider.events?.length ?? 0 > 0,
               'text-slate-500': provider.events?.length ?? 0 === 0
             })}
           >
             {provider.events?.length} slots available
-          </div>
+          </div> */}
         </div>
       </div>
       <div className={clsx('mt-4 bg-slate-100 rounded-md p-3')}>
@@ -132,17 +133,38 @@ const BioListItem: FC<BioProps> = ({ label, value }) => {
         <>
           <span>{value}</span>
           <button onClick={toggleBio} className='text-blue-500 ml-2'>
-            Hide
+            {' < Hide'}
           </button>
         </>
       ) : (
         <>
           <span>{value.substring(0, 100)}...</span>
           <button onClick={toggleBio} className='text-blue-500 ml-2'>
-            Show more
+            {' > Show more'}
           </button>
         </>
       )}
     </li>
+  );
+};
+
+const Slot: FC<{ count: number }> = ({ count }) => {
+  const slotText = count === 1 ? 'slot' : 'slots';
+  return (
+    <div className='flex mt-2 gap-2 md:gap-0 md:flex-col flex-row'>
+      <div
+        className={clsx(
+          'rounded-full text-sm text-white font-medium my-2 flex items-center justify-center px-4 py-1 w-[140px]',
+          {
+            'bg-slate-300': count === 0,
+            'bg-yellow-500': count > 0 && count <= 2,
+            'bg-green-600': count > 2
+          }
+        )}
+        aria-hidden='true'
+      >
+        {count === 0 ? 'No slots' : `${count} ${slotText} available`}
+      </div>
+    </div>
   );
 };
