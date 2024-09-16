@@ -2,6 +2,27 @@ import { z } from 'zod';
 import { errorSchema } from './shared.schema';
 import { Event } from './availabilities.schema';
 
+export const supportedStates = z.enum([
+  'AL',
+  'CO',
+  'CT',
+  'DC',
+  'FL',
+  'KS',
+  'MD',
+  'ME',
+  'MN',
+  'NC',
+  'NJ',
+  'NM',
+  'NV',
+  'NY',
+  'PA',
+  'TX',
+  'VA',
+  'WY'
+]);
+
 const ageSchema = z.string();
 export const genderSchema = z.enum(['M', 'F', 'Non-binary/non-conforming']);
 const ethnicitySchema = z.enum([
@@ -35,26 +56,7 @@ const clinicalFocusSchema = z.array(
 );
 const deliveryMethodSchema = z.enum(['virtual', 'in-person']);
 const facilitySchema = z.enum(['f1', 'f2', 'f3']); // "f1" = "Broomfield", "f2" = "Colorado", "f3" = "New York".
-export const stateSchema = z.enum([
-  'AL',
-  'CO',
-  'CT',
-  'DC',
-  'FL',
-  'KS',
-  'MD',
-  'ME',
-  'MN',
-  'NC',
-  'NJ',
-  'NM',
-  'NV',
-  'NY',
-  'PA',
-  'TX',
-  'VA',
-  'WY'
-]);
+export const stateSchema = z.array(supportedStates);
 
 export const GetProvidersInputSchema = z.object({
   age: ageSchema.optional(),

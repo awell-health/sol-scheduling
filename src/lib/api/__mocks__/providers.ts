@@ -8,7 +8,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'CO'
+        state: ['CO', 'NY']
       },
       name: 'Allie Laber',
       id: '1479',
@@ -24,7 +24,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'CO'
+        state: ['CO']
       },
       name: 'Chantelle Erickson',
       id: '1507',
@@ -47,7 +47,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'CO'
+        state: ['CO']
       },
       name: 'Lily Colley',
       id: '1598',
@@ -63,7 +63,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'CO'
+        state: ['CO']
       },
       name: 'Lauren Jouzapaitis',
       id: '1637',
@@ -88,7 +88,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'CO'
+        state: ['CO']
       },
       name: 'Jordan Gonzales',
       id: '1642',
@@ -111,7 +111,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'CO'
+        state: ['CO']
       },
       name: 'Isabelle Tabah',
       id: '1666',
@@ -133,7 +133,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'CO'
+        state: ['CO']
       },
       name: 'Sophia Graves',
       id: '1671',
@@ -149,7 +149,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'NY'
+        state: ['NY']
       },
       name: 'Summer Johnke',
       id: '1733',
@@ -172,7 +172,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'CO'
+        state: ['CO']
       },
       name: 'Meggan Grant',
       id: '1489',
@@ -198,7 +198,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'NY'
+        state: ['NY']
       },
       name: 'Monet Mindell',
       id: '1779',
@@ -220,7 +220,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'NY'
+        state: ['NY']
       },
       name: 'Ioana Bontea',
       id: '1805',
@@ -242,7 +242,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'NY'
+        state: ['NY']
       },
       name: 'Luciana Forzisi',
       id: '1820',
@@ -268,7 +268,7 @@ export const mockProvidersResponse: GetProvidersResponseType = {
       language: '',
       location: {
         facility: '',
-        state: 'CO'
+        state: ['CO']
       },
       name: 'Melanie Hane',
       id: '1824',

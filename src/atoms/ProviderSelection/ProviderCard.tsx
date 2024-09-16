@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import {} from 'daisyui';
 import { upperFirst } from 'lodash-es';
 import clsx from 'clsx';
@@ -22,6 +22,9 @@ export const ProviderCard: FC<ProviderProps> = ({
   text
 }) => {
   const { button = 'Book appointment' } = text || {};
+  const locations = provider.location.state
+    .map((location: string) => toFullNameState(location))
+    .join(', ');
 
   return (
     <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
@@ -39,11 +42,6 @@ export const ProviderCard: FC<ProviderProps> = ({
             <h3 className='text-slate-800 text-lg m-0 font-semibold'>
               {provider.name}
             </h3>
-            {provider?.location?.state && (
-              <span className='text-slate-600 text-md'>
-                {toFullNameState(provider.location.state)}
-              </span>
-            )}
           </div>
         </div>
         <div className='flex'>
@@ -83,6 +81,13 @@ export const ProviderCard: FC<ProviderProps> = ({
                   .join(', ')}
               />
             )}
+            {provider.location?.state.length > 0 && (
+              <ListItem
+                label='Clinic location(s)'
+                value={`Sees patients in person in ${locations}`}
+              />
+            )}
+            {provider.bio && <BioListItem label='Bio' value={provider.bio} />}
           </ul>
         </div>
         <div>
@@ -103,6 +108,40 @@ const ListItem: FC<{ label: string; value: string }> = ({ label, value }) => {
     <li className='flex-1 basis-1/2'>
       <span className='font-semibold text-primary'>{label}: </span>
       <span>{value}</span>
+    </li>
+  );
+};
+
+interface BioProps {
+  label: string;
+  value: string;
+}
+
+const BioListItem: FC<BioProps> = ({ label, value }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleBio = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  return (
+    <li className='flex-1 basis-full'>
+      <span className='font-semibold text-primary'>{label}: </span>
+      {isExpanded ? (
+        <>
+          <span>{value}</span>
+          <button onClick={toggleBio} className='text-blue-500 ml-2'>
+            Hide
+          </button>
+        </>
+      ) : (
+        <>
+          <span>{value.substring(0, 100)}...</span>
+          <button onClick={toggleBio} className='text-blue-500 ml-2'>
+            Show more
+          </button>
+        </>
+      )}
     </li>
   );
 };

@@ -1,7 +1,7 @@
-import { stateSchema } from '../../api/providers.schema';
+import { supportedStates } from '../../api/providers.schema';
 import { z } from 'zod';
 
-const stateNameMap: Record<z.infer<typeof stateSchema>, string> = {
+const stateNameMap: Record<z.infer<typeof supportedStates>, string> = {
   AL: 'Alabama',
   CO: 'Colorado',
   CT: 'Connecticut',
@@ -24,7 +24,7 @@ const stateNameMap: Record<z.infer<typeof stateSchema>, string> = {
 
 export const toFullNameState = (shortHandState: string): string => {
   try {
-    const validState = stateSchema.parse(shortHandState);
+    const validState = supportedStates.parse(shortHandState);
     return stateNameMap[validState];
   } catch {
     return shortHandState;
