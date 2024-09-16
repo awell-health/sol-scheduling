@@ -47,11 +47,11 @@ export const ProviderCard: FC<ProviderProps> = ({
         <div className='flex'>
           <div
             className={clsx('self-center', {
-              'text-primary': provider.numberOfSlotsAvailable ?? 0 > 0,
-              'text-slate-500': provider.numberOfSlotsAvailable ?? 0 === 0
+              'text-primary': provider.events?.length ?? 0 > 0,
+              'text-slate-500': provider.events?.length ?? 0 === 0
             })}
           >
-            {provider.numberOfSlotsAvailable} slots available
+            {provider.events?.length} slots available
           </div>
         </div>
       </div>
