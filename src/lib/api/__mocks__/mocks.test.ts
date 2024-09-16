@@ -1,6 +1,6 @@
 import { expect, describe, it } from '@jest/globals';
 
-import { getMockProvidersResponse } from './providers';
+import { getMockProvidersResponse } from './providers.mock';
 
 describe('mocks', () => {
   describe('getMockProvidersResponse', () => {

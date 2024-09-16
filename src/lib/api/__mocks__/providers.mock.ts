@@ -1,4 +1,4 @@
-import { GetProvidersResponseSchema } from '../../api';
+import { GetProvidersResponseSchema } from '..';
 
 export const getMockProvidersResponse = () => {
   /**
