@@ -1,8 +1,7 @@
-import { FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 import {} from 'daisyui';
 import { upperFirst } from 'lodash-es';
 import clsx from 'clsx';
-import ISO6391 from 'iso-639-1';
 
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { toFullNameState, toFullNameGender } from '../../lib/utils';
@@ -22,7 +21,9 @@ export const ProviderCard: FC<ProviderProps> = ({
   text
 }) => {
   const { button = 'Book appointment' } = text || {};
-  const locations = provider.location.state
+
+  const availableLocations = provider.location?.state ?? [];
+  const locations = availableLocations
     .map((location: string) => toFullNameState(location))
     .join(', ');
 
@@ -64,12 +65,12 @@ export const ProviderCard: FC<ProviderProps> = ({
                 value={toFullNameGender(provider.gender)}
               />
             )}
-            {provider.language && (
+            {/* {provider.language && (
               <ListItem
                 label='Language'
                 value={ISO6391.getName(provider.language)}
               />
-            )}
+            )} */}
             {provider.ethnicity && (
               <ListItem label='Ethnicity' value={provider.ethnicity} />
             )}
@@ -81,7 +82,7 @@ export const ProviderCard: FC<ProviderProps> = ({
                   .join(', ')}
               />
             )}
-            {provider.location?.state.length > 0 && (
+            {availableLocations.length > 0 && (
               <ListItem
                 label='Clinic location(s)'
                 value={`Sees patients in person in ${locations}`}

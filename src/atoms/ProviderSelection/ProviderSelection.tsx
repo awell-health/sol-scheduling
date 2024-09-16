@@ -1,9 +1,9 @@
-import { React, FC } from 'react';
+import React, { FC } from 'react';
 import {} from 'daisyui';
 import clsx from 'clsx';
 
-import { GetProvidersResponseType } from 'lib/api';
 import { ProviderCard } from './ProviderCard';
+import { GetProvidersResponseType } from '../../lib/api';
 
 export type BaseProvider = GetProvidersResponseType['data'][number];
 export interface Provider extends BaseProvider {
