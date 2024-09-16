@@ -1,3 +1,4 @@
+import '../../styles/globals.css';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { ProviderSelection } from '../atoms';
 import { Scheduler } from '../molecules';
@@ -8,7 +9,6 @@ import {
 import { type SlotType } from '../lib/api';
 import { isEmpty } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
-import '../../styles/globals.css';
 
 const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
 

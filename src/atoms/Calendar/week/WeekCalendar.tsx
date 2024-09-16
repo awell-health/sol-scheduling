@@ -177,8 +177,9 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
               className={clsx(
                 'flex flex-row md:flex-none md:block gap-1 md:self-center',
                 {
-                  'text-slate-400': day.isDisabled || !day.isAvailable,
-                  'text-primary': !day.isDisabled
+                  'text-slate-400': cannotActivate(day),
+                  'text-slate-800': !cannotActivate(day) && !day.isSelected,
+                  'text-primary': day.isSelected
                 }
               )}
             >
