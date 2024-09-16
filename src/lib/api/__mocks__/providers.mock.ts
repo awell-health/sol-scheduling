@@ -12,7 +12,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: ['CO', 'NY']
+          state: 'VA'
         },
         name: 'Lauren Jouzapaitis',
         id: '1637',
@@ -36,7 +36,7 @@ export const getMockProvidersResponse = () => {
             providerId: '1637',
             slotstart: '2024-09-17T13:00:00Z',
             duration: 60,
-            facility: 'CO - Cherry Creek'
+            facility: 'CO - Highlands Ranch'
           },
           {
             eventId: 'a2qa6ececpacb952eqbb6sbeq0',
@@ -52,7 +52,7 @@ export const getMockProvidersResponse = () => {
             providerId: '1637',
             slotstart: '2024-09-17T15:00:00Z',
             duration: 60,
-            facility: 'CO - Cherry Creek'
+            facility: 'CO - Greenwood Village'
           }
         ]
       },
@@ -62,7 +62,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: ['CO']
+          state: 'CO'
         },
         name: 'Jordan Gonzales',
         id: '1642',
@@ -110,7 +110,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: ['NY']
+          state: 'NY'
         },
         name: 'Summer Johnke',
         id: '1733',
@@ -158,7 +158,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: ['CO']
+          state: 'CO'
         },
         name: 'Meggan Grant',
         id: '1759',
@@ -209,7 +209,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: ['NY']
+          state: 'NY'
         },
         name: 'Monet Mindell',
         id: '1779',
@@ -256,7 +256,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: ['NY']
+          state: 'NY'
         },
         name: 'Ioana Bontea',
         id: '1805',
@@ -303,7 +303,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: ['NY']
+          state: 'NY'
         },
         name: 'Luciana Forzisi',
         id: '1820',
@@ -354,7 +354,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: ['CO']
+          state: 'CO'
         },
         name: 'Melanie Hane',
         id: '1824',

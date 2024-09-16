@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import {} from 'daisyui';
-import { upperFirst } from 'lodash-es';
+import { upperFirst, uniq } from 'lodash-es';
 import clsx from 'clsx';
 
 import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
@@ -22,10 +22,8 @@ export const ProviderCard: FC<ProviderProps> = ({
 }) => {
   const { button = 'Book appointment' } = text || {};
 
-  const availableLocations = provider.location?.state ?? [];
-  const locations = availableLocations
-    .map((location: string) => toFullNameState(location))
-    .join(', ');
+  const location = provider.location?.state ?? '';
+  const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
 
   return (
     <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
@@ -43,53 +41,45 @@ export const ProviderCard: FC<ProviderProps> = ({
             <h3 className='text-slate-800 text-lg m-0 font-semibold'>
               {provider.name}
             </h3>
+            {location.length > 0 && (
+              <span className='text-slate-600 text-md'>
+                {toFullNameState(location)}
+              </span>
+            )}
           </div>
         </div>
         <div className='flex'>
           <Slot count={provider.events?.length ?? 0} />
-          {/* <div
-            className={clsx('self-center', {
-              'text-primary': provider.events?.length ?? 0 > 0,
-              'text-slate-500': provider.events?.length ?? 0 === 0
-            })}
-          >
-            {provider.events?.length} slots available
-          </div> */}
         </div>
       </div>
       <div className={clsx('mt-4 bg-slate-100 rounded-md p-3')}>
         <div>
           <ul className='flex flex-wrap list-none m-0 p-0 gap-y-4 mb-4'>
             {provider.gender && (
-              <ListItem
+              <SingleItem
                 label='Gender'
                 value={toFullNameGender(provider.gender)}
               />
             )}
-            {/* {provider.language && (
-              <ListItem
-                label='Language'
-                value={ISO6391.getName(provider.language)}
-              />
-            )} */}
             {provider.ethnicity && (
-              <ListItem label='Ethnicity' value={provider.ethnicity} />
+              <SingleItem label='Ethnicity' value={provider.ethnicity} />
             )}
+
             {provider.clinicalFocus && (
-              <ListItem
-                label='Clinical focus'
-                value={provider.clinicalFocus
-                  .map((_f) => upperFirst(_f))
-                  .join(', ')}
+              <MultiItem
+                label='Clinical Focus'
+                values={provider.clinicalFocus.map((_f) => upperFirst(_f))}
               />
             )}
-            {availableLocations.length > 0 && (
-              <ListItem
-                label='Clinic location(s)'
-                value={`Sees patients in person in ${locations}`}
+          </ul>
+          <ul className='flex flex-wrap list-none m-0 p-0 gap-y-4 mb-4'>
+            {facilities.length > 0 && (
+              <SingleItem
+                label={`Clinic Location${facilities.length > 1 ? 's' : ''}`}
+                value={facilities.join(', ')}
               />
             )}
-            {provider.bio && <BioListItem label='Bio' value={provider.bio} />}
+            {provider.bio && <BioItem label='Bio' value={provider.bio} />}
           </ul>
         </div>
         <div>
@@ -105,7 +95,23 @@ export const ProviderCard: FC<ProviderProps> = ({
   );
 };
 
-const ListItem: FC<{ label: string; value: string }> = ({ label, value }) => {
+const MultiItem: FC<{ label: string; values: string[] }> = ({
+  label,
+  values
+}) => {
+  return (
+    <li className='flex-1 basis-1/2'>
+      <span className='font-semibold text-primary'>{label}: </span>
+      {values.map((value) => (
+        <div key={value} className='badge badge-primary badge-outline'>
+          {value}
+        </div>
+      ))}
+    </li>
+  );
+};
+
+const SingleItem: FC<{ label: string; value: string }> = ({ label, value }) => {
   return (
     <li className='flex-1 basis-1/2'>
       <span className='font-semibold text-primary'>{label}: </span>
@@ -114,32 +120,29 @@ const ListItem: FC<{ label: string; value: string }> = ({ label, value }) => {
   );
 };
 
-interface BioProps {
-  label: string;
-  value: string;
-}
-
-const BioListItem: FC<BioProps> = ({ label, value }) => {
+const BioItem: FC<{ label: string; value: string }> = ({ label, value }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleBio = () => {
     setIsExpanded(!isExpanded);
   };
-
+  const classes =
+    'text-blue-500 rounded-full text-sm text-blue font-medium flex items-center justify-center';
   return (
     <li className='flex-1 basis-full'>
       <span className='font-semibold text-primary'>{label}: </span>
       {isExpanded ? (
         <>
           <span>{value}</span>
-          <button onClick={toggleBio} className='text-blue-500 ml-2'>
+          <button onClick={toggleBio} className={classes}>
             {' < Hide'}
           </button>
         </>
       ) : (
         <>
           <span>{value.substring(0, 100)}...</span>
-          <button onClick={toggleBio} className='text-blue-500 ml-2'>
+
+          <button onClick={toggleBio} className={classes}>
             {' > Show more'}
           </button>
         </>

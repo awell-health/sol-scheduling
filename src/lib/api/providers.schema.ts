@@ -2,12 +2,6 @@ import { z } from 'zod';
 import { errorSchema } from './shared.schema';
 import { Event } from './availabilities.schema';
 
-/**
- * The back-end can receive any string (no validation) but the front-end needs to display
- * a list of supported states
- */
-export const supportedStates = z.enum(['CO', 'NY', 'TX', 'VA', 'MD', 'DC']);
-
 const ageSchema = z.coerce.string(); // Both number and string will work
 export const genderSchema = z.enum(['M', 'F', 'Non-binary/non-conforming']);
 const ethnicitySchema = z.enum([
@@ -41,7 +35,11 @@ const clinicalFocusSchema = z.array(
 );
 const deliveryMethodSchema = z.enum(['virtual', 'in-person']);
 const facilitySchema = z.enum(['f1', 'f2', 'f3']); // "f1" = "Broomfield", "f2" = "Colorado", "f3" = "New York".
-export const stateSchema = z.array(supportedStates);
+/**
+ * The back-end can receive any string (no validation) but the front-end needs to display
+ * a list of supported states
+ */
+export const stateSchema = z.enum(['CO', 'NY', 'TX', 'VA', 'MD', 'DC']);
 
 /**
  * All parameters are optional
