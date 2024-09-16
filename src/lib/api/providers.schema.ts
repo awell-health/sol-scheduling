@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { errorSchema } from './shared.schema';
 import { Event } from './availabilities.schema';
 
-const ageSchema = z.string();
+const ageSchema = z.coerce.string(); // Both number and string will work
 export const genderSchema = z.enum(['M', 'F', 'Non-binary/non-conforming']);
 const ethnicitySchema = z.enum([
   'Asian',
@@ -35,38 +35,29 @@ const clinicalFocusSchema = z.array(
 );
 const deliveryMethodSchema = z.enum(['virtual', 'in-person']);
 const facilitySchema = z.enum(['f1', 'f2', 'f3']); // "f1" = "Broomfield", "f2" = "Colorado", "f3" = "New York".
-export const stateSchema = z.enum([
-  'AL',
-  'CO',
-  'CT',
-  'DC',
-  'FL',
-  'KS',
-  'MD',
-  'ME',
-  'MN',
-  'NC',
-  'NJ',
-  'NM',
-  'NV',
-  'NY',
-  'PA',
-  'TX',
-  'VA',
-  'WY'
-]);
 
+/**
+ * The back-end can receive any string (no validation) but the front-end needs to display
+ * a list of supported states
+ */
+export const stateSchema = z.enum(['CO', 'NY', 'TX', 'VA', 'MD', 'DC']);
+
+/**
+ * All parameters are optional
+ */
 export const GetProvidersInputSchema = z.object({
   age: ageSchema.optional(),
   gender: genderSchema.optional(),
   ethnicity: ethnicitySchema.optional(),
-  language: languageSchema.optional(), // Not implemented
+  // Not implemented
+  language: languageSchema.optional(),
   therapeuticModality: therapeuticModality.optional(),
   clinicalFocus: clinicalFocusSchema.optional(),
   deliveryMethod: deliveryMethodSchema.optional(),
   location: z
     .object({
-      facility: facilitySchema.optional(), // Not implemented
+      // Not implemented
+      facility: facilitySchema.optional(),
       state: stateSchema.optional()
     })
     .optional()
@@ -74,24 +65,30 @@ export const GetProvidersInputSchema = z.object({
 
 export type GetProvidersInputType = z.infer<typeof GetProvidersInputSchema>;
 
+/**
+ * Marking some fields as optional to enforce
+ * defensive programming in the front-end
+ */
 export const GetProvidersResponseSchema = z
   .object({
     data: z.array(
       z.object({
+        gender: genderSchema.optional(),
+        ethnicity: ethnicitySchema.optional(),
+        // Not implemented
+        // language: z.string().optional(),
+        location: z
+          .object({
+            // Not implemented
+            facility: z.string().optional(),
+            state: stateSchema.optional()
+          })
+          .optional(),
         name: z.string(),
-        email: z.string().optional(),
         id: z.string(), // Data warehouse ID
-        gender: genderSchema,
-        ethnicity: ethnicitySchema,
+        clinicalFocus: z.array(z.string()).optional(),
         bio: z.string().optional(),
         image: z.string().optional(),
-        clinicalFocus: z.array(z.string()),
-        language: z.string().optional(), // Not implemented
-        location: z.object({
-          facility: z.string().optional(), // Not implemented
-          state: stateSchema
-        }),
-        numberOfSlotsAvailable: z.number().optional(),
         events: z.array(Event).nullable()
       })
     )
