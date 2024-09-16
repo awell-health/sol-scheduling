@@ -7,8 +7,7 @@ const stateNameMap: Record<z.infer<typeof stateSchema>, string> = {
   TX: 'Texas',
   VA: 'Virginia',
   MD: 'Maryland',
-  DC: 'District of Columbia',
-  '': ''
+  DC: 'District of Columbia'
 };
 
 export const toFullNameState = (shortHandState: string): string => {

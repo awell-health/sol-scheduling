@@ -34,16 +34,13 @@ const clinicalFocusSchema = z.array(
   ])
 );
 const deliveryMethodSchema = z.enum(['virtual', 'in-person']);
-const facilitySchema = z.union([z.enum(['f1', 'f2', 'f3']), z.literal('')]); // "f1" = "Broomfield", "f2" = "Colorado", "f3" = "New York".
+const facilitySchema = z.enum(['f1', 'f2', 'f3']); // "f1" = "Broomfield", "f2" = "Colorado", "f3" = "New York".
 
 /**
  * The back-end can receive any string (no validation) but the front-end needs to display
  * a list of supported states
  */
-export const stateSchema = z.union([
-  z.enum(['CO', 'NY', 'TX', 'VA', 'MD', 'DC']),
-  z.literal('')
-]);
+export const stateSchema = z.enum(['CO', 'NY', 'TX', 'VA', 'MD', 'DC']);
 
 /**
  * All parameters are optional
