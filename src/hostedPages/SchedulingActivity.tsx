@@ -112,9 +112,11 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   );
 
   const handleDateSelect = useCallback(
-    (date: Date) => {
-      onDateSelect(date);
-      setSelectedDate(date);
+    (date?: Date) => {
+      if (date) {
+        onDateSelect(date);
+        setSelectedDate(date);
+      }
       setSelectedSlot(undefined); // Reset slot
     },
     [onDateSelect]

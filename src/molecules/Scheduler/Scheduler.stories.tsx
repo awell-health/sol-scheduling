@@ -39,7 +39,7 @@ export const Scheduler: Story = {
       args.slot || undefined
     );
 
-    const handleDateSelect = (date: Date) => {
+    const handleDateSelect = (date?: Date) => {
       setSelectedSlot(undefined);
       setSelectedDate(date);
       args.onDateSelect(date);

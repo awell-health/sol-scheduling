@@ -24,7 +24,8 @@ export const BookingConfirmation: Story = {
       eventId: 'event-1',
       slotstart: new Date(),
       duration: 30,
-      providerId: 'provider-1'
+      providerId: 'provider-1',
+      facility: 'NY - Union Square'
     },
     providerName: 'Nick Hellemans',
     otherBookingData: {

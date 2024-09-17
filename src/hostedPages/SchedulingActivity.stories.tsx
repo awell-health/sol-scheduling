@@ -105,7 +105,7 @@ export const SchedulingActivity: Story = {
     };
 
     const fetchProvidersFn = useCallback(async () => {
-      const { data, ...rest } = await args.fetchProviders();
+      const { data, ...rest } = await args.fetchProviders(providerPrefs);
       console.log('fetched providers');
       return {
         data: data.filter((p) => {

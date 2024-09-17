@@ -15,7 +15,7 @@ export type SchedulerProps = {
   slot?: SlotType;
   availabilities: SlotType[];
   loadingAvailabilities?: boolean;
-  onDateSelect: (date: Date) => void;
+  onDateSelect: (date?: Date) => void;
   onSlotSelect: (slot: SlotType) => void;
   onBooking: (slot: SlotType) => void;
   opts?: {

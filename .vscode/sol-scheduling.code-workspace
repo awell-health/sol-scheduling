@@ -19,18 +19,6 @@
     "[typescriptreact]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "files.exclude": {
-      "**/.git": true,
-      "**/.svn": true,
-      "**/.hg": true,
-      "**/CVS": true,
-      "**/.DS_Store": true,
-      "**/Thumbs.db": true,
-      "**/*.d.ts": true,
-      "**/*.js.map": true,
-      "**/.retool_types/**": true,
-      ".cache": true
-    },
     "eslint.nodePath": ".yarn/sdks",
     "eslint.run": "onSave",
     "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs"
