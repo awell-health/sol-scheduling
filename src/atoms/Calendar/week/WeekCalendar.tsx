@@ -1,6 +1,9 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-import clsx from 'clsx';
 import { FC, useState, useMemo, useCallback } from 'react';
+import {} from 'daisyui';
+import { uniq } from 'lodash-es';
+import clsx from 'clsx';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
+
 import {
   format,
   addWeeks,
@@ -13,6 +16,7 @@ import {
   isBefore
 } from 'date-fns';
 import { type SlotType } from '../../../lib/api';
+import { DayCard } from './DayCard';
 
 export interface WeekCalendarProps {
   value?: Date;
@@ -23,6 +27,7 @@ export interface WeekCalendarProps {
   weekStartsOn?: 'sunday' | 'monday';
   hideWeekends?: boolean;
   allowSchedulingInThePast?: boolean;
+  preferedLocation?: string;
 }
 
 export const WeekCalendar: FC<WeekCalendarProps> = ({
@@ -33,10 +38,15 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   loading,
   weekStartsOn = 'sunday',
   hideWeekends = true,
-  allowSchedulingInThePast = false
+  allowSchedulingInThePast = false,
+  preferedLocation = 'virtual'
 }) => {
   const [currentWeek, setCurrentWeek] = useState(week);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
+  const [selectedLocation, setSelectedLocation] =
+    useState<string>(preferedLocation);
+  const [filteredAvailabilities, setFilteredAvailabilities] =
+    useState<SlotType[]>(availabilities);
 
   const handlePreviousWeek = useCallback(() => {
     setCurrentWeek((prevWeek) => subWeeks(prevWeek, 1));
@@ -45,6 +55,36 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const handleNextWeek = useCallback(() => {
     setCurrentWeek((prevWeek) => addWeeks(prevWeek, 1));
   }, []);
+
+  const handleSelectLocation = useCallback(
+    (location: string) => {
+      setSelectedLocation(location);
+      if (location !== 'virtual') {
+        setFilteredAvailabilities(
+          availabilities.filter((slot) => slot.facility === location)
+        );
+      } else {
+        setFilteredAvailabilities(availabilities);
+      }
+    },
+    [selectedLocation]
+  );
+
+  // Get unique facilities from availabilities
+  const availableFacilities = useMemo(() => {
+    // Extract the 'facility' field from each slot
+    const uniqueFacilities = uniq(
+      availabilities.map((slot) => {
+        return slot.facility ? slot.facility : 'virtual';
+      })
+    );
+    // Add 'virtual' if it's not already in the array
+    if (!uniqueFacilities.includes('virtual')) {
+      uniqueFacilities.push('virtual');
+    }
+
+    return uniqueFacilities;
+  }, [availabilities]);
 
   const handleDateClick = useCallback(
     (date: Date) => {
@@ -58,11 +98,11 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
 
   const isAvailable = useCallback(
     (date: Date) => {
-      return availabilities.some((availableSlot) =>
+      return filteredAvailabilities.some((availableSlot) =>
         isSameDay(date, availableSlot.slotstart)
       );
     },
-    [availabilities]
+    [filteredAvailabilities]
   );
 
   const isDisabled = useCallback(
@@ -76,12 +116,13 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     [allowSchedulingInThePast]
   );
 
-  const countavailabilities = useCallback(
+  const countAvailabilities = useCallback(
     (date: Date) => {
-      return availabilities.filter((slot) => isSameDay(slot.slotstart, date))
-        .length;
+      return filteredAvailabilities.filter((slot) =>
+        isSameDay(slot.slotstart, date)
+      ).length;
     },
-    [availabilities]
+    [filteredAvailabilities]
   );
 
   const days = useMemo(() => {
@@ -96,7 +137,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
       isDisabled: isDisabled(date),
       isAvailable: isAvailable(date),
       shortDayName: format(date, 'EEE'),
-      availabilitiesCount: countavailabilities(date)
+      availabilitiesCount: countAvailabilities(date)
     }));
 
     if (hideWeekends) {
@@ -113,7 +154,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     hideWeekends,
     isDisabled,
     isAvailable,
-    countavailabilities,
+    countAvailabilities,
     weekStartsOn
   ]);
 
@@ -122,10 +163,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     'text-primary size-8 font-bold'
   );
 
-  const cannotActivate = (day: (typeof days)[0]) => {
-    return day.isDisabled || !day.isAvailable || day.availabilitiesCount === 0;
-  };
-
   return (
     <div className={'relative'}>
       {loading && (
@@ -133,6 +170,11 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           <span className='loading loading-spinner loading-lg text-primary'></span>
         </div>
       )}
+      <Menu
+        options={availableFacilities}
+        selected={selectedLocation}
+        onSelect={handleSelectLocation}
+      />
       <div className='flex justify-between align-center mb-4 items-center'>
         <div className='text-lg font-medium'>
           {`${format(currentWeek, 'MMMM yyyy')}`}
@@ -154,76 +196,34 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
       </div>
       <div className={clsx('flex gap-2 lg:gap-4 flex-col md:flex-row')}>
         {days.map((day) => (
-          <button
+          <DayCard
             key={day.date.toString()}
-            type='button'
-            onClick={() => handleDateClick(day.date)}
-            disabled={cannotActivate(day)}
-            className={clsx(
-              'flex flex-1 md:flex-col justify-between md:justify-center align-center p-4',
-              'font-bold text-lg text-center rounded-md',
-              {
-                'border-slate-200 border-1 bg-white': !day.isSelected,
-                'border-1 border-primary ring-4 ring-secondary': day.isSelected,
-                'bg-slate-100 cursor-not-allowed text-slate-300 border-2 border-slate-200':
-                  day.isDisabled,
-                'hover:z-10 hover:bg-secondary hover:border-primary cursor-pointer':
-                  !cannotActivate(day)
-              }
-            )}
-          >
-            <time
-              dateTime={day.date.toISOString()}
-              className={clsx(
-                'flex flex-row md:flex-none md:block gap-1 md:self-center',
-                {
-                  'text-slate-400': cannotActivate(day),
-                  'text-slate-800': !cannotActivate(day) && !day.isSelected,
-                  'text-primary': day.isSelected
-                }
-              )}
-            >
-              <div className='font-medium'>{day.shortDayName}</div>
-              <div>{day.date.getDate()}</div>
-              <div>{format(day.date, 'MMM')}</div>
-            </time>
-            <div
-              className={clsx('self-center flex', {
-                'text-slate-400': true
-              })}
-            >
-              <Slot
-                count={
-                  !day.isAvailable || day.isDisabled
-                    ? 0
-                    : day.availabilitiesCount
-                }
-              />
-            </div>
-          </button>
+            day={day}
+            onSelect={handleDateClick}
+          />
         ))}
       </div>
     </div>
   );
 };
 
-const Slot: FC<{ count: number }> = ({ count }) => {
-  const slotText = count === 1 ? 'slot' : 'slots';
+const Menu: FC<{
+  options: Array<string>;
+  selected: string;
+  onSelect: (location: string) => void;
+}> = ({ options, selected, onSelect }) => {
   return (
-    <div className='flex mt-2 gap-2 md:gap-0 md:flex-col flex-row'>
-      <div
-        className={clsx(
-          'rounded-full text-sm text-white font-medium my-2 self-center px-4 py-1 w-[90px]',
-          {
-            'bg-slate-300': count === 0,
-            'bg-yellow-500': count > 0 && count <= 2,
-            'bg-green-600': count > 2
-          }
-        )}
-        aria-hidden='true'
-      >
-        {count === 0 ? 'No slots' : `${count} ${slotText}`}
-      </div>
-    </div>
+    <ul className='menu menu-horizontal rounded-box gap-2'>
+      {options.map((option) => (
+        <li key={option}>
+          <button
+            className={`btn btn-sm ${option === selected ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => onSelect(option)}
+          >
+            {option}
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 };

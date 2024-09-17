@@ -5,10 +5,10 @@ import { type SlotType } from '../../lib/api';
 import clsx from 'clsx';
 
 export interface SlotsProps {
-  value?: SlotType;
-  slots?: SlotType[];
   timeZone: string;
   onSelect: (slot: SlotType) => void;
+  value?: SlotType;
+  slots?: SlotType[];
   loading?: boolean;
   orientation?: 'vertical' | 'horizontal';
   text?: {
@@ -17,12 +17,12 @@ export interface SlotsProps {
 }
 
 export const Slots: FC<SlotsProps> = ({
-  value = undefined,
-  slots,
   timeZone,
+  onSelect,
+  value,
+  slots,
   orientation = 'horizontal',
   loading,
-  onSelect,
   text
 }) => {
   const [selectedSlot, setSelectedSlot] = useState<SlotType | null>(null);

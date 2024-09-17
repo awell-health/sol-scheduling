@@ -27,43 +27,50 @@ export const Slots: Story = {
         eventId: 'event-1',
         slotstart: new Date('2024-07-12 00:00:00 +0200'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-2',
         slotstart: new Date('2024-07-12 00:15:00 +0200'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-3',
         slotstart: new Date('2024-07-12 00:30:00 +0200'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-4',
         slotstart: new Date('2024-07-12 00:45:00 +0200'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-5',
         slotstart: new Date('2024-07-12 01:00:00 +0200'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-6',
         slotstart: new Date('2024-07-12 01:15:00 +0200'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-7',
         slotstart: new Date('2024-07-12 01:30:00 +0200'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       }
     ]
   }
