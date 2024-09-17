@@ -2,7 +2,8 @@ name: Chromatic (Storybook)
 
 on:
   workflow_run:
-    workflows: [Build and test]
+    workflows:
+      - Build and test
     types:
       - completed
 

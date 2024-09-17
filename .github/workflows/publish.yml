@@ -2,7 +2,8 @@ name: Publish npm package
 
 on:
   workflow_run:
-    workflows: [Chromatic (Storybook)]
+    workflows:
+      - Chromatic (Storybook)
     types:
       - completed
     branches:
