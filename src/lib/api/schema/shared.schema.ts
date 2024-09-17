@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { GetAvailabilitiesResponseType } from '../../lib/api';
+import { GetAvailabilitiesResponseType } from '..';
 
 export type SlotType = Pick<
   GetAvailabilitiesResponseType['data'][string][number],
