@@ -1,17 +1,17 @@
 name: Chromatic (Storybook)
 
 on:
-  workflow_run:
-    workflows:
-      - Build and test
-    types:
-      - completed
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
 
 jobs:
   chromatic:
     name: Run Chromatic
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
