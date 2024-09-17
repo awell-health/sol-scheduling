@@ -53,6 +53,7 @@ const preferencesToFiltersArray = (
           return {
             key: 'gender',
             label: 'Gender',
+            selectType: 'single',
             enum: Gender,
             options: optionsFromEnum(Gender),
             selectedOptions: [preferences[key]]
@@ -62,6 +63,7 @@ const preferencesToFiltersArray = (
           return {
             key: 'ethnicity',
             label: 'Ethnicity',
+            selectType: 'single',
             enum: Ethnicity,
             options: optionsFromEnum(Ethnicity),
             selectedOptions: [preferences[key]]
@@ -74,6 +76,7 @@ const preferencesToFiltersArray = (
           return {
             key: 'clinicalFocus',
             label: 'Clinical Focus',
+            selectType: 'multi',
             enum: ClinicalFocus,
             options: optionsFromEnum(ClinicalFocus),
             selectedOptions: preferences[key]
@@ -92,6 +95,7 @@ const preferencesToFiltersArray = (
           return {
             key: 'deliveryMethod',
             label: 'Delivery Method',
+            selectType: 'single',
             enum: DeliveryMethod,
             options: optionsFromEnum(DeliveryMethod),
             selectedOptions: []

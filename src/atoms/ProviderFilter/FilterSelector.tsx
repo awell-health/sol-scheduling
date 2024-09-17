@@ -26,6 +26,22 @@ const FilterSelector: FC<Props> = (props) => {
     setTextFilteredOptions(opts);
   };
 
+  const onSelectOption = (value: string) => {
+    if (filter.selectType === 'single') {
+      updateFilter({
+        ...filter,
+        selectedOptions: [value]
+      });
+    } else {
+      updateFilter({
+        ...filter,
+        selectedOptions: filter.selectedOptions.includes(value)
+          ? filter.selectedOptions.filter((v) => v !== value)
+          : [...filter.selectedOptions, value]
+      });
+    }
+  };
+
   return (
     <>
       <div className={'flex justify-between items-center mb-2 mx-4'}>
@@ -72,12 +88,7 @@ const FilterSelector: FC<Props> = (props) => {
               )}
               onClick={(e) => {
                 e.preventDefault();
-                updateFilter({
-                  ...filter,
-                  selectedOptions: filter.selectedOptions.includes(value)
-                    ? filter.selectedOptions.filter((v) => v !== value)
-                    : [...filter.selectedOptions, value]
-                });
+                onSelectOption(value);
               }}
             >
               {label}

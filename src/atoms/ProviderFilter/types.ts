@@ -32,6 +32,7 @@ export interface FilterOption<T extends FilterEnum> {
 export interface FilterType<T extends FilterEnum> {
   label: string;
   key: keyof GetProvidersInputType; // key should match the field in GetProvidersInputType
+  selectType: 'single' | 'multi';
   enum: FilterEnum;
   options: FilterOption<T>[]; // array of FilterOption based on the enum
   selectedOptions: FilterType<T>['options'][0]['value'][];
