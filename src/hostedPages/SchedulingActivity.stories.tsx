@@ -10,8 +10,15 @@ import {
   mockProviderAvailabilityResponse,
   mockProvidersResponse
 } from '../lib/api/__mocks__';
-import { useCallback, useEffect } from 'react';
-import { type SlotType } from '../lib/api';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  ClinicalFocus,
+  Ethnicity,
+  GetProvidersInputType,
+  type SlotType
+} from '../lib/api';
+import { Gender } from '../lib/api';
+import { some } from 'lodash-es';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity',
@@ -45,7 +52,14 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
       return new Promise((resolve) =>
         setTimeout(() => resolve({ data: [] }), 1500)
       );
-    })
+    }),
+    providerPreferences: {
+      gender: Gender.Male,
+      ethnicity: Ethnicity.White,
+      age: '18-65',
+      clinicalFocus: [ClinicalFocus.Depression, ClinicalFocus.Anxiety]
+    } satisfies GetProvidersInputType,
+    onProviderPreferencesChange: fn()
   },
   decorators: [
     (StoryComponent) => (
@@ -80,7 +94,39 @@ export const SchedulingActivity: Story = {
       };
     }, []);
 
-    const fetchProvidersFn = useCallback(() => args.fetchProviders(), []);
+    const [providerPrefs, setProviderPrefs] = useState<GetProvidersInputType>(
+      args.providerPreferences as GetProvidersInputType
+    );
+
+    const handlePrefsChange = (prefs: GetProvidersInputType) => {
+      console.log('Prefs changed', prefs);
+      setProviderPrefs(prefs);
+      fetchProvidersFn();
+    };
+
+    const fetchProvidersFn = useCallback(async () => {
+      const { data, ...rest } = await args.fetchProviders();
+      console.log('fetched providers');
+      return {
+        data: data.filter((p) => {
+          if (
+            providerPrefs.clinicalFocus &&
+            providerPrefs.clinicalFocus.length > 0
+          ) {
+            return some(
+              providerPrefs.clinicalFocus.map((f) =>
+                p.clinicalFocus
+                  ?.map((cf) => cf.toLowerCase())
+                  .includes(f.toLowerCase())
+              )
+            );
+          } else {
+            return true;
+          }
+        }),
+        ...rest
+      };
+    }, [providerPrefs]);
 
     const fetchAvailabilityFn = useCallback(
       (_providerId: string) => args.fetchAvailability(_providerId),
@@ -107,6 +153,8 @@ export const SchedulingActivity: Story = {
         onCompleteActivity={completeActivity}
         onBooking={bookAppointmentFn}
         fetchAvailability={fetchAvailabilityFn}
+        providerPreferences={providerPrefs}
+        onProviderPreferencesChange={handlePrefsChange}
       />
     );
   },

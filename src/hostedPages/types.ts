@@ -1,4 +1,5 @@
 import {
+  GetProvidersInputType,
   type BookAppointmentResponseType,
   type GetAvailabilitiesResponseType,
   type GetProvidersResponseType,
@@ -12,11 +13,15 @@ export interface SchedulingActivityProps {
   onDateSelect: (date: Date) => void;
   onSlotSelect: (slot: SlotType) => void;
   onBooking: (slot: SlotType) => Promise<BookAppointmentResponseType>;
-  fetchProviders: () => Promise<GetProvidersResponseType>;
+  fetchProviders: (
+    prefs: GetProvidersInputType
+  ) => Promise<GetProvidersResponseType>;
   fetchAvailability: (
     providerId: string
   ) => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: (slot: SlotType) => void;
+  providerPreferences: GetProvidersInputType;
+  onProviderPreferencesChange: (preferences: GetProvidersInputType) => void;
   text?: {
     selectProvider?: {
       button?: string;

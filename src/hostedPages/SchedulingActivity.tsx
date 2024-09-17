@@ -9,6 +9,10 @@ import {
 import { type SlotType } from '../lib/api';
 import { isEmpty } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
+import {
+  ProviderFilter,
+  ProviderFilterProvider
+} from '../atoms/ProviderFilter';
 
 const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
 
@@ -22,6 +26,8 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   fetchProviders,
   fetchAvailability,
   onCompleteActivity,
+  providerPreferences,
+  onProviderPreferencesChange,
   text,
   opts
 }) => {
@@ -67,7 +73,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
 
     setLoadingProviders(true);
 
-    void fetchProviders().then(async (providers) => {
+    void fetchProviders(providerPreferences).then(async (providers) => {
       const providersWithSlots = await Promise.all(
         providers.data.map(async (p) => {
           const avail = await fetchAvailability(p.id);
@@ -191,7 +197,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
         className='flex-1'
         data-theme='sol'
       >
-        <div className='max-w-[650px] px-4 py-0 mx-auto my-0'>
+        <div className='max-w-[650px] px-4 py-0 mx-auto my-0 relative'>
           {showProviderStage && (
             <>
               {loadingProviders ? (
@@ -199,11 +205,17 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
                   <span className='loading loading-spinner loading-lg text-primary'></span>
                 </div>
               ) : (
-                <ProviderSelection
-                  onSelect={handleProviderSelect}
-                  providers={providers}
-                  text={{ button: text?.selectProvider?.button }}
-                />
+                <ProviderFilterProvider
+                  initialPreferences={providerPreferences}
+                  onProviderPreferencesChange={onProviderPreferencesChange}
+                >
+                  <ProviderFilter />
+                  <ProviderSelection
+                    onSelect={handleProviderSelect}
+                    providers={providers}
+                    text={{ button: text?.selectProvider?.button }}
+                  />
+                </ProviderFilterProvider>
               )}
             </>
           )}
