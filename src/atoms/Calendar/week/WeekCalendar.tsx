@@ -20,7 +20,7 @@ import { DayCard } from './DayCard';
 
 export interface WeekCalendarProps {
   value?: Date;
-  onSelect: (date: Date) => void;
+  onSelect: (date?: Date) => void;
   week?: Date;
   availabilities?: SlotType[];
   loading?: boolean;
@@ -60,6 +60,9 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     (location: string) => {
       setSelectedLocation(location);
       if (location !== 'virtual') {
+        // only clear the slots when location is not virtual
+        setSelectedDate(undefined);
+        onSelect(undefined);
         setFilteredAvailabilities(
           availabilities.filter((slot) => slot.facility === location)
         );
@@ -170,7 +173,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           <span className='loading loading-spinner loading-lg text-primary'></span>
         </div>
       )}
-      <Menu
+      <LocationFilter
         options={availableFacilities}
         selected={selectedLocation}
         onSelect={handleSelectLocation}
@@ -207,7 +210,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   );
 };
 
-const Menu: FC<{
+const LocationFilter: FC<{
   options: Array<string>;
   selected: string;
   onSelect: (location: string) => void;
