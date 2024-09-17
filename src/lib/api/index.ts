@@ -2,7 +2,14 @@ export {
   GetProvidersInputSchema,
   GetProvidersResponseSchema,
   type GetProvidersInputType,
-  type GetProvidersResponseType
+  type GetProvidersResponseType,
+  Gender,
+  Genders as GenderSchema,
+  Ethnicity,
+  Ethnicities as EthnicitySchema,
+  Modality,
+  ClinicalFocus,
+  DeliveryMethod
 } from './providers.schema';
 
 export {

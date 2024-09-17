@@ -9,6 +9,10 @@ import {
 import { type SlotType } from '../lib/api';
 import { isEmpty } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
+import {
+  ProviderFilter,
+  ProviderFilterProvider
+} from '../atoms/ProviderFilter';
 
 const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
 
@@ -22,6 +26,8 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   fetchProviders,
   fetchAvailability,
   onCompleteActivity,
+  providerPreferences,
+  onProviderPreferencesChange,
   text,
   opts
 }) => {
@@ -199,11 +205,17 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
                   <span className='loading loading-spinner loading-lg text-primary'></span>
                 </div>
               ) : (
-                <ProviderSelection
-                  onSelect={handleProviderSelect}
-                  providers={providers}
-                  text={{ button: text?.selectProvider?.button }}
-                />
+                <ProviderFilterProvider
+                  initialPreferences={providerPreferences}
+                  onProviderPreferencesChange={onProviderPreferencesChange}
+                >
+                  <ProviderFilter />
+                  <ProviderSelection
+                    onSelect={handleProviderSelect}
+                    providers={providers}
+                    text={{ button: text?.selectProvider?.button }}
+                  />
+                </ProviderFilterProvider>
               )}
             </>
           )}

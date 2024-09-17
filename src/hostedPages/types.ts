@@ -1,4 +1,5 @@
 import {
+  GetProvidersInputType,
   type BookAppointmentResponseType,
   type GetAvailabilitiesResponseType,
   type GetProvidersResponseType,
@@ -17,6 +18,8 @@ export interface SchedulingActivityProps {
     providerId: string
   ) => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: (slot: SlotType) => void;
+  providerPreferences: GetProvidersInputType;
+  onProviderPreferencesChange: (preferences: GetProvidersInputType) => void;
   text?: {
     selectProvider?: {
       button?: string;
