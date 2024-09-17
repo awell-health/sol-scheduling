@@ -164,7 +164,8 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
       eventId: availability.eventId,
       slotstart: new Date(availability.slotstart),
       duration: availability.duration,
-      providerId: availability.providerId
+      providerId: availability.providerId,
+      facility: availability.facility
     }));
   }, [selectedProviderId, availabilities]);
 

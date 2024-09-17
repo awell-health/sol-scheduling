@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Scheduler as SchedulerComponent } from './Scheduler';
-import { ThemeProvider } from '@awell-health/ui-library';
 import { fn } from '@storybook/test';
 import { addDays } from 'date-fns';
-import { useState } from 'react';
+import { ThemeProvider } from '@awell-health/ui-library';
+
 import { type SlotType } from '../../lib/api';
+import { Scheduler as SchedulerComponent } from './Scheduler';
 
 const meta: Meta<typeof SchedulerComponent> = {
   title: 'Molecules/Scheduler',
@@ -69,97 +70,113 @@ export const Scheduler: Story = {
         eventId: 'event-0',
         slotstart: addDays(new Date().setUTCHours(9, 0, 0), -1),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'NY - Union Square'
       },
       {
         eventId: 'event-1',
-        slotstart: addDays(new Date().setUTCHours(9, 0, 0), 1),
+        slotstart: new Date('2024-09-18T09:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-2',
-        slotstart: addDays(new Date().setUTCHours(11, 0, 0), 1),
+        slotstart: new Date('2024-09-18T11:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-3',
-        slotstart: addDays(new Date().setUTCHours(14, 0, 0), 1),
+        slotstart: new Date('2024-09-18T14:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-4',
-        slotstart: addDays(new Date().setUTCHours(16, 0, 0), 1),
+        slotstart: new Date('2024-09-18T16:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-5',
-        slotstart: addDays(new Date().setUTCHours(9, 0, 0), 2),
+        slotstart: new Date('2024-09-19T09:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'NY - Union Square'
       },
       {
         eventId: 'event-6',
-        slotstart: addDays(new Date().setUTCHours(10, 0, 0), 2),
+        slotstart: new Date('2024-09-19T10:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'NY - Union Square'
       },
       {
         eventId: 'event-7',
-        slotstart: addDays(new Date().setUTCHours(12, 0, 0), 3),
+        slotstart: new Date('2024-09-20T12:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-8',
-        slotstart: addDays(new Date().setUTCHours(9, 0, 0), 5),
+        slotstart: new Date('2024-09-22T09:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-9',
-        slotstart: addDays(new Date().setUTCHours(9, 0, 0), 9),
+        slotstart: new Date('2024-09-26T09:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'NY - Union Square'
       },
       {
         eventId: 'event-10',
-        slotstart: addDays(new Date().setUTCHours(10, 0, 0), 9),
+        slotstart: new Date('2024-09-26T10:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'NY - Union Square'
       },
       {
         eventId: 'event-11',
-        slotstart: addDays(new Date().setUTCHours(9, 0, 0), 10),
+        slotstart: new Date('2024-09-27T09:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'NY - Union Square'
       },
       {
         eventId: 'event-12',
-        slotstart: addDays(new Date().setUTCHours(9, 0, 0), 11),
+        slotstart: new Date('2024-09-28T09:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-13',
-        slotstart: addDays(new Date().setUTCHours(10, 0, 0), 11),
+        slotstart: new Date('2024-09-28T10:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-14',
-        slotstart: addDays(new Date().setUTCHours(9, 0, 0), 12),
+        slotstart: new Date('2024-09-29T09:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       },
       {
         eventId: 'event-15',
-        slotstart: addDays(new Date().setUTCHours(9, 0, 0), 13),
+        slotstart: new Date('2024-09-30T09:00:00.172Z'),
         duration: 30,
-        providerId: 'provider-1'
+        providerId: 'provider-1',
+        facility: 'CO - Cherry Creek'
       }
     ]
   }
