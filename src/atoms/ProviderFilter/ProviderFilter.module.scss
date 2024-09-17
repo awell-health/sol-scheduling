@@ -1,0 +1,15 @@
+@media (max-width: 640px) {
+  .scrollable-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for Firefox */
+  .scrollable-container {
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* For all browsers, including IE/Edge (fallback) */
+  .scrollable-container {
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+}
