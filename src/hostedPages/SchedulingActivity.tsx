@@ -73,7 +73,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
 
     setLoadingProviders(true);
 
-    void fetchProviders().then(async (providers) => {
+    void fetchProviders(providerPreferences).then(async (providers) => {
       const providersWithSlots = await Promise.all(
         providers.data.map(async (p) => {
           const avail = await fetchAvailability(p.id);

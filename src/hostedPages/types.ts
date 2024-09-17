@@ -13,7 +13,9 @@ export interface SchedulingActivityProps {
   onDateSelect: (date: Date) => void;
   onSlotSelect: (slot: SlotType) => void;
   onBooking: (slot: SlotType) => Promise<BookAppointmentResponseType>;
-  fetchProviders: () => Promise<GetProvidersResponseType>;
+  fetchProviders: (
+    prefs: GetProvidersInputType
+  ) => Promise<GetProvidersResponseType>;
   fetchAvailability: (
     providerId: string
   ) => Promise<GetAvailabilitiesResponseType>;
