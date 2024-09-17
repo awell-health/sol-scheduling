@@ -37,7 +37,12 @@ const updatePreferencesWithFilters = (
       }
     }
   });
-  return prefs;
+  const parsed = GetProvidersInputSchema.safeParse(prefs);
+  if (!parsed.success) {
+    console.error('Error updating preferences with filters', parsed.error);
+    return prefs;
+  }
+  return parsed.data;
 };
 
 const preferencesToFiltersArray = (
