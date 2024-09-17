@@ -78,12 +78,11 @@ const FilterSelector: FC<Props> = (props) => {
             <div
               key={value}
               className={clsx(
-                'badge badge-lg cursor-pointer border-primary border-1',
+                'badge badge-lg cursor-pointer border-primary border-1 font-normal',
                 {
-                  'bg-primary text-white font-medium font-md':
+                  'bg-primary text-white font-md':
                     filter.selectedOptions.includes(value),
-                  'bg-slate-100 font-normal':
-                    !filter.selectedOptions.includes(value)
+                  'bg-slate-100': !filter.selectedOptions.includes(value)
                 }
               )}
               onClick={(e) => {

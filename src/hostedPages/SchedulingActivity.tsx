@@ -197,7 +197,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
         className='flex-1'
         data-theme='sol'
       >
-        <div className='max-w-[650px] px-4 py-0 mx-auto my-0'>
+        <div className='max-w-[650px] px-4 py-0 mx-auto my-0 relative'>
           {showProviderStage && (
             <>
               {loadingProviders ? (

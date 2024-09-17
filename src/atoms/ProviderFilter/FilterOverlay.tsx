@@ -27,9 +27,13 @@ const FilterOverlay: FC<FilterContainerProps> = ({ children }) => {
       />
       <div
         ref={ref}
-        className={`fixed top-0 left-0 w-full bg-slate-200 rounded-b-md text-slate-800 p-4 transition-transform duration-500 ease-in-out z-50 ${
-          isFiltered ? 'translate-y-0' : '-translate-y-full'
-        }`}
+        className={clsx(
+          'fixed top-0 left-1/2 transform -translate-x-1/2 max-w-[650px] w-full bg-slate-200 rounded-b-md text-slate-800 transition-transform duration-500 ease-in-out z-50 p-4',
+          {
+            'translate-y-0 p-4': isFiltered,
+            '-translate-y-full p-0': !isFiltered
+          }
+        )}
       >
         <div className='mt-2'>{children}</div>
       </div>

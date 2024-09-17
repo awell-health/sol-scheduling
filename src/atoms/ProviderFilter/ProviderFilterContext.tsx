@@ -31,7 +31,6 @@ export const ProviderFilterProvider: FC<ContextProps> = ({
   initialPreferences,
   onProviderPreferencesChange
 }) => {
-  console.log('rendered provider state');
   const [filters, setFilters] = useState<FilterType<FilterEnum>[]>(
     preferencesToFiltersArray(initialPreferences)
   );
