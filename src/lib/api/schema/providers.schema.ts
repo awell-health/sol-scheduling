@@ -12,6 +12,7 @@ import {
   TherapeuticModalitySchema,
   LocationStateSchema
 } from './atoms';
+import { isNil } from 'lodash-es';
 
 /**
  * All parameters are optional
@@ -60,7 +61,13 @@ export const GetProvidersResponseSchema = z
         clinicalFocus: z.array(z.string()).optional(),
         bio: z.string().optional(),
         image: z.string().optional(),
-        events: z.array(Event).nullable()
+        events: z
+          .array(Event)
+          .optional()
+          .transform((e) => {
+            if (isNil(e) || e.length === 0) return [];
+            return e;
+          })
       })
     )
   })
