@@ -39,7 +39,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   weekStartsOn = 'sunday',
   hideWeekends = true,
   allowSchedulingInThePast = false,
-  preferedLocation = 'virtual'
+  preferedLocation = 'Virtual'
 }) => {
   const [currentWeek, setCurrentWeek] = useState(week);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
@@ -59,7 +59,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const handleSelectLocation = useCallback(
     (location: string) => {
       setSelectedLocation(location);
-      if (location !== 'virtual') {
+      if (location !== 'Virtual') {
         // only clear the slots when location is not virtual
         setSelectedDate(undefined);
         onSelect(undefined);
@@ -78,12 +78,12 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     // Extract the 'facility' field from each slot
     const uniqueFacilities = uniq(
       availabilities.map((slot) => {
-        return slot.facility ? slot.facility : 'virtual';
+        return slot.facility ? slot.facility : 'Virtual';
       })
     );
     // Add 'virtual' if it's not already in the array
-    if (!uniqueFacilities.includes('virtual')) {
-      uniqueFacilities.push('virtual');
+    if (!uniqueFacilities.includes('Virtual')) {
+      uniqueFacilities.push('Virtual');
     }
 
     return uniqueFacilities;
