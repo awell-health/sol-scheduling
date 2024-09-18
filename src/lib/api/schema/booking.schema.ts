@@ -6,7 +6,8 @@ export const BookAppointmentInputSchema = z.object({
   providerId: z.string(),
   userInfo: z.object({
     userName: z.string()
-  })
+  }),
+  locationType: z.string()
 });
 
 export type BookAppointmentInputType = z.infer<
