@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { isSameDay } from 'date-fns';
 import clsx from 'clsx';
 import { isEmpty, isNil } from 'lodash-es';
@@ -65,6 +65,21 @@ export const Scheduler: FC<SchedulerProps> = ({
     setSlot(null);
   };
 
+  const bookingButtonRef = useRef<HTMLDivElement>(null);
+
+  const scrollToSlot = () => {
+    if (bookingButtonRef.current) {
+      bookingButtonRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  };
+
+  useEffect(() => {
+    scrollToSlot();
+  }, [slot]);
+
   const handleSlotSelect = (slot: SlotType) => {
     setSlot(slot);
     setSelectedSlot(slot);
@@ -118,7 +133,10 @@ export const Scheduler: FC<SchedulerProps> = ({
         </div>
       )}
       {date && slot && (
-        <div className='py-6 mt-6 border-t-1 border-slate-200'>
+        <div
+          className='py-6 mt-6 border-t-1 border-slate-200'
+          ref={bookingButtonRef}
+        >
           <button
             className={clsx('btn btn-primary w-full')}
             onClick={() => handleBooking(slot)}

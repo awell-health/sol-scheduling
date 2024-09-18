@@ -24,8 +24,6 @@ export interface WeekCalendarProps {
   value: Date | null;
   onSelect: (date: Date | null) => void;
   week?: Date;
-  // availabilities?: SlotType[];
-  // loading?: boolean;
   weekStartsOn?: 'sunday' | 'monday';
   hideWeekends?: boolean;
   allowSchedulingInThePast?: boolean;
