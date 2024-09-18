@@ -10,8 +10,7 @@ const FilterOverlay: FC<FilterContainerProps> = ({ children }) => {
   const { activeFilter, setActiveFilter } = usePreferences();
   const isFiltered = activeFilter !== null;
   const ref = useRef(null);
-  useClickAway(ref, (e) => {
-    e.preventDefault();
+  useClickAway(ref, () => {
     setActiveFilter(null);
   });
   return (
