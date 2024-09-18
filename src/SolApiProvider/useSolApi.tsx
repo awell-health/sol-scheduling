@@ -4,7 +4,7 @@ import { SolApiContext } from './SolApiContext';
 export const useSolApi = () => {
   const context = useContext(SolApiContext);
   if (!context) {
-    throw new Error('useSolApi must be used within a SolApiProvider');
+    throw new Error('useSolApi must be used within SolApiProvider');
   }
   return context;
 };

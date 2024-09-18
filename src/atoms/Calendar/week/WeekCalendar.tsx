@@ -65,7 +65,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
 
   const handleSelectLocation = useCallback(
     (location: string) => {
-      console.log('handling selected location');
       setSelectedLocation(location);
       setSelectedDate(null);
       onSelect(null);
@@ -82,7 +81,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
 
   // Get unique facilities from availabilities
   const availableFacilities = useMemo(() => {
-    console.log('getting available facilities');
     // Extract the 'facility' field from each slot
     const uniqueFacilities = uniq(
       availabilities.map((slot) => {
@@ -148,7 +146,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
       shortDayName: format(date, 'EEE'),
       availabilitiesCount: countAvailabilities(date)
     }));
-    console.log(generatedDays);
 
     if (hideWeekends) {
       generatedDays = generatedDays.filter(

@@ -27,7 +27,7 @@ export const BookingConfirmation: FC<BookingConfirmationProps> = ({
 
   const { bookingInformation } = usePreferences();
   const { provider, slot, preferences } = bookingInformation;
-  console.log({ provider, slot, preferences });
+
   if (!provider || !slot) {
     return (
       <div>

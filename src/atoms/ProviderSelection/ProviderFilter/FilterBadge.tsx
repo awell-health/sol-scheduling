@@ -7,11 +7,7 @@ interface Props<T extends FilterEnum> {
   filter: FilterType<T>;
 }
 
-const FilterBadge = <T extends FilterEnum>({
-  filter
-  // onSetFilter,
-  // onUpdateSelectedOptions
-}: Props<T>) => {
+const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
   const { setActiveFilter, updateFilter } = usePreferences();
   const isActive = filter.selectedOptions && filter.selectedOptions.length > 0;
   return (

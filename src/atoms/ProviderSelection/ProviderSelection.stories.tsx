@@ -12,7 +12,6 @@ import { fn } from '@storybook/test';
 const meta: Meta<typeof ProviderSelectionComponent> = {
   title: 'Atoms/ProviderSelection',
   component: ProviderSelectionComponent,
-  // args: { onSelect: fn() },
   decorators: [
     (Story) => (
       <ThemeProvider accentColor='#A45128'>
