@@ -10,7 +10,7 @@ import {
   mockProviderAvailabilityResponse,
   mockProvidersResponse
 } from '../lib/api/__mocks__';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   ClinicalFocus,
   Ethnicity,
@@ -27,10 +27,6 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     layout: 'fullscreen'
   },
   args: {
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    onProviderSelect: fn(),
-    onDateSelect: fn(),
-    onSlotSelect: fn(),
     onCompleteActivity: fn(),
     fetchProviders: () => {
       console.log('Fetching providers');
@@ -58,8 +54,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
       ethnicity: Ethnicity.White,
       age: '18-65',
       clinicalFocus: [ClinicalFocus.Depression, ClinicalFocus.Anxiety]
-    } satisfies GetProvidersInputType,
-    onProviderPreferencesChange: fn()
+    } satisfies GetProvidersInputType
   },
   decorators: [
     (StoryComponent) => (
@@ -93,16 +88,7 @@ export const SchedulingActivity: Story = {
         resetLayoutMode();
       };
     }, []);
-
-    const [providerPrefs, setProviderPrefs] = useState<GetProvidersInputType>(
-      args.providerPreferences as GetProvidersInputType
-    );
-
-    const handlePrefsChange = (prefs: GetProvidersInputType) => {
-      console.log('Prefs changed', prefs);
-      setProviderPrefs(prefs);
-      fetchProvidersFn();
-    };
+    const providerPrefs = args.providerPreferences;
 
     const fetchProvidersFn = useCallback(async () => {
       const { data, ...rest } = await args.fetchProviders(providerPrefs);
@@ -148,16 +134,11 @@ export const SchedulingActivity: Story = {
     return (
       <SchedulingActivityComponent
         providerId={args.providerId}
-        timeZone={args.timeZone}
-        onProviderSelect={args.onProviderSelect}
-        onDateSelect={args.onDateSelect}
-        onSlotSelect={args.onSlotSelect}
         fetchProviders={fetchProvidersFn}
         onCompleteActivity={completeActivity}
         onBooking={bookAppointmentFn}
         fetchAvailability={fetchAvailabilityFn}
         providerPreferences={providerPrefs}
-        onProviderPreferencesChange={handlePrefsChange}
       />
     );
   },
