@@ -45,8 +45,27 @@ export function isFilterType(f: unknown): f is FilterType<FilterEnum> {
 }
 
 export const optionsFromEnum = (enumType: FilterEnum) => {
-  return Object.entries(enumType).map(([key, value]) => ({
-    label: key.replace('_', ' ') as FilterEnum[keyof FilterEnum],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return Object.entries(enumType).map(([_key, value]) => ({
+    label: value as string,
     value: value as string
   }));
+};
+
+// mapping here because we cannot do it from the enum
+export const optionsFromGenderEnum = () => {
+  return [
+    {
+      label: 'Male',
+      value: 'M'
+    },
+    {
+      label: 'Female',
+      value: 'F'
+    },
+    {
+      label: 'Non-binary/non-conforming',
+      value: 'Non-binary/non-conforming'
+    }
+  ];
 };

@@ -74,23 +74,21 @@ const FilterSelector: FC<Props> = (props) => {
       <div className={clsx('flex w-full gap-2 px-4 flex-wrap z-20', className)}>
         {textFilteredOptions.map(({ value, label }) => {
           return (
-            <div
+            <button
               key={value}
-              className={clsx(
-                'badge badge-lg cursor-pointer border-primary border-1 font-normal',
-                {
-                  'bg-primary text-white font-md':
-                    filter.selectedOptions.includes(value),
-                  'bg-slate-100': !filter.selectedOptions.includes(value)
-                }
-              )}
+              className={clsx('btn btn-sm text-sm border-0', {
+                'bg-secondary text-slate-800 font-medium':
+                  filter.selectedOptions.includes(value),
+                'bg-slate-300 font-normal':
+                  !filter.selectedOptions.includes(value)
+              })}
               onClick={(e) => {
                 e.preventDefault();
                 onSelectOption(value);
               }}
             >
               {label}
-            </div>
+            </button>
           );
         })}
       </div>

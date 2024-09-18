@@ -10,7 +10,8 @@ import {
   FilterEnum,
   FilterType,
   isFilterType,
-  optionsFromEnum
+  optionsFromEnum,
+  optionsFromGenderEnum
 } from '../atoms/ProviderSelection/types';
 
 const updatePreferencesWithFilters = (
@@ -69,7 +70,7 @@ const preferencesToFiltersArray = (
             label: 'Gender',
             selectType: 'single',
             enum: Gender,
-            options: optionsFromEnum(Gender),
+            options: optionsFromGenderEnum(),
             selectedOptions: preferences[key] ? [preferences[key]] : []
           };
         }

@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Slots as SlotsComponent } from './Slots';
 import { ThemeProvider } from '@awell-health/ui-library';
 import { fn } from '@storybook/test';
+import { EventDeliveryMethod } from '@/lib/api/schema/atoms/eventDeliveryMethod.schema';
 
 const meta: Meta<typeof SlotsComponent> = {
   title: 'Atoms/Slots',
@@ -28,49 +29,56 @@ export const Slots: Story = {
         slotstart: new Date('2024-07-12 00:00:00 +0200'),
         duration: 30,
         providerId: 'provider-1',
-        facility: 'CO - Cherry Creek'
+        facility: 'CO - Cherry Creek',
+        location: EventDeliveryMethod.Both
       },
       {
         eventId: 'event-2',
         slotstart: new Date('2024-07-12 00:15:00 +0200'),
         duration: 30,
         providerId: 'provider-1',
-        facility: 'CO - Cherry Creek'
+        facility: 'CO - Cherry Creek',
+        location: EventDeliveryMethod.Both
       },
       {
         eventId: 'event-3',
         slotstart: new Date('2024-07-12 00:30:00 +0200'),
         duration: 30,
         providerId: 'provider-1',
-        facility: 'CO - Cherry Creek'
+        facility: 'CO - Cherry Creek',
+        location: EventDeliveryMethod.Both
       },
       {
         eventId: 'event-4',
         slotstart: new Date('2024-07-12 00:45:00 +0200'),
         duration: 30,
         providerId: 'provider-1',
-        facility: 'CO - Cherry Creek'
+        facility: 'CO - Cherry Creek',
+        location: EventDeliveryMethod.Both
       },
       {
         eventId: 'event-5',
         slotstart: new Date('2024-07-12 01:00:00 +0200'),
         duration: 30,
         providerId: 'provider-1',
-        facility: 'CO - Cherry Creek'
+        facility: 'CO - Cherry Creek',
+        location: EventDeliveryMethod.Both
       },
       {
         eventId: 'event-6',
         slotstart: new Date('2024-07-12 01:15:00 +0200'),
         duration: 30,
         providerId: 'provider-1',
-        facility: 'CO - Cherry Creek'
+        facility: 'CO - Cherry Creek',
+        location: EventDeliveryMethod.VirtualOnly
       },
       {
         eventId: 'event-7',
         slotstart: new Date('2024-07-12 01:30:00 +0200'),
         duration: 30,
         providerId: 'provider-1',
-        facility: 'CO - Cherry Creek'
+        facility: 'CO - Cherry Creek',
+        location: EventDeliveryMethod.VirtualOnly
       }
     ]
   }
