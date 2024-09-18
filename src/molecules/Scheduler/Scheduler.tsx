@@ -9,7 +9,7 @@ import { usePreferences } from '@/PreferencesProvider';
 import { useSolApi } from '@/SolApiProvider';
 
 export type SchedulerProps = {
-  onBooking: (slot: SlotType) => void;
+  onBookingError: () => void;
   opts?: {
     allowSchedulingInThePast?: boolean;
   };
@@ -20,7 +20,11 @@ export type SchedulerProps = {
   };
 };
 
-export const Scheduler: FC<SchedulerProps> = ({ onBooking, opts, text }) => {
+export const Scheduler: FC<SchedulerProps> = ({
+  onBookingError,
+  opts,
+  text
+}) => {
   const {
     title = 'Schedule an appointment with',
     selectSlot = 'Select a time slot',
@@ -29,9 +33,11 @@ export const Scheduler: FC<SchedulerProps> = ({ onBooking, opts, text }) => {
 
   const { allowSchedulingInThePast = false } = opts || {};
 
-  const { selectedProvider, setSelectedSlot } = usePreferences();
+  const { selectedProvider, setSelectedSlot, bookingInformation } =
+    usePreferences();
   const {
-    availabilities: { data, loading, fetch: fetchAvailabilities }
+    availabilities: { data, loading, fetch: fetchAvailabilities },
+    bookAppointment
   } = useSolApi();
 
   const [date, setDate] = useState<Date | null>(null);
@@ -62,6 +68,10 @@ export const Scheduler: FC<SchedulerProps> = ({ onBooking, opts, text }) => {
   const handleSlotSelect = (slot: SlotType) => {
     setSlot(slot);
     setSelectedSlot(slot);
+  };
+
+  const handleBooking = (slot: SlotType) => {
+    void bookAppointment(slot, bookingInformation.preferences, onBookingError);
   };
 
   if (!selectedProvider) {
@@ -114,7 +124,7 @@ export const Scheduler: FC<SchedulerProps> = ({ onBooking, opts, text }) => {
         <div className='py-6 mt-6 border-t-1 border-slate-200'>
           <button
             className={clsx('btn btn-primary w-full')}
-            onClick={() => onBooking(slot)}
+            onClick={() => handleBooking(slot)}
           >
             {button}
           </button>

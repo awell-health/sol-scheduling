@@ -24,6 +24,7 @@ const meta: Meta<typeof SchedulerComponent> = {
             }
             fetchProviders={mockFetchProvidersFn}
             bookAppointment={fn()}
+            completeActivity={fn()}
           >
             <PreferencesProvider initialPreferences={{}}>
               <div style={{ maxWidth: '500px', margin: '0 auto' }}>

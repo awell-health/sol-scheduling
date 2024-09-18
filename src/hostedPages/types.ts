@@ -7,11 +7,11 @@ import {
 } from '../lib/api';
 
 export interface SchedulingActivityProps {
-  timeZone: string;
+  // timeZone: string;
   providerId?: string;
-  onProviderSelect: (id: string) => void;
-  onDateSelect: (date: Date) => void;
-  onSlotSelect: (slot: SlotType) => void;
+  // onProviderSelect: (id: string) => void;
+  // onDateSelect: (date: Date) => void;
+  // onSlotSelect: (slot: SlotType) => void;
   onBooking: (slot: SlotType) => Promise<BookAppointmentResponseType>;
   fetchProviders: (
     prefs: GetProvidersInputType
@@ -24,7 +24,7 @@ export interface SchedulingActivityProps {
     preferences: GetProvidersInputType
   ) => void;
   providerPreferences: GetProvidersInputType;
-  onProviderPreferencesChange: (preferences: GetProvidersInputType) => void;
+  // onProviderPreferencesChange: (preferences: GetProvidersInputType) => void;
   text?: {
     selectProvider?: {
       button?: string;

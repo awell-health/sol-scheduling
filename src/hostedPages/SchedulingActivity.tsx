@@ -20,6 +20,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
     <SolApiProvider
       fetchAvailability={fetchAvailability}
       fetchProviders={fetchProviders}
+      completeActivity={onCompleteActivity}
       bookAppointment={onBooking}
     >
       <main

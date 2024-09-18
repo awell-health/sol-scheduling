@@ -21,7 +21,11 @@ export interface AvailabilitiesApiContextType {
 export type SolApiContextType = {
   providers: ProvidersApiContextType;
   availabilities: AvailabilitiesApiContextType;
-  bookAppointment: (slot: SlotType) => Promise<BookAppointmentResponseType>;
+  bookAppointment: (
+    slot: SlotType,
+    preferences: GetProvidersInputType,
+    onError: () => void
+  ) => void;
 };
 
 export const SolApiContext = createContext<SolApiContextType | null>(null);
@@ -34,6 +38,10 @@ interface ContextProps {
     prefs: GetProvidersInputType
   ) => Promise<GetProvidersResponseType>;
   bookAppointment: (slot: SlotType) => Promise<BookAppointmentResponseType>;
+  completeActivity: (
+    slot: SlotType,
+    preferences: GetProvidersInputType
+  ) => void;
   children: React.ReactNode;
 }
 
@@ -41,7 +49,8 @@ export const SolApiProvider: FC<ContextProps> = ({
   children,
   fetchAvailability,
   fetchProviders,
-  bookAppointment
+  bookAppointment,
+  completeActivity
 }) => {
   // Providers
   const [providers, setProviders] = useState<GetProvidersResponseType['data']>(
@@ -74,6 +83,22 @@ export const SolApiProvider: FC<ContextProps> = ({
   };
   const [isLoadingAvailabilities, setLoadingAvailabilities] = useState(false);
 
+  const handleBookAppointment = (
+    slot: SlotType,
+    preferences: GetProvidersInputType,
+    onError: () => void
+  ) => {
+    bookAppointment(slot)
+      .then((resp) => {
+        console.log('Booked appointment', resp);
+        completeActivity(slot, preferences);
+      })
+      .catch(() => {
+        console.error('Error booking appointment');
+        onError();
+      });
+  };
+
   const contextValue = {
     providers: {
       data: providers,
@@ -85,7 +110,7 @@ export const SolApiProvider: FC<ContextProps> = ({
       fetch: getAvailabilities,
       loading: isLoadingAvailabilities
     },
-    bookAppointment
+    bookAppointment: handleBookAppointment
   };
   return (
     <SolApiContext.Provider value={contextValue}>

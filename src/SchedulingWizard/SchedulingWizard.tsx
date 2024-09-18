@@ -1,4 +1,4 @@
-import { BookingConfirmation, ProviderSelection } from '../atoms';
+import { BookingError, ProviderSelection } from '../atoms';
 import { FC, useMemo, useState } from 'react';
 import { Scheduler } from '../molecules';
 import { GetProvidersInputType, SlotType } from '../lib/api';
@@ -17,8 +17,7 @@ interface Stage {
 }
 
 export const SchedulingWizard: FC<SchedulingWizardProps> = ({
-  shouldSkipProviderSelection,
-  onCompleteActivity
+  shouldSkipProviderSelection
 }) => {
   const backLanguage = 'Back to providers';
   const initialStages = [
@@ -31,7 +30,7 @@ export const SchedulingWizard: FC<SchedulingWizardProps> = ({
       isComplete: false
     },
     {
-      id: 'confirmation',
+      id: 'booking-error',
       isComplete: false
     }
   ];
@@ -48,12 +47,20 @@ export const SchedulingWizard: FC<SchedulingWizardProps> = ({
       }
       return stage;
     });
-    const nextStage = updatedStages.find((stage) => !stage.isComplete);
     setStages(updatedStages);
+    const nextStage = updatedStages.find((stage) => !stage.isComplete);
     if (nextStage) {
       setCurrentStage(nextStage);
     }
   };
+
+  const advanceTo = (id: string) => () => {
+    const nextStage = stages.find((stage) => stage.id === id);
+    if (nextStage) {
+      setCurrentStage(nextStage);
+    }
+  };
+
   const resetStages = () => {
     setStages(initialStages);
     setCurrentStage(initialStage);
@@ -82,11 +89,9 @@ export const SchedulingWizard: FC<SchedulingWizardProps> = ({
         />
       )}
       {currentStage.id === 'scheduling' && (
-        <Scheduler onBooking={completeStage('scheduling')} />
+        <Scheduler onBookingError={advanceTo('booking-error')} />
       )}
-      {currentStage.id === 'confirmation' && (
-        <BookingConfirmation onCompleteActivity={onCompleteActivity} />
-      )}
+      {currentStage.id === 'booking-error' && <BookingError />}
     </>
   );
 };

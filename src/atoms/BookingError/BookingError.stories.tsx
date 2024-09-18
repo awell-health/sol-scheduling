@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { BookingConfirmation as BookingConfirmationComponent } from './BookingConfirmation';
+import { BookingError as BookingErrorComponent } from './BookingError';
 import { ThemeProvider } from '@awell-health/ui-library';
 import { SolApiProvider } from '@/SolApiProvider';
 import {
@@ -9,9 +9,9 @@ import {
 import { fn } from '@storybook/test';
 import { PreferencesProvider } from '@/PreferencesProvider';
 
-const meta: Meta<typeof BookingConfirmationComponent> = {
-  title: 'Atoms/BookingConfirmation',
-  component: BookingConfirmationComponent,
+const meta: Meta<typeof BookingErrorComponent> = {
+  title: 'Atoms/BookingError',
+  component: BookingErrorComponent,
   args: {},
   decorators: [
     (Story) => (
@@ -22,6 +22,7 @@ const meta: Meta<typeof BookingConfirmationComponent> = {
           }
           fetchProviders={mockFetchProvidersFn}
           bookAppointment={fn()}
+          completeActivity={fn()}
         >
           <PreferencesProvider initialPreferences={{}}>
             <div style={{ maxWidth: '500px', margin: '0 auto' }}>
@@ -37,7 +38,7 @@ const meta: Meta<typeof BookingConfirmationComponent> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const BookingConfirmation: Story = {
+export const BookingError: Story = {
   args: {
     otherBookingData: {
       mode: 'Virtual'
