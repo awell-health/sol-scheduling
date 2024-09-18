@@ -72,7 +72,7 @@ export const Slots: FC<SlotsProps> = ({
           aria-label='Appointment type'
         >
           <RadioGroup
-            value={value?.eventId}
+            value={value?.eventId ?? ''}
             onChange={handleSlotSelect}
             className={clsx({
               'grid grid-cols-3 gap-3': orientation === 'horizontal',
