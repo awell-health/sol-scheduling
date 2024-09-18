@@ -20,3 +20,5 @@ node_modules
 
 *storybook.log
 .DS_Store
+
+stats.html
