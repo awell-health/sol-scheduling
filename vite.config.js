@@ -32,5 +32,10 @@ export default defineConfig({
       exclude: ['**/*.stories.*', 'tests']
     }),
     visualizer()
-  ]
+  ],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src')
+    }
+  }
 });

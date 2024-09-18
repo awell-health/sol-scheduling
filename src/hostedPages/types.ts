@@ -19,7 +19,10 @@ export interface SchedulingActivityProps {
   fetchAvailability: (
     providerId: string
   ) => Promise<GetAvailabilitiesResponseType>;
-  onCompleteActivity: (slot: SlotType) => void;
+  onCompleteActivity: (
+    slot: SlotType,
+    preferences: GetProvidersInputType
+  ) => void;
   providerPreferences: GetProvidersInputType;
   onProviderPreferencesChange: (preferences: GetProvidersInputType) => void;
   text?: {

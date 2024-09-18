@@ -1,13 +1,13 @@
 import clsx from 'clsx';
 import { FC, useRef } from 'react';
 import { useClickAway } from 'react-use';
-import { useProviderFilter } from './ProviderFilterContext';
+import { usePreferences } from '@/PreferencesProvider';
 
 interface FilterContainerProps {
   children: React.ReactNode;
 }
 const FilterOverlay: FC<FilterContainerProps> = ({ children }) => {
-  const { activeFilter, setActiveFilter } = useProviderFilter();
+  const { activeFilter, setActiveFilter } = usePreferences();
   const isFiltered = activeFilter !== null;
   const ref = useRef(null);
   useClickAway(ref, (e) => {

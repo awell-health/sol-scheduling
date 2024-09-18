@@ -1,13 +1,15 @@
 import { FC } from 'react';
-import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { upperFirst } from 'lodash-es';
-import { type SlotType } from '../../lib/api';
 import clsx from 'clsx';
+import { GetProvidersInputType, type SlotType } from '@/lib/api';
+import { DEFAULT_PROFILE_IMAGE } from '@/lib/constants';
+import { usePreferences } from '@/PreferencesProvider';
 
 export type BookingConfirmationProps = {
-  providerName: string;
-  slot: SlotType;
-  profileImageUrl?: string;
+  onCompleteActivity: (
+    slot: SlotType,
+    preferences: GetProvidersInputType
+  ) => void;
   otherBookingData?: Record<string, unknown>;
   text?: {
     bookingConfirmed?: string;
@@ -15,15 +17,26 @@ export type BookingConfirmationProps = {
 };
 
 export const BookingConfirmation: FC<BookingConfirmationProps> = ({
-  providerName,
-  slot,
-  profileImageUrl = DEFAULT_PROFILE_IMAGE,
   otherBookingData,
+  onCompleteActivity,
   text
 }) => {
   const {
     bookingConfirmed = '✨ Thank you! Your appointment is confirmed. ✨'
   } = text || {};
+
+  const { bookingInformation } = usePreferences();
+  const { provider, slot, preferences } = bookingInformation;
+  console.log({ provider, slot, preferences });
+  if (!provider || !slot) {
+    return (
+      <div>
+        Something went wrong. Please return to the booking page and try again.
+      </div>
+    );
+  }
+
+  void onCompleteActivity(slot, preferences);
 
   return (
     <div>
@@ -35,11 +48,14 @@ export const BookingConfirmation: FC<BookingConfirmationProps> = ({
           <div className={clsx('card-title justify-between')}>
             <div className={clsx('flex flex-col')}>
               <p className={'font-normal text-lg'}>You are meeting with</p>
-              <p className={'font-semibold text-lg'}>{providerName}</p>
+              <p className={'font-semibold text-lg'}>{provider.name}</p>
             </div>
             <div className='avatar'>
               <div className={clsx('rounded-full w-16 h-16')}>
-                <img alt={providerName} src={profileImageUrl} />
+                <img
+                  alt={provider.name}
+                  src={provider.image ?? DEFAULT_PROFILE_IMAGE}
+                />
               </div>
             </div>
           </div>
@@ -84,3 +100,4 @@ const ListItem: FC<{ children: React.ReactNode }> & {
 ListItem.Header = ({ children }) => {
   return <div className={clsx('font-bold')}>{children}</div>;
 };
+ListItem.Header.displayName = 'ListItemHeader';

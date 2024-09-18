@@ -3,9 +3,9 @@ import {} from 'daisyui';
 import { upperFirst, uniq } from 'lodash-es';
 import clsx from 'clsx';
 
-import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
-import { toFullNameState, toFullNameGender } from '../../lib/utils';
-import type { Provider } from './ProviderSelection';
+import { DEFAULT_PROFILE_IMAGE } from '@/lib/constants';
+import { toFullNameState, toFullNameGender } from '@/lib/utils';
+import type { Provider } from './types';
 
 export type ProviderProps = {
   provider: Provider;
@@ -33,7 +33,7 @@ export const ProviderCard: FC<ProviderProps> = ({
             <div className='w-16 rounded-full'>
               <img
                 alt={provider.name}
-                src={provider.profileImageUrl ?? DEFAULT_PROFILE_IMAGE}
+                src={provider.image ?? DEFAULT_PROFILE_IMAGE}
               />
             </div>
           </div>

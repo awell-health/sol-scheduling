@@ -4,12 +4,12 @@ import classes from './ProviderFilter.module.scss';
 import { FilterBadge } from './FilterBadge';
 import { FilterSelector } from './FilterSelector';
 import { FilterOverlay } from './FilterOverlay';
-import { useProviderFilter } from './ProviderFilterContext';
+import { usePreferences } from '@/PreferencesProvider';
 
 type FocusRef = HTMLInputElement & HTMLSelectElement;
 
 const ProviderFilter: FC = () => {
-  const { filters, activeFilter } = useProviderFilter();
+  const { filters, activeFilter } = usePreferences();
 
   const focusRef = useRef<FocusRef>(null);
 
