@@ -1,272 +1,42 @@
 import '../../styles/globals.css';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { ProviderSelection } from '../atoms';
-import { Scheduler } from '../molecules';
-import {
-  type GetAvailabilitiesResponseType,
-  type GetProvidersResponseType
-} from '../lib/api';
-import { type SlotType } from '../lib/api';
-import { isEmpty } from 'lodash-es';
+import { FC } from 'react';
+import { isNil } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
-import {
-  ProviderFilter,
-  ProviderFilterProvider
-} from '../atoms/ProviderFilter';
-
-const ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
+import { PreferencesProvider } from '../PreferencesProvider';
+import { SolApiProvider } from '../SolApiProvider/SolApiContext';
+import { SchedulingWizard } from '../SchedulingWizard';
 
 export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   providerId: prefilledProviderId,
-  timeZone,
-  onProviderSelect,
-  onDateSelect,
-  onSlotSelect,
-  onBooking,
+  providerPreferences,
   fetchProviders,
   fetchAvailability,
-  onCompleteActivity,
-  providerPreferences,
-  onProviderPreferencesChange,
-  text,
-  opts
+  onBooking,
+  onCompleteActivity
 }) => {
-  const { selectSlot: { backToProviders = 'Back to providers' } = {} } =
-    text || {};
-
-  const { allowSchedulingInThePast = false } = opts || {};
-
-  const [providers, setProviders] = useState<GetProvidersResponseType['data']>(
-    []
-  );
-  const [availabilities, setAvailabilities] = useState<
-    GetAvailabilitiesResponseType['data'] | undefined
-  >(undefined);
-  const [loadingProviders, setLoadingProviders] = useState(false);
-  const [loadingAvailabilities, setLoadingAvailabilities] = useState(false);
-  const [loadingConfirmation, setLoadingConfirmation] = useState(false);
-
-  const [selectedProviderId, setSelectedProviderId] = useState<
-    string | undefined
-  >(prefilledProviderId);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedSlot, setSelectedSlot] = useState<SlotType | undefined>(
-    undefined
-  );
-  const [bookingConfirmed, setBookingConfirmed] = useState(false);
-
-  const skipProviderSelectionStage = useMemo(() => {
-    if (selectedProviderId && !isEmpty(selectedProviderId)) return true;
-
-    return false;
-  }, [selectedProviderId]);
-
-  useEffect(() => {
-    if (skipProviderSelectionStage && selectedProviderId) {
-      setLoadingAvailabilities(true);
-      fetchAvailability(selectedProviderId).then((availabilities) => {
-        setAvailabilities(availabilities.data);
-        setLoadingAvailabilities(false);
-      });
-      return;
-    }
-
-    setLoadingProviders(true);
-
-    void fetchProviders(providerPreferences).then(async (providers) => {
-      const providersWithSlots = await Promise.all(
-        providers.data.map(async (p) => {
-          const avail = await fetchAvailability(p.id);
-          const slots = avail['data'][p.id].filter(
-            (s) =>
-              new Date(s.slotstart).valueOf() <
-              new Date().valueOf() + ONE_WEEK_IN_MS
-          ).length;
-          return { ...p, numberOfSlotsAvailable: slots };
-        })
-      );
-      setProviders(
-        providersWithSlots.sort(
-          (a, b) =>
-            (b.numberOfSlotsAvailable ?? 0) - (a.numberOfSlotsAvailable ?? 0)
-        )
-      );
-      setLoadingProviders(false);
-    });
-  }, []);
-
-  const handleProviderSelect = useCallback(
-    (id: string) => {
-      onProviderSelect(id);
-
-      setSelectedProviderId(id);
-      setAvailabilities(undefined); // Reset availabilities
-      setLoadingAvailabilities(true); // Start loading availabilities
-
-      void fetchAvailability(id).then((availabilities) => {
-        setAvailabilities(availabilities.data);
-        setLoadingAvailabilities(false);
-      });
-    },
-    [onProviderSelect]
-  );
-
-  const handleDateSelect = useCallback(
-    (date?: Date) => {
-      if (date) {
-        onDateSelect(date);
-        setSelectedDate(date);
-      }
-      setSelectedSlot(undefined); // Reset slot
-    },
-    [onDateSelect]
-  );
-
-  const handleSlotSelect = useCallback(
-    (slot: SlotType) => {
-      onSlotSelect(slot);
-      setSelectedSlot(slot);
-    },
-    [onSlotSelect]
-  );
-
-  const handleBooking = useCallback(
-    (slot: SlotType) => {
-      setLoadingConfirmation(true);
-
-      onBooking(slot).then(() => {
-        setBookingConfirmed(true);
-        setLoadingConfirmation(false);
-
-        onCompleteActivity(slot);
-      });
-    },
-    [onBooking, onCompleteActivity]
-  );
-
-  const handleBackNavigation = useCallback(() => {
-    const resetToProviderStage = () => {
-      setAvailabilities(undefined);
-      setSelectedDate(undefined);
-      setSelectedSlot(undefined);
-      setSelectedProviderId(undefined);
-    };
-
-    resetToProviderStage();
-  }, []);
-
-  const providerAvailabilities = useMemo(() => {
-    if (selectedProviderId === undefined) return [];
-
-    const availabilitiesForProvider = availabilities?.[selectedProviderId];
-
-    if (!availabilitiesForProvider) return [];
-
-    return availabilitiesForProvider.map((availability) => ({
-      eventId: availability.eventId,
-      slotstart: new Date(availability.slotstart),
-      duration: availability.duration,
-      providerId: availability.providerId,
-      facility: availability.facility
-    }));
-  }, [selectedProviderId, availabilities]);
-
-  const selectedProvider = useMemo(() => {
-    return providers.find((provider) => provider.id === selectedProviderId);
-  }, [providers, selectedProviderId]);
-
-  const showProviderStage = useMemo(() => {
-    if (selectedProviderId === undefined || isEmpty(selectedProviderId))
-      return true;
-
-    return false;
-  }, [selectedProviderId]);
-
-  const showSlotStage = useMemo(() => {
-    if (
-      selectedProviderId !== undefined &&
-      !isEmpty(selectedProviderId) &&
-      bookingConfirmed !== true
-    )
-      return true;
-
-    return false;
-  }, [selectedProviderId, bookingConfirmed]);
+  const shouldSkipProviderSelection = !isNil(prefilledProviderId);
 
   return (
-    <>
+    <SolApiProvider
+      fetchAvailability={fetchAvailability}
+      fetchProviders={fetchProviders}
+      completeActivity={onCompleteActivity}
+      bookAppointment={onBooking}
+    >
       <main
         id='ahp_main_content_with_scroll_hint'
         className='flex-1'
         data-theme='sol'
       >
         <div className='max-w-[650px] px-4 py-0 mx-auto my-0 relative'>
-          {showProviderStage && (
-            <>
-              {loadingProviders ? (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <span className='loading loading-spinner loading-lg text-primary'></span>
-                </div>
-              ) : (
-                <ProviderFilterProvider
-                  initialPreferences={providerPreferences}
-                  onProviderPreferencesChange={onProviderPreferencesChange}
-                >
-                  <ProviderFilter />
-                  <ProviderSelection
-                    onSelect={handleProviderSelect}
-                    providers={providers}
-                    text={{ button: text?.selectProvider?.button }}
-                  />
-                </ProviderFilterProvider>
-              )}
-            </>
-          )}
-
-          {showSlotStage && (
-            <>
-              {loadingAvailabilities || loadingConfirmation ? (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <span className='loading loading-spinner loading-lg text-primary'></span>
-                </div>
-              ) : (
-                <div>
-                  {isEmpty(prefilledProviderId) && (
-                    <a
-                      className='link link-primary mb-4 text-sm no-underline hover:underline'
-                      onClick={handleBackNavigation}
-                      type='button'
-                    >
-                      &lt; {backToProviders}
-                    </a>
-                  )}
-                  <Scheduler
-                    provider={{
-                      name:
-                        selectedProvider?.name ??
-                        `Provider ${selectedProviderId} (missing endpoint to fetch provider info)`
-                    }}
-                    timeZone={timeZone}
-                    availabilities={providerAvailabilities}
-                    date={selectedDate}
-                    slot={selectedSlot}
-                    onDateSelect={handleDateSelect}
-                    onSlotSelect={handleSlotSelect}
-                    onBooking={handleBooking}
-                    loadingAvailabilities={loadingAvailabilities}
-                    text={{
-                      title: text?.selectSlot?.title,
-                      selectSlot: text?.selectSlot?.selectSlot,
-                      button: text?.selectSlot?.button
-                    }}
-                    opts={{ allowSchedulingInThePast }}
-                  />
-                </div>
-              )}
-            </>
-          )}
+          <PreferencesProvider initialPreferences={providerPreferences}>
+            <SchedulingWizard
+              shouldSkipProviderSelection={shouldSkipProviderSelection}
+              onCompleteActivity={onCompleteActivity}
+            />
+          </PreferencesProvider>
         </div>
       </main>
-    </>
+    </SolApiProvider>
   );
 };

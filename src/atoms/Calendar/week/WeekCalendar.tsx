@@ -1,4 +1,4 @@
-import { FC, useState, useMemo, useCallback } from 'react';
+import { FC, useState, useMemo, useCallback, useEffect } from 'react';
 import {} from 'daisyui';
 import { uniq } from 'lodash-es';
 import clsx from 'clsx';
@@ -17,36 +17,43 @@ import {
 } from 'date-fns';
 import { type SlotType } from '../../../lib/api';
 import { DayCard } from './DayCard';
+import { useSolApi } from '../../../SolApiProvider';
 
 export interface WeekCalendarProps {
-  value?: Date;
-  onSelect: (date?: Date) => void;
+  value: Date | null;
+  onSelect: (date: Date | null) => void;
   week?: Date;
-  availabilities?: SlotType[];
-  loading?: boolean;
+  // availabilities?: SlotType[];
+  // loading?: boolean;
   weekStartsOn?: 'sunday' | 'monday';
   hideWeekends?: boolean;
   allowSchedulingInThePast?: boolean;
-  preferedLocation?: string;
+  preferredLocation?: string;
 }
 
 export const WeekCalendar: FC<WeekCalendarProps> = ({
   value,
   onSelect,
   week = new Date(),
-  availabilities = [],
-  loading,
   weekStartsOn = 'sunday',
   hideWeekends = true,
   allowSchedulingInThePast = false,
-  preferedLocation = 'Virtual'
+  preferredLocation = 'Virtual'
 }) => {
   const [currentWeek, setCurrentWeek] = useState(week);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
-  const [selectedLocation, setSelectedLocation] =
-    useState<string>(preferedLocation);
-  const [filteredAvailabilities, setFilteredAvailabilities] =
-    useState<SlotType[]>(availabilities);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(value);
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [filteredAvailabilities, setFilteredAvailabilities] = useState<
+    SlotType[]
+  >([]);
+
+  const {
+    availabilities: { data: availabilities, loading }
+  } = useSolApi();
+
+  useEffect(() => {
+    handleSelectLocation(preferredLocation);
+  }, [availabilities]);
 
   const handlePreviousWeek = useCallback(() => {
     setCurrentWeek((prevWeek) => subWeeks(prevWeek, 1));
@@ -59,10 +66,9 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const handleSelectLocation = useCallback(
     (location: string) => {
       setSelectedLocation(location);
+      setSelectedDate(null);
+      onSelect(null);
       if (location !== 'Virtual') {
-        // only clear the slots when location is not virtual
-        setSelectedDate(undefined);
-        onSelect(undefined);
         setFilteredAvailabilities(
           availabilities.filter((slot) => slot.facility === location)
         );
@@ -70,7 +76,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
         setFilteredAvailabilities(availabilities);
       }
     },
-    [selectedLocation]
+    [availabilities, preferredLocation]
   );
 
   // Get unique facilities from availabilities
@@ -91,10 +97,8 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
 
   const handleDateClick = useCallback(
     (date: Date) => {
-      if (!isDisabled(date)) {
-        setSelectedDate(date);
-        onSelect(date);
-      }
+      setSelectedDate(date);
+      onSelect(date);
     },
     [onSelect]
   );
@@ -155,10 +159,10 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     currentWeek,
     selectedDate,
     hideWeekends,
-    isDisabled,
-    isAvailable,
-    countAvailabilities,
-    weekStartsOn
+    weekStartsOn,
+    selectedLocation,
+    filteredAvailabilities,
+    allowSchedulingInThePast
   ]);
 
   const chevronClasses = clsx(

@@ -5,8 +5,13 @@ import {
   DeliveryMethod,
   GetProvidersInputType,
   GetProvidersInputSchema
-} from '../../lib/api';
-import { FilterEnum, FilterType, isFilterType, optionsFromEnum } from './types';
+} from '../lib/api';
+import {
+  FilterEnum,
+  FilterType,
+  isFilterType,
+  optionsFromEnum
+} from '../atoms/ProviderSelection/types';
 
 const updatePreferencesWithFilters = (
   prefs: GetProvidersInputType,
@@ -39,7 +44,11 @@ const updatePreferencesWithFilters = (
   });
   const parsed = GetProvidersInputSchema.safeParse(prefs);
   if (!parsed.success) {
-    console.error('Error updating preferences with filters', parsed.error);
+    console.error('Error updating preferences with filters', {
+      parsed,
+      prefs,
+      filters
+    });
     return prefs;
   }
   return parsed.data;
@@ -61,7 +70,7 @@ const preferencesToFiltersArray = (
             selectType: 'single',
             enum: Gender,
             options: optionsFromEnum(Gender),
-            selectedOptions: [preferences[key]]
+            selectedOptions: preferences[key] ? [preferences[key]] : []
           };
         }
         case 'ethnicity': {
@@ -71,7 +80,7 @@ const preferencesToFiltersArray = (
             selectType: 'single',
             enum: Ethnicity,
             options: optionsFromEnum(Ethnicity),
-            selectedOptions: [preferences[key]]
+            selectedOptions: preferences[key] ? [preferences[key]] : []
           };
         }
         case 'language': {
@@ -84,7 +93,7 @@ const preferencesToFiltersArray = (
             selectType: 'multi',
             enum: ClinicalFocus,
             options: optionsFromEnum(ClinicalFocus),
-            selectedOptions: preferences[key]
+            selectedOptions: preferences[key] ? preferences[key] : []
           };
         }
         // case 'therapeuticModality': {

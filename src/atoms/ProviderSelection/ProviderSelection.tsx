@@ -3,30 +3,29 @@ import {} from 'daisyui';
 import clsx from 'clsx';
 
 import { ProviderCard } from './ProviderCard';
-import { GetProvidersResponseType } from '../../lib/api';
-
-export type BaseProvider = GetProvidersResponseType['data'][number];
-export interface Provider extends BaseProvider {
-  profileImageUrl?: string;
-}
+import { usePreferences } from '@/PreferencesProvider';
+import { ProviderFilter } from './ProviderFilter';
 
 export type ProviderSelectionProps = {
-  providers: Provider[];
-  onSelect: (id: string) => void;
+  onSelectProvider: (id: string) => void;
   text?: {
     button?: string;
   };
 };
 
 export const ProviderSelection: FC<ProviderSelectionProps> = ({
-  providers,
-  onSelect,
-  text
+  text,
+  onSelectProvider
 }) => {
+  const { providers, setSelectedProviderId } = usePreferences();
   const providersLabel = providers.length === 1 ? 'provider' : 'providers';
-
+  const selectProvider = (id: string) => {
+    setSelectedProviderId(id);
+    onSelectProvider(id);
+  };
   return (
     <div>
+      <ProviderFilter />
       <h2 className={clsx('text-slate-800 text-2xl font-semibold mb-4')}>
         We found{' '}
         <span className='text-primary'>
@@ -39,7 +38,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
           <ProviderCard
             key={provider.id}
             provider={provider}
-            onSelect={onSelect}
+            onSelect={selectProvider}
             text={text}
           />
         ))}

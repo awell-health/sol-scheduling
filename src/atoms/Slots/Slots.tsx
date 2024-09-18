@@ -7,7 +7,7 @@ import clsx from 'clsx';
 export interface SlotsProps {
   timeZone: string;
   onSelect: (slot: SlotType) => void;
-  value?: SlotType;
+  value: SlotType | null;
   slots?: SlotType[];
   loading?: boolean;
   orientation?: 'vertical' | 'horizontal';

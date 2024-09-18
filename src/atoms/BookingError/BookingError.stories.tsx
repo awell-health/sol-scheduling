@@ -1,17 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ProviderSelection as ProviderSelectionComponent } from './ProviderSelection';
+import { BookingError as BookingErrorComponent } from './BookingError';
 import { ThemeProvider } from '@awell-health/ui-library';
-import { PreferencesProvider } from '@/PreferencesProvider';
 import { SolApiProvider } from '@/SolApiProvider';
 import {
   mockFetchProvidersFn,
   mockProviderAvailabilityResponse
 } from '@/lib/api/__mocks__';
 import { fn } from '@storybook/test';
+import { PreferencesProvider } from '@/PreferencesProvider';
 
-const meta: Meta<typeof ProviderSelectionComponent> = {
-  title: 'Atoms/ProviderSelection',
-  component: ProviderSelectionComponent,
+const meta: Meta<typeof BookingErrorComponent> = {
+  title: 'Atoms/BookingError',
+  component: BookingErrorComponent,
+  args: {},
   decorators: [
     (Story) => (
       <ThemeProvider accentColor='#A45128'>
@@ -37,10 +38,10 @@ const meta: Meta<typeof ProviderSelectionComponent> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const ProviderSelection: Story = {
+export const BookingError: Story = {
   args: {
-    onSelectProvider: (pid) => {
-      alert(`you have chosen... wisely. pid=${pid}`);
+    otherBookingData: {
+      mode: 'Virtual'
     }
   }
 };

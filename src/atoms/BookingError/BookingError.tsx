@@ -1,45 +1,42 @@
 import { FC } from 'react';
-import { DEFAULT_PROFILE_IMAGE } from '../../lib/constants';
 import { upperFirst } from 'lodash-es';
-import { type SlotType } from '../../lib/api';
 import clsx from 'clsx';
+import { DEFAULT_PROFILE_IMAGE } from '@/lib/constants';
+import { usePreferences } from '@/PreferencesProvider';
 
-export type BookingConfirmationProps = {
-  providerName: string;
-  slot: SlotType;
-  profileImageUrl?: string;
+export type BookingErrorProps = {
   otherBookingData?: Record<string, unknown>;
-  text?: {
-    bookingConfirmed?: string;
-  };
 };
 
-export const BookingConfirmation: FC<BookingConfirmationProps> = ({
-  providerName,
-  slot,
-  profileImageUrl = DEFAULT_PROFILE_IMAGE,
-  otherBookingData,
-  text
-}) => {
-  const {
-    bookingConfirmed = '✨ Thank you! Your appointment is confirmed. ✨'
-  } = text || {};
+export const BookingError: FC<BookingErrorProps> = ({ otherBookingData }) => {
+  const bookingConfirmationError =
+    'Something went wrong when trying to schedule your appointment.';
+
+  const { bookingInformation } = usePreferences();
+  const { provider, slot } = bookingInformation;
 
   return (
     <div>
       <p className={clsx('font-medium text-xl text-center m-0')}>
-        {bookingConfirmed}
+        {bookingConfirmationError}
       </p>
       <div className={clsx('card bg-base-100 shadow-md')}>
         <div className='card-body flex'>
           <div className={clsx('card-title justify-between')}>
             <div className={clsx('flex flex-col')}>
-              <p className={'font-normal text-lg'}>You are meeting with</p>
-              <p className={'font-semibold text-lg'}>{providerName}</p>
+              <p className={'font-normal text-lg'}>
+                You tried to schedule with
+              </p>
+              <p className={'font-semibold text-lg'}>
+                {provider?.name ?? 'Unknown'}
+              </p>
             </div>
             <div className='avatar'>
               <div className={clsx('rounded-full w-16 h-16')}>
-                <img alt={providerName} src={profileImageUrl} />
+                <img
+                  alt={provider?.name}
+                  src={provider?.image ?? DEFAULT_PROFILE_IMAGE}
+                />
               </div>
             </div>
           </div>
@@ -48,15 +45,15 @@ export const BookingConfirmation: FC<BookingConfirmationProps> = ({
               <ListItem.Header>Time: </ListItem.Header>
               <time
                 className={clsx('block')}
-                dateTime={slot.slotstart.toISOString()}
+                dateTime={slot?.slotstart.toISOString() ?? 'Unknown'}
               >
-                {slot.slotstart.toLocaleString()}
+                {slot?.slotstart.toLocaleString() ?? 'Unknown'}
               </time>
             </ListItem>
-            {slot.duration && (
+            {slot?.duration && (
               <ListItem>
                 <ListItem.Header>Duration: </ListItem.Header>
-                <div>{slot.duration} minutes</div>
+                <div>{slot?.duration} minutes</div>
               </ListItem>
             )}
             {otherBookingData &&
@@ -67,6 +64,9 @@ export const BookingConfirmation: FC<BookingConfirmationProps> = ({
                 </ListItem>
               ))}
           </ul>
+          <p className={clsx('font-medium text-xl text-center m-0')}>
+            Please go back and try again.
+          </p>
         </div>
       </div>
     </div>
@@ -84,3 +84,4 @@ const ListItem: FC<{ children: React.ReactNode }> & {
 ListItem.Header = ({ children }) => {
   return <div className={clsx('font-bold')}>{children}</div>;
 };
+ListItem.Header.displayName = 'ListItemHeader';

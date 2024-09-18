@@ -1,19 +1,14 @@
 import clsx from 'clsx';
-import { FilterType, FilterEnum, displaySelectedValues } from './types';
-import { useProviderFilter } from './ProviderFilterContext';
+import { usePreferences } from '@/PreferencesProvider';
+import { displaySelectedValues } from './utils';
+import { FilterType, FilterEnum } from '../types';
 
 interface Props<T extends FilterEnum> {
   filter: FilterType<T>;
-  // onSetFilter: (filter: FilterType<T> | null) => void;
-  // onUpdateSelectedOptions: (filter: FilterType<T>) => void;
 }
 
-const FilterBadge = <T extends FilterEnum>({
-  filter
-  // onSetFilter,
-  // onUpdateSelectedOptions
-}: Props<T>) => {
-  const { setActiveFilter, updateFilter } = useProviderFilter();
+const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
+  const { setActiveFilter, updateFilter } = usePreferences();
   const isActive = filter.selectedOptions && filter.selectedOptions.length > 0;
   return (
     <div

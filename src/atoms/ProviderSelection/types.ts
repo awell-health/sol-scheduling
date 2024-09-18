@@ -1,12 +1,14 @@
-import { isEmpty } from 'lodash-es';
 import {
   ClinicalFocus,
   DeliveryMethod,
   Ethnicity,
   Gender,
   GetProvidersInputType,
+  GetProvidersResponseType,
   Modality
 } from '../../lib/api';
+
+export type Provider = GetProvidersResponseType['data'][number];
 
 export type FilterEnum = Record<string, string | number> &
   (
@@ -16,12 +18,6 @@ export type FilterEnum = Record<string, string | number> &
     | typeof ClinicalFocus
     | typeof DeliveryMethod
   );
-
-export const getEnumKeyFromVal = (enumType: FilterEnum, value: string) => {
-  return (
-    Object.keys(enumType).find((key) => enumType[key] === value) ?? 'Unknown'
-  ).replace('_', ' ');
-};
 
 export interface FilterOption<T extends FilterEnum> {
   label: T[keyof T]; // key is one of the values of the enum (T's keys)
@@ -47,17 +43,6 @@ export function isFilterType(f: unknown): f is FilterType<FilterEnum> {
     'label' in f
   );
 }
-
-export const displaySelectedValues = <T extends FilterEnum>(
-  filter: FilterType<T>
-) => {
-  if (isEmpty(filter.selectedOptions)) {
-    return '';
-  }
-  return filter.selectedOptions
-    .map((val) => getEnumKeyFromVal(filter.enum, val))
-    .join(', ');
-};
 
 export const optionsFromEnum = (enumType: FilterEnum) => {
   return Object.entries(enumType).map(([key, value]) => ({

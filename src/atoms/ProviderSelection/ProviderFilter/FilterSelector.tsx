@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import clsx from 'clsx';
-import { useProviderFilter } from './ProviderFilterContext';
+import { usePreferences } from '@/PreferencesProvider';
 
 interface Props {
   className?: string;
@@ -9,8 +9,7 @@ interface Props {
 
 const FilterSelector: FC<Props> = (props) => {
   const { className, inputRef } = props;
-  const { getActiveFilter, updateFilter, setActiveFilter } =
-    useProviderFilter();
+  const { getActiveFilter, updateFilter, setActiveFilter } = usePreferences();
   const filter = getActiveFilter();
 
   const [textFilteredOptions, setTextFilteredOptions] = useState<

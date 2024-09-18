@@ -19,7 +19,9 @@
     "noFallthroughCasesInSwitch": true,
     "declaration": true,
     "typeRoots": ["./dist/index.d.ts", "node_modules/@types"],
-    "paths": {}
+    "paths": {
+      "@/*": ["*"]
+    }
   },
   "files": ["globals.d.ts"],
   "include": ["src", "index.ts"],
