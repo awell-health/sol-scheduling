@@ -17,7 +17,7 @@ export const Event = z.object({
   slotstart: ISO8601DateStringSchema,
   duration: z.number(),
   facility: z.string(),
-  location: EventDeliveryMethodSchema
+  location: EventDeliveryMethodSchema.optional()
 });
 
 export const GetAvailabilitiesResponseSchema = z
