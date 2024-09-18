@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { upperFirst } from 'lodash-es';
 import clsx from 'clsx';
-import { DEFAULT_PROFILE_IMAGE } from '@/lib/constants';
 import { usePreferences } from '@/PreferencesProvider';
+import { ProviderAvatar } from '../ProviderAvatar';
 
 export type BookingErrorProps = {
   otherBookingData?: Record<string, unknown>;
@@ -31,14 +31,10 @@ export const BookingError: FC<BookingErrorProps> = ({ otherBookingData }) => {
                 {provider?.name ?? 'Unknown'}
               </p>
             </div>
-            <div className='avatar'>
-              <div className={clsx('rounded-full w-16 h-16')}>
-                <img
-                  alt={provider?.name}
-                  src={provider?.image ?? DEFAULT_PROFILE_IMAGE}
-                />
-              </div>
-            </div>
+            <ProviderAvatar
+              name={provider?.name ?? ''}
+              image={provider?.image}
+            />
           </div>
           <ul className={clsx('list-none p-0 m-0')}>
             <ListItem>

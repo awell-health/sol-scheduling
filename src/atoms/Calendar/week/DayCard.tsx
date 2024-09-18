@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 
 interface Day {
@@ -21,6 +21,23 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
   const cannotActivate = (day: Day) => {
     return day.isDisabled || !day.isAvailable || day.availabilitiesCount === 0;
   };
+
+  const slotRef = useRef<HTMLDivElement>(null);
+
+  const scrollToSlot = () => {
+    if (slotRef.current) {
+      slotRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (day.isSelected) {
+      scrollToSlot();
+    }
+  }, [day.isSelected]);
 
   return (
     <button
@@ -60,6 +77,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
         className={clsx('self-center flex', {
           'text-slate-400': true
         })}
+        ref={slotRef}
       >
         <Slot
           count={

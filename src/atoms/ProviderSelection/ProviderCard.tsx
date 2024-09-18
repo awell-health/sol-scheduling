@@ -3,9 +3,9 @@ import {} from 'daisyui';
 import { upperFirst, uniq } from 'lodash-es';
 import clsx from 'clsx';
 
-import { DEFAULT_PROFILE_IMAGE } from '@/lib/constants';
 import { toFullNameState, toFullNameGender } from '@/lib/utils';
 import type { Provider } from './types';
+import { ProviderAvatar } from '../ProviderAvatar';
 
 export type ProviderProps = {
   provider: Provider;
@@ -29,14 +29,7 @@ export const ProviderCard: FC<ProviderProps> = ({
     <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
       <div className='flex gap-4 align-center justify-between'>
         <div className='flex gap-4 align-center'>
-          <div className='avatar'>
-            <div className='w-16 rounded-full'>
-              <img
-                alt={provider.name}
-                src={provider.image ?? DEFAULT_PROFILE_IMAGE}
-              />
-            </div>
-          </div>
+          <ProviderAvatar name={provider.name} image={provider.image} />
           <div className='flex flex-col justify-center'>
             <h3 className='text-slate-800 text-lg m-0 font-semibold'>
               {provider.name}
@@ -154,10 +147,10 @@ const BioItem: FC<{ label: string; value: string }> = ({ label, value }) => {
 const Slot: FC<{ count: number }> = ({ count }) => {
   const slotText = count === 1 ? 'slot' : 'slots';
   return (
-    <div className='flex mt-2 gap-2 md:gap-0 md:flex-col flex-row'>
+    <div>
       <div
         className={clsx(
-          'rounded-full text-sm text-white font-medium my-2 flex items-center justify-center px-4 py-1 w-[140px]',
+          'rounded-full text-sm text-white text-center font-medium my-2 flex items-center justify-center px-4 py-1',
           {
             'bg-slate-300': count === 0,
             'bg-yellow-500': count > 0 && count <= 2,

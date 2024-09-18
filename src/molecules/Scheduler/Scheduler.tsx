@@ -3,10 +3,10 @@ import { isSameDay } from 'date-fns';
 import clsx from 'clsx';
 import { isEmpty, isNil } from 'lodash-es';
 import { Slots, WeekCalendar } from '@/atoms';
-import { DEFAULT_PROFILE_IMAGE } from '@/lib/constants';
 import { type SlotType } from '@/lib/api';
 import { usePreferences } from '@/PreferencesProvider';
 import { useSolApi } from '@/SolApiProvider';
+import { ProviderAvatar } from '@/atoms/ProviderAvatar';
 
 export type SchedulerProps = {
   onBookingError: () => void;
@@ -86,14 +86,11 @@ export const Scheduler: FC<SchedulerProps> = ({
           <br />
           <span className='text-primary'>{selectedProvider.name}</span>
         </h4>
-        <div className='avatar'>
-          <div className='w-24 rounded-full'>
-            <img
-              alt={selectedProvider.name}
-              src={selectedProvider.image ?? DEFAULT_PROFILE_IMAGE}
-            />
-          </div>
-        </div>
+        <ProviderAvatar
+          name={selectedProvider.name}
+          image={selectedProvider.image}
+          classes='w-24'
+        />
       </div>
       <div>
         <WeekCalendar

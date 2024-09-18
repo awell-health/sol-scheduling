@@ -18,6 +18,7 @@ import {
 import { type SlotType } from '../../../lib/api';
 import { DayCard } from './DayCard';
 import { useSolApi } from '../../../SolApiProvider';
+import { EventDeliveryMethod } from '@/lib/api/schema/atoms/eventDeliveryMethod.schema';
 
 export interface WeekCalendarProps {
   value: Date | null;
@@ -70,7 +71,11 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
       onSelect(null);
       if (location !== 'Virtual') {
         setFilteredAvailabilities(
-          availabilities.filter((slot) => slot.facility === location)
+          availabilities.filter(
+            (slot) =>
+              slot.facility === location &&
+              slot.location === EventDeliveryMethod.Both
+          )
         );
       } else {
         setFilteredAvailabilities(availabilities);

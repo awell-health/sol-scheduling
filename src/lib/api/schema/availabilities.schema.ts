@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { errorSchema, ISO8601DateStringSchema } from './shared.schema';
+import { EventDeliveryMethodSchema } from './atoms/eventDeliveryMethod.schema';
 
 export const GetAvailabilitiesInputSchema = z.object({
   providerId: z.array(z.string())
@@ -15,7 +16,8 @@ export const Event = z.object({
   providerId: z.string(),
   slotstart: ISO8601DateStringSchema,
   duration: z.number(),
-  facility: z.string()
+  facility: z.string(),
+  location: EventDeliveryMethodSchema
 });
 
 export const GetAvailabilitiesResponseSchema = z

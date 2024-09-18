@@ -10,25 +10,29 @@ interface Props<T extends FilterEnum> {
 const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
   const { setActiveFilter, updateFilter } = usePreferences();
   const isActive = filter.selectedOptions && filter.selectedOptions.length > 0;
+  const label = `${filter.label}${isActive ? ': ' : ''}`;
   return (
-    <div
+    <button
       key={filter.key}
-      className={clsx(
-        'badge badge-lg text-sm border-0 relative py-4 px-4 cursor-pointer',
-        {
-          'bg-secondary text-slate-800 font-medium': isActive,
-          'bg-slate-300 font-normal': !isActive
-        }
-      )}
+      className={clsx('btn btn-sm text-sm border-0 gap-1', {
+        'bg-secondary text-slate-800 font-medium': isActive,
+        'bg-slate-300 font-normal': !isActive
+      })}
       onClick={(e) => {
         e.preventDefault();
         setActiveFilter(filter.key);
       }}
     >
-      {filter.label}
+      {label}
       {isActive && (
         <>
-          <span>: {displaySelectedValues<T>(filter)}</span>
+          <span
+            className={clsx({
+              'truncate max-w-[250px]': filter.selectType === 'multi'
+            })}
+          >
+            {displaySelectedValues<T>(filter)}
+          </span>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
@@ -52,7 +56,7 @@ const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
           </svg>
         </>
       )}
-    </div>
+    </button>
   );
 };
 

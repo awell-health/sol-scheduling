@@ -34,6 +34,7 @@ type PreferencesContextType = {
   setSelectedProviderId: (providerId: string) => void;
   setSelectedSlot: (slot: SlotType | undefined) => void;
   bookingInformation: BookingInformation;
+  loading: boolean;
 };
 
 export const PreferencesContext = createContext<PreferencesContextType | null>(
@@ -70,7 +71,7 @@ export const PreferencesProvider: FC<ContextProps> = ({
     useState<BookingInformation>({ preferences: initialPreferences });
 
   const {
-    providers: { fetch: fetchProviders, data: providers }
+    providers: { fetch: fetchProviders, data: providers, loading: loading }
   } = useSolApi();
 
   const updateFilters = debounce((newFilters: FilterType<FilterEnum>[]) => {
@@ -135,7 +136,8 @@ export const PreferencesProvider: FC<ContextProps> = ({
     selectedProvider,
     setSelectedProviderId,
     setSelectedSlot,
-    bookingInformation
+    bookingInformation,
+    loading
   };
 
   return (
