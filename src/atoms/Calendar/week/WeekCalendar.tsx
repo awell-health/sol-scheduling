@@ -19,6 +19,7 @@ import { type SlotType } from '../../../lib/api';
 import { DayCard } from './DayCard';
 import { useSolApi } from '../../../SolApiProvider';
 import { EventDeliveryMethod } from '@/lib/api/schema/atoms/eventDeliveryMethod.schema';
+import { usePreferences } from '@/PreferencesProvider';
 
 export interface WeekCalendarProps {
   value: Date | null;
@@ -45,6 +46,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const [filteredAvailabilities, setFilteredAvailabilities] = useState<
     SlotType[]
   >([]);
+  const { setDeliveryMethod } = usePreferences();
 
   const {
     availabilities: { data: availabilities, loading }
@@ -65,6 +67,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const handleSelectLocation = useCallback(
     (location: string) => {
       setSelectedLocation(location);
+      setDeliveryMethod(location === 'Virtual' ? 'virtual' : 'in-person');
       setSelectedDate(null);
       onSelect(null);
       if (location !== 'Virtual') {

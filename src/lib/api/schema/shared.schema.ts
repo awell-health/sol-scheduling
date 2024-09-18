@@ -7,6 +7,8 @@ export type SlotType = Pick<
   'slotstart' | 'eventId' | 'duration' | 'providerId' | 'facility' | 'location'
 >;
 
+export type SelectedSlot = SlotType & { locationType: 'in-person' | 'virtual' };
+
 export const ISO8601DateStringSchema = z.coerce.date();
 
 export const errorSchema = z.object({

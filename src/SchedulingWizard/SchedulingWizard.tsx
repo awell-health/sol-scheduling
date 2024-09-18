@@ -1,12 +1,13 @@
 import { BookingError, ProviderSelection } from '../atoms';
 import { FC, useMemo, useState } from 'react';
 import { Scheduler } from '../molecules';
-import { GetProvidersInputType, SlotType } from '../lib/api';
+import { GetProvidersInputType } from '../lib/api';
+import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 
 interface SchedulingWizardProps {
   shouldSkipProviderSelection: boolean;
   onCompleteActivity: (
-    slot: SlotType,
+    slot: SelectedSlot,
     preferences: GetProvidersInputType
   ) => void;
 }

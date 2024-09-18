@@ -3,10 +3,12 @@ import { Field, Radio, RadioGroup } from '@headlessui/react';
 import { isEmpty } from 'lodash-es';
 import { type SlotType } from '../../lib/api';
 import clsx from 'clsx';
+import { SelectedSlot } from '@/lib/api/schema/shared.schema';
+import { usePreferences } from '@/PreferencesProvider';
 
 export interface SlotsProps {
   timeZone: string;
-  onSelect: (slot: SlotType) => void;
+  onSelect: (slot: SelectedSlot) => void;
   value: SlotType | null;
   slots?: SlotType[];
   loading?: boolean;
@@ -25,8 +27,9 @@ export const Slots: FC<SlotsProps> = ({
   loading,
   text
 }) => {
-  const [selectedSlot, setSelectedSlot] = useState<SlotType | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<SelectedSlot | null>(null);
   const { noSlotsLabel = 'No slots available' } = text || {};
+  const { bookingInformation } = usePreferences();
 
   const formatSlotTime = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -41,9 +44,14 @@ export const Slots: FC<SlotsProps> = ({
 
   const handleSlotSelect = useCallback(
     (eventId: string) => {
-      const selectedSlot = slots?.find(
+      const claimedSlot: SlotType = slots?.find(
         (_) => _.eventId === eventId
       ) as SlotType;
+
+      const selectedSlot: SelectedSlot = {
+        ...claimedSlot,
+        locationType: bookingInformation.deliveryMethod ?? 'virtual'
+      };
       setSelectedSlot(selectedSlot);
       onSelect(selectedSlot);
     },

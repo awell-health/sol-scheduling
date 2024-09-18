@@ -19,6 +19,7 @@ import { useSolApi } from '../SolApiProvider';
 type BookingInformation = {
   provider?: Provider;
   slot?: SlotType;
+  deliveryMethod?: 'in-person' | 'virtual';
   preferences: GetProvidersInputType;
 };
 
@@ -30,9 +31,11 @@ type PreferencesContextType = {
   setActiveFilter: (newFilterKey: keyof GetProvidersInputType | null) => void;
   getActiveFilter: () => FilterType<FilterEnum>;
   providers: GetProvidersResponseType['data'];
+  // TODO: Split the upper fields (provider preferences) from the lower fields (booking information)
   selectedProvider: GetProvidersResponseType['data'][number] | undefined;
   setSelectedProviderId: (providerId: string) => void;
   setSelectedSlot: (slot: SlotType | undefined) => void;
+  setDeliveryMethod: (method: 'in-person' | 'virtual') => void;
   bookingInformation: BookingInformation;
   loading: boolean;
 };
@@ -113,6 +116,13 @@ export const PreferencesProvider: FC<ContextProps> = ({
     setSelectedProvider(providers.find((p) => p.id === providerId));
   };
 
+  const handleSetDeliveryMethod = (method: 'in-person' | 'virtual') => {
+    setBookingInformation({
+      ...bookingInformation,
+      deliveryMethod: method
+    });
+  };
+
   useEffect(() => {
     fetchProviders(preferences);
   }, [preferences]);
@@ -136,6 +146,7 @@ export const PreferencesProvider: FC<ContextProps> = ({
     selectedProvider,
     setSelectedProviderId,
     setSelectedSlot,
+    setDeliveryMethod: handleSetDeliveryMethod,
     bookingInformation,
     loading
   };
