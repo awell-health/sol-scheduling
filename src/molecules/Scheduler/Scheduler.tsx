@@ -3,10 +3,10 @@ import { isSameDay } from 'date-fns';
 import clsx from 'clsx';
 import { isEmpty, isNil } from 'lodash-es';
 import { Slots, WeekCalendar } from '@/atoms';
-import { type SlotType } from '@/lib/api';
 import { usePreferences } from '@/PreferencesProvider';
 import { useSolApi } from '@/SolApiProvider';
 import { ProviderAvatar } from '@/atoms/ProviderAvatar';
+import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 
 export type SchedulerProps = {
   onBookingError: () => void;
@@ -41,7 +41,7 @@ export const Scheduler: FC<SchedulerProps> = ({
   } = useSolApi();
 
   const [date, setDate] = useState<Date | null>(null);
-  const [slot, setSlot] = useState<SlotType | null>(null);
+  const [slot, setSlot] = useState<SelectedSlot | null>(null);
 
   useEffect(() => {
     if (!selectedProvider) {
@@ -80,12 +80,12 @@ export const Scheduler: FC<SchedulerProps> = ({
     scrollToSlot();
   }, [slot]);
 
-  const handleSlotSelect = (slot: SlotType) => {
+  const handleSlotSelect = (slot: SelectedSlot) => {
     setSlot(slot);
     setSelectedSlot(slot);
   };
 
-  const handleBooking = (slot: SlotType) => {
+  const handleBooking = (slot: SelectedSlot) => {
     void bookAppointment(slot, bookingInformation.preferences, onBookingError);
   };
 

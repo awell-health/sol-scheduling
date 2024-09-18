@@ -19,6 +19,7 @@ import {
 } from '../lib/api';
 import { Gender } from '../lib/api';
 import { some } from 'lodash-es';
+import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity',
@@ -119,12 +120,12 @@ export const SchedulingActivity: Story = {
       []
     );
 
-    const bookAppointmentFn = useCallback((_slot: SlotType) => {
+    const bookAppointmentFn = useCallback((_slot: SelectedSlot) => {
       return args.onBooking(_slot);
     }, []);
 
     const completeActivity = useCallback(
-      (_slot: SlotType, _preferences: GetProvidersInputType) => {
+      (_slot: SelectedSlot, _preferences: GetProvidersInputType) => {
         console.log('Complete activity with slot', _slot);
         return args.onCompleteActivity(_slot, _preferences);
       },

@@ -1,9 +1,9 @@
+import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 import {
   BookAppointmentResponseType,
   GetAvailabilitiesResponseType,
   GetProvidersInputType,
-  GetProvidersResponseType,
-  SlotType
+  GetProvidersResponseType
 } from 'lib/api';
 import { createContext, FC, useState } from 'react';
 
@@ -22,7 +22,7 @@ export type SolApiContextType = {
   providers: ProvidersApiContextType;
   availabilities: AvailabilitiesApiContextType;
   bookAppointment: (
-    slot: SlotType,
+    slot: SelectedSlot,
     preferences: GetProvidersInputType,
     onError: () => void
   ) => void;
@@ -37,9 +37,9 @@ interface ContextProps {
   fetchProviders: (
     prefs: GetProvidersInputType
   ) => Promise<GetProvidersResponseType>;
-  bookAppointment: (slot: SlotType) => Promise<BookAppointmentResponseType>;
+  bookAppointment: (slot: SelectedSlot) => Promise<BookAppointmentResponseType>;
   completeActivity: (
-    slot: SlotType,
+    slot: SelectedSlot,
     preferences: GetProvidersInputType
   ) => void;
   children: React.ReactNode;
@@ -84,7 +84,7 @@ export const SolApiProvider: FC<ContextProps> = ({
   const [isLoadingAvailabilities, setLoadingAvailabilities] = useState(false);
 
   const handleBookAppointment = (
-    slot: SlotType,
+    slot: SelectedSlot,
     preferences: GetProvidersInputType,
     onError: () => void
   ) => {

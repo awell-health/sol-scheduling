@@ -1,18 +1,14 @@
+import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 import {
   GetProvidersInputType,
   type BookAppointmentResponseType,
   type GetAvailabilitiesResponseType,
-  type GetProvidersResponseType,
-  type SlotType
+  type GetProvidersResponseType
 } from '../lib/api';
 
 export interface SchedulingActivityProps {
-  // timeZone: string;
   providerId?: string;
-  // onProviderSelect: (id: string) => void;
-  // onDateSelect: (date: Date) => void;
-  // onSlotSelect: (slot: SlotType) => void;
-  onBooking: (slot: SlotType) => Promise<BookAppointmentResponseType>;
+  onBooking: (slot: SelectedSlot) => Promise<BookAppointmentResponseType>;
   fetchProviders: (
     prefs: GetProvidersInputType
   ) => Promise<GetProvidersResponseType>;
@@ -20,11 +16,10 @@ export interface SchedulingActivityProps {
     providerId: string
   ) => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: (
-    slot: SlotType,
+    slot: SelectedSlot,
     preferences: GetProvidersInputType
   ) => void;
   providerPreferences: GetProvidersInputType;
-  // onProviderPreferencesChange: (preferences: GetProvidersInputType) => void;
   text?: {
     selectProvider?: {
       button?: string;
