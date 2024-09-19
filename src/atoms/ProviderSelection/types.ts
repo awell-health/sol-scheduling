@@ -1,9 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  getStateCodeByFacility,
-  getStateNameByFacility
-} from '@/lib/utils/location';
-import {
   ClinicalFocus,
   DeliveryMethod,
   Ethnicity,
