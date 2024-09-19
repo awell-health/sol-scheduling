@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { getStateByFacility } from '@/lib/utils/location';
+import {
+  getStateCodeByFacility,
+  getStateNameByFacility
+} from '@/lib/utils/location';
 import {
   ClinicalFocus,
   DeliveryMethod,
@@ -36,10 +39,24 @@ export interface FilterType<T extends FilterEnum> {
   label: string;
   key: keyof GetProvidersInputType; // key should match the field in GetProvidersInputType
   selectType: 'single' | 'multi';
+  filterType: 'simple' | 'compound';
   enum: FilterEnum;
   options: FilterOption<T>[]; // array of FilterOption based on the enum
   selectedOptions: FilterType<T>['options'][0]['value'][];
 }
+
+// TODO: Implement CompoundFilterType and SimpleFilterType
+// export interface CompoundFilterType<T extends FilterEnum>
+//   extends Omit<FilterType<T>, 'selectedOptions'> {
+//   filterType: 'compound';
+//   options: Record<string, FilterOption<T>[]>;
+//   selectedOptions: CompoundFilterType<T>['options'][keyof CompoundFilterType<T>['options']][number]['value'][];
+// }
+
+// export interface SimpleFilterType<T extends FilterEnum> extends FilterType<T> {
+//   filterType: 'simple';
+//   options: FilterOption<T>[];
+// }
 
 export function isFilterType(f: unknown): f is FilterType<FilterEnum> {
   return (
@@ -47,7 +64,7 @@ export function isFilterType(f: unknown): f is FilterType<FilterEnum> {
     f !== undefined &&
     typeof f === 'object' &&
     'key' in f &&
-    'label' in f
+    'options' in f
   );
 }
 
@@ -67,7 +84,7 @@ export const optionsForLocation = () => {
   }));
 
   const facilities = Object.entries(LocationFacility).map(([_key, value]) => ({
-    label: `${getStateByFacility(value)} - ${value}`,
+    label: value,
     value: value as string
   }));
   return [...states, ...facilities];

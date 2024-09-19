@@ -1,22 +1,18 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import clsx from 'clsx';
 import classes from './ProviderFilter.module.scss';
-import { FilterBadge } from './FilterBadge';
-import { FilterSelector } from './FilterSelector';
+import { FilterOverlayContainer } from './FilterOverlayContainer';
 import { FilterOverlay } from './FilterOverlay';
 import { usePreferences } from '@/PreferencesProvider';
-
-type FocusRef = HTMLInputElement & HTMLSelectElement;
+import { FilterList } from './FilterList';
 
 const ProviderFilter: FC = () => {
-  const { filters, activeFilter } = usePreferences();
-
-  const focusRef = useRef<FocusRef>(null);
+  const { filters } = usePreferences();
 
   return (
     <div className='overflow-x-hidden mb-2'>
       <FilterOverlay>
-        {activeFilter !== null && <FilterSelector inputRef={focusRef} />}
+        <FilterOverlayContainer />
       </FilterOverlay>
       <div
         className={clsx(
@@ -24,9 +20,7 @@ const ProviderFilter: FC = () => {
           classes['scrollable-container']
         )}
       >
-        {filters.map((filter) => {
-          return <FilterBadge key={filter.key} filter={filter} />;
-        })}
+        <FilterList filters={filters} />
       </div>
     </div>
   );

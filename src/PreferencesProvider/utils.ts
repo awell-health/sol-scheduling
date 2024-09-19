@@ -15,7 +15,7 @@ import {
   optionsFromEnum,
   optionsForGender,
   optionsForLocation
-} from '../atoms/ProviderSelection/types';
+} from '../atoms/ProviderSelection';
 
 const updatePreferencesWithFilters = (
   prefs: GetProvidersInputType,
@@ -77,6 +77,7 @@ const preferencesToFiltersArray = (
             key: 'gender',
             label: 'Gender',
             selectType: 'single',
+            filterType: 'simple',
             enum: Gender,
             options: optionsForGender(),
             selectedOptions: preferences[key] ? [preferences[key]] : []
@@ -87,6 +88,7 @@ const preferencesToFiltersArray = (
             key: 'ethnicity',
             label: 'Ethnicity',
             selectType: 'single',
+            filterType: 'simple',
             enum: Ethnicity,
             options: optionsFromEnum(Ethnicity),
             selectedOptions: preferences[key] ? [preferences[key]] : []
@@ -100,6 +102,7 @@ const preferencesToFiltersArray = (
             key: 'clinicalFocus',
             label: 'Clinical Focus',
             selectType: 'multi',
+            filterType: 'simple',
             enum: ClinicalFocus,
             options: optionsFromEnum(ClinicalFocus),
             selectedOptions: preferences[key] ? preferences[key] : []
@@ -110,6 +113,7 @@ const preferencesToFiltersArray = (
             key: 'deliveryMethod',
             label: 'Delivery Method',
             selectType: 'single',
+            filterType: 'simple',
             enum: DeliveryMethod,
             options: optionsFromEnum(DeliveryMethod),
             selectedOptions: []
@@ -117,9 +121,10 @@ const preferencesToFiltersArray = (
         }
         case 'location': {
           return {
-            key: 'loaction',
+            key: 'location',
             label: 'Location',
             selectType: 'single',
+            filterType: 'compound',
             enum: { facility: LocationFacility, state: LocationState },
             options: optionsForLocation(),
             selectedOptions: preferences[key] ? preferences[key] : []

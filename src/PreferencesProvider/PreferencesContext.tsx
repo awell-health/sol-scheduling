@@ -1,4 +1,10 @@
-import React, { type FC, createContext, useEffect, useState } from 'react';
+import React, {
+  type FC,
+  createContext,
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
 import {
   GetProvidersInputType,
   GetProvidersResponseType,
@@ -106,11 +112,11 @@ export const PreferencesProvider: FC<ContextProps> = ({
     }
   };
 
-  const getActiveFilter = () => {
+  const getActiveFilter = useCallback(() => {
     return filters.find(
       (f) => f.key === activeFilter
     ) as FilterType<FilterEnum>;
-  };
+  }, [filters, activeFilter]);
 
   const setSelectedProviderId = (providerId: string) => {
     setSelectedProvider(providers.find((p) => p.id === providerId));
