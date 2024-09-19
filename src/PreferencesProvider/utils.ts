@@ -4,15 +4,18 @@ import {
   Gender,
   DeliveryMethod,
   GetProvidersInputType,
-  GetProvidersInputSchema
+  GetProvidersInputSchema,
+  LocationState,
+  LocationFacility
 } from '../lib/api';
 import {
   FilterEnum,
   FilterType,
   isFilterType,
   optionsFromEnum,
-  optionsFromGenderEnum
-} from '../atoms/ProviderSelection/types';
+  optionsForGender,
+  optionsForLocation
+} from '../atoms/ProviderSelection';
 
 const updatePreferencesWithFilters = (
   prefs: GetProvidersInputType,
@@ -24,7 +27,12 @@ const updatePreferencesWithFilters = (
       case 'therapeuticModality':
       case 'language':
       case 'location': {
-        return;
+        if (prefs.location) {
+          prefs.location.state = filter.selectedOptions[0] as LocationState;
+          prefs.location.facility = filter
+            .selectedOptions[0] as LocationFacility;
+        }
+        break;
       }
       case 'gender': {
         prefs.gender = filter.selectedOptions[0] as Gender;
@@ -69,8 +77,9 @@ const preferencesToFiltersArray = (
             key: 'gender',
             label: 'Gender',
             selectType: 'single',
+            filterType: 'simple',
             enum: Gender,
-            options: optionsFromGenderEnum(),
+            options: optionsForGender(),
             selectedOptions: preferences[key] ? [preferences[key]] : []
           };
         }
@@ -79,6 +88,7 @@ const preferencesToFiltersArray = (
             key: 'ethnicity',
             label: 'Ethnicity',
             selectType: 'single',
+            filterType: 'simple',
             enum: Ethnicity,
             options: optionsFromEnum(Ethnicity),
             selectedOptions: preferences[key] ? [preferences[key]] : []
@@ -92,32 +102,33 @@ const preferencesToFiltersArray = (
             key: 'clinicalFocus',
             label: 'Clinical Focus',
             selectType: 'multi',
+            filterType: 'simple',
             enum: ClinicalFocus,
             options: optionsFromEnum(ClinicalFocus),
             selectedOptions: preferences[key] ? preferences[key] : []
           };
         }
-        // case 'therapeuticModality': {
-        //   return {
-        //     key: 'therapeuticModality',
-        //     label: 'Therapeutic Modality',
-        //     enum: Modality,
-        //     options: optionsFromEnum(Modality),
-        //     selectedOptions: []
-        //   };
-        // }
         case 'deliveryMethod': {
           return {
             key: 'deliveryMethod',
             label: 'Delivery Method',
             selectType: 'single',
+            filterType: 'simple',
             enum: DeliveryMethod,
             options: optionsFromEnum(DeliveryMethod),
             selectedOptions: []
           };
         }
         case 'location': {
-          return undefined;
+          return {
+            key: 'location',
+            label: 'Location',
+            selectType: 'single',
+            filterType: 'compound',
+            enum: { facility: LocationFacility, state: LocationState },
+            options: optionsForLocation(),
+            selectedOptions: preferences[key] ? preferences[key] : []
+          };
         }
         default: {
           return undefined;

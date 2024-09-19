@@ -1,6 +1,6 @@
 import { expect, describe, it } from '@jest/globals';
 
-import { getFacilitiesByState, getStateByFacility } from '.';
+import { getFacilitiesByState, getStateCodeByFacility } from './locationUtils';
 import { LocationFacility, LocationState } from '../../api/schema';
 
 describe('Utility Functions for Location and Facility', () => {
@@ -72,27 +72,27 @@ describe('Utility Functions for Location and Facility', () => {
 
   describe('getStateByFacility', () => {
     it('should return the correct state for Cherry Creek facility', () => {
-      const state = getStateByFacility(LocationFacility.CherryCreek);
+      const state = getStateCodeByFacility(LocationFacility.CherryCreek);
       expect(state).toBe('CO');
     });
 
     it('should return the correct state for Gaithersburg facility', () => {
-      const state = getStateByFacility(LocationFacility.Gaithersburg);
+      const state = getStateCodeByFacility(LocationFacility.Gaithersburg);
       expect(state).toBe('MD');
     });
 
     it('should return the correct state for Brooklyn Heights facility', () => {
-      const state = getStateByFacility(LocationFacility.BrooklynHeights);
+      const state = getStateCodeByFacility(LocationFacility.BrooklynHeights);
       expect(state).toBe('NY');
     });
 
     it('should return the correct state for Austin facility', () => {
-      const state = getStateByFacility(LocationFacility.Austin);
+      const state = getStateCodeByFacility(LocationFacility.Austin);
       expect(state).toBe('TX');
     });
 
     it('should return undefined for a non-existent facility', () => {
-      const state = getStateByFacility(
+      const state = getStateCodeByFacility(
         'NonExistentFacility' as LocationFacility
       );
       expect(state).toBeUndefined();

@@ -28,7 +28,6 @@ export const GetProvidersInputSchema = z.object({
   deliveryMethod: DeliveryMethodSchema.optional(),
   location: z
     .object({
-      // Not implemented
       facility: LocationFacilitySchema.optional(),
       state: LocationStateSchema.optional()
     })

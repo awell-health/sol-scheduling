@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import {} from 'daisyui';
-import { upperFirst, uniq } from 'lodash-es';
+import { uniq } from 'lodash-es';
 import clsx from 'clsx';
 
 import { toFullNameState, toFullNameGender } from '@/lib/utils';
@@ -57,13 +57,6 @@ export const ProviderCard: FC<ProviderProps> = ({
             {provider.ethnicity && (
               <SingleItem label='Ethnicity' value={provider.ethnicity} />
             )}
-
-            {provider.clinicalFocus && (
-              <MultiItem
-                label='Clinical Focus'
-                values={provider.clinicalFocus.map((_f) => upperFirst(_f))}
-              />
-            )}
           </ul>
           <ul className='flex flex-wrap list-none m-0 p-0 gap-y-4 mb-4'>
             {facilities.length > 0 && (
@@ -85,24 +78,6 @@ export const ProviderCard: FC<ProviderProps> = ({
         </div>
       </div>
     </div>
-  );
-};
-
-const MultiItem: FC<{ label: string; values: string[] }> = ({
-  label,
-  values
-}) => {
-  return (
-    <li className='flex-1 basis-1/2'>
-      <span className='font-semibold text-primary'>{label}: </span>
-      <ul className='flex flex-wrap gap-x-1'>
-        {values.map((value) => (
-          <li key={value}>
-            <div className='badge badge-primary badge-outline'>{value}</div>
-          </li>
-        ))}
-      </ul>
-    </li>
   );
 };
 
