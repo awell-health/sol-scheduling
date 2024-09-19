@@ -9,6 +9,15 @@ export enum LocationState {
   DC = 'DC'
 }
 
+export const LocationStateToNameMapping: Record<LocationState, string> = {
+  CO: 'Colorado',
+  NY: 'New York',
+  TX: 'Texas',
+  VA: 'Virginia',
+  MD: 'Maryland',
+  DC: 'Washington DC'
+};
+
 /**
  * The back-end can receive any string (no validation) but the front-end needs to display
  * a list of supported states

@@ -4,14 +4,17 @@ import {
   Gender,
   DeliveryMethod,
   GetProvidersInputType,
-  GetProvidersInputSchema
+  GetProvidersInputSchema,
+  LocationState,
+  LocationFacility
 } from '../lib/api';
 import {
   FilterEnum,
   FilterType,
   isFilterType,
   optionsFromEnum,
-  optionsFromGenderEnum
+  optionsForGender,
+  optionsForLocation
 } from '../atoms/ProviderSelection/types';
 
 const updatePreferencesWithFilters = (
@@ -24,7 +27,12 @@ const updatePreferencesWithFilters = (
       case 'therapeuticModality':
       case 'language':
       case 'location': {
-        return;
+        if (prefs.location) {
+          prefs.location.state = filter.selectedOptions[0] as LocationState;
+          prefs.location.facility = filter
+            .selectedOptions[0] as LocationFacility;
+        }
+        break;
       }
       case 'gender': {
         prefs.gender = filter.selectedOptions[0] as Gender;
@@ -70,7 +78,7 @@ const preferencesToFiltersArray = (
             label: 'Gender',
             selectType: 'single',
             enum: Gender,
-            options: optionsFromGenderEnum(),
+            options: optionsForGender(),
             selectedOptions: preferences[key] ? [preferences[key]] : []
           };
         }
@@ -97,15 +105,6 @@ const preferencesToFiltersArray = (
             selectedOptions: preferences[key] ? preferences[key] : []
           };
         }
-        // case 'therapeuticModality': {
-        //   return {
-        //     key: 'therapeuticModality',
-        //     label: 'Therapeutic Modality',
-        //     enum: Modality,
-        //     options: optionsFromEnum(Modality),
-        //     selectedOptions: []
-        //   };
-        // }
         case 'deliveryMethod': {
           return {
             key: 'deliveryMethod',
@@ -117,7 +116,14 @@ const preferencesToFiltersArray = (
           };
         }
         case 'location': {
-          return undefined;
+          return {
+            key: 'loaction',
+            label: 'Location',
+            selectType: 'single',
+            enum: { facility: LocationFacility, state: LocationState },
+            options: optionsForLocation(),
+            selectedOptions: preferences[key] ? preferences[key] : []
+          };
         }
         default: {
           return undefined;

@@ -39,8 +39,22 @@ const stateToFacilitiesMap: Record<LocationState, LocationFacility[]> = {
     LocationFacility.UpperKirby,
     LocationFacility.Austin
   ],
-  VA: [],
-  DC: []
+  VA: [
+    LocationFacility.Gaithersburg,
+    LocationFacility.Frederick,
+    LocationFacility.Ballston,
+    LocationFacility.Downtown,
+    LocationFacility.Tysons,
+    LocationFacility.SilverSpring
+  ],
+  DC: [
+    LocationFacility.Gaithersburg,
+    LocationFacility.Frederick,
+    LocationFacility.Ballston,
+    LocationFacility.Downtown,
+    LocationFacility.Tysons,
+    LocationFacility.SilverSpring
+  ]
 };
 
 const facilityToStateMap: Record<LocationFacility, string> = Object.entries(
