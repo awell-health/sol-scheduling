@@ -95,7 +95,7 @@ export const Scheduler: FC<SchedulerProps> = ({
 
   return (
     <div>
-      <div className='flex justify-between align-center pb-6 mb-5 border-b-1 border-slate-200'>
+      <div className='flex justify-between items-center pb-6 mb-5 border-b-1 border-slate-200'>
         <h4 className='font-semibold text-xl m-0 text-slate-800'>
           {title}
           <br />

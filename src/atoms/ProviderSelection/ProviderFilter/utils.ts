@@ -1,10 +1,15 @@
 import { isEmpty } from 'lodash-es';
 import { FilterEnum, FilterType } from '../types';
 
-const getEnumKeyFromVal = (enumType: FilterEnum, value: string) => {
-  return (
-    Object.keys(enumType).find((key) => enumType[key] === value) ?? 'Unknown'
-  ).replace('_', ' ');
+const getEnumKeyFromVal = (value: string) => {
+  if (value === 'F') {
+    return 'Female';
+  }
+  if (value === 'M') {
+    return 'Male';
+  } else {
+    return value;
+  }
 };
 
 export const displaySelectedValues = <T extends FilterEnum>(
@@ -13,7 +18,5 @@ export const displaySelectedValues = <T extends FilterEnum>(
   if (isEmpty(filter.selectedOptions)) {
     return '';
   }
-  return filter.selectedOptions
-    .map((val) => getEnumKeyFromVal(filter.enum, val))
-    .join(', ');
+  return filter.selectedOptions.map((val) => getEnumKeyFromVal(val)).join(', ');
 };

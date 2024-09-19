@@ -20,7 +20,7 @@ const ProviderFilter: FC = () => {
       </FilterOverlay>
       <div
         className={clsx(
-          'overflow-x-auto pb-2 flex gap-2 whitespace-nowrap px-2 scroll z-10 md:flex-wrap',
+          'overflow-x-auto pb-2 flex gap-2 whitespace-nowrap scroll z-10 md:flex-wrap',
           classes['scrollable-container']
         )}
       >

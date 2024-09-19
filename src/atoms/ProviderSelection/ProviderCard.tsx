@@ -95,11 +95,13 @@ const MultiItem: FC<{ label: string; values: string[] }> = ({
   return (
     <li className='flex-1 basis-1/2'>
       <span className='font-semibold text-primary'>{label}: </span>
-      {values.map((value) => (
-        <div key={value} className='badge badge-primary badge-outline'>
-          {value}
-        </div>
-      ))}
+      <ul className='flex flex-wrap gap-x-1'>
+        {values.map((value) => (
+          <li key={value}>
+            <div className='badge badge-primary badge-outline'>{value}</div>
+          </li>
+        ))}
+      </ul>
     </li>
   );
 };

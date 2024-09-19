@@ -46,12 +46,13 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
       onClick={() => onSelect(day.date)}
       disabled={cannotActivate(day)}
       className={clsx(
-        'flex flex-1 md:flex-col justify-between md:justify-center align-center p-4',
+        'flex flex-1 md:flex-col justify-between md:justify-center align-center p-3',
         'font-bold text-lg text-center rounded-md',
+        'w-full md:w-auto lg:w-[14%]',
         {
           'border-slate-200 border-1 bg-white': !day.isSelected,
           'border-1 border-primary ring-4 ring-secondary': day.isSelected,
-          'bg-slate-100 cursor-not-allowed text-slate-300 border-2 border-slate-200':
+          'bg-slate-100 cursor-not-allowed text-slate-300 border-1 border-slate-200':
             day.isDisabled,
           'hover:z-10 hover:bg-secondary hover:border-primary cursor-pointer':
             !cannotActivate(day)

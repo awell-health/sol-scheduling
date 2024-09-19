@@ -1,6 +1,7 @@
 import { FC, useState, useMemo, useCallback, useEffect } from 'react';
 import {} from 'daisyui';
 import { uniq } from 'lodash-es';
+import { differenceInDays } from 'date-fns';
 import clsx from 'clsx';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 
@@ -171,10 +172,12 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     allowSchedulingInThePast
   ]);
 
-  const chevronClasses = clsx(
-    'flex flex-none align-center justify-center',
-    'text-primary size-8 font-bold'
-  );
+  // Calculate if we should disable the previous week button
+  const isPreviousWeekDisabled =
+    differenceInDays(currentWeek, new Date()) <= -7;
+
+  // Calculate if we should disable the next week button
+  const isNextWeekDisabled = differenceInDays(currentWeek, new Date()) >= 30;
 
   return (
     <div className={'relative'}>
@@ -193,18 +196,16 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           {`${format(currentWeek, 'MMMM yyyy')}`}
         </div>
         <div className='flex align-center text-center gap-2'>
-          <button onClick={handlePreviousWeek} className='btn btn-secondary'>
-            <span className='hidden'>Previous week</span>
-            <ChevronLeftIcon className={chevronClasses} aria-hidden='true' />
-          </button>
-          <button
+          <NavigationButton
+            direction='left'
+            onClick={handlePreviousWeek}
+            isDisabled={isPreviousWeekDisabled}
+          />
+          <NavigationButton
+            direction='right'
             onClick={handleNextWeek}
-            className='btn btn-secondary'
-            type='button'
-          >
-            <span className='hidden'>Next week</span>
-            <ChevronRightIcon className={chevronClasses} aria-hidden='true' />
-          </button>
+            isDisabled={isNextWeekDisabled}
+          />
         </div>
       </div>
       <div className={clsx('flex gap-2 lg:gap-4 flex-col md:flex-row')}>
@@ -226,11 +227,19 @@ const LocationFilter: FC<{
   onSelect: (location: string) => void;
 }> = ({ options, selected, onSelect }) => {
   return (
-    <ul className='menu menu-horizontal rounded-box gap-2'>
+    <ul className='menu menu-horizontal rounded-box gap-2 pl-0'>
       {options.map((option) => (
         <li key={option}>
           <button
-            className={`btn btn-sm ${option === selected ? 'btn-primary' : 'btn-secondary'}`}
+            className={clsx(
+              'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
+              {
+                'text-slate-800 border-1 border-slate-200  bg-white':
+                  option !== selected,
+                'border-1 border-primary ring-4 ring-secondary text-primary':
+                  option === selected
+              }
+            )}
             onClick={() => onSelect(option)}
           >
             {option}
@@ -238,5 +247,36 @@ const LocationFilter: FC<{
         </li>
       ))}
     </ul>
+  );
+};
+
+const NavigationButton: FC<{
+  direction: 'left' | 'right';
+  onClick: () => void;
+  isDisabled: boolean;
+}> = ({ direction, onClick, isDisabled }) => {
+  const chevronClasses = clsx(
+    'flex flex-none align-center justify-center',
+    'text-primary size-8 font-bold'
+  );
+
+  return (
+    <button
+      onClick={onClick}
+      className={clsx('btn', {
+        'btn-disabled opacity-50 cursor-not-allowed': isDisabled,
+        'btn-secondary': !isDisabled
+      })}
+      disabled={isDisabled}
+      aria-label={
+        direction === 'left' ? 'Go to previous week' : 'Go to next week'
+      }
+    >
+      {direction === 'left' ? (
+        <ChevronLeftIcon className={chevronClasses} aria-hidden='true' />
+      ) : (
+        <ChevronRightIcon className={chevronClasses} aria-hidden='true' />
+      )}
+    </button>
   );
 };
