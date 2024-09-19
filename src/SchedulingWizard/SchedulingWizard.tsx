@@ -68,10 +68,8 @@ export const SchedulingWizard: FC<SchedulingWizardProps> = ({
   };
 
   const shouldShowBackButton = useMemo(() => {
-    return (
-      currentStage.id !== 'provider-selection' && !shouldSkipProviderSelection
-    );
-  }, [currentStage.id, shouldSkipProviderSelection]);
+    return currentStage.id !== 'provider-selection';
+  }, [currentStage.id]);
 
   return (
     <>
