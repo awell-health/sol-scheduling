@@ -48,7 +48,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
       className={clsx(
         'flex flex-1 md:flex-col justify-between md:justify-center align-center p-3',
         'font-bold text-lg text-center rounded-md',
-        'w-full md:w-auto lg:w-[14%]',
+        'w-full md:w-auto',
         {
           'border-slate-200 border-1 bg-white': !day.isSelected,
           'border-1 border-primary ring-4 ring-secondary': day.isSelected,
@@ -80,7 +80,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
         })}
         ref={slotRef}
       >
-        <Slot
+        <NumberOfSlots
           count={
             !day.isAvailable || day.isDisabled ? 0 : day.availabilitiesCount
           }
@@ -90,13 +90,13 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
   );
 };
 
-const Slot: FC<{ count: number }> = ({ count }) => {
+const NumberOfSlots: FC<{ count: number }> = ({ count }) => {
   const slotText = count === 1 ? 'slot' : 'slots';
   return (
     <div className='flex mt-2 gap-2 md:gap-0 md:flex-col flex-row'>
       <div
         className={clsx(
-          'rounded-full text-sm text-white font-medium my-2 self-center px-4 py-1 w-[90px]',
+          'rounded-full text-sm text-white font-medium my-2 self-center px-4 py-1 w-[85px]',
           {
             'bg-slate-300': count === 0,
             'bg-yellow-500': count > 0 && count <= 2,

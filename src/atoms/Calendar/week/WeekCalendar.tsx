@@ -36,7 +36,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   value,
   onSelect,
   week = new Date(),
-  weekStartsOn = 'sunday',
+  weekStartsOn = 'monday',
   hideWeekends = true,
   allowSchedulingInThePast = false,
   preferredLocation = 'Virtual'
@@ -154,6 +154,12 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
       availabilitiesCount: countAvailabilities(date)
     }));
 
+    hideWeekends = !generatedDays.some(
+      (d) =>
+        (d.availabilitiesCount > 0 && d.shortDayName === 'Sat') ||
+        (d.availabilitiesCount > 0 && d.shortDayName === 'Sun')
+    );
+
     if (hideWeekends) {
       generatedDays = generatedDays.filter(
         (day) =>
@@ -208,7 +214,11 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           />
         </div>
       </div>
-      <div className={clsx('flex gap-2 lg:gap-4 flex-col md:flex-row')}>
+      <div
+        className={clsx(
+          'flex gap-2 lg:gap-3 flex-col md:flex-row overflow-x-auto'
+        )}
+      >
         {days.map((day) => (
           <DayCard
             key={day.date.toString()}
