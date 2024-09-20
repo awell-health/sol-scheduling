@@ -35,14 +35,16 @@ export const ProviderCard: FC<ProviderProps> = ({
             <h3 className='text-slate-800 text-lg m-0 font-semibold'>
               {provider.name}
             </h3>
-            <div className='flex items-center gap-2'>
+            <div className='flex flex-col sm:flex-row sm:items-center'>
               {location.length > 0 && (
                 <span className='text-slate-600 text-md'>
                   {toFullNameState(location)}
                 </span>
               )}
               {location.length > 0 && profileLink.length > 0 && (
-                <span className='text-slate-600 text-md'>•</span>
+                <span className='text-slate-600 text-md hidden sm:inline px-1'>
+                  •
+                </span>
               )}
               {profileLink.length > 0 && (
                 <LinkToProfileItem link={profileLink} />
@@ -149,7 +151,7 @@ const Slot: FC<{ count: number }> = ({ count }) => {
     <div>
       <div
         className={clsx(
-          'rounded-full text-sm text-white text-center font-medium my-2 flex items-center justify-center px-4 py-1',
+          'rounded-full text-sm text-white text-center font-medium my-2 flex items-center justify-center px-3 py-1',
           {
             'bg-slate-300': count === 0,
             'bg-yellow-500': count > 0 && count <= 2,
