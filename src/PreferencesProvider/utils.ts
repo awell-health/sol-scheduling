@@ -26,11 +26,32 @@ const updatePreferencesWithFilters = (
       case 'age':
       case 'therapeuticModality':
       case 'language':
+        return;
       case 'location': {
+        // really ugly code to handle the fact that the location filter is a compound filter
+        // special case around Virginia/DC/Maryland
         if (prefs.location) {
-          prefs.location.state = filter.selectedOptions[0] as LocationState;
-          prefs.location.facility = filter
-            .selectedOptions[0] as LocationFacility;
+          if (filter.selectedOptions.length > 0) {
+            if (filter.selectedOptions[0].length === 2) {
+              if (
+                filter.selectedOptions[0] === 'DC' ||
+                filter.selectedOptions[0] === 'VA'
+              ) {
+                prefs.location.state = LocationState.MD;
+              } else {
+                prefs.location.state = filter
+                  .selectedOptions[0] as LocationState;
+              }
+              prefs.location.facility = undefined;
+            } else {
+              prefs.location.state = undefined;
+              prefs.location.facility = filter
+                .selectedOptions[0] as LocationFacility;
+            }
+          }
+          // prefs.location.state = filter.selectedOptions[0] as LocationState;
+          // prefs.location.facility = filter
+          //   .selectedOptions[0] as LocationFacility;
         }
         break;
       }
@@ -52,6 +73,7 @@ const updatePreferencesWithFilters = (
     }
   });
   const parsed = GetProvidersInputSchema.safeParse(prefs);
+  console.log('parsed prefs from filters', parsed.data);
   if (!parsed.success) {
     console.error('Error updating preferences with filters', {
       parsed,
@@ -127,7 +149,11 @@ const preferencesToFiltersArray = (
             filterType: 'compound',
             enum: { facility: LocationFacility, state: LocationState },
             options: optionsForLocation(),
-            selectedOptions: preferences[key] ? preferences[key] : []
+            selectedOptions: preferences.location?.state
+              ? [preferences.location.state]
+              : preferences.location?.facility
+                ? [preferences.location.facility]
+                : []
           };
         }
         default: {
