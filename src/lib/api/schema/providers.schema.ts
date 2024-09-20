@@ -60,6 +60,7 @@ export const GetProvidersResponseSchema = z
         clinicalFocus: z.array(z.string()).optional(),
         bio: z.string().optional(),
         image: z.string().optional(),
+        profileLink: z.string().optional(),
         events: z
           .array(Event)
           .optional()

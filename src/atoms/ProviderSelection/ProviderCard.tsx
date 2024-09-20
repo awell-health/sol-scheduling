@@ -24,6 +24,7 @@ export const ProviderCard: FC<ProviderProps> = ({
 
   const location = provider.location?.state ?? '';
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
+  const profileLink = provider.profileLink ?? '';
 
   return (
     <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
@@ -34,11 +35,19 @@ export const ProviderCard: FC<ProviderProps> = ({
             <h3 className='text-slate-800 text-lg m-0 font-semibold'>
               {provider.name}
             </h3>
-            {location.length > 0 && (
-              <span className='text-slate-600 text-md'>
-                {toFullNameState(location)}
-              </span>
-            )}
+            <div className='flex items-center gap-2'>
+              {location.length > 0 && (
+                <span className='text-slate-600 text-md'>
+                  {toFullNameState(location)}
+                </span>
+              )}
+              {location.length > 0 && profileLink.length > 0 && (
+                <span className='text-slate-600 text-md'>•</span>
+              )}
+              {profileLink.length > 0 && (
+                <LinkToProfileItem link={profileLink} />
+              )}
+            </div>
           </div>
         </div>
         <div className='flex'>
@@ -110,14 +119,27 @@ const BioItem: FC<{ label: string; value: string }> = ({ label, value }) => {
         </>
       ) : (
         <>
-          <span>{value.substring(0, 100)}...</span>
-
+          <span>{value.substring(0, 120)}...</span>
           <button onClick={toggleBio} className={classes}>
             {' > Show more'}
           </button>
         </>
       )}
     </li>
+  );
+};
+
+const LinkToProfileItem: FC<{ link: string }> = ({ link }) => {
+  return (
+    <a
+      href={link}
+      target='_blank'
+      rel='noopener noreferrer'
+      className='link text-blue-500 no-underline hover:underline'
+      aria-label={`Visit provider profile page`}
+    >
+      View Profile
+    </a>
   );
 };
 
