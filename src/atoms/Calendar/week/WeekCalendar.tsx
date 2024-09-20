@@ -154,12 +154,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
       availabilitiesCount: countAvailabilities(date)
     }));
 
-    hideWeekends = !generatedDays.some(
-      (d) =>
-        (d.availabilitiesCount > 0 && d.shortDayName === 'Sat') ||
-        (d.availabilitiesCount > 0 && d.shortDayName === 'Sun')
-    );
-
     if (hideWeekends) {
       generatedDays = generatedDays.filter(
         (day) =>
