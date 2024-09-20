@@ -11,6 +11,7 @@ import {
   LocationFacility,
   LocationStateToNameMapping
 } from '../../lib/api';
+import { upperFirst } from 'lodash-es';
 
 export type Provider = GetProvidersResponseType['data'][number];
 
@@ -66,7 +67,7 @@ export function isFilterType(f: unknown): f is FilterType<FilterEnum> {
 
 export const optionsFromEnum = (enumType: FilterEnum) => {
   return Object.entries(enumType).map(([_key, value]) => ({
-    label: value as string,
+    label: upperFirst(value as string),
     value: value as string
   }));
 };
