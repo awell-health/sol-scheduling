@@ -37,7 +37,8 @@ export const Scheduler: FC<SchedulerProps> = ({
     usePreferences();
   const {
     availabilities: { data, loading, fetch: fetchAvailabilities },
-    bookAppointment
+    bookAppointment,
+    isBooking
   } = useSolApi();
 
   const [date, setDate] = useState<Date | null>(null);
@@ -138,10 +139,18 @@ export const Scheduler: FC<SchedulerProps> = ({
           ref={bookingButtonRef}
         >
           <button
-            className={clsx('btn btn-primary w-full')}
+            className={clsx('btn w-full', {
+              'btn-secondary cursor-not-allowed': isBooking,
+              'btn-primary': !isBooking
+            })}
             onClick={() => handleBooking(slot)}
+            disabled={isBooking}
           >
-            {button}
+            {isBooking ? (
+              <span className='loading loading-infinity loading-md text-primary'></span>
+            ) : (
+              button
+            )}
           </button>
         </div>
       )}

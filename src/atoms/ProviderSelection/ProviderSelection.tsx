@@ -28,7 +28,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
       <ProviderFilter />
       {loading ? (
         <div className='h-full w-full flex items-center justify-center '>
-          <span className='loading loading-infinity loading-lg'></span>
+          <span className='loading loading-infinity loading-lg text-primary'></span>
         </div>
       ) : (
         <>

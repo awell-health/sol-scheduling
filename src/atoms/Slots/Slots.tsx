@@ -62,7 +62,7 @@ export const Slots: FC<SlotsProps> = ({
     <div>
       {loading && (
         <div className='flex justify-center'>
-          <span className='loading loading-spinner loading-lg text-primary'></span>
+          <span className='loading loading-infinity loading-lg text-primary'></span>
         </div>
       )}
       {!loading && isEmpty(slots) && <div>{noSlotsLabel}</div>}

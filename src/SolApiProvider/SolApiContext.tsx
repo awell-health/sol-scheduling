@@ -26,6 +26,7 @@ export type SolApiContextType = {
     preferences: GetProvidersInputType,
     onError: () => void
   ) => void;
+  isBooking: boolean;
 };
 
 export const SolApiContext = createContext<SolApiContextType | null>(null);
@@ -82,12 +83,14 @@ export const SolApiProvider: FC<ContextProps> = ({
       .finally(() => setLoadingAvailabilities(false));
   };
   const [isLoadingAvailabilities, setLoadingAvailabilities] = useState(false);
+  const [isBooking, setIsBooking] = useState(false);
 
   const handleBookAppointment = (
     slot: SelectedSlot,
     preferences: GetProvidersInputType,
     onError: () => void
   ) => {
+    setIsBooking(true);
     bookAppointment(slot)
       .then((resp) => {
         console.log('Booked appointment', resp);
@@ -96,7 +99,8 @@ export const SolApiProvider: FC<ContextProps> = ({
       .catch(() => {
         console.error('Error booking appointment');
         onError();
-      });
+      })
+      .finally(() => setIsBooking(false));
   };
 
   const contextValue = {
@@ -110,7 +114,8 @@ export const SolApiProvider: FC<ContextProps> = ({
       fetch: getAvailabilities,
       loading: isLoadingAvailabilities
     },
-    bookAppointment: handleBookAppointment
+    bookAppointment: handleBookAppointment,
+    isBooking: isBooking
   };
   return (
     <SolApiContext.Provider value={contextValue}>
