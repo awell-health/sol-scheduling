@@ -31,8 +31,5 @@ jobs:
           # Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           interactive: false
-          # Prevent that deploying storybook actions fails when tests fail
           exitOnceUploaded: true
-          exitZeroOnChanges: true
-          # Skip tests
-          skip: true
+          exitZeroOnChanges: true # 👈 Option to prevent the workflow from failing even when stories have errors
