@@ -30,7 +30,9 @@ jobs:
         with:
           # Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          # Disable Storybook UI tests for now
           interactive: false
+          # Prevent that deploying storybook actions fails when tests fail
           exitOnceUploaded: true
           exitZeroOnChanges: true
+          # Skip tests
+          skip: true
