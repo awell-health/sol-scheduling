@@ -5,6 +5,7 @@ import {
   type GetAvailabilitiesResponseType,
   type GetProvidersResponseType
 } from '../lib/api';
+import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 
 export interface SchedulingActivityProps {
   providerId?: string;
@@ -17,7 +18,7 @@ export interface SchedulingActivityProps {
   ) => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: (
     slot: SelectedSlot,
-    preferences: GetProvidersInputType
+    preferences: SalesforcePreferencesType
   ) => void;
   providerPreferences: GetProvidersInputType;
   text?: {

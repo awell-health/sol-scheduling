@@ -1,9 +1,13 @@
 import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 import {
-  BookAppointmentResponseType,
-  GetAvailabilitiesResponseType,
-  GetProvidersInputType,
-  GetProvidersResponseType
+  preparePreferencesForSalesforce,
+  type SalesforcePreferencesType
+} from '@/lib/utils/preferences';
+import {
+  type BookAppointmentResponseType,
+  type GetAvailabilitiesResponseType,
+  type GetProvidersInputType,
+  type GetProvidersResponseType
 } from 'lib/api';
 import { createContext, FC, useState } from 'react';
 
@@ -41,7 +45,7 @@ interface ContextProps {
   bookAppointment: (slot: SelectedSlot) => Promise<BookAppointmentResponseType>;
   completeActivity: (
     slot: SelectedSlot,
-    preferences: GetProvidersInputType
+    preferences: SalesforcePreferencesType
   ) => void;
   children: React.ReactNode;
 }
@@ -75,10 +79,6 @@ export const SolApiProvider: FC<ContextProps> = ({
     fetchAvailability(providerId)
       .then((resp) => {
         setAvailabilities(resp.data[providerId]);
-        console.log(
-          `set availabilities for provider id ${providerId}`,
-          resp.data[providerId]
-        );
       })
       .finally(() => setLoadingAvailabilities(false));
   };
@@ -92,9 +92,10 @@ export const SolApiProvider: FC<ContextProps> = ({
   ) => {
     setIsBooking(true);
     bookAppointment(slot)
-      .then((resp) => {
-        console.log('Booked appointment', resp);
-        completeActivity(slot, preferences);
+      .then(() => {
+        const parsedPreferencesForSalesforce =
+          preparePreferencesForSalesforce(preferences);
+        completeActivity(slot, parsedPreferencesForSalesforce);
       })
       .catch(() => {
         console.error('Error booking appointment');

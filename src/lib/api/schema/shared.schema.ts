@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-import { GetAvailabilitiesResponseType } from '..';
+import { DeliveryMethodType, GetAvailabilitiesResponseType } from '..';
 
 export type SlotType = Pick<
   GetAvailabilitiesResponseType['data'][string][number],
   'slotstart' | 'eventId' | 'duration' | 'providerId' | 'facility' | 'location'
 >;
 
-export type SelectedSlot = SlotType & { locationType: 'in-person' | 'virtual' };
+export type SelectedSlot = SlotType & { locationType: DeliveryMethodType };
 
 export const ISO8601DateStringSchema = z.coerce.date();
 

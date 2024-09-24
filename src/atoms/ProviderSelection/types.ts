@@ -4,12 +4,12 @@ import {
   DeliveryMethod,
   Ethnicity,
   Gender,
-  GetProvidersInputType,
-  GetProvidersResponseType,
+  type GetProvidersInputType,
   Modality,
   LocationState,
   LocationFacility,
-  LocationStateToNameMapping
+  LocationStateToNameMapping,
+  type GetProvidersResponseType
 } from '../../lib/api';
 import { upperFirst } from 'lodash-es';
 

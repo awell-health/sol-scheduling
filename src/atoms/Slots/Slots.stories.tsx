@@ -3,6 +3,12 @@ import { Slots as SlotsComponent } from './Slots';
 import { ThemeProvider } from '@awell-health/ui-library';
 import { fn } from '@storybook/test';
 import { EventDeliveryMethod } from '@/lib/api/schema/atoms/eventDeliveryMethod.schema';
+import { PreferencesProvider } from '@/PreferencesProvider';
+import { SolApiProvider } from '@/SolApiProvider';
+import {
+  mockFetchProvidersFn,
+  mockProviderAvailabilityResponse
+} from '@/lib/api/__mocks__';
 
 const meta: Meta<typeof SlotsComponent> = {
   title: 'Atoms/Slots',
@@ -11,7 +17,18 @@ const meta: Meta<typeof SlotsComponent> = {
   decorators: [
     (Story) => (
       <ThemeProvider accentColor='#A45128'>
-        <Story />
+        <SolApiProvider
+          fetchAvailability={(pid) =>
+            Promise.resolve(mockProviderAvailabilityResponse(pid))
+          }
+          fetchProviders={mockFetchProvidersFn}
+          bookAppointment={fn()}
+          completeActivity={fn()}
+        >
+          <PreferencesProvider initialPreferences={{}}>
+            <Story />
+          </PreferencesProvider>
+        </SolApiProvider>
       </ThemeProvider>
     )
   ]

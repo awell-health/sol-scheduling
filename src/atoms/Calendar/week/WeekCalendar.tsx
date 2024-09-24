@@ -16,7 +16,7 @@ import {
   isSameDay,
   isBefore
 } from 'date-fns';
-import { type SlotType } from '../../../lib/api';
+import { DeliveryMethod, type SlotType } from '../../../lib/api';
 import { DayCard } from './DayCard';
 import { useSolApi } from '../../../SolApiProvider';
 import { EventDeliveryMethod } from '@/lib/api/schema/atoms/eventDeliveryMethod.schema';
@@ -68,7 +68,11 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const handleSelectLocation = useCallback(
     (location: string) => {
       setSelectedLocation(location);
-      setDeliveryMethod(location === 'Virtual' ? 'virtual' : 'in-person');
+      setDeliveryMethod(
+        location === 'Virtual'
+          ? DeliveryMethod.Telehealth
+          : DeliveryMethod.InPerson
+      );
       setSelectedDate(null);
       onSelect(null);
       if (location !== 'Virtual') {

@@ -24,7 +24,7 @@ const meta: Meta<typeof ProviderSelectionComponent> = {
           completeActivity={fn()}
         >
           <PreferencesProvider initialPreferences={{}}>
-            <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
               <Story />
             </div>
           </PreferencesProvider>
