@@ -31,7 +31,7 @@ describe('Utility Functions for Location and Facility', () => {
       ]);
     });
 
-    it('should return an empty array for Virginia (VA)', () => {
+    it('should return facilities for Virginia (VA)', () => {
       const facilities = getFacilitiesByState(LocationState.VA);
       expect(facilities).toEqual([
         LocationFacility.Gaithersburg,
@@ -43,7 +43,7 @@ describe('Utility Functions for Location and Facility', () => {
       ]);
     });
 
-    it('should return an empty array for District of Columbia (DC)', () => {
+    it('should return facilities for District of Columbia (DC)', () => {
       const facilities = getFacilitiesByState(LocationState.DC);
       expect(facilities).toEqual([
         LocationFacility.Gaithersburg,
