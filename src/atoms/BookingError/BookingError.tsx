@@ -12,8 +12,10 @@ export const BookingError: FC<BookingErrorProps> = ({ otherBookingData }) => {
   const bookingConfirmationError =
     'Something went wrong when trying to schedule your appointment.';
 
-  const { bookingInformation } = usePreferences();
-  const { provider, slot } = bookingInformation;
+  const {
+    selectedProvider,
+    bookingInformation: { slot }
+  } = usePreferences();
 
   return (
     <div>
@@ -28,12 +30,12 @@ export const BookingError: FC<BookingErrorProps> = ({ otherBookingData }) => {
                 You tried to schedule with
               </p>
               <p className={'font-semibold text-lg'}>
-                {provider?.name ?? 'Unknown'}
+                {selectedProvider?.name ?? 'Unknown'}
               </p>
             </div>
             <ProviderAvatar
-              name={provider?.name ?? ''}
-              image={provider?.image}
+              name={selectedProvider?.name ?? ''}
+              image={selectedProvider?.image}
             />
           </div>
           <ul className={clsx('list-none p-0 m-0')}>
