@@ -43,6 +43,9 @@ export const stateToFacilitiesMap: Record<LocationState, LocationFacility[]> = {
     LocationFacility.UpperKirby,
     LocationFacility.Austin
   ],
+  /**
+   * On request of SOL, these facility must be added to Virginia
+   */
   VA: [
     LocationFacility.Gaithersburg,
     LocationFacility.Frederick,
@@ -51,6 +54,9 @@ export const stateToFacilitiesMap: Record<LocationState, LocationFacility[]> = {
     LocationFacility.Tysons,
     LocationFacility.SilverSpring
   ],
+  /**
+   * On request of SOL, these facility must be added to Virginia
+   */
   DC: [
     LocationFacility.Gaithersburg,
     LocationFacility.Frederick,

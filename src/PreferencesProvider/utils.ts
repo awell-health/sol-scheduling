@@ -73,7 +73,7 @@ const updatePreferencesWithFilters = (
     }
   });
   const parsed = GetProvidersInputSchema.safeParse(prefs);
-  console.log('parsed prefs from filters', parsed.data);
+
   if (!parsed.success) {
     console.error('Error updating preferences with filters', {
       parsed,

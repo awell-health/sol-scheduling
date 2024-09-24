@@ -12,14 +12,17 @@ import {
 } from '../lib/api/__mocks__';
 import { useCallback, useEffect } from 'react';
 import {
+  type BookAppointmentResponseType,
   ClinicalFocus,
   Ethnicity,
-  GetProvidersInputType,
-  type SlotType
+  type GetAvailabilitiesResponseType,
+  type GetProvidersInputType,
+  type GetProvidersResponseType
 } from '../lib/api';
 import { Gender } from '../lib/api';
 import { some } from 'lodash-es';
 import { SelectedSlot } from '@/lib/api/schema/shared.schema';
+import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity',
@@ -29,27 +32,9 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
   },
   args: {
     onCompleteActivity: fn(),
-    fetchProviders: () => {
-      console.log('Fetching providers');
-      return new Promise((resolve) =>
-        setTimeout(() => resolve(mockProvidersResponse), 750)
-      );
-    },
-    fetchAvailability: (providerId: string) => {
-      console.log('Fetching availability for provider', providerId);
-      return new Promise((resolve) =>
-        setTimeout(
-          () => resolve(mockProviderAvailabilityResponse(providerId)),
-          750
-        )
-      );
-    },
-    onBooking: fn((slot: SlotType) => {
-      console.log('Booking slot', slot);
-      return new Promise((resolve) =>
-        setTimeout(() => resolve({ data: [] }), 1500)
-      );
-    }),
+    fetchProviders: fn(),
+    fetchAvailability: fn(),
+    onBooking: fn(),
     providerPreferences: {
       gender: Gender.Male,
       ethnicity: Ethnicity.White,
@@ -80,6 +65,7 @@ type Story = StoryObj<typeof meta>;
 export const SchedulingActivity: Story = {
   render: (args) => {
     const { updateLayoutMode, resetLayoutMode } = useTheme();
+    const initialPrefs: GetProvidersInputType = args.providerPreferences;
 
     useEffect(() => {
       updateLayoutMode('flexible');
@@ -89,43 +75,64 @@ export const SchedulingActivity: Story = {
         resetLayoutMode();
       };
     }, []);
-    const providerPrefs = args.providerPreferences;
 
-    const fetchProvidersFn = useCallback(async () => {
-      const { data, ...rest } = await args.fetchProviders(providerPrefs);
-      console.log('fetched providers');
-      return {
-        data: data.filter((p) => {
-          if (
-            providerPrefs.clinicalFocus &&
-            providerPrefs.clinicalFocus.length > 0
-          ) {
-            return some(
-              providerPrefs.clinicalFocus.map((f) =>
-                p.clinicalFocus
-                  ?.map((cf) => cf.toLowerCase())
-                  .includes(f.toLowerCase())
-              )
-            );
-          } else {
-            return true;
-          }
-        }),
-        ...rest
-      };
-    }, [providerPrefs]);
+    const fetchProvidersFn = useCallback(
+      async (preferences: GetProvidersInputType) => {
+        // Spy on the action, useful for debugging
+        args.fetchProviders(preferences);
 
-    const fetchAvailabilityFn = useCallback(
-      (_providerId: string) => args.fetchAvailability(_providerId),
+        const { data, ...rest } = (await new Promise((resolve) =>
+          setTimeout(() => resolve(mockProvidersResponse), 750)
+        )) as GetProvidersResponseType;
+
+        return {
+          data: data.filter((p) => {
+            if (
+              preferences.clinicalFocus &&
+              preferences.clinicalFocus.length > 0
+            ) {
+              return some(
+                preferences.clinicalFocus.map((f) =>
+                  p.clinicalFocus
+                    ?.map((cf) => cf.toLowerCase())
+                    .includes(f.toLowerCase())
+                )
+              );
+            } else {
+              return true;
+            }
+          }),
+          ...rest
+        };
+      },
       []
     );
 
-    const bookAppointmentFn = useCallback((_slot: SelectedSlot) => {
-      return args.onBooking(_slot);
+    const fetchAvailabilityFn = useCallback(async (_providerId: string) => {
+      args.fetchAvailability(_providerId);
+
+      const data = (await new Promise((resolve) =>
+        setTimeout(
+          () => resolve(mockProviderAvailabilityResponse(_providerId)),
+          750
+        )
+      )) as GetAvailabilitiesResponseType;
+
+      return data;
+    }, []);
+
+    const bookAppointmentFn = useCallback(async (_slot: SelectedSlot) => {
+      args.onBooking(_slot);
+
+      const data = new Promise((resolve) =>
+        setTimeout(() => resolve({ data: [] }), 1500)
+      ) as BookAppointmentResponseType;
+
+      return data;
     }, []);
 
     const completeActivity = useCallback(
-      (_slot: SelectedSlot, _preferences: GetProvidersInputType) => {
+      (_slot: SelectedSlot, _preferences: SalesforcePreferencesType) => {
         console.log('Complete activity with slot', _slot);
         return args.onCompleteActivity(_slot, _preferences);
       },
@@ -139,7 +146,7 @@ export const SchedulingActivity: Story = {
         onCompleteActivity={completeActivity}
         onBooking={bookAppointmentFn}
         fetchAvailability={fetchAvailabilityFn}
-        providerPreferences={providerPrefs}
+        providerPreferences={initialPrefs}
       />
     );
   },

@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
 export enum DeliveryMethod {
-  'Virtual' = 'virtual',
-  'InPerson' = 'in-person'
+  'Telehealth' = 'Telehealth',
+  'InPerson' = 'In-Person'
 }
 
 export const DeliveryMethodSchema = z.nativeEnum(DeliveryMethod);
+
+export type DeliveryMethodType = z.infer<typeof DeliveryMethodSchema>;

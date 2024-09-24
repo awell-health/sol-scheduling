@@ -1,7 +1,7 @@
 import { FC, useCallback, useState } from 'react';
 import { Field, Radio, RadioGroup } from '@headlessui/react';
 import { isEmpty } from 'lodash-es';
-import { type SlotType } from '../../lib/api';
+import { DeliveryMethod, type SlotType } from '../../lib/api';
 import clsx from 'clsx';
 import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 import { usePreferences } from '@/PreferencesProvider';
@@ -50,7 +50,8 @@ export const Slots: FC<SlotsProps> = ({
 
       const selectedSlot: SelectedSlot = {
         ...claimedSlot,
-        locationType: bookingInformation.deliveryMethod ?? 'virtual'
+        locationType:
+          bookingInformation.deliveryMethod ?? DeliveryMethod.Telehealth
       };
       setSelectedSlot(selectedSlot);
       onSelect(selectedSlot);

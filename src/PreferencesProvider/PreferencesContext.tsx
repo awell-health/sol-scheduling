@@ -6,9 +6,10 @@ import React, {
   useState
 } from 'react';
 import {
-  GetProvidersInputType,
-  GetProvidersResponseType,
-  SlotType
+  type DeliveryMethodType,
+  type GetProvidersInputType,
+  type GetProvidersResponseType,
+  type SlotType
 } from '../lib/api';
 import {
   preferencesToFiltersArray,
@@ -25,7 +26,7 @@ import { useSolApi } from '../SolApiProvider';
 type BookingInformation = {
   provider?: Provider;
   slot?: SlotType;
-  deliveryMethod?: 'in-person' | 'virtual';
+  deliveryMethod?: DeliveryMethodType;
   preferences: GetProvidersInputType;
 };
 
@@ -41,7 +42,7 @@ type PreferencesContextType = {
   selectedProvider: GetProvidersResponseType['data'][number] | undefined;
   setSelectedProviderId: (providerId: string) => void;
   setSelectedSlot: (slot: SlotType | undefined) => void;
-  setDeliveryMethod: (method: 'in-person' | 'virtual') => void;
+  setDeliveryMethod: (method?: DeliveryMethodType) => void;
   bookingInformation: BookingInformation;
   loading: boolean;
 };
@@ -122,7 +123,17 @@ export const PreferencesProvider: FC<ContextProps> = ({
     setSelectedProvider(providers.find((p) => p.id === providerId));
   };
 
-  const handleSetDeliveryMethod = (method: 'in-person' | 'virtual') => {
+  /**
+   * Sets the delivery method in the booking information.
+   *
+   * If no delivery method is provided (i.e., `undefined`), it implies that the user has no preference,
+   * which translates to "Both" delivery methods being acceptable.
+   * However, `undefined` is still sent to the API in this case to reflect the absence of preference.
+   *
+   * @param {DeliveryMethodType | undefined} method - The delivery method selected by the user.
+   * If `undefined`, it indicates no preference, meaning "Both" methods are acceptable.
+   */
+  const handleSetDeliveryMethod = (method?: DeliveryMethodType) => {
     setBookingInformation({
       ...bookingInformation,
       deliveryMethod: method
