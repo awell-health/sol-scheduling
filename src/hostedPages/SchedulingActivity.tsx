@@ -1,6 +1,6 @@
 import '../../styles/globals.css';
 import { FC } from 'react';
-import { isNil, merge } from 'lodash-es';
+import { isEmpty, merge } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
 import { PreferencesProvider } from '../PreferencesProvider';
 import { SolApiProvider } from '../SolApiProvider/SolApiContext';
@@ -15,7 +15,7 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   onBooking,
   onCompleteActivity
 }) => {
-  const shouldSkipProviderSelection = !isNil(prefilledProviderId);
+  const shouldSkipProviderSelection = !isEmpty(prefilledProviderId);
   const filledProviderPreferences: GetProvidersInputType = merge(
     {},
     {
@@ -46,10 +46,14 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
         data-theme='sol'
       >
         <div className='max-w-[650px] px-4 py-0 mx-auto my-0 relative'>
-          <PreferencesProvider initialPreferences={filledProviderPreferences}>
+          <PreferencesProvider
+            initialPreferences={filledProviderPreferences}
+            skipProviderSelection={shouldSkipProviderSelection}
+          >
             <SchedulingWizard
               shouldSkipProviderSelection={shouldSkipProviderSelection}
               onCompleteActivity={onCompleteActivity}
+              prefilledProviderId={prefilledProviderId}
             />
           </PreferencesProvider>
         </div>

@@ -5,15 +5,12 @@ import {
   Ethnicity,
   Gender,
   GetProvidersInputType,
-  GetProvidersResponseType,
   Modality,
   LocationState,
   LocationFacility,
   LocationStateToNameMapping
 } from '../../lib/api';
 import { upperFirst } from 'lodash-es';
-
-export type Provider = GetProvidersResponseType['data'][number];
 
 export type FilterEnum = Record<string, string | number> &
   (

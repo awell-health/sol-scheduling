@@ -33,8 +33,12 @@ export const Scheduler: FC<SchedulerProps> = ({
 
   const { allowSchedulingInThePast = false } = opts || {};
 
-  const { selectedProvider, setSelectedSlot, bookingInformation } =
-    usePreferences();
+  const {
+    selectedProvider,
+    selectedProviderId,
+    setSelectedSlot,
+    bookingInformation
+  } = usePreferences();
   const {
     availabilities: { data, loading, fetch: fetchAvailabilities },
     bookAppointment,
@@ -45,11 +49,11 @@ export const Scheduler: FC<SchedulerProps> = ({
   const [slot, setSlot] = useState<SelectedSlot | null>(null);
 
   useEffect(() => {
-    if (!selectedProvider) {
+    if (!selectedProviderId) {
       return;
     }
-    fetchAvailabilities(selectedProvider.id);
-  }, [selectedProvider]);
+    fetchAvailabilities(selectedProviderId);
+  }, [selectedProviderId]);
 
   const filteredSlots = useMemo(() => {
     if (loading || isNil(data) || isEmpty(data)) {
@@ -90,8 +94,8 @@ export const Scheduler: FC<SchedulerProps> = ({
     void bookAppointment(slot, bookingInformation.preferences, onBookingError);
   };
 
-  if (!selectedProvider) {
-    return null;
+  if (!selectedProviderId) {
+    return <div>No provider selected.</div>;
   }
 
   return (
@@ -100,11 +104,13 @@ export const Scheduler: FC<SchedulerProps> = ({
         <h4 className='font-semibold text-xl m-0 text-slate-800'>
           {title}
           <br />
-          <span className='text-primary'>{selectedProvider.name}</span>
+          <span className='text-primary'>
+            {selectedProvider?.name ?? `Unknown name (${selectedProviderId})`}
+          </span>
         </h4>
         <ProviderAvatar
-          name={selectedProvider.name}
-          image={selectedProvider.image}
+          name={selectedProvider?.name ?? 'Unknown'}
+          image={selectedProvider?.image}
           classes='w-24'
         />
       </div>

@@ -3,6 +3,7 @@ import React, {
   createContext,
   useCallback,
   useEffect,
+  useMemo,
   useState
 } from 'react';
 import {
@@ -15,22 +16,19 @@ import {
   preferencesToFiltersArray,
   updatePreferencesWithFilters
 } from './utils';
-import {
-  FilterType,
-  FilterEnum,
-  Provider
-} from '../atoms/ProviderSelection/types';
+import { FilterType, FilterEnum } from '../atoms/ProviderSelection/types';
 import { debounce } from 'lodash-es';
 import { useSolApi } from '../SolApiProvider';
 
 type BookingInformation = {
-  provider?: Provider;
+  providerId?: string;
   slot?: SlotType;
   deliveryMethod?: DeliveryMethodType;
   preferences: GetProvidersInputType;
 };
 
 type PreferencesContextType = {
+  preferences: GetProvidersInputType;
   filters: FilterType<FilterEnum>[];
   setFilters: (filters: FilterType<FilterEnum>[]) => void;
   updateFilter: (filter: FilterType<FilterEnum>) => void;
@@ -40,6 +38,7 @@ type PreferencesContextType = {
   providers: GetProvidersResponseType['data'];
   // TODO: Split the upper fields (provider preferences) from the lower fields (booking information)
   selectedProvider: GetProvidersResponseType['data'][number] | undefined;
+  selectedProviderId: string | undefined;
   setSelectedProviderId: (providerId: string) => void;
   setSelectedSlot: (slot: SlotType | undefined) => void;
   setDeliveryMethod: (method?: DeliveryMethodType) => void;
@@ -53,11 +52,13 @@ export const PreferencesContext = createContext<PreferencesContextType | null>(
 
 interface ContextProps {
   initialPreferences: GetProvidersInputType;
+  skipProviderSelection?: boolean;
   children: React.ReactNode;
 }
 
 export const PreferencesProvider: FC<ContextProps> = ({
   children,
+  skipProviderSelection,
   initialPreferences
 }) => {
   // Filters and preferences for provider selection
@@ -67,13 +68,14 @@ export const PreferencesProvider: FC<ContextProps> = ({
   const [activeFilter, setActiveFilter] = useState<
     keyof GetProvidersInputType | null
   >(null);
+
   const [preferences, setPreferences] =
     useState<GetProvidersInputType>(initialPreferences);
 
-  // Booking information
-  const [selectedProvider, setSelectedProvider] = useState<
-    GetProvidersResponseType['data'][number] | undefined
+  const [selectedProviderId, setSelectedProviderId] = useState<
+    string | undefined
   >(undefined);
+
   const [selectedSlot, setSelectedSlot] = useState<SlotType | undefined>(
     undefined
   );
@@ -119,9 +121,13 @@ export const PreferencesProvider: FC<ContextProps> = ({
     ) as FilterType<FilterEnum>;
   }, [filters, activeFilter]);
 
-  const setSelectedProviderId = (providerId: string) => {
-    setSelectedProvider(providers.find((p) => p.id === providerId));
-  };
+  const selectedProvider = useMemo(() => {
+    /**
+     * If a provider ID is passed and the provider selection stage is skipped,
+     * this will return undefined since we only have the provider ID without any other details.
+     */
+    return providers.find((p) => p.id === selectedProviderId);
+  }, [providers, selectedProviderId]);
 
   /**
    * Sets the delivery method in the booking information.
@@ -141,18 +147,20 @@ export const PreferencesProvider: FC<ContextProps> = ({
   };
 
   useEffect(() => {
+    if (skipProviderSelection) return;
     fetchProviders(preferences);
-  }, [preferences]);
+  }, [preferences, skipProviderSelection]);
 
   useEffect(() => {
     setBookingInformation({
-      provider: selectedProvider,
+      providerId: selectedProviderId,
       slot: selectedSlot,
       preferences
     });
-  }, [selectedSlot, selectedProvider, preferences]);
+  }, [selectedSlot, selectedProviderId, preferences]);
 
   const contextValue = {
+    preferences,
     filters,
     setFilters: updateFilters,
     updateFilter,
@@ -161,6 +169,7 @@ export const PreferencesProvider: FC<ContextProps> = ({
     getActiveFilter,
     providers,
     selectedProvider,
+    selectedProviderId,
     setSelectedProviderId,
     setSelectedSlot,
     setDeliveryMethod: handleSetDeliveryMethod,

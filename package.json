@@ -57,6 +57,7 @@
     "@chromatic-com/storybook": "^1.6.1",
     "@eslint/js": "8.57.0",
     "@jest/globals": "^29.7.0",
+    "@storybook/addon-actions": "^8.3.2",
     "@storybook/addon-essentials": "^8.2.8",
     "@storybook/addon-interactions": "^8.2.8",
     "@storybook/addon-links": "^8.2.8",

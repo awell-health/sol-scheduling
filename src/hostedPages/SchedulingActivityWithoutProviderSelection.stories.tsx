@@ -13,19 +13,16 @@ import {
 import { useCallback, useEffect } from 'react';
 import {
   type BookAppointmentResponseType,
-  ClinicalFocus,
-  Ethnicity,
   type GetAvailabilitiesResponseType,
   type GetProvidersInputType,
   type GetProvidersResponseType
 } from '../lib/api';
-import { Gender } from '../lib/api';
 import { some } from 'lodash-es';
 import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
-  title: 'HostedPages/SchedulingActivity/Full',
+  title: 'HostedPages/SchedulingActivity/SkipProvider',
   component: SchedulingActivityComponent,
   parameters: {
     layout: 'fullscreen'
@@ -35,12 +32,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     fetchProviders: fn(),
     fetchAvailability: fn(),
     onBooking: fn(),
-    providerPreferences: {
-      gender: Gender.Male,
-      ethnicity: Ethnicity.White,
-      age: '18-65',
-      clinicalFocus: [ClinicalFocus.Depression, ClinicalFocus.Anxiety]
-    } satisfies GetProvidersInputType
+    providerPreferences: {} // when we skip the provider stage, user will have no preferences set
   },
   decorators: [
     (StoryComponent) => (
@@ -62,7 +54,7 @@ type Story = StoryObj<typeof meta>;
 /**
  * Story resembles the implemntation in Hosted Pages
  */
-export const Full: Story = {
+export const SkipProvider: Story = {
   render: (args) => {
     const { updateLayoutMode, resetLayoutMode } = useTheme();
     const initialPrefs: GetProvidersInputType = args.providerPreferences;
@@ -153,6 +145,7 @@ export const Full: Story = {
   args: {
     opts: {
       allowSchedulingInThePast: false
-    }
+    },
+    providerId: '123'
   }
 };
