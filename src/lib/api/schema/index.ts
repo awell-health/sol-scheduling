@@ -1,24 +1,6 @@
 export * from './atoms';
-
-export {
-  GetProvidersInputSchema,
-  GetProvidersResponseSchema,
-  type GetProvidersInputType,
-  type GetProvidersResponseType
-} from './providers.schema';
-
-export {
-  GetAvailabilitiesInputSchema,
-  GetAvailabilitiesResponseSchema,
-  type GetAvailabilitiesInputType,
-  type GetAvailabilitiesResponseType
-} from './availabilities.schema';
-
-export {
-  BookAppointmentInputSchema,
-  BookAppointmentResponseSchema,
-  type BookAppointmentInputType,
-  type BookAppointmentResponseType
-} from './booking.schema';
-
-export { type SlotType } from './shared.schema';
+export * from './provider.schema';
+export * from './providers.schema';
+export * from './availabilities.schema';
+export * from './booking.schema';
+export * from './shared.schema';
