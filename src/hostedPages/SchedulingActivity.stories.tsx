@@ -8,6 +8,7 @@ import { SchedulingActivity as SchedulingActivityComponent } from './SchedulingA
 import { fn } from '@storybook/test';
 import {
   mockProviderAvailabilityResponse,
+  mockProviderResponse,
   mockProvidersResponse
 } from '../lib/api/__mocks__';
 import { useCallback, useEffect } from 'react';
@@ -17,7 +18,9 @@ import {
   Ethnicity,
   type GetAvailabilitiesResponseType,
   type GetProvidersInputType,
-  type GetProvidersResponseType
+  type GetProvidersResponseType,
+  type GetProviderInputType,
+  type GetProviderResponseType
 } from '../lib/api';
 import { Gender } from '../lib/api';
 import { some } from 'lodash-es';
@@ -32,6 +35,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
   },
   args: {
     onCompleteActivity: fn(),
+    fetchProvider: fn(),
     fetchProviders: fn(),
     fetchAvailability: fn(),
     onBooking: fn(),
@@ -108,6 +112,17 @@ export const Full: Story = {
       []
     );
 
+    const fetchProviderFn = useCallback(async (input: GetProviderInputType) => {
+      // Spy on the action, useful for debugging
+      args.fetchProvider(input);
+
+      const data = (await new Promise((resolve) =>
+        setTimeout(() => resolve(mockProviderResponse), 750)
+      )) as GetProviderResponseType;
+
+      return data;
+    }, []);
+
     const fetchAvailabilityFn = useCallback(async (_providerId: string) => {
       args.fetchAvailability(_providerId);
 
@@ -142,6 +157,7 @@ export const Full: Story = {
     return (
       <SchedulingActivityComponent
         providerId={args.providerId}
+        fetchProvider={fetchProviderFn}
         fetchProviders={fetchProvidersFn}
         onCompleteActivity={completeActivity}
         onBooking={bookAppointmentFn}

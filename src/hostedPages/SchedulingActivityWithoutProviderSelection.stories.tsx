@@ -8,6 +8,7 @@ import { SchedulingActivity as SchedulingActivityComponent } from './SchedulingA
 import { fn } from '@storybook/test';
 import {
   mockProviderAvailabilityResponse,
+  mockProviderResponse,
   mockProvidersResponse
 } from '../lib/api/__mocks__';
 import { useCallback, useEffect } from 'react';
@@ -15,7 +16,9 @@ import {
   type BookAppointmentResponseType,
   type GetAvailabilitiesResponseType,
   type GetProvidersInputType,
-  type GetProvidersResponseType
+  type GetProvidersResponseType,
+  type GetProviderInputType,
+  type GetProviderResponseType
 } from '../lib/api';
 import { some } from 'lodash-es';
 import { SelectedSlot } from '@/lib/api/schema/shared.schema';
@@ -31,6 +34,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     onCompleteActivity: fn(),
     fetchProviders: fn(),
     fetchAvailability: fn(),
+    fetchProvider: fn(),
     onBooking: fn(),
     providerPreferences: {} // when we skip the provider stage, user will have no preferences set
   },
@@ -100,6 +104,17 @@ export const SkipProvider: Story = {
       []
     );
 
+    const fetchProviderFn = useCallback(async (input: GetProviderInputType) => {
+      // Spy on the action, useful for debugging
+      args.fetchProvider(input);
+
+      const data = (await new Promise((resolve) =>
+        setTimeout(() => resolve(mockProviderResponse), 750)
+      )) as GetProviderResponseType;
+
+      return data;
+    }, []);
+
     const fetchAvailabilityFn = useCallback(async (_providerId: string) => {
       args.fetchAvailability(_providerId);
 
@@ -134,6 +149,7 @@ export const SkipProvider: Story = {
     return (
       <SchedulingActivityComponent
         providerId={args.providerId}
+        fetchProvider={fetchProviderFn}
         fetchProviders={fetchProvidersFn}
         onCompleteActivity={completeActivity}
         onBooking={bookAppointmentFn}

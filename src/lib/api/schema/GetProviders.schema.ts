@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { errorSchema } from './shared.schema';
-import { Event } from './availabilities.schema';
+import { Event } from './GetProviderAvailability.schema';
 import {
   AgeSchema,
   ClinicalFocusSchema,
