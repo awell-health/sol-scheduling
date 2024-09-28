@@ -1,6 +1,6 @@
 import { addDays, isSaturday, isSunday } from 'date-fns';
 import { GetAvailabilitiesResponseType } from '..';
-import { EventDeliveryMethod } from '../schema/atoms/EventDeliveryMethod.schema';
+import { EventDeliveryMethod } from '../schema/atoms/_EventDeliveryMethod.schema';
 
 const getNextWeekday = (date: Date): Date => {
   if (isSaturday(date)) {

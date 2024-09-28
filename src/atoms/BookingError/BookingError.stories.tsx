@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BookingError as BookingErrorComponent } from './BookingError';
 import { ThemeProvider } from '@awell-health/ui-library';
-import { EventDeliveryMethod } from '@/lib/api/schema/atoms/EventDeliveryMethod.schema';
+import { EventDeliveryMethod } from '@/lib/api/schema/atoms/_EventDeliveryMethod.schema';
 import { mockProviderResponse } from '@/lib/api/__mocks__';
 
 const meta: Meta<typeof BookingErrorComponent> = {

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Slots as SlotsComponent } from './Slots';
 import { ThemeProvider } from '@awell-health/ui-library';
 import { fn } from '@storybook/test';
-import { EventDeliveryMethod } from '@/lib/api/schema/atoms/EventDeliveryMethod.schema';
+import { EventDeliveryMethod } from '@/lib/api/schema/atoms/_EventDeliveryMethod.schema';
 
 const meta: Meta<typeof SlotsComponent> = {
   title: 'Atoms/Slots',
