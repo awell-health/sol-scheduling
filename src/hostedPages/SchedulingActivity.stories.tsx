@@ -8,6 +8,7 @@ import { SchedulingActivity as SchedulingActivityComponent } from './SchedulingA
 import { fn } from '@storybook/test';
 import {
   mockProviderAvailabilityResponse,
+  mockProviderResponse,
   mockProvidersResponse
 } from '../lib/api/__mocks__';
 import { useCallback, useEffect } from 'react';
@@ -17,11 +18,13 @@ import {
   Ethnicity,
   type GetAvailabilitiesResponseType,
   type GetProvidersInputType,
-  type GetProvidersResponseType
+  type GetProvidersResponseType,
+  type GetProviderInputType,
+  type GetProviderResponseType,
+  type SlotWithConfirmedLocation
 } from '../lib/api';
 import { Gender } from '../lib/api';
 import { some } from 'lodash-es';
-import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
@@ -32,6 +35,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
   },
   args: {
     onCompleteActivity: fn(),
+    fetchProvider: fn(),
     fetchProviders: fn(),
     fetchAvailability: fn(),
     onBooking: fn(),
@@ -108,6 +112,20 @@ export const Full: Story = {
       []
     );
 
+    const fetchProviderFn = useCallback(
+      async (providerId: GetProviderInputType['providerId']) => {
+        // Spy on the action, useful for debugging
+        args.fetchProvider(providerId);
+
+        const data = (await new Promise((resolve) =>
+          setTimeout(() => resolve(mockProviderResponse), 750)
+        )) as GetProviderResponseType;
+
+        return data;
+      },
+      []
+    );
+
     const fetchAvailabilityFn = useCallback(async (_providerId: string) => {
       args.fetchAvailability(_providerId);
 
@@ -121,19 +139,24 @@ export const Full: Story = {
       return data;
     }, []);
 
-    const bookAppointmentFn = useCallback(async (_slot: SelectedSlot) => {
-      args.onBooking(_slot);
+    const bookAppointmentFn = useCallback(
+      async (_slot: SlotWithConfirmedLocation) => {
+        args.onBooking(_slot);
 
-      const data = new Promise((resolve) =>
-        setTimeout(() => resolve({ data: [] }), 1500)
-      ) as BookAppointmentResponseType;
+        const data = new Promise((resolve) =>
+          setTimeout(() => resolve({ data: [] }), 1500)
+        ) as BookAppointmentResponseType;
 
-      return data;
-    }, []);
+        return data;
+      },
+      []
+    );
 
     const completeActivity = useCallback(
-      (_slot: SelectedSlot, _preferences: SalesforcePreferencesType) => {
-        console.log('Complete activity with slot', _slot);
+      (
+        _slot: SlotWithConfirmedLocation,
+        _preferences: SalesforcePreferencesType
+      ) => {
         return args.onCompleteActivity(_slot, _preferences);
       },
       []
@@ -142,6 +165,7 @@ export const Full: Story = {
     return (
       <SchedulingActivityComponent
         providerId={args.providerId}
+        fetchProvider={fetchProviderFn}
         fetchProviders={fetchProvidersFn}
         onCompleteActivity={completeActivity}
         onBooking={bookAppointmentFn}

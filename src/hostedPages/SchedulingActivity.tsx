@@ -10,6 +10,7 @@ import { GetProvidersInputType } from '@/lib/api';
 export const SchedulingActivity: FC<SchedulingActivityProps> = ({
   providerId: prefilledProviderId,
   providerPreferences,
+  fetchProvider,
   fetchProviders,
   fetchAvailability,
   onBooking,
@@ -35,8 +36,9 @@ export const SchedulingActivity: FC<SchedulingActivityProps> = ({
 
   return (
     <SolApiProvider
-      fetchAvailability={fetchAvailability}
       fetchProviders={fetchProviders}
+      fetchProvider={fetchProvider}
+      fetchAvailability={fetchAvailability}
       completeActivity={onCompleteActivity}
       bookAppointment={onBooking}
     >

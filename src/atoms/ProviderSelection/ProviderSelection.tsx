@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { ProviderCard } from './ProviderCard';
 import { usePreferences } from '@/PreferencesProvider';
 import { ProviderFilter } from './ProviderFilter';
+import { useSolApi } from '@/SolApiProvider';
 
 export type ProviderSelectionProps = {
   onSelectProvider: (id: string) => void;
@@ -17,12 +18,17 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
   text,
   onSelectProvider
 }) => {
-  const { providers, loading, setSelectedProviderId } = usePreferences();
+  const {
+    provider: { setId: setProviderId }
+  } = useSolApi();
+  const { providers, loading } = usePreferences();
   const providersLabel = providers.length === 1 ? 'provider' : 'providers';
+
   const selectProvider = (id: string) => {
-    setSelectedProviderId(id);
+    setProviderId(id);
     onSelectProvider(id);
   };
+
   return (
     <div>
       <ProviderFilter />

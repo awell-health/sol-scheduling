@@ -2,15 +2,19 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ThemeProvider } from '@awell-health/ui-library';
 
 import { Scheduler as SchedulerComponent } from './Scheduler';
-import { SolApiProvider } from '@/SolApiProvider';
+import { SolApiProvider, useSolApi } from '@/SolApiProvider';
 import {
   mockFetchProvidersFn,
-  mockProviderAvailabilityResponse
+  mockProviderAvailabilityResponse,
+  mockProviderResponse
 } from '@/lib/api/__mocks__';
-import { PreferencesProvider, usePreferences } from '@/PreferencesProvider';
+import { PreferencesProvider } from '@/PreferencesProvider';
 import { useEffect } from 'react';
 import { action } from '@storybook/addon-actions';
-import { BookAppointmentResponseType } from '@/lib/api';
+import {
+  type BookAppointmentResponseType,
+  type GetProviderResponseType
+} from '@/lib/api';
 
 const meta: Meta<typeof SchedulerComponent> = {
   title: 'Molecules/Scheduler',
@@ -24,6 +28,15 @@ const meta: Meta<typeof SchedulerComponent> = {
               fetchAvailability={async (pid) => {
                 action('fetchAvailability')(pid);
                 return Promise.resolve(mockProviderAvailabilityResponse(pid));
+              }}
+              fetchProvider={async (pid) => {
+                action('fetchProvider')(pid);
+
+                const data = (await new Promise((resolve) =>
+                  setTimeout(() => resolve(mockProviderResponse), 1500)
+                )) as GetProviderResponseType;
+
+                return data;
               }}
               fetchProviders={mockFetchProvidersFn}
               bookAppointment={async (_slot) => {
@@ -60,10 +73,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Scheduler: Story = {
   render: (args) => {
-    const { setSelectedProviderId } = usePreferences();
+    const {
+      provider: { setId: setProviderId }
+    } = useSolApi();
 
     useEffect(() => {
-      setSelectedProviderId('test-provider-id');
+      setProviderId('test-provider-id');
     }, []);
 
     return <SchedulerComponent {...args} />;

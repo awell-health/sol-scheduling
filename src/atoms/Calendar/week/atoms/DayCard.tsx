@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FC, useEffect, useRef } from 'react';
+import { FC, useCallback, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 
 interface Day {
@@ -7,8 +7,6 @@ interface Day {
   isToday: boolean;
   isSelected: boolean;
   isDisabled: boolean;
-  isAvailable: boolean;
-  shortDayName: string;
   availabilitiesCount: number;
 }
 
@@ -18,9 +16,12 @@ export interface DayCardProps {
 }
 
 export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
-  const cannotActivate = (day: Day) => {
-    return day.isDisabled || !day.isAvailable || day.availabilitiesCount === 0;
-  };
+  const cannotActivate = useCallback(
+    (day: Day) => {
+      return day.isDisabled || day.availabilitiesCount === 0;
+    },
+    [day]
+  );
 
   const slotRef = useRef<HTMLDivElement>(null);
 
@@ -70,7 +71,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
           }
         )}
       >
-        <div className='font-medium'>{day.shortDayName}</div>
+        <div className='font-medium'>{format(day.date, 'EEE')}</div>
         <div>{day.date.getDate()}</div>
         <div>{format(day.date, 'MMM')}</div>
       </time>
@@ -80,11 +81,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
         })}
         ref={slotRef}
       >
-        <NumberOfSlots
-          count={
-            !day.isAvailable || day.isDisabled ? 0 : day.availabilitiesCount
-          }
-        />
+        <NumberOfSlots count={day.isDisabled ? 0 : day.availabilitiesCount} />
       </div>
     </button>
   );

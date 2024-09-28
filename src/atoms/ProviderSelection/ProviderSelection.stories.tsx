@@ -19,6 +19,7 @@ const meta: Meta<typeof ProviderSelectionComponent> = {
           fetchAvailability={(pid) =>
             Promise.resolve(mockProviderAvailabilityResponse(pid))
           }
+          fetchProvider={fn()}
           fetchProviders={mockFetchProvidersFn}
           bookAppointment={fn()}
           completeActivity={fn()}

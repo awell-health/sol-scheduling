@@ -1,21 +1,22 @@
 import { FC } from 'react';
 import { upperFirst } from 'lodash-es';
 import clsx from 'clsx';
-import { usePreferences } from '@/PreferencesProvider';
 import { ProviderAvatar } from '../ProviderAvatar';
+import { type SlotType, type GetProviderResponseType } from '@/lib/api';
 
 export type BookingErrorProps = {
+  provider?: GetProviderResponseType['data'] | null;
+  slot?: SlotType;
   otherBookingData?: Record<string, unknown>;
 };
 
-export const BookingError: FC<BookingErrorProps> = ({ otherBookingData }) => {
+export const BookingError: FC<BookingErrorProps> = ({
+  provider,
+  slot,
+  otherBookingData
+}) => {
   const bookingConfirmationError =
     'Something went wrong when trying to schedule your appointment.';
-
-  const {
-    selectedProvider,
-    bookingInformation: { slot }
-  } = usePreferences();
 
   return (
     <div>
@@ -30,12 +31,12 @@ export const BookingError: FC<BookingErrorProps> = ({ otherBookingData }) => {
                 You tried to schedule with
               </p>
               <p className={'font-semibold text-lg'}>
-                {selectedProvider?.name ?? 'Unknown'}
+                {provider?.name ?? 'Unknown'}
               </p>
             </div>
             <ProviderAvatar
-              name={selectedProvider?.name ?? ''}
-              image={selectedProvider?.image}
+              name={provider?.name ?? ''}
+              image={provider?.image}
             />
           </div>
           <ul className={clsx('list-none p-0 m-0')}>

@@ -1,13 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BookingError as BookingErrorComponent } from './BookingError';
 import { ThemeProvider } from '@awell-health/ui-library';
-import { SolApiProvider } from '@/SolApiProvider';
-import {
-  mockFetchProvidersFn,
-  mockProviderAvailabilityResponse
-} from '@/lib/api/__mocks__';
-import { fn } from '@storybook/test';
-import { PreferencesProvider } from '@/PreferencesProvider';
+import { EventDeliveryMethod } from '@/lib/api/schema/atoms/EventDeliveryMethod.schema';
+import { mockProviderResponse } from '@/lib/api/__mocks__';
 
 const meta: Meta<typeof BookingErrorComponent> = {
   title: 'Atoms/BookingError',
@@ -16,20 +11,9 @@ const meta: Meta<typeof BookingErrorComponent> = {
   decorators: [
     (Story) => (
       <ThemeProvider accentColor='#A45128'>
-        <SolApiProvider
-          fetchAvailability={(pid) =>
-            Promise.resolve(mockProviderAvailabilityResponse(pid))
-          }
-          fetchProviders={mockFetchProvidersFn}
-          bookAppointment={fn()}
-          completeActivity={fn()}
-        >
-          <PreferencesProvider initialPreferences={{}}>
-            <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-              <Story />
-            </div>
-          </PreferencesProvider>
-        </SolApiProvider>
+        <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+          <Story />
+        </div>
       </ThemeProvider>
     )
   ]
@@ -40,6 +24,15 @@ type Story = StoryObj<typeof meta>;
 
 export const BookingError: Story = {
   args: {
+    slot: {
+      eventId: '<event_id_0>',
+      providerId: '123',
+      slotstart: new Date('2024-01-01'),
+      duration: 60,
+      facility: 'CO - Cherry Creek',
+      location: EventDeliveryMethod.VirtualOnly
+    },
+    provider: mockProviderResponse.data,
     otherBookingData: {
       mode: 'Virtual'
     }
