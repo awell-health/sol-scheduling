@@ -1,4 +1,4 @@
-export * from './Age_new.schema';
+export * from './Age.schema';
 export * from './_ClinicalFocus.schema';
 export * from './LocationType.schema';
 export * from './_Ethnicity.schema';
@@ -8,4 +8,4 @@ export * from './LocationFacility.schema';
 export * from './LocationState.schema';
 export * from './TherapeuticModality.schema';
 export * from './_DeliveryMethod.schema';
-export * from './_EventDeliveryMethod.schema';
+export * from './EventDeliveryMethod.schema';

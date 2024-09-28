@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { errorSchema, ISO8601DateStringSchema } from './shared.schema';
-import { EventDeliveryMethodSchema } from './atoms/_EventDeliveryMethod.schema';
+import { EventDeliveryMethodSchema } from './atoms/EventDeliveryMethod.schema';
 
 export const GetAvailabilitiesInputSchema = z.object({
   providerId: z.array(z.string())
