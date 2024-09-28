@@ -16,30 +16,44 @@ import {
   isSameDay,
   isBefore
 } from 'date-fns';
-import { DeliveryMethod, type SlotType } from '../../../lib/api';
-import { DayCard } from './DayCard';
-import { useSolApi } from '../../../SolApiProvider';
-import { EventDeliveryMethod } from '@/lib/api/schema/atoms/eventDeliveryMethod.schema';
-import { usePreferences } from '@/PreferencesProvider';
+import {
+  LocationType,
+  type LocationTypeType,
+  type SlotType
+} from '../../../lib/api';
+import { DayCard } from './atoms/DayCard';
+import { filterByLocation } from '@/lib/utils/availabilities';
 
 export interface WeekCalendarProps {
   value: Date | null;
-  onSelect: (date: Date | null) => void;
+  availabilities: SlotType[];
+  onLocationSelect: ({
+    confirmedLocation,
+    facility
+  }: {
+    confirmedLocation: LocationTypeType;
+    facility?: string;
+  }) => void;
+  onDateSelect: (date: Date | null) => void;
   week?: Date;
   weekStartsOn?: 'sunday' | 'monday';
   hideWeekends?: boolean;
   allowSchedulingInThePast?: boolean;
   preferredLocation?: string;
+  loading?: boolean;
 }
 
 export const WeekCalendar: FC<WeekCalendarProps> = ({
   value,
-  onSelect,
+  availabilities,
+  onLocationSelect,
+  onDateSelect,
   week = new Date(),
   weekStartsOn = 'monday',
   hideWeekends = true,
   allowSchedulingInThePast = false,
-  preferredLocation = 'Virtual'
+  preferredLocation = 'Virtual',
+  loading
 }) => {
   const [currentWeek, setCurrentWeek] = useState(week);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
@@ -47,11 +61,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const [filteredAvailabilities, setFilteredAvailabilities] = useState<
     SlotType[]
   >([]);
-  const { setDeliveryMethod } = usePreferences();
-
-  const {
-    availabilities: { data: availabilities, loading }
-  } = useSolApi();
 
   useEffect(() => {
     handleSelectLocation(preferredLocation);
@@ -67,25 +76,27 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
 
   const handleSelectLocation = useCallback(
     (location: string) => {
-      setSelectedLocation(location);
-      setDeliveryMethod(
+      const confirmedLocation =
         location === 'Virtual'
-          ? DeliveryMethod.Telehealth
-          : DeliveryMethod.InPerson
-      );
+          ? LocationType.Telehealth
+          : LocationType.InPerson;
+
+      const _location = {
+        confirmedLocation,
+        facility: location === 'Virtual' ? undefined : location
+      };
+
+      setSelectedLocation(location);
+      onLocationSelect(_location);
+
       setSelectedDate(null);
-      onSelect(null);
-      if (location !== 'Virtual') {
-        setFilteredAvailabilities(
-          availabilities.filter(
-            (slot) =>
-              slot.facility === location &&
-              slot.location === EventDeliveryMethod.Both
-          )
-        );
-      } else {
-        setFilteredAvailabilities(availabilities);
-      }
+      onDateSelect(null);
+
+      const _filtered = filterByLocation({
+        availabilities,
+        location: _location
+      });
+      setFilteredAvailabilities(_filtered);
     },
     [availabilities, preferredLocation]
   );
@@ -109,9 +120,9 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const handleDateClick = useCallback(
     (date: Date) => {
       setSelectedDate(date);
-      onSelect(date);
+      onDateSelect(date);
     },
-    [onSelect]
+    [onDateSelect]
   );
 
   const isAvailable = useCallback(

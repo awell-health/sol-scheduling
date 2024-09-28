@@ -1,7 +1,7 @@
 import { BookingError, ProviderSelection } from '../atoms';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Scheduler } from '../molecules';
-import { SelectedSlot } from '@/lib/api/schema/shared.schema';
+import { type SlotWithConfirmedLocation } from '@/lib/api/schema/shared.schema';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 import { usePreferences } from '@/PreferencesProvider';
 import { isEmpty } from 'lodash-es';
@@ -11,7 +11,7 @@ interface SchedulingWizardProps {
   shouldSkipProviderSelection: boolean;
   prefilledProviderId?: string;
   onCompleteActivity: (
-    slot: SelectedSlot,
+    slot: SlotWithConfirmedLocation,
     preferences: SalesforcePreferencesType
   ) => void;
 }
@@ -49,15 +49,16 @@ export const SchedulingWizard: FC<SchedulingWizardProps> = ({
 
   const [stages, setStages] = useState<Stage[]>(initialStages);
   const [currentStageId, setCurrentStageId] = useState(initialStage);
-  const { setSelectedProviderId, preferences } = usePreferences();
+  const { preferences, bookingInformation } = usePreferences();
   const {
+    provider: { setId: setProviderId, data: provider },
     providers: { fetch: fetchProviders }
   } = useSolApi();
 
   useEffect(() => {
     if (prefilledProviderId === undefined || isEmpty(prefilledProviderId))
       return;
-    setSelectedProviderId(prefilledProviderId);
+    setProviderId(prefilledProviderId);
   }, [shouldSkipProviderSelection]);
 
   const completeStage = (id: string) => () => {
@@ -82,13 +83,10 @@ export const SchedulingWizard: FC<SchedulingWizardProps> = ({
   };
 
   const handleBackToProvidersNavigation = useCallback(async () => {
-    // Mark all sages as incomplete
     setStages(
       initialStages.map((_stage) => ({ ..._stage, isComplete: false }))
     );
-    // Return to provider selection
     setCurrentStageId('provider-selection');
-    // Make sure to fetch providers again with the exiting preferences
     await fetchProviders(preferences);
   }, [preferences, fetchProviders]);
 
@@ -115,7 +113,9 @@ export const SchedulingWizard: FC<SchedulingWizardProps> = ({
       {currentStageId === 'scheduling' && (
         <Scheduler onBookingError={advanceTo('booking-error')} />
       )}
-      {currentStageId === 'booking-error' && <BookingError />}
+      {currentStageId === 'booking-error' && (
+        <BookingError provider={provider} slot={bookingInformation.slot} />
+      )}
     </>
   );
 };

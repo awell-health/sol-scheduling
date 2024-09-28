@@ -1,12 +1,16 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { isSameDay } from 'date-fns';
 import clsx from 'clsx';
 import { isEmpty, isNil } from 'lodash-es';
 import { Slots, WeekCalendar } from '@/atoms';
 import { usePreferences } from '@/PreferencesProvider';
 import { useSolApi } from '@/SolApiProvider';
 import { ProviderAvatar } from '@/atoms/ProviderAvatar';
-import { SelectedSlot } from '@/lib/api/schema/shared.schema';
+import {
+  LocationType,
+  type SlotType,
+  type SlotWithConfirmedLocation
+} from '@/lib/api';
+import { filterByDate, filterByLocation } from '@/lib/utils/availabilities';
 
 export type SchedulerProps = {
   onBookingError: () => void;
@@ -33,37 +37,50 @@ export const Scheduler: FC<SchedulerProps> = ({
 
   const { allowSchedulingInThePast = false } = opts || {};
 
+  const { setSelectedSlot, bookingInformation, setLocation } = usePreferences();
   const {
-    selectedProvider,
-    selectedProviderId,
-    setSelectedSlot,
-    bookingInformation
-  } = usePreferences();
+    provider: { getId: provivderId }
+  } = useSolApi();
+
   const {
-    availabilities: { data, loading, fetch: fetchAvailabilities },
-    bookAppointment,
-    isBooking
+    provider: {
+      fetch: fetchProvider,
+      data: provider,
+      loading: loadingProvider
+    },
+    availabilities: {
+      data: availabilities,
+      loading,
+      fetch: fetchAvailabilities
+    },
+    booking: { book: bookAppointment, isBooking }
   } = useSolApi();
 
   const [date, setDate] = useState<Date | null>(null);
-  const [slot, setSlot] = useState<SelectedSlot | null>(null);
+  const [slot, setSlot] = useState<SlotType | null>(null);
 
   useEffect(() => {
-    if (!selectedProviderId) {
+    if (provivderId === null) {
       return;
     }
-    fetchAvailabilities(selectedProviderId);
-  }, [selectedProviderId]);
+
+    fetchProvider(provivderId);
+    fetchAvailabilities(provivderId);
+  }, [provivderId]);
 
   const filteredSlots = useMemo(() => {
-    if (loading || isNil(data) || isEmpty(data)) {
+    if (loading || isNil(availabilities) || isEmpty(availabilities)) {
       return [];
     } else {
-      return data.filter((availableSlot) =>
-        date ? isSameDay(availableSlot.slotstart, date) : false
-      );
+      const sameDaySlots = filterByDate({ availabilities, date });
+      const slotsThatMatchLocation = filterByLocation({
+        availabilities: sameDaySlots,
+        location: bookingInformation?.location
+      });
+
+      return slotsThatMatchLocation;
     }
-  }, [data, date, loading]);
+  }, [availabilities, date, loading, bookingInformation]);
 
   const handleDateSelect = (date: Date | null) => {
     setDate(date);
@@ -85,16 +102,27 @@ export const Scheduler: FC<SchedulerProps> = ({
     scrollToSlot();
   }, [slot]);
 
-  const handleSlotSelect = (slot: SelectedSlot) => {
+  const handleSlotSelect = (slot: SlotType) => {
     setSlot(slot);
     setSelectedSlot(slot);
   };
 
-  const handleBooking = (slot: SelectedSlot) => {
-    void bookAppointment(slot, bookingInformation.preferences, onBookingError);
+  const handleBooking = (slot: SlotType) => {
+    const slotWithDeliveryMethod = {
+      ...slot,
+      confirmedLocation:
+        bookingInformation?.location?.confirmedLocation ??
+        LocationType.Telehealth
+    } satisfies SlotWithConfirmedLocation;
+
+    void bookAppointment(
+      slotWithDeliveryMethod,
+      bookingInformation.preferences,
+      onBookingError
+    );
   };
 
-  if (!selectedProviderId) {
+  if (provivderId === null) {
     return <div>No provider selected.</div>;
   }
 
@@ -104,20 +132,26 @@ export const Scheduler: FC<SchedulerProps> = ({
         <h4 className='font-semibold text-xl m-0 text-slate-800'>
           {title}
           <br />
-          <span className='text-primary'>
-            {selectedProvider?.name ?? `Unknown name (${selectedProviderId})`}
-          </span>
+
+          {loadingProvider ? (
+            <div className='skeleton h-6 w-48 bg-secondary' />
+          ) : (
+            <span className='text-primary'>{provider?.name}</span>
+          )}
         </h4>
         <ProviderAvatar
-          name={selectedProvider?.name ?? 'Unknown'}
-          image={selectedProvider?.image}
-          classes='w-24'
+          name={provider?.name ?? 'Unknown'}
+          image={provider?.image}
+          classes='w-24 h-24'
+          loading={loadingProvider}
         />
       </div>
       <div>
         <WeekCalendar
           value={date}
-          onSelect={handleDateSelect}
+          availabilities={availabilities}
+          onDateSelect={handleDateSelect}
+          onLocationSelect={setLocation}
           allowSchedulingInThePast={allowSchedulingInThePast}
         />
       </div>

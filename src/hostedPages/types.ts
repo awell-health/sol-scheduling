@@ -1,19 +1,21 @@
-import { SelectedSlot } from '@/lib/api/schema/shared.schema';
 import {
   type GetProvidersInputType,
   type BookAppointmentResponseType,
   type GetAvailabilitiesResponseType,
   type GetProvidersResponseType,
   type GetProviderInputType,
-  type GetProviderResponseType
+  type GetProviderResponseType,
+  type SlotWithConfirmedLocation
 } from '../lib/api';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 
 export interface SchedulingActivityProps {
   providerId?: string;
-  onBooking: (slot: SelectedSlot) => Promise<BookAppointmentResponseType>;
+  onBooking: (
+    slot: SlotWithConfirmedLocation
+  ) => Promise<BookAppointmentResponseType>;
   fetchProvider: (
-    input: GetProviderInputType
+    providerId: GetProviderInputType['providerId']
   ) => Promise<GetProviderResponseType>;
   fetchProviders: (
     prefs: GetProvidersInputType
@@ -22,7 +24,7 @@ export interface SchedulingActivityProps {
     providerId: string
   ) => Promise<GetAvailabilitiesResponseType>;
   onCompleteActivity: (
-    slot: SelectedSlot,
+    slot: SlotWithConfirmedLocation,
     preferences: SalesforcePreferencesType
   ) => void;
   providerPreferences: GetProvidersInputType;

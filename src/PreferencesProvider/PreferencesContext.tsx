@@ -3,11 +3,10 @@ import React, {
   createContext,
   useCallback,
   useEffect,
-  useMemo,
   useState
 } from 'react';
 import {
-  type DeliveryMethodType,
+  type LocationTypeType,
   type GetProvidersInputType,
   type GetProvidersResponseType,
   type SlotType
@@ -21,9 +20,12 @@ import { debounce } from 'lodash-es';
 import { useSolApi } from '../SolApiProvider';
 
 type BookingInformation = {
-  providerId?: string;
-  slot?: SlotType;
-  deliveryMethod?: DeliveryMethodType;
+  providerId: string | null;
+  slot?: SlotType; // The slot the patient picked
+  location?: {
+    confirmedLocation?: LocationTypeType; // The location the patient picked for the slot (TeleHealth or In-Person)
+    facility?: string;
+  };
   preferences: GetProvidersInputType;
 };
 
@@ -36,12 +38,14 @@ type PreferencesContextType = {
   setActiveFilter: (newFilterKey: keyof GetProvidersInputType | null) => void;
   getActiveFilter: () => FilterType<FilterEnum>;
   providers: GetProvidersResponseType['data'];
-  // TODO: Split the upper fields (provider preferences) from the lower fields (booking information)
-  selectedProvider: GetProvidersResponseType['data'][number] | undefined;
-  selectedProviderId: string | undefined;
-  setSelectedProviderId: (providerId: string) => void;
   setSelectedSlot: (slot: SlotType | undefined) => void;
-  setDeliveryMethod: (method?: DeliveryMethodType) => void;
+  setLocation: ({
+    confirmedLocation,
+    facility
+  }: {
+    confirmedLocation?: LocationTypeType;
+    facility?: string;
+  }) => void;
   bookingInformation: BookingInformation;
   loading: boolean;
 };
@@ -72,17 +76,26 @@ export const PreferencesProvider: FC<ContextProps> = ({
   const [preferences, setPreferences] =
     useState<GetProvidersInputType>(initialPreferences);
 
-  const [selectedProviderId, setSelectedProviderId] = useState<
-    string | undefined
-  >(undefined);
-
   const [selectedSlot, setSelectedSlot] = useState<SlotType | undefined>(
     undefined
   );
+
+  const [location, setLocation] = useState<
+    | {
+        confirmedLocation?: LocationTypeType; // The location the patient picked for the slot (TeleHealth or In-Person)
+        facility?: string;
+      }
+    | undefined
+  >(undefined);
+
   const [bookingInformation, setBookingInformation] =
-    useState<BookingInformation>({ preferences: initialPreferences });
+    useState<BookingInformation>({
+      providerId: null,
+      preferences: initialPreferences
+    });
 
   const {
+    provider: { getId: providerId },
     providers: { fetch: fetchProviders, data: providers, loading: loading }
   } = useSolApi();
 
@@ -121,31 +134,6 @@ export const PreferencesProvider: FC<ContextProps> = ({
     ) as FilterType<FilterEnum>;
   }, [filters, activeFilter]);
 
-  const selectedProvider = useMemo(() => {
-    /**
-     * If a provider ID is passed and the provider selection stage is skipped,
-     * this will return undefined since we only have the provider ID without any other details.
-     */
-    return providers.find((p) => p.id === selectedProviderId);
-  }, [providers, selectedProviderId]);
-
-  /**
-   * Sets the delivery method in the booking information.
-   *
-   * If no delivery method is provided (i.e., `undefined`), it implies that the user has no preference,
-   * which translates to "Both" delivery methods being acceptable.
-   * However, `undefined` is still sent to the API in this case to reflect the absence of preference.
-   *
-   * @param {DeliveryMethodType | undefined} method - The delivery method selected by the user.
-   * If `undefined`, it indicates no preference, meaning "Both" methods are acceptable.
-   */
-  const handleSetDeliveryMethod = (method?: DeliveryMethodType) => {
-    setBookingInformation({
-      ...bookingInformation,
-      deliveryMethod: method
-    });
-  };
-
   useEffect(() => {
     if (skipProviderSelection) return;
     fetchProviders(preferences);
@@ -153,11 +141,12 @@ export const PreferencesProvider: FC<ContextProps> = ({
 
   useEffect(() => {
     setBookingInformation({
-      providerId: selectedProviderId,
+      providerId,
       slot: selectedSlot,
-      preferences
+      preferences,
+      location
     });
-  }, [selectedSlot, selectedProviderId, preferences]);
+  }, [selectedSlot, providerId, preferences, location]);
 
   const contextValue = {
     preferences,
@@ -168,11 +157,8 @@ export const PreferencesProvider: FC<ContextProps> = ({
     setActiveFilter: changeActiveFilter,
     getActiveFilter,
     providers,
-    selectedProvider,
-    selectedProviderId,
-    setSelectedProviderId,
     setSelectedSlot,
-    setDeliveryMethod: handleSetDeliveryMethod,
+    setLocation,
     bookingInformation,
     loading
   };

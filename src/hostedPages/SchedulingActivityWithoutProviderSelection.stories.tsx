@@ -21,7 +21,7 @@ import {
   type GetProviderResponseType
 } from '../lib/api';
 import { some } from 'lodash-es';
-import { SelectedSlot } from '@/lib/api/schema/shared.schema';
+import { type SlotWithConfirmedLocation } from '@/lib/api/schema/shared.schema';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
@@ -104,16 +104,19 @@ export const SkipProvider: Story = {
       []
     );
 
-    const fetchProviderFn = useCallback(async (input: GetProviderInputType) => {
-      // Spy on the action, useful for debugging
-      args.fetchProvider(input);
+    const fetchProviderFn = useCallback(
+      async (providerId: GetProviderInputType['providerId']) => {
+        // Spy on the action, useful for debugging
+        args.fetchProvider(providerId);
 
-      const data = (await new Promise((resolve) =>
-        setTimeout(() => resolve(mockProviderResponse), 750)
-      )) as GetProviderResponseType;
+        const data = (await new Promise((resolve) =>
+          setTimeout(() => resolve(mockProviderResponse), 1500)
+        )) as GetProviderResponseType;
 
-      return data;
-    }, []);
+        return data;
+      },
+      []
+    );
 
     const fetchAvailabilityFn = useCallback(async (_providerId: string) => {
       args.fetchAvailability(_providerId);
@@ -128,19 +131,24 @@ export const SkipProvider: Story = {
       return data;
     }, []);
 
-    const bookAppointmentFn = useCallback(async (_slot: SelectedSlot) => {
-      args.onBooking(_slot);
+    const bookAppointmentFn = useCallback(
+      async (_slot: SlotWithConfirmedLocation) => {
+        args.onBooking(_slot);
 
-      const data = new Promise((resolve) =>
-        setTimeout(() => resolve({ data: [] }), 1500)
-      ) as BookAppointmentResponseType;
+        const data = new Promise((resolve) =>
+          setTimeout(() => resolve({ data: [] }), 1500)
+        ) as BookAppointmentResponseType;
 
-      return data;
-    }, []);
+        return data;
+      },
+      []
+    );
 
     const completeActivity = useCallback(
-      (_slot: SelectedSlot, _preferences: SalesforcePreferencesType) => {
-        console.log('Complete activity with slot', _slot);
+      (
+        _slot: SlotWithConfirmedLocation,
+        _preferences: SalesforcePreferencesType
+      ) => {
         return args.onCompleteActivity(_slot, _preferences);
       },
       []

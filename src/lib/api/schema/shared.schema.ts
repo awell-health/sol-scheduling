@@ -1,13 +1,24 @@
 import { z } from 'zod';
 
-import { DeliveryMethodType, GetAvailabilitiesResponseType } from '..';
+import { type LocationTypeType, type GetAvailabilitiesResponseType } from '..';
 
+/**
+ * An available slot
+ * Location can be "Virtual only" or "Both"
+ */
 export type SlotType = Pick<
   GetAvailabilitiesResponseType['data'][string][number],
   'slotstart' | 'eventId' | 'duration' | 'providerId' | 'facility' | 'location'
 >;
 
-export type SelectedSlot = SlotType & { locationType: DeliveryMethodType };
+/**
+ * When a slot is selected, we know the definitive location
+ * which is "Telehealth" or "In-Person" and we store that
+ * in "locationType"
+ */
+export type SlotWithConfirmedLocation = SlotType & {
+  confirmedLocation: LocationTypeType;
+};
 
 export const ISO8601DateStringSchema = z.coerce.date();
 
