@@ -30,6 +30,6 @@ jobs:
         with:
           # Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          interactive: false
           exitOnceUploaded: true
           exitZeroOnChanges: true # 👈 Option to prevent the workflow from failing even when stories have errors
+          debug: true

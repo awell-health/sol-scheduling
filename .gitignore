@@ -14,6 +14,8 @@
 
 #storybook build directory
 storybook-static
+chromatic.log
+chromatic-diagnostics.json
 
 dist
 node_modules
