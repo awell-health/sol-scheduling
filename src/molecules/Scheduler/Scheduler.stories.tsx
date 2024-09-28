@@ -65,7 +65,10 @@ const meta: Meta<typeof SchedulerComponent> = {
         </ThemeProvider>
       );
     }
-  ]
+  ],
+  parameters: {
+    chromatic: { delay: 10000 }
+  }
 };
 
 export default meta;

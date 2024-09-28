@@ -14,7 +14,10 @@ const meta: Meta<typeof SlotsComponent> = {
         <Story />
       </ThemeProvider>
     )
-  ]
+  ],
+  parameters: {
+    chromatic: { delay: 10000 }
+  }
 };
 
 export default meta;
