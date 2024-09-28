@@ -4,6 +4,7 @@ import {
   ThemeProvider,
   useTheme
 } from '@awell-health/ui-library';
+import {} from 'daisyui';
 import { SchedulingActivity as SchedulingActivityComponent } from './SchedulingActivity';
 import { fn } from '@storybook/test';
 import {

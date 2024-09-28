@@ -2,6 +2,7 @@ import '../../styles/globals.css';
 import { FC } from 'react';
 import { isEmpty, merge } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
+import {} from 'daisyui';
 import { PreferencesProvider } from '../PreferencesProvider';
 import { SolApiProvider } from '../SolApiProvider/SolApiContext';
 import { SchedulingWizard } from '../SchedulingWizard';
