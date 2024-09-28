@@ -29,7 +29,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity/SkipProvider',
   component: SchedulingActivityComponent,
   parameters: {
-    chromatic: { delay: 20000 }
+    chromatic: { delay: 15000 }
   },
   args: {
     onCompleteActivity: fn(),

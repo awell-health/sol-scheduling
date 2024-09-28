@@ -31,7 +31,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity/Full',
   component: SchedulingActivityComponent,
   parameters: {
-    chromatic: { delay: 10000 }
+    chromatic: { delay: 15000 }
   },
   args: {
     onCompleteActivity: fn(),
