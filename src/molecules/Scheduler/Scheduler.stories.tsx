@@ -12,8 +12,8 @@ import { PreferencesProvider } from '@/PreferencesProvider';
 import { useEffect } from 'react';
 import { action } from '@storybook/addon-actions';
 import {
-  BookAppointmentResponseType,
-  GetProviderResponseType
+  type BookAppointmentResponseType,
+  type GetProviderResponseType
 } from '@/lib/api';
 
 const meta: Meta<typeof SchedulerComponent> = {
