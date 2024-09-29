@@ -10,8 +10,8 @@ const config: StorybookConfig = {
     '@storybook/addon-controls',
     '@storybook/addon-actions',
     '@storybook/addon-interactions',
-    '@storybook/addon-viewport'
-    // '@chromatic-com/storybook'
+    '@storybook/addon-viewport',
+    '@chromatic-com/storybook'
   ],
   staticDirs: ['../public']
 };
