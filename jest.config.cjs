@@ -6,6 +6,7 @@ process.env.TZ = 'UTC';
 module.exports = {
   testEnvironment: 'node',
   modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/.yarn'],
+  testPathIgnorePatterns: ['\\.spec\\.ts$'],
   extensionsToTreatAsEsm: ['.ts'],
   verbose: true,
   transform: {
