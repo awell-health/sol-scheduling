@@ -70,9 +70,11 @@ __metadata:
     husky: "npm:^9.1.4"
     iso-639-1: "npm:^3.1.2"
     jest: "npm:^29.7.0"
+    jest-playwright-preset: "npm:^4.0.0"
     lint-staged: "npm:^15.2.9"
     lodash-es: "npm:^4.17.21"
     moment-timezone: "npm:^0.5.45"
+    playwright: "npm:^1.47.2"
     postcss: "npm:^8.4.45"
     prettier: "npm:^3.3.3"
     react: "npm:^18.3.1"
@@ -10145,7 +10147,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.14.0":
+"playwright@npm:^1.14.0, playwright@npm:^1.47.2":
   version: 1.47.2
   resolution: "playwright@npm:1.47.2"
   dependencies:

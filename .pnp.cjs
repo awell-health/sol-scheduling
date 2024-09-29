@@ -64,9 +64,11 @@ const RAW_RUNTIME_STATE =
           ["husky", "npm:9.1.4"],\
           ["iso-639-1", "npm:3.1.2"],\
           ["jest", "virtual:fa7a63bce88eef2cb8a3f1c5ece91110f0f08289f1e8517bf01d3d69cbeef0a9a7bfcaa746c2f0e178177003417e002337645312a23a1888f0c1e9c5fa39c856#npm:29.7.0"],\
+          ["jest-playwright-preset", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.0"],\
           ["lint-staged", "npm:15.2.9"],\
           ["lodash-es", "npm:4.17.21"],\
           ["moment-timezone", "npm:0.5.45"],\
+          ["playwright", "npm:1.47.2"],\
           ["postcss", "npm:8.4.45"],\
           ["prettier", "npm:3.3.3"],\
           ["react", "npm:18.3.1"],\
@@ -160,9 +162,11 @@ const RAW_RUNTIME_STATE =
           ["husky", "npm:9.1.4"],\
           ["iso-639-1", "npm:3.1.2"],\
           ["jest", "virtual:fa7a63bce88eef2cb8a3f1c5ece91110f0f08289f1e8517bf01d3d69cbeef0a9a7bfcaa746c2f0e178177003417e002337645312a23a1888f0c1e9c5fa39c856#npm:29.7.0"],\
+          ["jest-playwright-preset", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.0"],\
           ["lint-staged", "npm:15.2.9"],\
           ["lodash-es", "npm:4.17.21"],\
           ["moment-timezone", "npm:0.5.45"],\
+          ["playwright", "npm:1.47.2"],\
           ["postcss", "npm:8.4.45"],\
           ["prettier", "npm:3.3.3"],\
           ["react", "npm:18.3.1"],\
@@ -10271,6 +10275,37 @@ const RAW_RUNTIME_STATE =
           ["jest-playwright-preset", "npm:4.0.0"]\
         ],\
         "linkType": "SOFT"\
+      }],\
+      ["virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.0", {\
+        "packageLocation": "./.yarn/__virtual__/jest-playwright-preset-virtual-43af5de062/0/cache/jest-playwright-preset-npm-4.0.0-eb3af41dfb-c51b00dde0.zip/node_modules/jest-playwright-preset/",\
+        "packageDependencies": [\
+          ["jest-playwright-preset", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.0"],\
+          ["@types/jest", "npm:29.5.13"],\
+          ["@types/jest-circus", null],\
+          ["@types/jest-environment-node", null],\
+          ["@types/jest-runner", null],\
+          ["expect-playwright", "npm:0.8.0"],\
+          ["jest", "virtual:fa7a63bce88eef2cb8a3f1c5ece91110f0f08289f1e8517bf01d3d69cbeef0a9a7bfcaa746c2f0e178177003417e002337645312a23a1888f0c1e9c5fa39c856#npm:29.7.0"],\
+          ["jest-circus", null],\
+          ["jest-environment-node", null],\
+          ["jest-process-manager", "npm:0.4.0"],\
+          ["jest-runner", null],\
+          ["nyc", "npm:15.1.0"],\
+          ["playwright-core", "npm:1.47.2"],\
+          ["rimraf", "npm:3.0.2"],\
+          ["uuid", "npm:8.3.2"]\
+        ],\
+        "packagePeers": [\
+          "@types/jest-circus",\
+          "@types/jest-environment-node",\
+          "@types/jest-runner",\
+          "@types/jest",\
+          "jest-circus",\
+          "jest-environment-node",\
+          "jest-runner",\
+          "jest"\
+        ],\
+        "linkType": "HARD"\
       }],\
       ["virtual:fa7a63bce88eef2cb8a3f1c5ece91110f0f08289f1e8517bf01d3d69cbeef0a9a7bfcaa746c2f0e178177003417e002337645312a23a1888f0c1e9c5fa39c856#npm:4.0.0", {\
         "packageLocation": "./.yarn/__virtual__/jest-playwright-preset-virtual-620d041be4/0/cache/jest-playwright-preset-npm-4.0.0-eb3af41dfb-c51b00dde0.zip/node_modules/jest-playwright-preset/",\
