@@ -3,7 +3,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Scheduler } from '../molecules';
 import { type SlotWithConfirmedLocation } from '@/lib/api/schema/shared.schema';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
-import { usePreferences } from '@/PreferencesProvider';
+import { usePreferences } from '@/PreferencesProvider/usePreferences';
 import { isEmpty } from 'lodash-es';
 import { useSolApi } from '@/SolApiProvider';
 

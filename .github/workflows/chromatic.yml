@@ -29,7 +29,8 @@ jobs:
         uses: chromaui/action@latest
         with:
           # Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}`
+          onlyChanged: true
           exitOnceUploaded: true
           exitZeroOnChanges: true # 👈 Option to prevent the workflow from failing even when stories have errors
           debug: true

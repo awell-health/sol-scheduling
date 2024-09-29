@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { isEmpty, isNil } from 'lodash-es';
 import { Slots, WeekCalendar } from '@/atoms';
-import { usePreferences } from '@/PreferencesProvider';
+import { usePreferences } from '@/PreferencesProvider/usePreferences';
 import { useSolApi } from '@/SolApiProvider';
 import { ProviderAvatar } from '@/atoms/ProviderAvatar';
 import {

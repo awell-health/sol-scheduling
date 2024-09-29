@@ -2,7 +2,7 @@ import '../../styles/globals.css';
 import { FC } from 'react';
 import { isEmpty, merge } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
-import { PreferencesProvider } from '../PreferencesProvider';
+import { PreferencesProvider } from '../PreferencesProvider/PreferencesContext';
 import { SolApiProvider } from '../SolApiProvider/SolApiContext';
 import { SchedulingWizard } from '../SchedulingWizard';
 import { GetProvidersInputType } from '@/lib/api';

@@ -8,7 +8,7 @@ import {
   mockProviderAvailabilityResponse,
   mockProviderResponse
 } from '@/lib/api/__mocks__';
-import { PreferencesProvider } from '@/PreferencesProvider';
+import { PreferencesProvider } from '@/PreferencesProvider/PreferencesContext';
 import { useEffect } from 'react';
 import { action } from '@storybook/addon-actions';
 import {

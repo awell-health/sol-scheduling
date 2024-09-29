@@ -1,2 +1,2 @@
-export { usePreferences as usePreferences } from './usePreferences';
+export { usePreferences } from './usePreferences';
 export { PreferencesProvider } from './PreferencesContext';

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ProviderSelection as ProviderSelectionComponent } from './ProviderSelection';
 import { ThemeProvider } from '@awell-health/ui-library';
-import { PreferencesProvider } from '@/PreferencesProvider';
+import { PreferencesProvider } from '../../PreferencesProvider/PreferencesContext';
 import { SolApiProvider } from '@/SolApiProvider';
 import {
   mockFetchProvidersFn,
