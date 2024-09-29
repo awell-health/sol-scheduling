@@ -4,7 +4,6 @@ import {
   ThemeProvider,
   useTheme
 } from '@awell-health/ui-library';
-import {} from 'daisyui';
 import { SchedulingActivity as SchedulingActivityComponent } from './SchedulingActivity';
 import { fn } from '@storybook/test';
 import {
@@ -28,9 +27,6 @@ import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity/SkipProvider',
   component: SchedulingActivityComponent,
-  parameters: {
-    chromatic: { delay: 15000 }
-  },
   args: {
     onCompleteActivity: fn(),
     fetchProviders: fn(),

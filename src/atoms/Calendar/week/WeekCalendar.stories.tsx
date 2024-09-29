@@ -8,9 +8,6 @@ const meta: Meta<typeof WeekCalendarComponent> = {
   title: 'Atoms/Calendar/Week',
   component: WeekCalendarComponent,
   args: { onDateSelect: fn(), onLocationSelect: fn() },
-  parameters: {
-    chromatic: { delay: 10000 }
-  },
   decorators: [
     (Story) => {
       return (

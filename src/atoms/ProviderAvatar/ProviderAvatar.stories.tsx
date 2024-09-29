@@ -28,8 +28,7 @@ export const Loading: Story = {
 
 export const WithImage: Story = {
   args: {
-    image:
-      'https://solmentalhealth.com/wp-content/uploads/2023/08/luciana-forzisi-scaled.jpg'
+    image: '/profile-image.jpg'
   }
 };
 

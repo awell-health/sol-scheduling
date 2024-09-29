@@ -27,8 +27,7 @@ export const getMockProvidersResponse = () => {
           'Depressive d/o'
         ],
         bio: 'I’m Lauren (she/her) and I am a trained art therapist with nine years of experience working in mental health settings. I recently received my Masters in Clinical Mental Health Counseling, concentrating in Transpersonal Art Therapy. Art therapy doesn’t require you to be experienced or “good” at making art. Working with an art therapist involves using art materials to access the subconscious and help you find meaning in your creative choices that relate to your life. It can also serve as a regulating tool when discussing challenging material. Overall, art therapy can help you understand yourself in a way that differs from traditional talk therapies.\nWe can use art therapy in our time together, or not! It’s up to you! I primarily use a Client-Centered approach, which is grounded in the idea that you own your potential for healing and the importance of co-collaboration between the therapist and client. In other words, you have a voice in your therapeutic journey, and I am here to support you without judgment.\r\nMy own artist identity allows me to be curious and creative in developing an integral individualized approach structured for you based on your own goals and strengths while anchored in relevant research. I also believe in cultivating long-term coping strategies to last beyond your time in therapy. Due to my contemplative education, I am also trained in meditation; this helps me stay present with you and integrate mindfulness-based approaches into our work together. In addition, somatic and expressive therapies guide me in assessing and incorporating movement into my therapeutic practices. If you are a creative individual who is open to trying something different, I’m your gal.\r\nMy experience includes residential and inpatient treatment settings, community-based work, clinical research, non-profits, and school settings. I am passionate about working with creative individuals and can work with children, adolescents, and adults who struggle with sensory processing challenges, disordered eating, adjustment challenges, and childhood trauma. I am social justice-oriented, LGBTQIA+ allied, and value cultural humility.\r\nIf it feels like a good fit for you, I am so excited to get to know you and support you on your journey!\r\n',
-        image:
-          'https://solmentalhealth.com/wp-content/uploads/2022/07/lauren.jpg',
+        image: '/profile-image.jpg',
         profileLink:
           'https://smh-dev.betsol.com/providers/arpan-parikh/?provider_id=1637',
         events: [
@@ -80,8 +79,7 @@ export const getMockProvidersResponse = () => {
           'Anger management'
         ],
         bio: 'Jordan has been practicing counseling since 2016, and has experience in community, non-profit, and private practice settings. She’s worked with teens and adults who have experienced trauma, life transitions, self-esteem concerns, depression and anxiety. Jordan is passionate about providing a safe space for clients to express and understand themselves. She uses a client-centered approach, along with expressive arts, CBT and solution-focused therapy to help clients reach their goals.\nHer approach is playful, creative, and empowering. She also has experience providing therapeutic support for members of the LBGTQIA+ community.  Jordan received her master’s degree in counseling with a concentration in marriage and family therapy from Southeastern Louisiana University. She’s received training in Play Therapy and Trauma-focused Cognitive Behavioral Therapy.',
-        image:
-          'https://solmentalhealth.com/wp-content/uploads/2022/07/Jordan-Gonzales.png',
+        image: '/profile-image.jpg',
         profileLink:
           'https://smh-dev.betsol.com/providers/arpan-parikh/?provider_id=1642',
         events: [
@@ -133,8 +131,7 @@ export const getMockProvidersResponse = () => {
           'OCD'
         ],
         bio: 'Summer Johnke, LMSW, graduated with a Masters of Social Work from Columbia University. Summer takes an integrative approach to therapy that draws from evidence-based, cognitive-behavioral modalities. Summer’s past clinical experience includes providing counseling in English, Spanish, and French to individuals coming from diverse cultural backgrounds with a focus on treating trauma and PTSD. Summer’s approach to therapy is culturally-sensitive, trauma-informed, and strengths-based. This flexible approach places each individual and their unique needs, preferences, identities, and culture at the center of every session. Summer is also a certified yoga instructor and weaves elements of somatic and mindfulness-based therapies into her practice. Above all, unconditional positive regard and a strong therapeutic alliance serve as the foundations for Summer’s practice. She seeks to meet each individual where they are at with radical acceptance, compassion, and an unwavering optimism in people’s potential to heal and transform.',
-        image:
-          'https://solmentalhealth.com/wp-content/uploads/2023/03/1-summer-johnke-e1679419932598.png',
+        image: '/profile-image.jpg',
         profileLink:
           'https://smh-dev.betsol.com/providers/arpan-parikh/?provider_id=1733',
         events: [
@@ -189,8 +186,7 @@ export const getMockProvidersResponse = () => {
           'Autism spectrum'
         ],
         bio: '',
-        image:
-          'https://solmentalhealth.com/wp-content/uploads/2023/05/meggan-grant.jpg',
+        image: '/profile-image.jpg',
         profileLink:
           'https://smh-dev.betsol.com/providers/arpan-parikh/?provider_id=1733',
         events: [
@@ -292,8 +288,7 @@ export const getMockProvidersResponse = () => {
           'Substance use'
         ],
         bio: 'I am deeply committed to providing holistic, evidence based, individual, and culturally informed care from a humanistic, integrative, and mindfulness perspective. Whether you are seeking a diagnosis, therapy, or need medication management, we will collaborate to identify your goals as well as you inner strengths and resiliency. My aim is to support you in finding your innate wisdom, becoming unstuck, and to guide you in your personal development in a healing and therapeutic environment.',
-        image:
-          'https://solmentalhealth.com/wp-content/uploads/2023/07/ioana-bontea.jpg',
+        image: '/profile-image.jpg',
         profileLink: '',
         events: [
           {
@@ -347,8 +342,7 @@ export const getMockProvidersResponse = () => {
           'Anger management'
         ],
         bio: "Luciana Forzisi, Psy.D, LMSW, is an esteemed Psychotherapist with extensive experience in treating anxiety, depression, addictions, and personality disorders. She integrates a diverse range of therapeutic approaches and training, including Psychodynamic Therapy, Schema Therapy, Mentalization-based Therapy, Cognitive Behavioral Therapy and more. Luciana's tailored treatment approach is based on individual preferences and needs, emphasizing collaboration, trust, and creating a safe space for clients to address sensitive issues and overcome personal struggles with resilience and compassion.",
-        image:
-          'https://solmentalhealth.com/wp-content/uploads/2023/08/luciana-forzisi-scaled.jpg',
+        image: '/profile-image.jpg',
         profileLink:
           'https://smh-dev.betsol.com/providers/arpan-parikh/?provider_id=1733',
         events: [
@@ -399,8 +393,7 @@ export const getMockProvidersResponse = () => {
           'Substance use'
         ],
         bio: "I'm Mel and I am from Littleton, Colorado. My passion is to use therapy to help adolescents understand and navigate their nervous systems and how they interact with themselves and others to live a fun, balanced and fulfilled life, while achieving their goals. I use CBT, DBT, Motivational Interviewing, Strengths Based Therapy, and Play Therapy. I have experience working with children and adolescents ages 8-17 with depression, anxiety, adhd, substance use and emotional regulation. When I am not in the office, you can usually find me in the mountains, hiking, skiing, four wheeling, camping and backpacking or eating my favorite food, pizza.",
-        image:
-          'https://solmentalhealth.com/wp-content/uploads/2023/08/melanie-hane.jpg',
+        image: '/profile-image.jpg',
         profileLink:
           'https://smh-dev.betsol.com/providers/arpan-parikh/?provider_id=1733',
         events: [
