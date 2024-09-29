@@ -56,7 +56,7 @@ export const mockProviderAvailabilityResponse: (
         location: EventDeliveryMethod.Both
       },
       {
-        eventId: '<event_id_3>',
+        eventId: '<event_id_4>',
         date: addDays(getNextWeekday(new Date()), 1),
         providerId: pid,
         slotstart: new Date(

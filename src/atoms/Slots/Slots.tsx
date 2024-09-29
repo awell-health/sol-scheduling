@@ -66,6 +66,7 @@ export const Slots: FC<SlotsProps> = ({
         >
           <RadioGroup
             value={value?.eventId ?? ''}
+            data-testid='slots'
             onChange={handleSlotSelect}
             className={clsx({
               'grid grid-cols-3 gap-3': orientation === 'horizontal',
