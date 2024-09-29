@@ -29,5 +29,5 @@ jobs:
       - name: Compile Typescript
         run: yarn build
 
-      - name: Run tests
+      - name: Run unit tests
         run: yarn test

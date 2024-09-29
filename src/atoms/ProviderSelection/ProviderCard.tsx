@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import {} from 'daisyui';
 import { uniq } from 'lodash-es';
 import clsx from 'clsx';
 

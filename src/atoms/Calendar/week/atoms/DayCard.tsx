@@ -44,6 +44,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
     <button
       key={day.date.toString()}
       type='button'
+      data-testid={day.date.toDateString()}
       onClick={() => onSelect(day.date)}
       disabled={cannotActivate(day)}
       className={clsx(

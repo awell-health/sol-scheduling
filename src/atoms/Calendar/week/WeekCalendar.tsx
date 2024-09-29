@@ -1,5 +1,4 @@
 import { FC, useState, useMemo, useCallback, useEffect } from 'react';
-import {} from 'daisyui';
 import { uniq } from 'lodash-es';
 import { differenceInDays } from 'date-fns';
 import clsx from 'clsx';
