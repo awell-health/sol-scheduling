@@ -13,9 +13,6 @@ export const SchedulerSpec = async ({
 }) => {
   const canvas = within(canvasElement);
 
-  expect(fetchProviderMock, 'fetchProvider').toBeCalledTimes(1);
-  expect(fetchAvailabilityMock, 'fetchAvailability').toBeCalledTimes(1);
-
   /** Get all elements of interests */
   const cherryCreekButton = await canvas.findByRole('button', {
     name: 'CO - Cherry Creek'
@@ -95,11 +92,12 @@ export const SchedulerSpec = async ({
 
   expect(bookButton).toBeVisible();
   await userEvent.click(bookButton);
-  expect(bookAppointmentMock, 'bookAppointment').toBeCalledTimes(1);
 
-  // Wait for completeActivityMock to be called since it happens after 1.5 seconds
   await waitFor(
     () => {
+      expect(bookAppointmentMock, 'bookAppointment').toBeCalledTimes(1);
+      expect(fetchProviderMock, 'fetchProvider').toBeCalledTimes(1);
+      expect(fetchAvailabilityMock, 'fetchAvailability').toBeCalledTimes(1);
       expect(completeActivityMock, 'completeActivity').toHaveBeenCalledTimes(1);
     },
     { timeout: 5000 }
