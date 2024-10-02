@@ -32,7 +32,7 @@ export const ProviderAvatar: FC<ProviderAvatarProps> = ({
     <div className='avatar'>
       <div className={clsx(`rounded-full ${classes} bg-primary`)}>
         {image ? (
-          <img alt={name} src={image} />
+          <img alt={initials} src={image} referrerPolicy='no-referrer' />
         ) : (
           <span className='text-center text-secondary font-bold h-full flex items-center justify-center w-full'>
             {initials}

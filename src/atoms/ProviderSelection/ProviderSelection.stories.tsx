@@ -2,16 +2,21 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ProviderSelection as ProviderSelectionComponent } from './ProviderSelection';
 import { ThemeProvider } from '@awell-health/ui-library';
 import { PreferencesProvider } from '@/PreferencesProvider';
-import { SolApiProvider } from '@/SolApiProvider';
+import { SolApiProvider, useSolApi } from '@/SolApiProvider';
 import {
   mockFetchProvidersFn,
   mockProviderAvailabilityResponse
 } from '@/lib/api/__mocks__';
 import { fn } from '@storybook/test';
+import { useEffect } from 'react';
+import { ProviderSelectionSpec } from './ProviderSelection.spec';
 
 const meta: Meta<typeof ProviderSelectionComponent> = {
   title: 'Atoms/ProviderSelection',
   component: ProviderSelectionComponent,
+  parameters: {
+    mockingDate: new Date()
+  },
   decorators: [
     (Story) => (
       <ThemeProvider accentColor='#A45128'>
@@ -43,5 +48,24 @@ export const ProviderSelection: Story = {
     onSelectProvider: (pid) => {
       alert(`you have chosen... wisely. pid=${pid}`);
     }
+  }
+};
+export const ProviderFilterTest: Story = {
+  args: {
+    onSelectProvider: (pid) => {
+      alert(`you have chosen... wisely. pid=${pid}`);
+    }
+  },
+  play: ProviderSelectionSpec,
+  render: (args) => {
+    const {
+      provider: { setId: setProviderId }
+    } = useSolApi();
+
+    useEffect(() => {
+      setProviderId('test-provider-id');
+    }, []);
+
+    return <ProviderSelectionComponent {...args} />;
   }
 };

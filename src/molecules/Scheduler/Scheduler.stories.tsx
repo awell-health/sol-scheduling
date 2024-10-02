@@ -20,7 +20,7 @@ const meta: Meta<typeof SchedulerComponent> = {
   title: 'Molecules/Scheduler',
   component: SchedulerComponent,
   parameters: {
-    mockingDate: new Date('2024-01-01'),
+    mockingDate: new Date('2024-01-01T18:00:00.000Z'),
     fetchAvailability: fn()
   },
   decorators: [

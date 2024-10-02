@@ -38,6 +38,7 @@ const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
             fill='none'
             viewBox='0 0 24 24'
             className='inline-block h-4 w-4 stroke-current cursor-pointer ml-2 -mr-2'
+            aria-label={`Clear ${filter.label} filter`}
             onClick={(e) => {
               e.stopPropagation();
               const updatedFilter = {
