@@ -3,10 +3,14 @@ import { WeekCalendar as WeekCalendarComponent } from './WeekCalendar';
 import { ThemeProvider } from '@awell-health/ui-library';
 import { fn } from '@storybook/test';
 import { mockProviderAvailabilityResponse } from '@/lib/api/__mocks__';
+import { NoAvailabilitiesSpec } from './WeekCalendar.spec';
 
 const meta: Meta<typeof WeekCalendarComponent> = {
   title: 'Atoms/Calendar/Week',
   component: WeekCalendarComponent,
+  parameters: {
+    mockingDate: new Date('2024-01-01T18:00:00.000Z')
+  },
   args: { onDateSelect: fn(), onLocationSelect: fn() },
   decorators: [
     (Story) => {
@@ -46,5 +50,19 @@ export const WithAvailabilities: Story = {
     availabilities: mockProviderAvailabilityResponse('123').data['123'],
     weekStartsOn: 'monday',
     hideWeekends: true
+  }
+};
+
+export const TestNoAvailabilities: Story = {
+  storyName: 'Testy No Availabilities okay?',
+  play: NoAvailabilitiesSpec,
+  render: (args) => {
+    const noAvailArgs = {
+      ...args,
+      availabilities: [],
+      weekStartsOn: 'monday' as const,
+      hideWeekends: true
+    };
+    return <WeekCalendarComponent {...noAvailArgs} />;
   }
 };

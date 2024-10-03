@@ -26,6 +26,7 @@ export const FilterOverlayHeader: FC<Props> = ({ onChange }) => {
         ref={inputRef}
       />
       <button
+        aria-label='Close filter'
         className='btn border-0 btn-circle shadow-none'
         onClick={() => setActiveFilter(null)}
       >
