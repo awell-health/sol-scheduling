@@ -38,6 +38,7 @@ type PreferencesContextType = {
   setActiveFilter: (newFilterKey: keyof GetProvidersInputType | null) => void;
   getActiveFilter: () => FilterType<FilterEnum>;
   providers: GetProvidersResponseType['data'];
+  fetchProvidersError: unknown;
   setSelectedSlot: (slot: SlotType | undefined) => void;
   setLocation: ({
     confirmedLocation,
@@ -96,7 +97,7 @@ export const PreferencesProvider: FC<ContextProps> = ({
 
   const {
     provider: { getId: providerId },
-    providers: { fetch: fetchProviders, data: providers, loading: loading }
+    providers: { fetch: fetchProviders, data: providers, loading, error }
   } = useSolApi();
 
   const updateFilters = debounce((newFilters: FilterType<FilterEnum>[]) => {
@@ -160,7 +161,8 @@ export const PreferencesProvider: FC<ContextProps> = ({
     setSelectedSlot,
     setLocation,
     bookingInformation,
-    loading
+    loading,
+    fetchProvidersError: error
   };
 
   return (
