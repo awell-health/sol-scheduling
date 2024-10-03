@@ -5,6 +5,8 @@ import { ProviderCard } from './ProviderCard';
 import { usePreferences } from '@/PreferencesProvider';
 import { ProviderFilter } from './ProviderFilter';
 import { useSolApi } from '@/SolApiProvider';
+import { isNil } from 'lodash-es';
+import { FetchingProvidersError } from '../FetchingProvidersError';
 
 export type ProviderSelectionProps = {
   onSelectProvider: (id: string) => void;
@@ -20,7 +22,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
   const {
     provider: { setId: setProviderId }
   } = useSolApi();
-  const { providers, loading } = usePreferences();
+  const { providers, loading, fetchProvidersError } = usePreferences();
   const providersLabel = providers.length === 1 ? 'provider' : 'providers';
 
   const selectProvider = (id: string) => {
@@ -31,6 +33,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
   return (
     <div>
       <ProviderFilter />
+      {!isNil(fetchProvidersError) && <FetchingProvidersError />}
       {loading ? (
         <div className='h-full w-full flex items-center justify-center '>
           <span className='loading loading-infinity loading-lg text-primary'></span>

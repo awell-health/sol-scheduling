@@ -26,6 +26,7 @@ export interface ProvidersApiContextType {
   data: GetProvidersResponseType['data'];
   fetch: (prefs: GetProvidersInputType) => Promise<void>;
   loading: boolean;
+  error: unknown;
 }
 export interface AvailabilitiesApiContextType {
   data: GetAvailabilitiesResponseType['data'][string];
@@ -80,6 +81,7 @@ export const SolApiProvider: FC<ContextProps> = ({
   const [providerId, setProviderId] = useState<string | null>(null);
 
   const [isLoadingProviders, setLoadingProviders] = useState(false);
+  const [providersError, setProvidersError] = useState<unknown>(null);
   const [isLoadingProvider, setLoadingProvider] = useState(false);
   const [isLoadingAvailabilities, setLoadingAvailabilities] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
@@ -112,10 +114,14 @@ export const SolApiProvider: FC<ContextProps> = ({
   const getProviders = useCallback(
     async (prefs: GetProvidersInputType) => {
       setLoadingProviders(true);
-
-      const res = await fetchProviders(prefs);
-      setProviders(res.data);
-      setLoadingProviders(false);
+      try {
+        const res = await fetchProviders(prefs);
+        setProviders(res.data);
+      } catch (e) {
+        setProvidersError(e);
+      } finally {
+        setLoadingProviders(false);
+      }
     },
     [fetchProviders]
   );
@@ -164,7 +170,8 @@ export const SolApiProvider: FC<ContextProps> = ({
     providers: {
       data: providers,
       fetch: getProviders,
-      loading: isLoadingProviders
+      loading: isLoadingProviders,
+      error: providersError
     },
     availabilities: {
       data: availabilities,
