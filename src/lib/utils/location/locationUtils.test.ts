@@ -24,9 +24,6 @@ describe('Utility Functions for Location and Facility', () => {
       expect(facilities).toEqual([
         LocationFacility.Gaithersburg,
         LocationFacility.Frederick,
-        LocationFacility.Ballston,
-        LocationFacility.Downtown,
-        LocationFacility.Tysons,
         LocationFacility.SilverSpring
       ]);
     });
@@ -34,25 +31,14 @@ describe('Utility Functions for Location and Facility', () => {
     it('should return facilities for Virginia (VA)', () => {
       const facilities = getFacilitiesByState(LocationState.VA);
       expect(facilities).toEqual([
-        LocationFacility.Gaithersburg,
-        LocationFacility.Frederick,
         LocationFacility.Ballston,
-        LocationFacility.Downtown,
-        LocationFacility.Tysons,
-        LocationFacility.SilverSpring
+        LocationFacility.Tysons
       ]);
     });
 
     it('should return facilities for District of Columbia (DC)', () => {
       const facilities = getFacilitiesByState(LocationState.DC);
-      expect(facilities).toEqual([
-        LocationFacility.Gaithersburg,
-        LocationFacility.Frederick,
-        LocationFacility.Ballston,
-        LocationFacility.Downtown,
-        LocationFacility.Tysons,
-        LocationFacility.SilverSpring
-      ]);
+      expect(facilities).toEqual([LocationFacility.Downtown]);
     });
 
     it('should return facilities for New York (NY)', () => {
