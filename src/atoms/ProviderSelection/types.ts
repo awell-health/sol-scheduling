@@ -81,7 +81,7 @@ export const optionsForLocation = () => {
   }));
 
   const facilities = Object.entries(LocationFacility).map(([_key, value]) => ({
-    label: value,
+    label: value.slice(5),
     value: value as string
   }));
   return [...states, ...facilities];
