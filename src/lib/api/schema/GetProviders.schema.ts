@@ -50,7 +50,6 @@ export const GetProvidersResponseSchema = z
         // language: z.string().optional(),
         location: z
           .object({
-            // Not implemented
             facility: z.string().optional(),
             state: LocationStateSchema.optional()
           })
