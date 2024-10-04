@@ -51,7 +51,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   weekStartsOn = 'monday',
   hideWeekends = true,
   allowSchedulingInThePast = false,
-  preferredLocation = 'Virtual',
+  preferredLocation = 'Telehealth',
   loading
 }) => {
   const [currentWeek, setCurrentWeek] = useState(week);
@@ -76,13 +76,13 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const handleSelectLocation = useCallback(
     (location: string) => {
       const confirmedLocation =
-        location === 'Virtual'
+        location === 'Telehealth'
           ? LocationType.Telehealth
           : LocationType.InPerson;
 
       const _location = {
         confirmedLocation,
-        facility: location === 'Virtual' ? undefined : location
+        facility: location === 'Telehealth' ? undefined : location
       };
 
       setSelectedLocation(location);
@@ -105,12 +105,12 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     // Extract the 'facility' field from each slot
     const uniqueFacilities = uniq(
       availabilities.map((slot) => {
-        return slot.facility ? slot.facility : 'Virtual';
+        return slot.facility ? slot.facility : 'Telehealth';
       })
     );
-    // Add 'virtual' if it's not already in the array
-    if (!uniqueFacilities.includes('Virtual')) {
-      uniqueFacilities.push('Virtual');
+    // Add 'Telehealth' if it's not already in the array
+    if (!uniqueFacilities.includes('Telehealth')) {
+      uniqueFacilities.push('Telehealth');
     }
 
     return uniqueFacilities;
