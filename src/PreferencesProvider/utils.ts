@@ -48,10 +48,9 @@ const updatePreferencesWithFilters = (
               prefs.location.facility = filter
                 .selectedOptions[0] as LocationFacility;
             }
+          } else {
+            prefs.location = undefined; // this is needed to clear the location filter
           }
-          // prefs.location.state = filter.selectedOptions[0] as LocationState;
-          // prefs.location.facility = filter
-          //   .selectedOptions[0] as LocationFacility;
         }
         break;
       }
