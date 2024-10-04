@@ -49,7 +49,9 @@ const updatePreferencesWithFilters = (
                 .selectedOptions[0] as LocationFacility;
             }
           } else {
-            prefs.location = undefined; // this is needed to clear the location filter
+            // this is needed to clear the location filter
+            prefs.location.state = undefined;
+            prefs.location.facility = undefined;
           }
         }
         break;
