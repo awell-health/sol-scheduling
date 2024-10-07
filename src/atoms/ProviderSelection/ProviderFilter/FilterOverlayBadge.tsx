@@ -35,15 +35,16 @@ export const FilterOverlayBadge: FC<OptionProps> = ({ value, label }) => {
       });
     }
   };
+
   return (
     <button
       key={value}
       className={clsx(
-        'btn btn-sm text-sm border-1 border-primary font-medium',
+        'btn btn-sm text-sm border-1 border-primary font-medium hover:bg-secondary hover:border-1 hover:border-primary',
         {
-          'bg-primary text-primary-content':
+          'border-1 border-primary ring-4 ring-secondary bg-white text-primary':
             filter.selectedOptions.includes(value),
-          'bg-primary-content text-primary':
+          'text-slate-800 border-1 border-slate-200  bg-white':
             !filter.selectedOptions.includes(value)
         }
       )}

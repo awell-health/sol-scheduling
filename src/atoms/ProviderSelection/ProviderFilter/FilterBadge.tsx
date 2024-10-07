@@ -14,10 +14,13 @@ const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
   return (
     <button
       key={filter.key}
-      className={clsx('btn btn-sm text-sm border-0 gap-1', {
-        'bg-secondary text-slate-800 font-medium': isActive,
-        'bg-slate-300 font-normal': !isActive
-      })}
+      className={clsx(
+        'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary m-1',
+        {
+          'text-slate-800 border-1 border-slate-200  bg-white': !isActive,
+          'border-1 border-primary ring-4 ring-secondary text-primary': isActive
+        }
+      )}
       onClick={(e) => {
         e.preventDefault();
         setActiveFilter(filter.key);

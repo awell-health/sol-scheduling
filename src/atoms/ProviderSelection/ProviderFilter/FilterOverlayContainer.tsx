@@ -44,7 +44,7 @@ const FilterOverlayContainer: FC<Props> = (props) => {
         const state = filter.selectedOptions[0];
         const filteredFacilities = stateToFacilitiesMap[
           state as LocationState
-        ].map((o) => ({ label: o, value: o }));
+        ].map((o) => ({ label: o.slice(5), value: o }));
         setLocationFilter({ states, facilities: filteredFacilities });
       } else {
         setLocationFilter({ states, facilities });

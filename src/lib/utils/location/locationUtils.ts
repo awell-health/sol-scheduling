@@ -18,9 +18,6 @@ export const stateToFacilitiesMap: Record<LocationState, LocationFacility[]> = {
   MD: [
     LocationFacility.Gaithersburg,
     LocationFacility.Frederick,
-    LocationFacility.Ballston,
-    LocationFacility.Downtown,
-    LocationFacility.Tysons,
     LocationFacility.SilverSpring
   ],
   NY: [
@@ -43,28 +40,8 @@ export const stateToFacilitiesMap: Record<LocationState, LocationFacility[]> = {
     LocationFacility.UpperKirby,
     LocationFacility.Austin
   ],
-  /**
-   * On request of SOL, these facility must be added to Virginia
-   */
-  VA: [
-    LocationFacility.Gaithersburg,
-    LocationFacility.Frederick,
-    LocationFacility.Ballston,
-    LocationFacility.Downtown,
-    LocationFacility.Tysons,
-    LocationFacility.SilverSpring
-  ],
-  /**
-   * On request of SOL, these facility must be added to Virginia
-   */
-  DC: [
-    LocationFacility.Gaithersburg,
-    LocationFacility.Frederick,
-    LocationFacility.Ballston,
-    LocationFacility.Downtown,
-    LocationFacility.Tysons,
-    LocationFacility.SilverSpring
-  ]
+  VA: [LocationFacility.Ballston, LocationFacility.Tysons],
+  DC: [LocationFacility.Downtown]
 };
 
 export function getFacilitiesByState(
