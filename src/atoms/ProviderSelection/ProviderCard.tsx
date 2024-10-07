@@ -72,7 +72,7 @@ export const ProviderCard: FC<ProviderProps> = ({
             {facilities.length > 0 && (
               <SingleItem
                 label={`Clinic Location${facilities.length > 1 ? 's' : ''}`}
-                value={facilities.join(', ')}
+                value={facilities.map((f) => f.slice(5)).join(', ')}
               />
             )}
             {provider.bio && <BioItem label='Bio' value={provider.bio} />}
