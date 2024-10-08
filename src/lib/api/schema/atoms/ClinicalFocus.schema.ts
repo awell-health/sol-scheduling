@@ -1,22 +1,22 @@
 import { z } from 'zod';
 
 export enum ClinicalFocus {
-  ADHD = 'ADHD',
-  Anxiety = 'Anxiety d/o',
-  Autism = 'Autism spectrum',
-  GenderDysphoria = 'Gender dysphoria',
-  Trauma = 'Trauma (including PTSD)',
-  Depression = 'Depressive d/o',
-  BipolarSpectrum = 'Bipolar spectrum',
-  AngerManagement = 'Anger management',
-  OCD = 'OCD',
-  PersonalityDO = 'Personality d/o',
-  SubstanceUse = 'Substance use',
-  EatingDisorder = 'Eating d/o',
-  Psychosis = 'Psychosis (e.g. schizophrenia)',
-  DissociativeDO = 'Dissociative d/o',
-  DevelopmentalDelal = 'Developmental delay',
-  TraumaticBrainInjury = 'Traumatic brain injury'
+  'ADHD' = 'ADHD',
+  'Anger Management' = 'Anger Management',
+  'Anxiety' = 'Anxiety',
+  'Autism (ASD)' = 'Autism (ASD)',
+  'Bipolar Disorder' = 'Bipolar Disorder',
+  'Depression' = 'Depression',
+  'Developmental Disorders' = 'Developmental Disorders',
+  'Eating Disorder' = 'Eating Disorder',
+  'Grief & Loss' = 'Grief & Loss',
+  'Identity Issues' = 'Identity Issues',
+  'Life Transitions' = 'Life Transitions',
+  'OCD' = 'OCD',
+  'Relationship Issues' = 'Relationship Issues',
+  'Stress Management' = 'Stress Management',
+  'Substance Use' = 'Substance Use',
+  'Trauma & PTSD' = 'Trauma & PTSD'
 }
 
 export const ClinicalFocusSchema = z.array(z.nativeEnum(ClinicalFocus));
