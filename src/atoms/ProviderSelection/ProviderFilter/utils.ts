@@ -7,6 +7,9 @@ const getEnumKeyFromVal = (value: string) => {
   }
   if (value === 'M') {
     return 'Male';
+  }
+  if (new RegExp(/^[A-Z]{2} - /).test(value)) {
+    return value.slice(5);
   } else {
     return value;
   }
