@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-
 import { ThemeProvider } from '@awell-health/ui-library';
 
 import { Scheduler as SchedulerComponent } from './Scheduler';
@@ -20,8 +18,8 @@ const meta: Meta<typeof SchedulerComponent> = {
   title: 'Molecules/Scheduler',
   component: SchedulerComponent,
   parameters: {
-    mockingDate: new Date('2024-01-01T18:00:00.000Z'),
-    fetchAvailability: fn()
+    mockingDate: new Date('2024-10-14T18:00:00.000Z'),
+    fetchAvailability: fetchAvailabilityMock
   },
   decorators: [
     (Story) => {
@@ -58,7 +56,7 @@ export const Component: Story = {
     } = useSolApi();
 
     useEffect(() => {
-      setProviderId('test-provider-id');
+      setProviderId('1637');
     }, []);
 
     return <SchedulerComponent {...args} />;

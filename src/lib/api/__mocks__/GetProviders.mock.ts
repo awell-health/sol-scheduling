@@ -38,7 +38,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T13:00:00Z',
             duration: 60,
             facility: 'CO - Cherry Creek',
-            location: 'virtual only'
+            location: 'Telehealth'
           },
           {
             eventId: 'a2qa6ececpacb952eqbb6sbeq0',

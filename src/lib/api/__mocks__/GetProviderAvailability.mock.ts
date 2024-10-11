@@ -1,16 +1,16 @@
-import { addDays, isSaturday, isSunday } from 'date-fns';
+// import { addDays, isSaturday, isSunday } from 'date-fns';
 import { GetAvailabilitiesResponseType } from '..';
-import { EventDeliveryMethod } from '../schema/atoms/EventDeliveryMethod.schema';
+import * as schema from '../schema/GetProviderAvailability.schema';
 
-const getNextWeekday = (date: Date): Date => {
-  if (isSaturday(date)) {
-    return addDays(date, 2); // If Saturday, move to Monday
-  }
-  if (isSunday(date)) {
-    return addDays(date, 1); // If Sunday, move to Monday
-  }
-  return date; // Otherwise, return the same date
-};
+// const getNextWeekday = (date: Date): Date => {
+//   if (isSaturday(date)) {
+//     return addDays(date, 2); // If Saturday, move to Monday
+//   }
+//   if (isSunday(date)) {
+//     return addDays(date, 1); // If Sunday, move to Monday
+//   }
+//   return date; // Otherwise, return the same date
+// };
 
 export const mockProviderAvailabilityResponse: (
   pid: string
@@ -18,54 +18,85 @@ export const mockProviderAvailabilityResponse: (
   data: {
     [pid]: [
       {
-        eventId: '<event_id_0>',
-        date: getNextWeekday(new Date()),
-        providerId: pid,
-        slotstart: getNextWeekday(
-          addDays(new Date().setUTCHours(16, 0, 0), -1)
-        ),
+        eventId: 't68403en62hji9lad095mv2srk',
+        slotstart: '2024-10-17T21:00:00Z',
+        provider: {
+          location: {
+            facility: '',
+            state: ''
+          }
+        },
+        providerId: '1717',
+        date: '2024-10-17',
         duration: 60,
-        facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.VirtualOnly
+        booked: false,
+        facility: 'NY - Brooklyn Heights',
+        location: 'Telehealth'
       },
       {
-        eventId: '<event_id_1>',
-        date: getNextWeekday(new Date()),
-        providerId: pid,
-        slotstart: getNextWeekday(addDays(new Date().setUTCHours(9, 0, 0), 0)),
+        eventId: 'jnkmeiuv63uimngvjdb6ja5iro',
+        slotstart: '2024-10-18T14:00:00Z',
+        provider: {
+          location: {
+            facility: '',
+            state: ''
+          }
+        },
+        providerId: '1717',
+        date: '2024-10-18',
         duration: 60,
-        facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.Both
+        booked: false,
+        facility: 'NY - Brooklyn Heights',
+        location: 'both'
       },
       {
-        eventId: '<event_id_2>',
-        date: getNextWeekday(new Date()),
-        providerId: pid,
-        slotstart: getNextWeekday(addDays(new Date().setUTCHours(10, 0, 0), 1)),
-        duration: 45,
-        facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.Both
+        eventId: '981t7pvlkc96vjntovihr16h9g',
+        slotstart: '2024-10-21T18:00:00Z',
+        provider: {
+          location: {
+            facility: '',
+            state: ''
+          }
+        },
+        providerId: '1717',
+        date: '2024-10-21',
+        duration: 60,
+        booked: false,
+        facility: 'NY - Brooklyn Heights',
+        location: 'Telehealth'
       },
       {
-        eventId: '<event_id_3>',
-        date: getNextWeekday(new Date()),
-        providerId: pid,
-        slotstart: getNextWeekday(addDays(new Date().setUTCHours(16, 0, 0), 1)),
-        duration: 45,
-        facility: 'NY - Union Square',
-        location: EventDeliveryMethod.Both
+        eventId: 'u2dtb7c5vff90jv5s46b3hake0',
+        slotstart: '2024-10-21T19:00:00Z',
+        provider: {
+          location: {
+            facility: '',
+            state: ''
+          }
+        },
+        providerId: '1717',
+        date: '2024-10-21',
+        duration: 60,
+        booked: false,
+        facility: 'NY - Brooklyn Heights',
+        location: 'both'
       },
       {
-        eventId: '<event_id_4>',
-        date: addDays(getNextWeekday(new Date()), 1),
-        providerId: pid,
-        slotstart: new Date(
-          addDays(getNextWeekday(new Date()), 1).setUTCHours(16, 0, 0)
-        ),
-        duration: 45,
-        facility: 'NY - Union Square',
-        location: EventDeliveryMethod.VirtualOnly
+        eventId: 'isber21m91efnlqduai88kt1h8',
+        slotstart: '2024-10-22T15:00:00Z',
+        provider: {
+          location: {
+            facility: '',
+            state: ''
+          }
+        },
+        providerId: '1717',
+        date: '2024-10-22',
+        duration: 60,
+        booked: false,
+        facility: 'NY - Brooklyn Heights',
+        location: 'Telehealth'
       }
-    ]
+    ].map((e) => schema.Event.parse(e))
   }
 });
