@@ -47,7 +47,7 @@ export const mockProviderAvailabilityResponse: (
         duration: 60,
         booked: false,
         facility: 'NY - Brooklyn Heights',
-        location: 'both'
+        location: 'In-Person'
       },
       {
         eventId: '981t7pvlkc96vjntovihr16h9g',
@@ -79,7 +79,7 @@ export const mockProviderAvailabilityResponse: (
         duration: 60,
         booked: false,
         facility: 'NY - Brooklyn Heights',
-        location: 'both'
+        location: 'In-Person'
       },
       {
         eventId: 'isber21m91efnlqduai88kt1h8',

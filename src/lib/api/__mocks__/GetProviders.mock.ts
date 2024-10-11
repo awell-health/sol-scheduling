@@ -47,7 +47,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T14:00:00Z',
             duration: 60,
             facility: 'CO - Cherry Creek',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'pl17mj3vh6d6t1sj7e4qsbvavg',
@@ -56,7 +56,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T15:00:00Z',
             duration: 60,
             facility: 'CO - Cherry Creek',
-            location: 'both'
+            location: 'In-Person'
           }
         ]
       },
@@ -91,7 +91,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-18T15:00:00Z',
             duration: 60,
             facility: 'CO - Greenwood Village',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: '5hu51qobg7jpsqa6lcg0ebk5m0',
@@ -100,7 +100,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-18T16:00:00Z',
             duration: 60,
             facility: 'CO - Greenwood Village',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: '26fsgfn18olbt06rvo20jdjfg0',
@@ -109,7 +109,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-18T17:00:00Z',
             duration: 60,
             facility: 'CO - Greenwood Village',
-            location: 'both'
+            location: 'In-Person'
           }
         ]
       },
@@ -144,7 +144,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T12:00:00Z',
             duration: 60,
             facility: 'NY - Union Square',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'si8rekpo26dqlro4t37qh6m664',
@@ -153,7 +153,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T13:00:00Z',
             duration: 60,
             facility: 'NY - Union Square',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'k502dms131icctm7sg2mnutl1o',
@@ -162,7 +162,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T14:00:00Z',
             duration: 60,
             facility: 'NY - Union Square',
-            location: 'both'
+            location: 'In-Person'
           }
         ]
       },
@@ -199,7 +199,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T00:00:00Z',
             duration: 60,
             facility: 'CO - Highlands Ranch',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: '5qqivp0jghdep70h92eq842fvc',
@@ -208,7 +208,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T14:00:00Z',
             duration: 60,
             facility: 'CO - Highlands Ranch',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'jpaba809bgt2lijp9tlaa4kcfo',
@@ -217,7 +217,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T15:00:00Z',
             duration: 60,
             facility: 'CO - Highlands Ranch',
-            location: 'both'
+            location: 'In-Person'
           }
         ]
       },
@@ -250,7 +250,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T00:00:00Z',
             duration: 60,
             facility: 'NY - Brooklyn Heights',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: '5r68jv108h8p7c7grne2fniges',
@@ -259,7 +259,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T14:00:00Z',
             duration: 60,
             facility: 'NY - Brooklyn Heights',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'dg6lq56bjmshods3cuo4oojtag',
@@ -268,7 +268,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T15:00:00Z',
             duration: 60,
             facility: 'NY - Brooklyn Heights',
-            location: 'both'
+            location: 'In-Person'
           }
         ]
       },
@@ -300,7 +300,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T12:00:00Z',
             duration: 60,
             facility: 'NY - Union Square',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'j2siq67be20bla7lm815ud6egs',
@@ -309,7 +309,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T13:00:00Z',
             duration: 60,
             facility: 'NY - Union Square',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 't6mtv3fjrgj0mj6bs6jna4rnpo',
@@ -318,7 +318,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T14:00:00Z',
             duration: 60,
             facility: 'NY - Union Square',
-            location: 'both'
+            location: 'In-Person'
           }
         ]
       },
@@ -355,7 +355,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T14:00:00Z',
             duration: 60,
             facility: 'NY - Brooklyn Heights',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'adt34qriqi1i4qgdjn9ujpl7kk',
@@ -364,7 +364,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T15:00:00Z',
             duration: 60,
             facility: 'NY - Brooklyn Heights',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'm265h3e7d3v0klfmes2vskojbs',
@@ -373,7 +373,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T16:00:00Z',
             duration: 60,
             facility: 'NY - Brooklyn Heights',
-            location: 'both'
+            location: 'In-Person'
           }
         ]
       },
@@ -406,7 +406,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T14:00:00Z',
             duration: 60,
             facility: 'CO - Greenwood Village',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'qsa2p8kdqon53hg5p0mhrqq850',
@@ -415,7 +415,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T15:00:00Z',
             duration: 60,
             facility: 'CO - Greenwood Village',
-            location: 'both'
+            location: 'In-Person'
           },
           {
             eventId: 'ehb0ir42hhr3jf34jfqojlq1m8',
@@ -424,7 +424,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-17T16:00:00Z',
             duration: 60,
             facility: 'CO - Greenwood Village',
-            location: 'both'
+            location: 'In-Person'
           }
         ]
       }
