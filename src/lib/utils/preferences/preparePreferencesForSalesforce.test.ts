@@ -29,7 +29,7 @@ describe('SalesforcePreferencesSchema', () => {
 
     expect(result).toEqual({
       ...preferences,
-      deliveryMethod: 'In-Person'
+      deliveryMethod: 'Both'
     });
   });
 
