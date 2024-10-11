@@ -30,7 +30,7 @@ export const Slots: Story = {
         duration: 30,
         providerId: 'provider-1',
         facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.Both
+        location: EventDeliveryMethod.InPerson
       },
       {
         eventId: 'event-2',
@@ -38,7 +38,7 @@ export const Slots: Story = {
         duration: 30,
         providerId: 'provider-1',
         facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.Both
+        location: EventDeliveryMethod.InPerson
       },
       {
         eventId: 'event-3',
@@ -46,7 +46,7 @@ export const Slots: Story = {
         duration: 30,
         providerId: 'provider-1',
         facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.Both
+        location: EventDeliveryMethod.InPerson
       }
     ]
   }

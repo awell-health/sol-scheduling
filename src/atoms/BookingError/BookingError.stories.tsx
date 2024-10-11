@@ -30,7 +30,7 @@ export const BookingError: Story = {
       slotstart: new Date('2024-01-01'),
       duration: 60,
       facility: 'CO - Cherry Creek',
-      location: EventDeliveryMethod.VirtualOnly
+      location: EventDeliveryMethod.Telehealth
     },
     provider: mockProviderResponse.data,
     otherBookingData: {

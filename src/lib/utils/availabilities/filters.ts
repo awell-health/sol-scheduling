@@ -29,12 +29,13 @@ export const filterByLocation: FilterByLocationType = ({
   if (confirmedLocation === LocationType.InPerson) {
     if (facility === undefined)
       return availabilities.filter(
-        (slot) => slot.location === EventDeliveryMethod.Both
+        (slot) => slot.location === EventDeliveryMethod.InPerson
       );
 
     return availabilities.filter(
       (slot) =>
-        slot.facility === facility && slot.location === EventDeliveryMethod.Both
+        slot.facility === facility &&
+        slot.location === EventDeliveryMethod.InPerson
     );
   }
 

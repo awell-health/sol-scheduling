@@ -10,7 +10,7 @@ import {
 } from '../../../lib/api';
 
 describe('SalesforcePreferencesSchema', () => {
-  it('should return "Both" when deliveryMethod is undefined', () => {
+  it('should return "In-Person" when deliveryMethod is undefined', () => {
     const preferences = {
       age: '18-65',
       clinicalFocus: [ClinicalFocus.Depression, ClinicalFocus.Anxiety],

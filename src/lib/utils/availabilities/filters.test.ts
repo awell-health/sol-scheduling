@@ -10,7 +10,7 @@ const mockData = [
     slotstart: new Date(new Date('2024-01-01').setUTCHours(16, 0, 0)),
     duration: 60,
     facility: 'CO - Cherry Creek',
-    location: EventDeliveryMethod.VirtualOnly
+    location: EventDeliveryMethod.Telehealth
   },
   {
     eventId: '<event_id_1>',
@@ -18,7 +18,7 @@ const mockData = [
     slotstart: new Date(new Date('2024-01-01').setUTCHours(9, 0, 0)),
     duration: 60,
     facility: 'CO - Cherry Creek',
-    location: EventDeliveryMethod.Both
+    location: EventDeliveryMethod.InPerson
   },
   {
     eventId: '<event_id_2>',
@@ -26,7 +26,7 @@ const mockData = [
     slotstart: new Date(new Date('2024-02-01').setUTCHours(10, 0, 0)),
     duration: 45,
     facility: 'NY - Union Square',
-    location: EventDeliveryMethod.Both
+    location: EventDeliveryMethod.InPerson
   },
   {
     eventId: '<event_id_3>',
@@ -34,7 +34,7 @@ const mockData = [
     slotstart: new Date(new Date('2024-02-01').setUTCHours(16, 0, 0)),
     duration: 45,
     facility: 'NY - Union Square',
-    location: EventDeliveryMethod.VirtualOnly
+    location: EventDeliveryMethod.Telehealth
   }
 ] satisfies SlotType[];
 
@@ -60,12 +60,12 @@ describe('filterByLocation', () => {
         slotstart: new Date(new Date('2024-01-01').setUTCHours(9, 0, 0)),
         duration: 60,
         facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.Both
+        location: EventDeliveryMethod.InPerson
       }
     ]);
   });
 
-  it('should return all "Both" availabilities if location type is "In-Person" and facility is unknown', () => {
+  it('should return all "In-Person" availabilities if location type is "In-Person" and facility is unknown', () => {
     const result = filterByLocation({
       availabilities: mockData,
       location: {
@@ -81,7 +81,7 @@ describe('filterByLocation', () => {
         slotstart: new Date(new Date('2024-01-01').setUTCHours(9, 0, 0)),
         duration: 60,
         facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.Both
+        location: EventDeliveryMethod.InPerson
       },
       {
         eventId: '<event_id_2>',
@@ -89,7 +89,7 @@ describe('filterByLocation', () => {
         slotstart: new Date(new Date('2024-02-01').setUTCHours(10, 0, 0)),
         duration: 45,
         facility: 'NY - Union Square',
-        location: EventDeliveryMethod.Both
+        location: EventDeliveryMethod.InPerson
       }
     ]);
   });
@@ -133,7 +133,7 @@ describe('filterByDate', () => {
         slotstart: new Date(new Date('2024-01-01').setUTCHours(16, 0, 0)),
         duration: 60,
         facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.VirtualOnly
+        location: EventDeliveryMethod.Telehealth
       },
       {
         eventId: '<event_id_1>',
@@ -141,7 +141,7 @@ describe('filterByDate', () => {
         slotstart: new Date(new Date('2024-01-01').setUTCHours(9, 0, 0)),
         duration: 60,
         facility: 'CO - Cherry Creek',
-        location: EventDeliveryMethod.Both
+        location: EventDeliveryMethod.InPerson
       }
     ]);
   });

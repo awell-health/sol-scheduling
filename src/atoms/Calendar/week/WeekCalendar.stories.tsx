@@ -9,7 +9,7 @@ const meta: Meta<typeof WeekCalendarComponent> = {
   title: 'Atoms/Calendar/Week',
   component: WeekCalendarComponent,
   parameters: {
-    mockingDate: new Date('2024-01-01T18:00:00.000Z')
+    mockingDate: new Date('2024-09-01T18:00:00.000Z')
   },
   args: { onDateSelect: fn(), onLocationSelect: fn() },
   decorators: [
@@ -47,14 +47,13 @@ export const NoAvailabilities: Story = {
 
 export const WithAvailabilities: Story = {
   args: {
-    availabilities: mockProviderAvailabilityResponse('123').data['123'],
+    availabilities: mockProviderAvailabilityResponse('1717').data['1717'],
     weekStartsOn: 'monday',
     hideWeekends: true
   }
 };
 
 export const TestNoAvailabilities: Story = {
-  storyName: 'Testy No Availabilities okay?',
   play: NoAvailabilitiesSpec,
   render: (args) => {
     const noAvailArgs = {

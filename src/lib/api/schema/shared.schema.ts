@@ -4,7 +4,7 @@ import { type LocationTypeType, type GetAvailabilitiesResponseType } from '..';
 
 /**
  * An available slot
- * Location can be "Virtual only" or "Both"
+ * Location can be "Telehealth" or "In-Person"
  */
 export type SlotType = Pick<
   GetAvailabilitiesResponseType['data'][string][number],

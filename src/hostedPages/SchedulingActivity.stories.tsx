@@ -7,6 +7,7 @@ import {
 import { SchedulingActivity as SchedulingActivityComponent } from './SchedulingActivity';
 import { fn } from '@storybook/test';
 import {
+  mockFetchProvidersFn,
   mockProviderAvailabilityResponse,
   mockProviderResponse,
   mockProvidersResponse
@@ -14,8 +15,6 @@ import {
 import { useCallback, useEffect } from 'react';
 import {
   type BookAppointmentResponseType,
-  ClinicalFocus,
-  Ethnicity,
   type GetAvailabilitiesResponseType,
   type GetProvidersInputType,
   type GetProvidersResponseType,
@@ -23,9 +22,12 @@ import {
   type GetProviderResponseType,
   type SlotWithConfirmedLocation
 } from '../lib/api';
-import { Gender } from '../lib/api';
 import { some } from 'lodash-es';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
+import {
+  fetchAvailabilityMock,
+  fetchProviderMock
+} from '@/molecules/Scheduler/__mocks__/scheduler.mocks';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity/Full',
@@ -35,15 +37,13 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
   },
   args: {
     onCompleteActivity: fn(),
-    fetchProvider: fn(),
-    fetchProviders: fn(),
-    fetchAvailability: fn(),
+    fetchProvider: fetchProviderMock,
+    fetchProviders: mockFetchProvidersFn,
+    fetchAvailability: fetchAvailabilityMock,
     onBooking: fn(),
     providerPreferences: {
-      gender: Gender.Male,
-      ethnicity: Ethnicity.White,
       age: '18-65',
-      clinicalFocus: [ClinicalFocus.Depression, ClinicalFocus.Anxiety]
+      clinicalFocus: []
     } satisfies GetProvidersInputType
   },
   decorators: [

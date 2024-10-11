@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export enum EventDeliveryMethod {
-  'VirtualOnly' = 'virtual only',
-  'Both' = 'both'
+  Telehealth = 'Telehealth',
+  InPerson = 'In-Person'
 }
 
 export const EventDeliveryMethodSchema = z.nativeEnum(EventDeliveryMethod);
