@@ -7,7 +7,7 @@ export const NoAvailabilitiesSpec = async ({
 }) => {
   const canvas = within(canvasElement);
   const virtualButton = await canvas.findByRole('button', {
-    name: 'Virtual'
+    name: 'Telehealth'
   });
   await userEvent.click(virtualButton);
   const mondayCard = await canvas.findByTestId('Mon Jan 01 2024');

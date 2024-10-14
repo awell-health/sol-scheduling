@@ -34,7 +34,7 @@ export const BookingError: Story = {
     },
     provider: mockProviderResponse.data,
     otherBookingData: {
-      mode: 'Virtual'
+      mode: 'Telehealth'
     }
   }
 };
