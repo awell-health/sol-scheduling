@@ -15,13 +15,13 @@ export const SchedulerSpec = async ({
 
   /** Get all elements of interests */
   const cherryCreekButton = await canvas.findByRole('button', {
-    name: 'CO - Cherry Creek'
+    name: 'Cherry Creek'
   });
   const unionSquareButton = await canvas.findByRole('button', {
-    name: 'NY - Union Square'
+    name: 'Union Square'
   });
   const virtualButton = await canvas.findByRole('button', {
-    name: 'Virtual'
+    name: 'Telehealth'
   });
   const prevWeekButton = await canvas.findByLabelText('Go to previous week');
   const nextWeekButton = await canvas.findByLabelText('Go to next week');
