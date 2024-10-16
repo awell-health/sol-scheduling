@@ -34,7 +34,10 @@ export enum LocationFacility {
 }
 
 export const LocationFacilitySchema = z
-  .nativeEnum(LocationFacility)
+  .union([
+    z.nativeEnum(LocationFacility),
+    z.literal('') // Explicitly accepts an empty string
+  ])
   .optional()
   .transform((value) => {
     if (value === undefined || value.length === 0) {

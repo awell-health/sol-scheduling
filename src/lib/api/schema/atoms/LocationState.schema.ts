@@ -23,7 +23,10 @@ export const LocationStateToNameMapping: Record<LocationState, string> = {
  * a list of supported states
  */
 export const LocationStateSchema = z
-  .nativeEnum(LocationState)
+  .union([
+    z.nativeEnum(LocationState),
+    z.literal('') // Explicitly accepts an empty string
+  ])
   .optional()
   .transform((value) => {
     if (value === undefined || value.length === 0) {
