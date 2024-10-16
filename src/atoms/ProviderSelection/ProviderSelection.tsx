@@ -22,7 +22,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
   const {
     provider: { setId: setProviderId }
   } = useSolApi();
-  const { providers, loading, fetchProvidersError } = usePreferences();
+  const { providers, loading } = usePreferences();
   const providersLabel = providers.length === 1 ? 'provider' : 'providers';
 
   const selectProvider = (id: string) => {
@@ -65,9 +65,13 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
   return (
     <div>
       <ProviderFilter />
-      {loading && <LoadingComponent />}
-      {!isNil(fetchProvidersError) && <FetchingProvidersError />}
-      {!loading && isNil(fetchProvidersError) && <ProvidersComponent />}
+      {loading ? (
+        <LoadingComponent />
+      ) : isNil(providers) ? (
+        <FetchingProvidersError />
+      ) : (
+        <ProvidersComponent />
+      )}
     </div>
   );
 };
