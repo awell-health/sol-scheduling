@@ -14,11 +14,8 @@ export const SchedulerSpec = async ({
   const canvas = within(canvasElement);
 
   /** Get all elements of interests */
-  const cherryCreekButton = await canvas.findByRole('button', {
-    name: 'Cherry Creek'
-  });
-  const unionSquareButton = await canvas.findByRole('button', {
-    name: 'Union Square'
+  const brooklynHeightsButton = await canvas.findByRole('button', {
+    name: 'NY - Brooklyn Heights'
   });
   const virtualButton = await canvas.findByRole('button', {
     name: 'Telehealth'
@@ -28,63 +25,57 @@ export const SchedulerSpec = async ({
 
   // Calendar navigation
   await userEvent.click(prevWeekButton);
-  const prevWeekDayCard = await canvas.findByTestId('Mon Dec 25 2023');
+  const prevWeekDayCard = await canvas.findByTestId('Mon Oct 07 2024');
   expect(prevWeekDayCard, 'prev week should be visible').toBeVisible();
   await userEvent.click(nextWeekButton);
 
   // Default state (Virtual)
-  const mondayCard = await canvas.findByTestId('Mon Jan 01 2024');
-  const tuesdayCard = await canvas.findByTestId('Tue Jan 02 2024');
-
+  const thursdayCard = await canvas.findByTestId('Thu Oct 17 2024');
+  expect(thursdayCard, 'thursday card should be visible').toBeVisible();
   expect(
-    await within(mondayCard).findByText('2 slots'),
-    'monday should have 2 slots'
-  ).toBeTruthy();
-  expect(
-    await within(tuesdayCard).findByText('3 slots'),
-    'tuesday should have three slots'
+    await within(thursdayCard).findByText('1 slot'),
+    'Thursday should have 1 slot'
   ).toBeTruthy();
 
-  // Cherry Creek
-  await userEvent.click(cherryCreekButton);
+  await userEvent.click(nextWeekButton);
+  const nextMondayCard = await canvas.findByTestId('Mon Oct 21 2024');
+  expect(nextMondayCard, 'next monday card should be visible').toBeVisible();
 
   expect(
-    await within(mondayCard).findByText('1 slot'),
+    await within(nextMondayCard).findByText('2 slots'),
+    'monday the 21st should have two slots'
+  ).toBeTruthy();
+
+  // In-person
+  await userEvent.click(brooklynHeightsButton);
+
+  expect(
+    await within(nextMondayCard).findByText('1 slot'),
     'monday should have 1 slot'
   ).toBeTruthy();
-  expect(
-    await within(tuesdayCard).findByText('1 slot'),
-    'tuesday should have 1 slot'
-  ).toBeTruthy();
 
-  // Union Square
-  await userEvent.click(unionSquareButton);
-  expect(
-    await within(mondayCard).findByText('No slots'),
-    'monday should have no slots'
-  ).toBeTruthy();
-  expect(
-    await within(tuesdayCard).findByText('1 slot'),
-    'tuesday should have 1 slot'
-  ).toBeTruthy();
-
-  // Go back to virtual and let's test the slots
+  // Virtual
   await userEvent.click(virtualButton);
-  await userEvent.click(mondayCard);
-  const slotsContainer = await canvas.findByTestId('slots');
-  await expect(slotsContainer.children.length).toBe(2); // Monday has 2 slots
-  await userEvent.click(tuesdayCard);
-  await expect(slotsContainer.children.length).toBe(3); // Tuesday has 3 slots
 
-  const elevenAmSlot = (await slotsContainer.querySelector(
-    '[aria-label="2024-01-02T10:00:00.000Z"]'
+  await userEvent.click(nextMondayCard);
+  const nextWeekSlotsContainer = await canvas.findByTestId('slots');
+  await expect(nextWeekSlotsContainer.children.length).toBe(2); // Monday has 2 slots
+  await userEvent.click(prevWeekButton);
+
+  const thursdayCard2 = await canvas.findByTestId('Thu Oct 17 2024');
+  await userEvent.click(thursdayCard2);
+  const thisWeekSlotsContainer = await canvas.findByTestId('slots');
+  await expect(thisWeekSlotsContainer.children.length).toBe(1); // Thursday has 1 slot
+
+  const slotToBook = (await thisWeekSlotsContainer.querySelector(
+    '[aria-label="2024-10-17T21:00:00.000Z"]'
   )) as HTMLElement;
 
-  if (elevenAmSlot === null) {
-    throw new Error('No 10 AM (UTC) slot found');
+  if (slotToBook === null) {
+    throw new Error('No 9 PM (UTC) slot found');
   }
 
-  await userEvent.click(elevenAmSlot);
+  await userEvent.click(slotToBook);
 
   const bookButton = await canvas.findByRole('button', {
     name: 'Confirm booking'
