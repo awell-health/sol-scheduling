@@ -1,5 +1,5 @@
 import '../../styles/globals.css';
-import { FC } from 'react';
+import React from 'react';
 import { isEmpty, merge } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
 import { PreferencesProvider } from '../PreferencesProvider';
@@ -7,7 +7,7 @@ import { SolApiProvider } from '../SolApiProvider/SolApiContext';
 import { SchedulingWizard } from '../SchedulingWizard';
 import { GetProvidersInputType } from '@/lib/api';
 
-export const SchedulingActivity: FC<SchedulingActivityProps> = ({
+export const SchedulingActivity: React.FC<SchedulingActivityProps> = ({
   providerId: prefilledProviderId,
   providerPreferences,
   fetchProvider,
