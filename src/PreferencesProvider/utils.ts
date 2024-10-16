@@ -139,7 +139,7 @@ const preferencesToFiltersArray = (
             filterType: 'simple',
             enum: DeliveryMethod,
             options: optionsFromEnum(DeliveryMethod),
-            selectedOptions: []
+            selectedOptions: preferences[key] ? [preferences[key]] : []
           };
         }
         case 'location': {
