@@ -19,7 +19,15 @@ export const LocationStateToNameMapping: Record<LocationState, string> = {
 };
 
 /**
- * The back-end can receive any string (no validation) but the front-end needs to display
+ * The back-end can receive an empty string but the front-end needs to display
  * a list of supported states
  */
-export const LocationStateSchema = z.nativeEnum(LocationState);
+export const LocationStateSchema = z
+  .nativeEnum(LocationState)
+  .optional()
+  .transform((value) => {
+    if (value === undefined || value.length === 0) {
+      return undefined;
+    }
+    return value as LocationState;
+  });
