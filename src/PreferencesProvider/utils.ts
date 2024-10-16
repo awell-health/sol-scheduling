@@ -29,19 +29,10 @@ const updatePreferencesWithFilters = (
         return;
       case 'location': {
         // really ugly code to handle the fact that the location filter is a compound filter
-        // special case around Virginia/DC/Maryland
         if (prefs.location) {
           if (filter.selectedOptions.length > 0) {
             if (filter.selectedOptions[0].length === 2) {
-              if (
-                filter.selectedOptions[0] === 'DC' ||
-                filter.selectedOptions[0] === 'VA'
-              ) {
-                prefs.location.state = LocationState.MD;
-              } else {
-                prefs.location.state = filter
-                  .selectedOptions[0] as LocationState;
-              }
+              prefs.location.state = filter.selectedOptions[0] as LocationState;
               prefs.location.facility = undefined;
             } else {
               prefs.location.state = undefined;

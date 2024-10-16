@@ -2158,6 +2158,11 @@ html {
   margin-bottom: 0.5rem;
 }
 
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 .-mr-2 {
   margin-right: -0.5rem;
 }
@@ -2547,6 +2552,10 @@ html {
   --tw-bg-opacity: 0.7;
 }
 
+.fill-blue-500 {
+  fill: #3b82f6;
+}
+
 .stroke-current {
   stroke: currentColor;
 }
@@ -2814,6 +2823,15 @@ html {
 
 .focus\:outline-slate-300:focus {
   outline-color: #cbd5e1;
+}
+
+.group:hover .group-hover\:fill-blue-700 {
+  fill: #1d4ed8;
+}
+
+.group:hover .group-hover\:text-blue-700 {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
 }
 
 @media (min-width: 640px) {

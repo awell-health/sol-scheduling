@@ -20,9 +20,10 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
   onSelectProvider
 }) => {
   const {
-    provider: { setId: setProviderId }
+    provider: { setId: setProviderId },
+    providers: { fetch: fetchProviders }
   } = useSolApi();
-  const { providers, loading } = usePreferences();
+  const { providers, loading, preferences } = usePreferences();
   const providersLabel = providers.length === 1 ? 'provider' : 'providers';
 
   const selectProvider = (id: string) => {
@@ -68,7 +69,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
       {loading ? (
         <LoadingComponent />
       ) : isNil(providers) ? (
-        <FetchingProvidersError />
+        <FetchingProvidersError refetchFn={() => fetchProviders(preferences)} />
       ) : (
         <ProvidersComponent />
       )}

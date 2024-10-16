@@ -21,5 +21,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const FetchingProviderError: Story = {
-  args: {}
+  args: {
+    refetchFn: () => console.log('Refetching providers')
+  }
 };
