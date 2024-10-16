@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash-es';
 import { z } from 'zod';
 
 export enum Modality {
@@ -9,10 +10,13 @@ export enum Modality {
 
 export const TherapeuticModalitySchema = z
   .nativeEnum(Modality)
+  .optional()
   .transform((value) => {
     if (value === Modality.Therapy) {
       return 'Therapy';
-    } else {
+    } else if (!isEmpty(value)) {
       return 'Psychiatric';
+    } else {
+      return undefined;
     }
   });

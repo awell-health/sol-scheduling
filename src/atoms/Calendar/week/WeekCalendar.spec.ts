@@ -10,11 +10,11 @@ export const NoAvailabilitiesSpec = async ({
     name: 'Telehealth'
   });
   await userEvent.click(virtualButton);
-  const mondayCard = await canvas.findByTestId('Mon Jan 01 2024');
-  const tuesdayCard = await canvas.findByTestId('Tue Jan 02 2024');
-  const wednesdayCard = await canvas.findByTestId('Wed Jan 03 2024');
-  const thursdayCard = await canvas.findByTestId('Thu Jan 04 2024');
-  const fridayCard = await canvas.findByTestId('Fri Jan 05 2024');
+  const mondayCard = await canvas.findByTestId('Mon Oct 14 2024');
+  const tuesdayCard = await canvas.findByTestId('Tue Oct 15 2024');
+  const wednesdayCard = await canvas.findByTestId('Wed Oct 16 2024');
+  const thursdayCard = await canvas.findByTestId('Thu Oct 17 2024');
+  const fridayCard = await canvas.findByTestId('Fri Oct 18 2024');
   for (const card of [
     mondayCard,
     tuesdayCard,
@@ -32,8 +32,8 @@ export const NoAvailabilitiesSpec = async ({
 
   await userEvent.click(prevWeekButton);
   expect(
-    await canvas.findByTestId('Mon Dec 25 2023'),
-    'Dec 25 2023 should be visible'
+    await canvas.findByTestId('Mon Oct 07 2024'),
+    'Oct 7 2024 should be visible'
   ).toBeVisible();
   await expect(
     prevWeekButton,
@@ -43,8 +43,8 @@ export const NoAvailabilitiesSpec = async ({
   // back at jan 1
   await userEvent.click(nextWeekButton);
   expect(
-    await canvas.findByTestId('Mon Jan 08 2024'),
-    'Jan 08 2024 should be visible'
+    await canvas.findByTestId('Mon Oct 21 2024'),
+    'Oct 21 2024 should be visible'
   ).toBeVisible();
   await userEvent.click(nextWeekButton);
   await userEvent.click(nextWeekButton);

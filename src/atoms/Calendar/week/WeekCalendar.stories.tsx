@@ -9,7 +9,7 @@ const meta: Meta<typeof WeekCalendarComponent> = {
   title: 'Atoms/Calendar/Week',
   component: WeekCalendarComponent,
   parameters: {
-    mockingDate: new Date('2024-09-01T18:00:00.000Z')
+    mockingDate: new Date('2024-10-14T18:00:00.000Z')
   },
   args: { onDateSelect: fn(), onLocationSelect: fn() },
   decorators: [
