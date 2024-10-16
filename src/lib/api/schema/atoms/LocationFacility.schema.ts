@@ -33,4 +33,12 @@ export enum LocationFacility {
   Austin = 'TX - Austin'
 }
 
-export const LocationFacilitySchema = z.nativeEnum(LocationFacility);
+export const LocationFacilitySchema = z
+  .nativeEnum(LocationFacility)
+  .optional()
+  .transform((value) => {
+    if (value === undefined || value.length === 0) {
+      return undefined;
+    }
+    return value as LocationFacility;
+  });
