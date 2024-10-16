@@ -114,6 +114,7 @@ export const SolApiProvider: FC<ContextProps> = ({
   const getProviders = useCallback(
     async (prefs: GetProvidersInputType) => {
       setLoadingProviders(true);
+      setProvidersError(null);
       try {
         const res = await fetchProviders(prefs);
         setProviders(res.data);
