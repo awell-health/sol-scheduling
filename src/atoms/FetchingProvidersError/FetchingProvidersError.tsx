@@ -56,6 +56,7 @@ const ContactNumbers: FC = (): JSX.Element => {
           onClick={() => copyToClipboard(number)}
         >
           {number}
+          {`${number === PhoneNumbers.NY ? ' (option 1)' : ''}`}
         </a>
         {copied === number && (
           <span className='text-green-500 ml-1'>Copied to clipboard</span>
