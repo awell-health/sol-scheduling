@@ -200,6 +200,10 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           <span className='loading loading-infinity loading-lg text-primary'></span>
         </div>
       )}
+      <p className='text-sm text-gray-800'>
+        Select clinic location for in-person visits or telehealth for virtual
+        visits
+      </p>
       <LocationFilter
         options={availableFacilities}
         selected={selectedLocation}
