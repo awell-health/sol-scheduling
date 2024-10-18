@@ -5,7 +5,20 @@ import { FilterBadge } from './FilterBadge';
 interface Props {
   filters: FilterType<FilterEnum>[];
 }
+
 export const FilterList: FC<Props> = ({ filters }) => {
+  const filterOrder = [
+    'deliveryMethod',
+    'location',
+    'clinicalFocus',
+    'gender',
+    'ethnicity'
+  ];
+  // Sort the filters array based on the desired order
+  filters.sort((a, b) => {
+    return filterOrder.indexOf(a.key) - filterOrder.indexOf(b.key);
+  });
+
   return (
     <>
       {filters.map((filter) => {
