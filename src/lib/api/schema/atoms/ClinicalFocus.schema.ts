@@ -6,6 +6,7 @@ export enum ClinicalFocus {
   'Anxiety' = 'Anxiety',
   'Autism (ASD)' = 'Autism (ASD)',
   'Bipolar Disorder' = 'Bipolar Disorder',
+  'Couples Therapy' = 'Couples Therapy',
   'Depression' = 'Depression',
   'Developmental Disorders' = 'Developmental Disorders',
   'Eating Disorder' = 'Eating Disorder',

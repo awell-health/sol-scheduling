@@ -136,7 +136,7 @@ const preferencesToFiltersArray = (
         case 'location': {
           return {
             key: 'location',
-            label: 'Location',
+            label: 'State | Facility',
             selectType: 'single',
             filterType: 'compound',
             enum: { facility: LocationFacility, state: LocationState },
