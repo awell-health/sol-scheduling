@@ -19,7 +19,7 @@ export const ProviderSelectionSpec = async ({
     name: 'Delivery Method'
   });
   const locationButton = await canvas.findByRole('button', {
-    name: 'Location'
+    name: 'State | Facility'
   });
 
   const testApplyFilter = async ({
