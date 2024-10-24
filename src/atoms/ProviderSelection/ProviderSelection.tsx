@@ -5,7 +5,7 @@ import { ProviderCard } from './ProviderCard';
 import { usePreferences } from '@/PreferencesProvider';
 import { ProviderFilter } from './ProviderFilter';
 import { useSolApi } from '@/SolApiProvider';
-import { FetchingProvidersError } from '../FetchingProvidersError';
+import { FetchingProvidersError } from '../Errors/FetchingProvidersError';
 import { isNil } from 'lodash-es';
 
 export type ProviderSelectionProps = {
