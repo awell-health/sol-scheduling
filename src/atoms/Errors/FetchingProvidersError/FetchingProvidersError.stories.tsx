@@ -3,7 +3,7 @@ import { FetchingProvidersError as FetchingProviderErrorComponent } from './Fetc
 import { ThemeProvider } from '@awell-health/ui-library';
 
 const meta: Meta<typeof FetchingProviderErrorComponent> = {
-  title: 'Atoms/FetchingProviderError',
+  title: 'Atoms/Errors/FetchingProviderError',
   component: FetchingProviderErrorComponent,
   args: {},
   decorators: [

@@ -1,5 +1,4 @@
-export { BookingError } from './BookingError';
-export { FetchingProvidersError } from './FetchingProvidersError';
+export { BookingError, FetchingProvidersError } from './Errors';
 export { WeekCalendar } from './Calendar';
 export { Slots } from './Slots';
 export { ProviderSelection } from './ProviderSelection';

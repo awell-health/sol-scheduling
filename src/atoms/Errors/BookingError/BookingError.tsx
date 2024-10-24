@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { upperFirst } from 'lodash-es';
 import clsx from 'clsx';
-import { ProviderAvatar } from '../ProviderAvatar';
+import { ProviderAvatar } from '../../ProviderAvatar';
 import { type SlotType, type GetProviderResponseType } from '@/lib/api';
 
 export type BookingErrorProps = {

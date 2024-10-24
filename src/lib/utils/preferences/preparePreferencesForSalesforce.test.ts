@@ -12,7 +12,7 @@ import {
 describe('SalesforcePreferencesSchema', () => {
   it('should return "In-Person" when deliveryMethod is undefined', () => {
     const preferences = {
-      age: '18-65',
+      age: '18',
       clinicalFocus: [ClinicalFocus.Depression, ClinicalFocus.Anxiety],
       deliveryMethod: undefined,
       ethnicity: Ethnicity.BlackOrAfricanAmerican,
@@ -35,7 +35,7 @@ describe('SalesforcePreferencesSchema', () => {
 
   it('should return the provided delivery method (Telehealth)', () => {
     const preferences = {
-      age: '18-65',
+      age: '18',
       clinicalFocus: [ClinicalFocus.Depression, ClinicalFocus.Anxiety],
       deliveryMethod: DeliveryMethod.Telehealth,
       ethnicity: Ethnicity.BlackOrAfricanAmerican,
@@ -58,7 +58,7 @@ describe('SalesforcePreferencesSchema', () => {
 
   it('should return the provided delivery method (In-Person)', () => {
     const preferences = {
-      age: '18-65',
+      age: '18',
       clinicalFocus: [ClinicalFocus.Depression, ClinicalFocus.Anxiety],
       deliveryMethod: DeliveryMethod.InPerson,
       ethnicity: Ethnicity.BlackOrAfricanAmerican,

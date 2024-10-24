@@ -5,7 +5,7 @@ import { EventDeliveryMethod } from '@/lib/api/schema/atoms/EventDeliveryMethod.
 import { mockProviderResponse } from '@/lib/api/__mocks__';
 
 const meta: Meta<typeof BookingErrorComponent> = {
-  title: 'Atoms/BookingError',
+  title: 'Atoms/Errors/BookingError',
   component: BookingErrorComponent,
   args: {},
   decorators: [
