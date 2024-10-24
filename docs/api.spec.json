@@ -1,0 +1,271 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "SOL Scheduling API",
+    "version": "1.0.0",
+    "description": "API specification for the SOL scheduling API"
+  },
+  "servers": [
+    {
+      "url": "https://func-smh-ss-webapi-dev-001.azurewebsites.net",
+      "description": "Development"
+    },
+    {
+      "url": "https://func-smh-ss-webapi-stage-003.azurewebsites.net",
+      "description": "Staging"
+    },
+    {
+      "url": "https://func-smh-ss-webapi-prod-001.azurewebsites.net",
+      "description": "Production"
+    }
+  ],
+
+  "paths": {
+    "/api/v2/provider": {
+      "post": {
+        "summary": "Get providers",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetProvidersInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A list of matched providers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetProvidersResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "GetProvidersInput": {
+        "type": "object",
+        "properties": {
+          "age": { "$ref": "#/components/schemas/Age" },
+          "gender": { "$ref": "#/components/schemas/Gender" },
+          "ethnicity": { "$ref": "#/components/schemas/Ethnicity" },
+          "therapeuticModality": {
+            "$ref": "#/components/schemas/TherapeuticModality"
+          },
+          "clinicalFocus": {
+            "$ref": "#/components/schemas/ClinicalFocus"
+          },
+          "deliveryMethod": { "$ref": "#/components/schemas/DeliveryMethod" },
+          "location": {
+            "type": "object",
+            "properties": {
+              "facility": { "$ref": "#/components/schemas/LocationFacility" },
+              "state": { "$ref": "#/components/schemas/LocationState" }
+            }
+          }
+        }
+      },
+      "GetProvidersResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/User" }
+          }
+        }
+      },
+      "Age": {
+        "type": "string",
+        "description": "A numeric string representing the age, must be between 6 and 100.",
+        "example": "30"
+      },
+      "Gender": {
+        "type": "string",
+        "enum": ["M", "F", "Non-binary/non-conforming"],
+        "description": "The preferred gender of the provider.",
+        "example": "M"
+      },
+      "Ethnicity": {
+        "type": "string",
+        "enum": [
+          "Asian",
+          "Black or African American",
+          "Hispanic or Latinx",
+          "White",
+          "Other"
+        ],
+        "description": "The preferred ethnicity of the provider.",
+        "example": "White"
+      },
+      "TherapeuticModality": {
+        "type": "string",
+        "enum": ["Therapy", "Psychiatric"],
+        "description": "An array of clinical focuses for providers.",
+        "example": "Therapy"
+      },
+      "ClinicalFocus": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "ADHD",
+            "Anger Management",
+            "Anxiety",
+            "Autism (ASD)",
+            "Bipolar Disorder",
+            "Couples Therapy",
+            "Depression",
+            "Developmental Disorders",
+            "Eating Disorder",
+            "Grief & Loss",
+            "Identity Issues",
+            "Life Transitions",
+            "OCD",
+            "Relationship Issues",
+            "Stress Management",
+            "Substance Use",
+            "Trauma & PTSD"
+          ]
+        },
+        "example": ["Anxiety", "Depression"],
+        "description": "An array of clinical focuses for providers."
+      },
+      "DeliveryMethod": {
+        "type": "string",
+        "enum": ["In-person", "Telehealth"],
+        "description": "The preferred delivery method of the patient.",
+        "example": "Telehealth"
+      },
+      "LocationFacility": {
+        "type": "string",
+        "enum": [
+          "CO - Cherry Creek",
+          "CO - Greenwood Village",
+          "CO - Central Park",
+          "CO - Lakewood",
+          "CO - Boulder",
+          "CO - Highlands Ranch",
+          "CO - Broomfield",
+          "CO - Parker",
+          "MD - Silver Spring",
+          "MD - Gaithersburg",
+          "MD - Frederick",
+          "MD - Downtown",
+          "MD - Ballston",
+          "MD - Tysons",
+          "NY - Brooklyn Heights",
+          "NY - Union Square",
+          "NY - Long Island City",
+          "NY - Columbus Circle",
+          "NY - Williamsburg",
+          "NY - Wall Street",
+          "NY - Astoria",
+          "NY - Gowanus",
+          "NY - Midtown East",
+          "NY - Manhasset",
+          "NY - Melville",
+          "NY - Valley Stream",
+          "NY - Massapequa",
+          "TX - Woodlands",
+          "TX - Upper Kirby",
+          "TX - Austin"
+        ],
+        "example": "CO - Cherry Creek"
+      },
+      "LocationState": {
+        "type": "string",
+        "enum": ["CO", "NY", "TX", "VA", "MD", "DC"],
+        "example": "CO"
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "example": "12345"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "Consultation"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "12345" },
+          "name": { "type": "string", "example": "John Doe" },
+          "gender": { "$ref": "#/components/schemas/Gender" },
+          "ethnicity": { "$ref": "#/components/schemas/Ethnicity" },
+          "location": {
+            "type": "object",
+            "properties": {
+              "facility": { "$ref": "#/components/schemas/LocationFacility" },
+              "state": { "$ref": "#/components/schemas/LocationState" }
+            }
+          },
+          "clinicalFocus": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "bio": { "type": "string", "example": "Experienced therapist..." },
+          "image": {
+            "type": "string",
+            "example": "https://example.com/image.jpg"
+          },
+          "profileLink": {
+            "type": "string",
+            "example": "https://example.com/profile"
+          },
+          "events": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Event" }
+          }
+        }
+      },
+      "Provider": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "gender": { "$ref": "#/components/schemas/Gender" },
+          "bio": { "type": "string" }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string", "example": "Invalid input" },
+          "code": { "type": "integer", "example": 400 }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
