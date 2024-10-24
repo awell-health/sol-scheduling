@@ -38,7 +38,9 @@
     "build": "tsc && vite build",
     "prepare": "husky",
     "tailwind": "tailwindcss -i ./styles/globals.css -o ./style.css --watch",
-    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
+    "serve-docs": "node docs/server.js",
+    "build-docs": "node docs/generate-swagger-ui.cjs"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -67,15 +69,21 @@
     "@storybook/react-vite": "^8.3.4",
     "@storybook/test": "^8.3.4",
     "@storybook/test-runner": "^0.19.1",
+    "@types/add": "^2",
+    "@types/cors": "^2",
+    "@types/express": "^5.0.0",
     "@types/jest": "^29.5.13",
     "@types/lodash-es": "^4",
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
+    "@types/swagger-ui-express": "^4.1.6",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
     "@vitejs/plugin-react": "^4.3.1",
+    "add": "^2.0.6",
     "autoprefixer": "^10.4.20",
     "chromatic": "^11.7.0",
+    "cors": "^2.8.5",
     "daisyui": "^4.12.10",
     "eslint": "8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -83,6 +91,7 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-storybook": "^0.8.0",
+    "express": "^4.21.1",
     "globals": "^15.9.0",
     "husky": "^9.1.4",
     "jest": "^29.7.0",
@@ -97,12 +106,15 @@
     "sass-embedded": "^1.77.8",
     "storybook": "^8.3.4",
     "storybook-addon-mock-date": "^0.6.0",
+    "swagger-ui-dist": "^5.17.14",
+    "swagger-ui-express": "^5.0.1",
     "tailwindcss": "^3.4.11",
     "ts-jest": "^29.2.5",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.0",
-    "vite-plugin-dts": "^4.0.2"
+    "vite-plugin-dts": "^4.0.2",
+    "yarn": "^1.22.22"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.2",
