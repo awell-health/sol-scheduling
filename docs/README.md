@@ -17,3 +17,7 @@ The docs can be built with the `yarn build-docs` command.
 ## Contributing
 
 The Awell and Sol teams jointly maintain this API documentation. All updates should be submitted via pull requests, making this the single source of truth for the API documentation.
+
+### Suggestions, comments, questions
+
+For suggestions, comments, and questions regarding the API and its documentation, we recommend using GitHub Issues. This allows you to reference specific lines or sections of the API specification directly, as it is source-controlled within the repository. This approach makes discussions clearer and ensures feedback is tied to specific parts of the documentation.
