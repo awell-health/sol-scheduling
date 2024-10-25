@@ -1,12 +1,11 @@
 import { z } from 'zod';
 
 const MIN_AGE = 6;
-const MAX_AGE = 100;
 
 export const AgeSchema = z.coerce
   .number() // Coerce both strings and numbers to numbers
   .transform((value) => {
-    if (value < MIN_AGE || value > MAX_AGE) {
+    if (value < MIN_AGE) {
       return undefined;
     }
 
