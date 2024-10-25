@@ -52,6 +52,7 @@ __metadata:
     "@types/cors": "npm:^2"
     "@types/express": "npm:^5.0.0"
     "@types/jest": "npm:^29.5.13"
+    "@types/js-yaml": "npm:^4"
     "@types/lodash-es": "npm:^4"
     "@types/node": "npm:^22.5.5"
     "@types/react": "npm:^18.3.3"
@@ -78,6 +79,7 @@ __metadata:
     iso-639-1: "npm:^3.1.2"
     jest: "npm:^29.7.0"
     jest-playwright-preset: "npm:^4.0.0"
+    js-yaml: "npm:^4.1.0"
     lint-staged: "npm:^15.2.9"
     lodash-es: "npm:^4.17.21"
     moment-timezone: "npm:^0.5.45"
@@ -2864,6 +2866,13 @@ __metadata:
   version: 2.2.7
   resolution: "@types/js-cookie@npm:2.2.7"
   checksum: 10c0/29196c6829982b5efa79117122a7d62cf4bc2f6397ce8eac1539319ff5dce3b44b2d86f2ac064f2ed3488fb24439358f24af6914fde5c5c4bab9a85728a13a6f
+  languageName: node
+  linkType: hard
+
+"@types/js-yaml@npm:^4":
+  version: 4.0.9
+  resolution: "@types/js-yaml@npm:4.0.9"
+  checksum: 10c0/24de857aa8d61526bbfbbaa383aa538283ad17363fcd5bb5148e2c7f604547db36646440e739d78241ed008702a8920665d1add5618687b6743858fae00da211
   languageName: node
   linkType: hard
 
