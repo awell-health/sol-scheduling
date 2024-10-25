@@ -1,0 +1,519 @@
+openapi: 3.0.0
+info:
+  title: SOL Scheduling API
+  version: 1.0.0
+  description: API specification for the SOL scheduling API
+servers:
+  - url: https://func-smh-ss-webapi-dev-001.azurewebsites.net
+    description: Development
+  - url: https://func-smh-ss-webapi-stage-003.azurewebsites.net
+    description: Staging
+  - url: https://func-smh-ss-webapi-prod-001.azurewebsites.net
+    description: Production
+paths:
+  /api/v2/provider:
+    post:
+      summary: Get providers
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: false
+        description: 'All fields in the request body are optional.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetProvidersInput'
+      responses:
+        '200':
+          description: A list of matched providers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProvidersResponse'
+  /api/provider/info:
+    get:
+      summary: Get a single provider
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: providerId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A single provider
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProviderResponse'
+  /api/event/list:
+    post:
+      summary: Retrieve availabilities for one or more providers
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                providerId:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - $ref: '#/components/examples/ProviderId/value'
+      responses:
+        '200':
+          description: Returns all available events for the specified providers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAvailabilitiesResponse'
+  /api/event/book:
+    post:
+      summary: Book an event
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  type: string
+                  example:
+                    $ref: '#/components/examples/EventId/value'
+                providerId:
+                  type: string
+                  example:
+                    $ref: '#/components/examples/ProviderId/value'
+                locationType:
+                  type: string
+                  description: The confirmed location of the event chosen by the patient
+                  enum:
+                    - Telehealth
+                    - In-Person
+                  example: Telehealth
+                userInfo:
+                  type: object
+                  properties:
+                    userName:
+                      type: string
+                      example: John Doe
+                      maxLength: 50
+      responses:
+        '200':
+          description: Returns all available events for the specified providers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    example: ''
+                  errorMessage:
+                    type: string
+                    example: ''
+                  errorCode:
+                    type: string
+                    example: ''
+  /api/event:
+    get:
+      summary: Retrieve the details of a booked event
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: eventId
+          schema:
+            type: string
+        - in: query
+          name: providerId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns all available events for the specified providers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEventResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    GetProvidersInput:
+      type: object
+      properties:
+        age:
+          $ref: '#/components/schemas/AgePreference'
+          required: false
+        gender:
+          $ref: '#/components/schemas/GenderPreference'
+          required: false
+        ethnicity:
+          $ref: '#/components/schemas/EthnicityPreference'
+          required: false
+        therapeuticModality:
+          $ref: '#/components/schemas/TherapeuticModalityPreference'
+          required: false
+        clinicalFocus:
+          $ref: '#/components/schemas/ClinicalFocusPreference'
+          required: false
+        deliveryMethod:
+          $ref: '#/components/schemas/DeliveryMethodPreference'
+          required: false
+        location:
+          type: object
+          properties:
+            facility:
+              $ref: '#/components/schemas/LocationFacilityPreference'
+              required: false
+            state:
+              $ref: '#/components/schemas/LocationStatePreference'
+              required: false
+    GetProvidersResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example:
+                  $ref: '#/components/examples/ProviderId/value'
+              name:
+                type: string
+                example:
+                  $ref: '#/components/examples/ProviderName/value'
+              gender:
+                $ref: '#/components/schemas/ProviderGender'
+              ethnicity:
+                $ref: '#/components/schemas/ProviderEthnicity'
+              location:
+                type: object
+                properties:
+                  facility:
+                    $ref: '#/components/schemas/ProviderLocationFacility'
+                  state:
+                    $ref: '#/components/schemas/ProviderLocationState'
+              clinicalFocus:
+                $ref: '#/components/schemas/ProviderClinicalFocus'
+              bio:
+                $ref: '#/components/schemas/ProviderBio'
+              image:
+                $ref: '#/components/schemas/ProviderImage'
+              profileLink:
+                $ref: '#/components/schemas/ProviderLink'
+              events:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Event'
+                    - type: object
+                      properties:
+                        facility:
+                          $ref: '#/components/schemas/EventLocationFacility'
+                        location:
+                          $ref: '#/components/schemas/EventLocation'
+        errorMessage:
+          type: string
+          example: ''
+        errorCode:
+          type: string
+          example: ''
+    GetProviderResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            location:
+              type: object
+              properties:
+                facility:
+                  $ref: '#/components/schemas/ProviderLocationFacility'
+                state:
+                  $ref: '#/components/schemas/ProviderLocationState'
+            name:
+              type: string
+              example:
+                $ref: '#/components/examples/ProviderName/value'
+            bio:
+              $ref: '#/components/schemas/ProviderBio'
+            image:
+              $ref: '#/components/schemas/ProviderImage'
+            profileLink:
+              $ref: '#/components/schemas/ProviderLink'
+        errorMessage:
+          type: string
+          example: ''
+        errorCode:
+          type: string
+          example: ''
+    GetAvailabilitiesResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            providerId:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/Event'
+                  - type: object
+                    properties:
+                      facility:
+                        $ref: '#/components/schemas/EventLocationFacility'
+                      location:
+                        $ref: '#/components/schemas/EventLocation'
+        errorMessage:
+          type: string
+          example: ''
+        errorCode:
+          type: string
+          example: ''
+    GetEventResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            eventId:
+              type: string
+              example:
+                $ref: '#/components/examples/EventId/value'
+            summary:
+              type: string
+              example:
+                $ref: '#/components/examples/EventSummary/value'
+            slotstart:
+              type: string
+              format: date-time
+              description: The date-time notation as defined by RFC 3339
+              example:
+                $ref: '#/components/examples/EventSlotStart/value'
+            provider:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example:
+                    $ref: '#/components/examples/ProviderId/value'
+                name:
+                  type: string
+                  example:
+                    $ref: '#/components/examples/ProviderName/value'
+            duration:
+              type: number
+              description: Length of the event in minutes
+              example: 60
+            booked:
+              type: boolean
+              description: Length of the event in minutes
+              example: false
+            eventType:
+              description: Whether the event is a Telehealth or In-Person consultation
+              $ref: '#/components/schemas/EventLocation'
+            facility:
+              $ref: '#/components/schemas/EventLocationFacility'
+        errorMessage:
+          type: string
+          example: ''
+        errorCode:
+          type: string
+          example: ''
+    AgePreference:
+      type: string
+      description: A numeric string representing the age, cannot be lower than 6.
+      example: '30'
+    GenderPreference:
+      type: string
+      enum:
+        - M
+        - F
+        - Non-binary/non-conforming
+      description: The preferred gender of the provider.
+      example: M
+    EthnicityPreference:
+      type: string
+      enum:
+        - Asian
+        - Black or African American
+        - Hispanic or Latinx
+        - White
+        - Other
+      description: The preferred ethnicity of the provider.
+      example: White
+    TherapeuticModalityPreference:
+      type: string
+      enum:
+        - Therapy
+        - Psychiatric
+      example: Therapy
+    ClinicalFocusPreference:
+      type: array
+      items:
+        type: string
+        enum:
+          - ADHD
+          - Anger Management
+          - Anxiety
+          - Autism (ASD)
+          - Bipolar Disorder
+          - Couples Therapy
+          - Depression
+          - Developmental Disorders
+          - Eating Disorder
+          - Grief & Loss
+          - Identity Issues
+          - Life Transitions
+          - OCD
+          - Relationship Issues
+          - Stress Management
+          - Substance Use
+          - Trauma & PTSD
+      example:
+        - Anxiety
+        - Depression
+      description: An array of clinical focuses for providers.
+    DeliveryMethodPreference:
+      type: string
+      enum:
+        - In-Person
+        - Telehealth
+      description: The preferred delivery method of the patient.
+      example: Telehealth
+    LocationFacilityPreference:
+      type: string
+      enum:
+        - CO - Cherry Creek
+        - CO - Greenwood Village
+        - CO - Central Park
+        - CO - Lakewood
+        - CO - Boulder
+        - CO - Highlands Ranch
+        - CO - Broomfield
+        - CO - Parker
+        - MD - Silver Spring
+        - MD - Gaithersburg
+        - MD - Frederick
+        - MD - Downtown
+        - MD - Ballston
+        - MD - Tysons
+        - NY - Brooklyn Heights
+        - NY - Union Square
+        - NY - Long Island City
+        - NY - Columbus Circle
+        - NY - Williamsburg
+        - NY - Wall Street
+        - NY - Astoria
+        - NY - Gowanus
+        - NY - Midtown East
+        - NY - Manhasset
+        - NY - Melville
+        - NY - Valley Stream
+        - NY - Massapequa
+        - TX - Woodlands
+        - TX - Upper Kirby
+        - TX - Austin
+      example: CO - Cherry Creek
+    LocationStatePreference:
+      type: string
+      enum:
+        - CO
+        - NY
+        - TX
+        - VA
+        - MD
+        - DC
+      example: CO
+    Event:
+      type: object
+      properties:
+        eventId:
+          type: string
+          example:
+            $ref: '#/components/examples/EventId/value'
+        date:
+          type: string
+          format: date
+          description: The full-date notation as defined by RFC 3339
+          example:
+            $ref: '#/components/examples/EventDate/value'
+        providerId:
+          type: string
+          example:
+            $ref: '#/components/examples/ProviderId/value'
+        slotstart:
+          type: string
+          format: date-time
+          description: The date-time notation as defined by RFC 3339
+          example:
+            $ref: '#/components/examples/EventSlotStart/value'
+        duration:
+          type: number
+          description: Length of the event in minutes
+          example: 60
+    EventLocationFacility:
+      $ref: '#/components/schemas/LocationFacilityPreference'
+    EventLocation:
+      type: string
+      enum:
+        - Telehealth
+        - In-Person
+    ProviderGender:
+      $ref: '#/components/schemas/GenderPreference'
+    ProviderEthnicity:
+      $ref: '#/components/schemas/EthnicityPreference'
+    ProviderLocationState:
+      $ref: '#/components/schemas/LocationStatePreference'
+    ProviderLocationFacility:
+      $ref: '#/components/schemas/LocationFacilityPreference'
+    ProviderClinicalFocus:
+      $ref: '#/components/schemas/ClinicalFocusPreference'
+    ProviderBio:
+      type: string
+      description: Plain text string (no HTML or other formatting)
+      example:
+        $ref: '#/components/examples/ProviderBio/value'
+    ProviderImage:
+      type: string
+      example:
+        $ref: '#/components/examples/ProviderProfileImage/value'
+    ProviderLink:
+      type: string
+      example:
+        $ref: '#/components/examples/ProviderProfileLink/value'
+  examples:
+    ProviderBio:
+      value: 'John Doe is an esteemed Psychotherapist with extensive experience in treating anxiety, depression, addictions, and personality disorders.'
+    ProviderProfileLink:
+      value: 'https://smh-dev.betsol.com/providers/arpan-parikh/?provider_id=6124'
+    ProviderProfileImage:
+      value: 'https://solmentalhealth.com/wp-content/uploads/2023/08/trevor-brown.png'
+    EventId:
+      value: 'd1v656q25g7q3dvgu8as18uhvo'
+    ProviderId:
+      value: '1637'
+    ProviderName:
+      value: 'John Doe'
+    EventSlotStart:
+      value: '2024-10-28T16:00:00Z'
+    EventDate:
+      value: '2024-10-28'
+    EventSummary:
+      value: 'Consultation : 6136|1637'
+security:
+  - bearerAuth: []
