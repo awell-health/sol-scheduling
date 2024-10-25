@@ -46,6 +46,7 @@ const RAW_RUNTIME_STATE =
           ["@types/cors", "npm:2.8.17"],\
           ["@types/express", "npm:5.0.0"],\
           ["@types/jest", "npm:29.5.13"],\
+          ["@types/js-yaml", "npm:4.0.9"],\
           ["@types/lodash-es", "npm:4.17.12"],\
           ["@types/node", "npm:22.5.5"],\
           ["@types/react", "npm:18.3.3"],\
@@ -72,6 +73,7 @@ const RAW_RUNTIME_STATE =
           ["iso-639-1", "npm:3.1.2"],\
           ["jest", "virtual:fa7a63bce88eef2cb8a3f1c5ece91110f0f08289f1e8517bf01d3d69cbeef0a9a7bfcaa746c2f0e178177003417e002337645312a23a1888f0c1e9c5fa39c856#npm:29.7.0"],\
           ["jest-playwright-preset", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.0"],\
+          ["js-yaml", "npm:4.1.0"],\
           ["lint-staged", "npm:15.2.9"],\
           ["lodash-es", "npm:4.17.21"],\
           ["moment-timezone", "npm:0.5.45"],\
@@ -154,6 +156,7 @@ const RAW_RUNTIME_STATE =
           ["@types/cors", "npm:2.8.17"],\
           ["@types/express", "npm:5.0.0"],\
           ["@types/jest", "npm:29.5.13"],\
+          ["@types/js-yaml", "npm:4.0.9"],\
           ["@types/lodash-es", "npm:4.17.12"],\
           ["@types/node", "npm:22.5.5"],\
           ["@types/react", "npm:18.3.3"],\
@@ -180,6 +183,7 @@ const RAW_RUNTIME_STATE =
           ["iso-639-1", "npm:3.1.2"],\
           ["jest", "virtual:fa7a63bce88eef2cb8a3f1c5ece91110f0f08289f1e8517bf01d3d69cbeef0a9a7bfcaa746c2f0e178177003417e002337645312a23a1888f0c1e9c5fa39c856#npm:29.7.0"],\
           ["jest-playwright-preset", "virtual:26c4ac89e404561816129aff9e37b996b1fc0e8b6fa7606226dcd7226b3dddad6efeb0f7452089e66b2daab60722f3d308cb7f14e5cbec12b9fd9f74bf58d413#npm:4.0.0"],\
+          ["js-yaml", "npm:4.1.0"],\
           ["lint-staged", "npm:15.2.9"],\
           ["lodash-es", "npm:4.17.21"],\
           ["moment-timezone", "npm:0.5.45"],\
@@ -4351,6 +4355,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/cache/@types-js-cookie-npm-2.2.7-025262d629-29196c6829.zip/node_modules/@types/js-cookie/",\
         "packageDependencies": [\
           ["@types/js-cookie", "npm:2.2.7"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@types/js-yaml", [\
+      ["npm:4.0.9", {\
+        "packageLocation": "./.yarn/cache/@types-js-yaml-npm-4.0.9-6a16d01bd2-24de857aa8.zip/node_modules/@types/js-yaml/",\
+        "packageDependencies": [\
+          ["@types/js-yaml", "npm:4.0.9"]\
         ],\
         "linkType": "HARD"\
       }]\
