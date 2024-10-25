@@ -10,7 +10,7 @@ Alternatively, you can run `yarn serve-docs` to serve the API docs locally. Plea
 
 ## Building and Deploying
 
-Our API documentation deploys automatically to GitHub Pages with every push to the main branch. You can view the latest version here: [Awell Health API Documentation](https://awell-health.github.io/sol-scheduling/).
+Our API documentation deploys automatically to GitHub Pages with every push to the main branch. You can view the latest version here: https://awell-health.github.io/sol-scheduling/.
 
 The docs can be built with the `yarn build-docs` command.
 
