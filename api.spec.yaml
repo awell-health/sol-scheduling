@@ -66,6 +66,7 @@ paths:
                       properties:
                         id:
                           type: string
+                          format: number
                           example:
                             $ref: '#/components/examples/ProviderId/value'
                         name:
@@ -118,6 +119,7 @@ paths:
           name: providerId
           schema:
             type: string
+            format: number
       responses:
         '200':
           description: Returns a single provider
@@ -168,6 +170,7 @@ paths:
                   type: array
                   items:
                     type: string
+                    format: number
                   example:
                     - $ref: '#/components/examples/ProviderId/value'
       responses:
@@ -212,10 +215,12 @@ paths:
               properties:
                 eventId:
                   type: string
+                  format: alphanumeric
                   example:
                     $ref: '#/components/examples/EventId/value'
                 providerId:
                   type: string
+                  format: number
                   example:
                     $ref: '#/components/examples/ProviderId/value'
                 locationType:
@@ -259,10 +264,12 @@ paths:
           name: eventId
           schema:
             type: string
+            format: alphanumeric
         - in: query
           name: providerId
           schema:
             type: string
+            format: number
       responses:
         '200':
           description: Returns all available events for the specified providers
@@ -276,6 +283,7 @@ paths:
                     properties:
                       eventId:
                         type: string
+                        format: alphanumeric
                         example:
                           $ref: '#/components/examples/EventId/value'
                       summary:
@@ -293,6 +301,7 @@ paths:
                         properties:
                           id:
                             type: string
+                            format: number
                             example:
                               $ref: '#/components/examples/ProviderId/value'
                           name:
@@ -326,7 +335,8 @@ components:
   schemas:
     AgePreference:
       type: string
-      description: A numeric string representing the age, cannot be lower than 6.
+      format: number
+      description: A numeric string representing age, with a minimum value of 5 and no maximum limit ([5, ∞)).
       example: '30'
     GenderPreference:
       type: string
@@ -441,6 +451,7 @@ components:
       properties:
         eventId:
           type: string
+          format: alphanumeric
           example:
             $ref: '#/components/examples/EventId/value'
         date:
@@ -451,6 +462,7 @@ components:
             $ref: '#/components/examples/EventDate/value'
         providerId:
           type: string
+          format: number
           example:
             $ref: '#/components/examples/ProviderId/value'
         slotstart:
