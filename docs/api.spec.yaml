@@ -25,7 +25,7 @@ paths:
               type: object
               properties:
                 age:
-                  $ref: '#/components/schemas/AgePreference'
+                  $ref: '#/components/schemas/PatientAge'
                   required: false
                 gender:
                   $ref: '#/components/schemas/GenderPreference'
@@ -333,10 +333,10 @@ components:
       type: http
       scheme: bearer
   schemas:
-    AgePreference:
+    PatientAge:
       type: string
       format: number
-      description: A numeric string representing age, with a minimum value of 5 and no maximum limit ([5, ∞)).
+      description: A numeric string representing the age of the patient. The minimum value is 5 and there's no maximum limit ([5, ∞)).
       example: '30'
     GenderPreference:
       type: string
