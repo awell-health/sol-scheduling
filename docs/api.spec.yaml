@@ -335,6 +335,7 @@ components:
   schemas:
     AgePreference:
       type: string
+      format: number
       description: A numeric string representing age, with a minimum value of 5 and no maximum limit ([5, ∞)).
       example: '30'
     GenderPreference:
