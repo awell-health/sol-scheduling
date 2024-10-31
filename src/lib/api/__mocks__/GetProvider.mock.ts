@@ -6,6 +6,7 @@ export const getMockProviderResponse = () => {
    */
   const res = GetProviderResponseSchema.safeParse({
     data: {
+      id: '1820',
       location: {
         facility: '',
         state: 'NY - Brooklyn Heights'
