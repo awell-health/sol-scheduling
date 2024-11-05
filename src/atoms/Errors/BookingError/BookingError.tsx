@@ -29,10 +29,8 @@ export const BookingError: FC<BookingErrorProps> = ({
         <div className='card-body flex'>
           <div className={clsx('card-title justify-between')}>
             <div className={clsx('flex flex-col')}>
-              <p className={'font-normal text-lg'}>
-                You tried to schedule with
-              </p>
-              <p className={'font-semibold text-lg'}>{providerName}</p>
+              <p className='font-normal text-lg'>You tried to schedule with</p>
+              <p className='font-semibold text-lg'>{providerName}</p>
             </div>
             <ProviderAvatar name={providerName} image={provider?.image} />
           </div>

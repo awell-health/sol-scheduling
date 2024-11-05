@@ -17,7 +17,7 @@ export const FilterOverlayHeader: FC<Props> = ({ onChange }) => {
   }, [inputRef]);
 
   return (
-    <div className={'flex justify-between items-center mb-2 mx-4'}>
+    <div className='flex justify-between items-center mb-2 mx-4'>
       <input
         type='text'
         placeholder={`Filter by ${filter.label}`}
