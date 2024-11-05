@@ -194,7 +194,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   const isNextWeekDisabled = differenceInDays(currentWeek, new Date()) >= 30;
 
   return (
-    <div className={'relative'}>
+    <div className='relative'>
       {loading && (
         <div className='absolute w-full h-full top-0 left-0 flex items-center justify-center bg-opacity-70 bg-white'>
           <span className='loading loading-infinity loading-lg text-primary'></span>

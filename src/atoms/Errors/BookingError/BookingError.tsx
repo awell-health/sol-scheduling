@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { upperFirst } from 'lodash-es';
+import { upperFirst, isNil } from 'lodash-es';
 import clsx from 'clsx';
 import { ProviderAvatar } from '../../ProviderAvatar';
 import { type SlotType, type GetProviderResponseType } from '@/lib/api';
@@ -17,7 +17,9 @@ export const BookingError: FC<BookingErrorProps> = ({
 }) => {
   const bookingConfirmationError =
     'Something went wrong when trying to schedule your appointment.';
-
+  const providerName = isNil(provider)
+    ? 'Unknown'
+    : `${provider?.firstName} ${provider?.lastName}`;
   return (
     <div>
       <p className={clsx('font-medium text-xl text-center m-0')}>
@@ -27,17 +29,10 @@ export const BookingError: FC<BookingErrorProps> = ({
         <div className='card-body flex'>
           <div className={clsx('card-title justify-between')}>
             <div className={clsx('flex flex-col')}>
-              <p className={'font-normal text-lg'}>
-                You tried to schedule with
-              </p>
-              <p className={'font-semibold text-lg'}>
-                {provider?.name ?? 'Unknown'}
-              </p>
+              <p className='font-normal text-lg'>You tried to schedule with</p>
+              <p className='font-semibold text-lg'>{providerName}</p>
             </div>
-            <ProviderAvatar
-              name={provider?.name ?? ''}
-              image={provider?.image}
-            />
+            <ProviderAvatar name={providerName} image={provider?.image} />
           </div>
           <ul className={clsx('list-none p-0 m-0')}>
             <ListItem>

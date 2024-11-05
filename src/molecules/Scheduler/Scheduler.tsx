@@ -125,7 +125,9 @@ export const Scheduler: FC<SchedulerProps> = ({
   if (provivderId === null) {
     return <div>No provider selected.</div>;
   }
-
+  const providerName = isNil(provider)
+    ? 'Unknown'
+    : `${provider?.firstName} ${provider?.lastName}`;
   return (
     <div>
       <div className='flex justify-between items-center pb-6 mb-5 border-b-1 border-slate-200'>
@@ -136,11 +138,11 @@ export const Scheduler: FC<SchedulerProps> = ({
           {loadingProvider ? (
             <div className='skeleton h-6 w-48 bg-secondary' />
           ) : (
-            <span className='text-primary'>{provider?.name}</span>
+            <span className='text-primary'>{providerName}</span>
           )}
         </h4>
         <ProviderAvatar
-          name={provider?.name ?? 'Unknown'}
+          name={providerName}
           image={provider?.image}
           classes='w-24 h-24'
           loading={loadingProvider}
