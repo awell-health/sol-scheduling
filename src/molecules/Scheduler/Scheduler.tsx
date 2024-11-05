@@ -128,7 +128,6 @@ export const Scheduler: FC<SchedulerProps> = ({
   const providerName = isNil(provider)
     ? 'Unknown'
     : `${provider?.firstName} ${provider?.lastName}`;
-  console.log('tpnp', provider);
   return (
     <div>
       <div className='flex justify-between items-center pb-6 mb-5 border-b-1 border-slate-200'>
