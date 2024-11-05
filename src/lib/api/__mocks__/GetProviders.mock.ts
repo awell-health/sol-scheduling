@@ -14,7 +14,8 @@ export const getMockProvidersResponse = () => {
           facility: '',
           state: 'CO'
         },
-        name: 'Lauren Jouzapaitis',
+        firstName: 'Lauren',
+        lastName: 'Jouzapaitis',
         id: '1637',
         clinicalFocus: [
           'Trauma (including PTSD)',
@@ -68,7 +69,8 @@ export const getMockProvidersResponse = () => {
           facility: '',
           state: 'CO'
         },
-        name: 'Jordan Gonzales',
+        firstName: 'Jordan',
+        lastName: 'Gonzales',
         id: '1642',
         clinicalFocus: [
           'ADHD',
@@ -121,7 +123,8 @@ export const getMockProvidersResponse = () => {
           facility: '',
           state: 'NY'
         },
-        name: 'Summer Johnke',
+        firstName: 'Summer',
+        lastName: 'Johnke',
         id: '1733',
         clinicalFocus: [
           'Trauma (including PTSD)',
@@ -174,7 +177,8 @@ export const getMockProvidersResponse = () => {
           facility: '',
           state: 'CO'
         },
-        name: 'Meggan Grant',
+        firstName: 'Meggan',
+        lastName: 'Grant',
         id: '1759',
         clinicalFocus: [
           'ADHD',
@@ -229,7 +233,8 @@ export const getMockProvidersResponse = () => {
           facility: '',
           state: 'NY'
         },
-        name: 'Monet Mindell',
+        firstName: 'Monet',
+        lastName: 'Mindell',
         id: '1779',
         clinicalFocus: [
           'Anxiety d/o',
@@ -280,7 +285,8 @@ export const getMockProvidersResponse = () => {
           facility: '',
           state: 'NY'
         },
-        name: 'Ioana Bontea',
+        firstName: 'Ioana',
+        lastName: 'Bontea',
         id: '1805',
         clinicalFocus: [
           'Anxiety d/o',
@@ -330,7 +336,8 @@ export const getMockProvidersResponse = () => {
           facility: '',
           state: 'NY'
         },
-        name: 'Luciana Forzisi',
+        firstName: 'Luciana',
+        lastName: 'Forzisi',
         id: '1820',
         clinicalFocus: [
           'Trauma (including PTSD)',
@@ -385,7 +392,8 @@ export const getMockProvidersResponse = () => {
           facility: '',
           state: 'CO'
         },
-        name: 'Melanie Hane',
+        firstName: 'Melanie',
+        lastName: 'Hane',
         id: '1824',
         clinicalFocus: [
           'ADHD',

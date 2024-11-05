@@ -54,7 +54,8 @@ export const GetProvidersResponseSchema = z
             state: LocationStateSchema.optional()
           })
           .optional(),
-        name: z.string(),
+        firstName: z.string(),
+        lastName: z.string(),
         id: z.string(), // Data warehouse ID
         clinicalFocus: z.array(z.string()).optional(),
         bio: z.string().optional(),

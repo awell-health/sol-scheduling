@@ -11,7 +11,8 @@ export const getMockProviderResponse = () => {
         facility: '',
         state: 'NY - Brooklyn Heights'
       },
-      name: 'Nick Hellemans',
+      firstName: 'Nick',
+      lastName: 'Hellemans',
       bio: "Nick Hellemans, Psy.D, LMSW, is an esteemed Psychotherapist with extensive experience in treating anxiety, depression, addictions, and personality disorders. She integrates a diverse range of therapeutic approaches and training, including Psychodynamic Therapy, Schema Therapy, Mentalization-based Therapy, Cognitive Behavioral Therapy and more. Luciana's tailored treatment approach is based on individual preferences and needs, emphasizing collaboration, trust, and creating a safe space for clients to address sensitive issues and overcome personal struggles with resilience and compassion.",
       image: 'profile-image.jpg',
       profileLink: 'https://solmentalhealth.com/providers/luciana-forzisi/'

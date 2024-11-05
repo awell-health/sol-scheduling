@@ -24,15 +24,15 @@ export const ProviderCard: FC<ProviderProps> = ({
   const location = provider.location?.state ?? '';
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
   const profileLink = provider.profileLink ?? '';
-
+  const providerName = `${provider.firstName} ${provider.lastName}`;
   return (
     <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
       <div className='flex gap-4 align-center justify-between'>
         <div className='flex gap-4 align-center'>
-          <ProviderAvatar name={provider.name} image={provider.image} />
+          <ProviderAvatar name={providerName} image={provider.image} />
           <div className='flex flex-col justify-center'>
             <h3 className='text-slate-800 text-lg m-0 font-semibold'>
-              {provider.name}
+              {providerName}
             </h3>
             <div className='flex flex-col sm:flex-row sm:items-center'>
               {location.length > 0 && (

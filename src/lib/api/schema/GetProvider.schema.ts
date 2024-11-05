@@ -22,7 +22,8 @@ export const GetProviderResponseSchema = z
           state: z.string().optional()
         })
         .optional(),
-      name: z.string().optional(),
+      firstName: z.string().optional(),
+      lastName: z.string().optional(),
       bio: z.string().optional(),
       image: z.string().optional(),
       profileLink: z.string().optional()
