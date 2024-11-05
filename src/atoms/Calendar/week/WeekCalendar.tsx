@@ -264,7 +264,7 @@ const LocationFilter: FC<{
             )}
             onClick={() => onSelect(option)}
           >
-            {option}
+            {option === 'Telehealth' ? option : option.slice(5)}
           </button>
         </li>
       ))}
