@@ -74,6 +74,14 @@ paths:
                           type: string
                           example:
                             $ref: '#/components/examples/ProviderName/value'
+                        firstName:
+                          type: string
+                          example:
+                            $ref: '#/components/examples/ProviderFirstName/value'
+                        lastName:
+                          type: string
+                          example:
+                            $ref: '#/components/examples/ProviderLastName/value'
                         gender:
                           $ref: '#/components/schemas/ProviderGender'
                         ethnicity:
@@ -158,6 +166,14 @@ paths:
                         type: string
                         example:
                           $ref: '#/components/examples/ProviderName/value'
+                      firstName:
+                        type: string
+                        example:
+                          $ref: '#/components/examples/ProviderFirstName/value'
+                      lastName:
+                        type: string
+                        example:
+                          $ref: '#/components/examples/ProviderLastName/value'
                       bio:
                         $ref: '#/components/schemas/ProviderBio'
                       image:
@@ -327,6 +343,14 @@ paths:
                             type: string
                             example:
                               $ref: '#/components/examples/ProviderName/value'
+                          firstName:
+                            type: string
+                            example:
+                              $ref: '#/components/examples/ProviderFirstName/value'
+                          lastName:
+                            type: string
+                            example:
+                              $ref: '#/components/examples/ProviderLastName/value'
                       duration:
                         type: number
                         description: Length of the event in minutes
@@ -533,6 +557,10 @@ components:
       value: '9104'
     ProviderName:
       value: 'John Doe'
+    ProviderFirstName:
+      value: 'John'
+    ProviderLastName:
+      value: 'Doe'
     EventSlotStart:
       value: '2024-10-28T16:00:00Z'
     EventDate:
