@@ -8,7 +8,7 @@ servers:
     description: Development
   - url: https://func-smh-ss-webapi-stage-003.azurewebsites.net
     description: Staging
-  - url: https://func-smh-ss-webapi-prod-001.azurewebsites.net
+  - url: https://func-smh-ss-webapi-prod-001.solmentalhealth.com
     description: Production
 paths:
   /api/v2/provider:
