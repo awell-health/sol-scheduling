@@ -15,7 +15,7 @@ export const SchedulerSpec = async ({
 
   /** Get all elements of interests */
   const brooklynHeightsButton = await canvas.findByRole('button', {
-    name: 'NY - Brooklyn Heights'
+    name: 'Brooklyn Heights'
   });
   const virtualButton = await canvas.findByRole('button', {
     name: 'Telehealth'
