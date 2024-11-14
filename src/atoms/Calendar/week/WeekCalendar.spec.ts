@@ -1,11 +1,22 @@
 import { within, userEvent, expect } from '@storybook/test';
 
+/**
+ * For all tests below, the current date is mocked to be 2024-10-14
+ */
+
 export const NoAvailabilitiesSpec = async ({
   canvasElement
 }: {
   canvasElement: HTMLElement;
 }) => {
   const canvas = within(canvasElement);
+
+  // Current week should be visible
+  expect(
+    await canvas.findByTestId('Mon Oct 14 2024'),
+    'Oct 14 2024 should be visible'
+  ).toBeVisible();
+
   const virtualButton = await canvas.findByRole('button', {
     name: 'Telehealth'
   });
@@ -62,6 +73,8 @@ export const CurrentWeekAvailabilitySpec = async ({
   canvasElement: HTMLElement;
 }) => {
   const canvas = within(canvasElement);
+
+  // Current week should be visible
   expect(
     await canvas.findByTestId('Mon Oct 14 2024'),
     'Oct 14 2024 should be visible'
@@ -74,6 +87,8 @@ export const NextWeekAvailabilitySpec = async ({
   canvasElement: HTMLElement;
 }) => {
   const canvas = within(canvasElement);
+
+  // Next week should be visible
   expect(
     await canvas.findByTestId('Mon Oct 21 2024'),
     'Oct 21 2024 should be visible'
