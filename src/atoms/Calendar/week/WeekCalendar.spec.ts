@@ -55,3 +55,27 @@ export const NoAvailabilitiesSpec = async ({
     'nextWeekButton should be disabled after 5 weeks in advance'
   ).toBeDisabled();
 };
+
+export const CurrentWeekAvailabilitySpec = async ({
+  canvasElement
+}: {
+  canvasElement: HTMLElement;
+}) => {
+  const canvas = within(canvasElement);
+  expect(
+    await canvas.findByTestId('Mon Oct 14 2024'),
+    'Oct 14 2024 should be visible'
+  ).toBeVisible();
+};
+
+export const NextWeekAvailabilitySpec = async ({
+  canvasElement
+}: {
+  canvasElement: HTMLElement;
+}) => {
+  const canvas = within(canvasElement);
+  expect(
+    await canvas.findByTestId('Mon Oct 21 2024'),
+    'Oct 21 2024 should be visible'
+  ).toBeVisible();
+};
