@@ -7,7 +7,6 @@ import {
 import { SchedulingActivity as SchedulingActivityComponent } from './SchedulingActivity';
 import { fn } from '@storybook/test';
 import {
-  mockFetchProvidersFn,
   mockProviderAvailabilityResponse,
   mockProviderResponse,
   mockProvidersResponse
@@ -24,10 +23,6 @@ import {
 } from '../lib/api';
 import { some } from 'lodash-es';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
-import {
-  fetchAvailabilityMock,
-  fetchProviderMock
-} from '@/molecules/Scheduler/__mocks__/scheduler.mocks';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
   title: 'HostedPages/SchedulingActivity/Full',
@@ -37,12 +32,12 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
   },
   args: {
     onCompleteActivity: fn(),
-    fetchProvider: fetchProviderMock,
-    fetchProviders: mockFetchProvidersFn,
-    fetchAvailability: fetchAvailabilityMock,
+    fetchProvider: fn(),
+    fetchProviders: fn(),
+    fetchAvailability: fn(),
     onBooking: fn(),
     providerPreferences: {
-      age: '18-65',
+      age: '18',
       clinicalFocus: []
     } satisfies GetProvidersInputType
   },
@@ -127,6 +122,7 @@ export const Full: Story = {
     );
 
     const fetchAvailabilityFn = useCallback(async (_providerId: string) => {
+      // Spy on the action, useful for debugging
       args.fetchAvailability(_providerId);
 
       const data = (await new Promise((resolve) =>
@@ -141,6 +137,7 @@ export const Full: Story = {
 
     const bookAppointmentFn = useCallback(
       async (_slot: SlotWithConfirmedLocation) => {
+        // Spy on the action, useful for debugging
         args.onBooking(_slot);
 
         const data = new Promise((resolve) =>
