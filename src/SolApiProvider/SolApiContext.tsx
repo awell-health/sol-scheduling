@@ -151,8 +151,8 @@ export const SolApiProvider: FC<ContextProps> = ({
             preparePreferencesForSalesforce(preferences);
           completeActivity(slot, parsedPreferencesForSalesforce);
         })
-        .catch(() => {
-          console.error('Error booking appointment');
+        .catch((error) => {
+          console.error('Error booking appointment', error);
           onError();
         })
         .finally(() => setIsBooking(false));

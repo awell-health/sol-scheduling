@@ -119,6 +119,7 @@ export const SkipProvider: Story = {
     );
 
     const fetchAvailabilityFn = useCallback(async (_providerId: string) => {
+      // Spy on the action, useful for debugging
       args.fetchAvailability(_providerId);
 
       const data = (await new Promise((resolve) =>
@@ -133,6 +134,7 @@ export const SkipProvider: Story = {
 
     const bookAppointmentFn = useCallback(
       async (_slot: SlotWithConfirmedLocation) => {
+        // Spy on the action, useful for debugging
         args.onBooking(_slot);
 
         const data = new Promise((resolve) =>
