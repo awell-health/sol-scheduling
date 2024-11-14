@@ -65,6 +65,23 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     handleSelectLocation(preferredLocation);
   }, [availabilities]);
 
+  useEffect(() => {
+    if (availabilities.length > 0) {
+      const firstAvailableSlot = availabilities.reduce((earliest, slot) =>
+        earliest && earliest.slotstart < slot.slotstart ? earliest : slot
+      );
+
+      const firstAvailableWeekStart = startOfWeek(
+        firstAvailableSlot.slotstart,
+        {
+          weekStartsOn: weekStartsOn === 'sunday' ? 0 : 1
+        }
+      );
+
+      setCurrentWeek(firstAvailableWeekStart);
+    }
+  }, [availabilities, weekStartsOn]);
+
   const handlePreviousWeek = useCallback(() => {
     setCurrentWeek((prevWeek) => subWeeks(prevWeek, 1));
   }, []);

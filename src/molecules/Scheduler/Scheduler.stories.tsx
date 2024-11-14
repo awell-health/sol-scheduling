@@ -18,7 +18,12 @@ const meta: Meta<typeof SchedulerComponent> = {
   title: 'Molecules/Scheduler',
   component: SchedulerComponent,
   parameters: {
-    mockingDate: new Date('2024-10-14T18:00:00.000Z'),
+    /**
+     * We are mocking the current date to be 2024-10-07.
+     * First available appointment is on 2024-10-17 but scheduler
+     * should auto focus on the week with first available date
+     */
+    mockingDate: new Date('2024-10-07T18:00:00.000Z'),
     fetchAvailability: fetchAvailabilityMock
   },
   decorators: [
