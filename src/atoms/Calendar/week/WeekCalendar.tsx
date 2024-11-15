@@ -16,6 +16,8 @@ import {
   isBefore
 } from 'date-fns';
 import {
+  DeliveryMethod,
+  DeliveryMethodType,
   LocationType,
   type LocationTypeType,
   type SlotType
@@ -38,8 +40,8 @@ export interface WeekCalendarProps {
   weekStartsOn?: 'sunday' | 'monday';
   hideWeekends?: boolean;
   allowSchedulingInThePast?: boolean;
-  preferredLocation?: string;
   loading?: boolean;
+  deliveryMethodPreference?: DeliveryMethodType;
 }
 
 export const WeekCalendar: FC<WeekCalendarProps> = ({
@@ -51,8 +53,8 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   weekStartsOn = 'monday',
   hideWeekends = true,
   allowSchedulingInThePast = false,
-  preferredLocation = 'Telehealth',
-  loading
+  loading,
+  deliveryMethodPreference = DeliveryMethod.Telehealth
 }) => {
   const [currentWeek, setCurrentWeek] = useState(week);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
@@ -61,9 +63,40 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
     SlotType[]
   >([]);
 
+  /**
+   * On the initial render, select the preferred location based on the delivery method preference:
+   * - If the preference is Telehealth, select Telehealth.
+   * - If the preference is InPerson, select the first available facility.
+   */
   useEffect(() => {
-    handleSelectLocation(preferredLocation);
-  }, [availabilities]);
+    const preferredLocation =
+      deliveryMethodPreference === DeliveryMethod.Telehealth
+        ? 'Telehealth'
+        : availabilities[0]?.facility || 'Telehealth';
+
+    setSelectedLocation(preferredLocation);
+    onLocationSelect({
+      confirmedLocation:
+        preferredLocation === 'Telehealth'
+          ? LocationType.Telehealth
+          : LocationType.InPerson,
+      facility:
+        preferredLocation === 'Telehealth' ? undefined : preferredLocation
+    });
+
+    const _filtered = filterByLocation({
+      availabilities,
+      location: {
+        confirmedLocation:
+          preferredLocation === 'Telehealth'
+            ? LocationType.Telehealth
+            : LocationType.InPerson,
+        facility:
+          preferredLocation === 'Telehealth' ? undefined : preferredLocation
+      }
+    });
+    setFilteredAvailabilities(_filtered);
+  }, [availabilities, deliveryMethodPreference]);
 
   useEffect(() => {
     if (availabilities.length > 0) {
@@ -114,7 +147,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
       });
       setFilteredAvailabilities(_filtered);
     },
-    [availabilities, preferredLocation]
+    [availabilities]
   );
 
   // Get unique facilities from availabilities
@@ -273,9 +306,9 @@ const LocationFilter: FC<{
             className={clsx(
               'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
               {
-                'text-slate-800 border-1 border-slate-200  bg-white':
+                'text-slate-800 border-1 border-slate-200 bg-white':
                   option !== selected,
-                'border-1 border-primary ring-4 ring-secondary text-primary':
+                'border-1 border-primary ring-4 ring-secondary text-primary selected':
                   option === selected
               }
             )}

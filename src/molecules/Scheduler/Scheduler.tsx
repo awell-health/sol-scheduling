@@ -37,7 +37,8 @@ export const Scheduler: FC<SchedulerProps> = ({
 
   const { allowSchedulingInThePast = false } = opts || {};
 
-  const { setSelectedSlot, bookingInformation, setLocation } = usePreferences();
+  const { setSelectedSlot, bookingInformation, setLocation, preferences } =
+    usePreferences();
   const {
     provider: { getId: provivderId }
   } = useSolApi();
@@ -122,6 +123,10 @@ export const Scheduler: FC<SchedulerProps> = ({
     );
   };
 
+  const selectedDeliveryMethodPreferences = useMemo(() => {
+    return preferences.deliveryMethod;
+  }, [preferences]);
+
   if (provivderId === null) {
     return <div>No provider selected.</div>;
   }
@@ -154,6 +159,7 @@ export const Scheduler: FC<SchedulerProps> = ({
           availabilities={availabilities}
           onDateSelect={handleDateSelect}
           onLocationSelect={setLocation}
+          deliveryMethodPreference={selectedDeliveryMethodPreferences}
           allowSchedulingInThePast={allowSchedulingInThePast}
         />
       </div>
