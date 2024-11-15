@@ -4,6 +4,30 @@ import { within, userEvent, expect } from '@storybook/test';
  * For all tests below, the current date is mocked to be 2024-10-14
  */
 
+export const WithAvailabilitiesAndInPersonPreferenceSpec = async ({
+  canvasElement
+}: {
+  canvasElement: HTMLElement;
+}) => {
+  const canvas = within(canvasElement);
+
+  const physicalLocationFilter = await canvas.findByRole('button', {
+    name: 'Brooklyn Heights'
+  });
+
+  expect(physicalLocationFilter).toHaveClass('selected');
+
+  const availableDay = await canvas.findByTestId('Tue Oct 15 2024');
+
+  /**
+   * There is only one In-Person slot available in our test data
+   */
+  expect(
+    await within(availableDay).findByText('1 slot'),
+    `${availableDay.innerText.replace('\n', ' ')} should have 1 slot`
+  ).toBeTruthy();
+};
+
 export const NoAvailabilitiesSpec = async ({
   canvasElement
 }: {
@@ -28,6 +52,8 @@ export const NoAvailabilitiesSpec = async ({
   const virtualButton = await canvas.findByRole('button', {
     name: 'Telehealth'
   });
+  expect(virtualButton).toHaveClass('selected');
+
   await userEvent.click(virtualButton);
   const mondayCard = await canvas.findByTestId('Mon Oct 14 2024');
   const tuesdayCard = await canvas.findByTestId('Tue Oct 15 2024');

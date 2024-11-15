@@ -6,9 +6,10 @@ import { mockProviderAvailabilityResponse } from '@/lib/api/__mocks__';
 import {
   NoAvailabilitiesSpec,
   NextWeekAvailabilitySpec,
-  CurrentWeekAvailabilitySpec
+  CurrentWeekAvailabilitySpec,
+  WithAvailabilitiesAndInPersonPreferenceSpec
 } from './WeekCalendar.spec';
-import { EventDeliveryMethod } from '@/lib/api';
+import { DeliveryMethod, EventDeliveryMethod } from '@/lib/api';
 
 const meta: Meta<typeof WeekCalendarComponent> = {
   title: 'Atoms/Calendar/Week',
@@ -55,6 +56,37 @@ export const WithAvailabilities: Story = {
     availabilities: mockProviderAvailabilityResponse('1717').data['1717'],
     weekStartsOn: 'monday',
     hideWeekends: true
+  }
+};
+
+export const TestWithAvailabilitiesAndInPersonPreference: Story = {
+  play: WithAvailabilitiesAndInPersonPreferenceSpec,
+  args: {
+    weekStartsOn: 'monday',
+    hideWeekends: true,
+    deliveryMethodPreference: DeliveryMethod.InPerson,
+    /**
+     * Test with two In-Person availabilities on different locations.
+     * Should set location filter to the first availability location.
+     */
+    availabilities: [
+      {
+        eventId: 't68403en62hji9lad095mv2srk',
+        slotstart: new Date('2024-10-15T21:00:00Z'), // Tuesday, same week
+        providerId: '1717',
+        duration: 60,
+        facility: 'NY - Brooklyn Heights',
+        location: EventDeliveryMethod.InPerson
+      },
+      {
+        eventId: 't68403en62hji9lad095mv2srk',
+        slotstart: new Date('2024-10-16T21:00:00Z'), // Wednesday, same week
+        providerId: '1717',
+        duration: 60,
+        facility: 'NY - Long Island City',
+        location: EventDeliveryMethod.InPerson
+      }
+    ]
   }
 };
 
