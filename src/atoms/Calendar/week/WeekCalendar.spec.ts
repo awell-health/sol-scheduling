@@ -11,6 +11,14 @@ export const NoAvailabilitiesSpec = async ({
 }) => {
   const canvas = within(canvasElement);
 
+  const prevWeekButton = await canvas.findByLabelText('Go to previous week');
+  const nextWeekButton = await canvas.findByLabelText('Go to next week');
+
+  await expect(
+    prevWeekButton,
+    'prevWeekButton should be disabled'
+  ).toBeDisabled();
+
   // Current week should be visible
   expect(
     await canvas.findByTestId('Mon Oct 14 2024'),
@@ -38,20 +46,8 @@ export const NoAvailabilitiesSpec = async ({
       `${card.innerText.replace('\n', ' ')} should have no slots`
     ).toBeTruthy();
   }
-  const nextWeekButton = await canvas.findByLabelText('Go to next week');
-  const prevWeekButton = await canvas.findByLabelText('Go to previous week');
 
-  await userEvent.click(prevWeekButton);
-  expect(
-    await canvas.findByTestId('Mon Oct 07 2024'),
-    'Oct 7 2024 should be visible'
-  ).toBeVisible();
-  await expect(
-    prevWeekButton,
-    'prevWeekButton should be disabled after one week previous'
-  ).toBeDisabled();
-  await userEvent.click(nextWeekButton);
-  // back at jan 1
+  // Go to next week
   await userEvent.click(nextWeekButton);
   expect(
     await canvas.findByTestId('Mon Oct 21 2024'),
@@ -74,6 +70,13 @@ export const CurrentWeekAvailabilitySpec = async ({
 }) => {
   const canvas = within(canvasElement);
 
+  const prevWeekButton = await canvas.findByLabelText('Go to previous week');
+
+  await expect(
+    prevWeekButton,
+    'prevWeekButton should be disabled'
+  ).toBeDisabled();
+
   // Current week should be visible
   expect(
     await canvas.findByTestId('Mon Oct 14 2024'),
@@ -93,4 +96,15 @@ export const NextWeekAvailabilitySpec = async ({
     await canvas.findByTestId('Mon Oct 21 2024'),
     'Oct 21 2024 should be visible'
   ).toBeVisible();
+
+  const prevWeekButton = await canvas.findByLabelText('Go to previous week');
+
+  /**
+   * First availability is week after this week and we do allow user
+   * to go to the previous week, which is the current week.
+   */
+  await expect(
+    prevWeekButton,
+    'prevWeekButton should not be disabled'
+  ).not.toBeDisabled();
 };

@@ -204,8 +204,7 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
   ]);
 
   // Calculate if we should disable the previous week button
-  const isPreviousWeekDisabled =
-    differenceInDays(currentWeek, new Date()) <= -7;
+  const isPreviousWeekDisabled = differenceInDays(currentWeek, new Date()) <= 0;
 
   // Calculate if we should disable the next week button
   const isNextWeekDisabled = differenceInDays(currentWeek, new Date()) >= 30;
