@@ -35,9 +35,13 @@ export const ProviderCard: FC<ProviderProps> = ({
 
   return (
     <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
-      <div className='flex gap-4 align-center justify-between'>
+      <div className='flex flex-col min-[500px]:flex-row gap-2 align-center justify-between'>
         <div className='flex gap-4 align-center'>
-          <ProviderAvatar name={providerName} image={provider.image} />
+          <ProviderAvatar
+            name={providerName}
+            image={provider.image}
+            classes='w-24 h-24 '
+          />
           <div className='flex flex-col justify-center'>
             <h3 className='text-slate-800 text-lg m-0 font-semibold'>
               {providerName}
@@ -63,7 +67,7 @@ export const ProviderCard: FC<ProviderProps> = ({
             </div>
           </div>
         </div>
-        <div className='flex'>
+        <div className='flex items-center'>
           <Slot count={provider.events?.length ?? 0} />
         </div>
       </div>

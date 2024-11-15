@@ -135,7 +135,7 @@ export const Scheduler: FC<SchedulerProps> = ({
     : `${provider?.firstName} ${provider?.lastName}`;
   return (
     <div>
-      <div className='flex justify-between items-center pb-6 mb-5 border-b-1 border-slate-200'>
+      <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 pb-6 mb-5 border-b-1 border-slate-200'>
         <h4 className='font-semibold text-xl m-0 text-slate-800'>
           {title}
           <br />
@@ -146,12 +146,14 @@ export const Scheduler: FC<SchedulerProps> = ({
             <span className='text-primary'>{providerName}</span>
           )}
         </h4>
-        <ProviderAvatar
-          name={providerName}
-          image={provider?.image}
-          classes='w-24 h-24'
-          loading={loadingProvider}
-        />
+        <div className='order-first sm:order-last'>
+          <ProviderAvatar
+            name={providerName}
+            image={provider?.image}
+            classes='w-32 h-32 sm:w-28 sm:h-28'
+            loading={loadingProvider}
+          />
+        </div>
       </div>
       <div>
         <WeekCalendar
