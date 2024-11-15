@@ -25,6 +25,14 @@ export const ProviderCard: FC<ProviderProps> = ({
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
   const profileLink = provider.profileLink ?? '';
   const providerName = `${provider.firstName} ${provider.lastName}`;
+
+  /*
+   * Using a variable to hide the profile link instead of removing it:
+   * They want to do some AB testing and might ask to add this back in at a later time
+   * See https://linear.app/awell/issue/ET-418/remove-link-to-bio
+   */
+  const showProfileLink = false;
+
   return (
     <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
       <div className='flex gap-4 align-center justify-between'>
@@ -40,13 +48,17 @@ export const ProviderCard: FC<ProviderProps> = ({
                   {toFullNameState(location)}
                 </span>
               )}
-              {location.length > 0 && profileLink.length > 0 && (
-                <span className='text-slate-600 text-md hidden sm:inline px-1'>
-                  •
-                </span>
-              )}
-              {profileLink.length > 0 && (
-                <LinkToProfileItem link={profileLink} />
+              {showProfileLink && (
+                <>
+                  {location.length > 0 && profileLink.length > 0 && (
+                    <span className='text-slate-600 text-md hidden sm:inline px-1'>
+                      •
+                    </span>
+                  )}
+                  {profileLink.length > 0 && (
+                    <LinkToProfileItem link={profileLink} />
+                  )}
+                </>
               )}
             </div>
           </div>
