@@ -1,6 +1,4 @@
 import { FC } from 'react';
-import clsx from 'clsx';
-import classes from './ProviderFilter.module.scss';
 import { FilterOverlayContainer } from './FilterOverlayContainer';
 import { FilterOverlay } from './FilterOverlay';
 import { usePreferences } from '@/PreferencesProvider';
@@ -10,16 +8,11 @@ const ProviderFilter: FC = () => {
   const { filters } = usePreferences();
 
   return (
-    <div className='overflow-x-hidden mb-2'>
+    <div className='mb-2'>
       <FilterOverlay>
         <FilterOverlayContainer />
       </FilterOverlay>
-      <div
-        className={clsx(
-          'overflow-x-auto flex gap-2 whitespace-nowrap scroll z-10 md:flex-wrap',
-          classes['scrollable-container']
-        )}
-      >
+      <div className='flex flex-wrap'>
         <FilterList filters={filters} />
       </div>
     </div>
