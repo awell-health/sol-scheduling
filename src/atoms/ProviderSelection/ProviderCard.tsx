@@ -40,7 +40,7 @@ export const ProviderCard: FC<ProviderProps> = ({
           <ProviderAvatar
             name={providerName}
             image={provider.image}
-            classes='w-24 h-24 '
+            classes='w-32 h-32'
           />
           <div className='flex flex-col justify-center'>
             <h3 className='text-slate-800 text-lg m-0 font-semibold'>
