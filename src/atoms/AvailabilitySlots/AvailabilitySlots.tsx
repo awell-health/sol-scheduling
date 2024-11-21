@@ -22,7 +22,7 @@ export const AvailabilitySlots: FC<AvailabilitySlotsProps> = ({
           <AvailabilitySlot
             key={slot.eventId}
             timeZone={timeZone}
-            slotstart={slot.slotstart}
+            slotstart={new Date(slot.slotstart)}
           />
         ))}
       </div>

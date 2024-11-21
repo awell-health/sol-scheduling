@@ -22,7 +22,7 @@ export const AvailabilitySlot: FC<AvailabilitySlotProps> = ({
 
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
-
+  // TODO - check if border-1 is actually working
   return (
     <div className='rounded-md px-3 py-2 text-xs font-medium text-slate-800 border-1 border-slate-300 bg-white'>
       {formatSlotTime(slotstart)}

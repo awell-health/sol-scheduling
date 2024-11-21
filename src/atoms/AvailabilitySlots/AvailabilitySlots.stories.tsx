@@ -19,13 +19,13 @@ const meta: Meta<typeof SlotsComponent> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const AvailabilitySlots: Story = {
+export const AvailabilitySlotsStory: Story = {
   args: {
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     slots: [
       {
         eventId: 'event-1',
-        slotstart: new Date('2024-07-12 00:00:00 +0200'),
+        slotstart: new Date('2024-10-28T16:00:00Z'),
         duration: 30,
         providerId: 'provider-1',
         facility: 'CO - Cherry Creek',
@@ -33,7 +33,7 @@ export const AvailabilitySlots: Story = {
       },
       {
         eventId: 'event-2',
-        slotstart: new Date('2024-07-12 00:15:00 +0200'),
+        slotstart: new Date('2024-07-12T00:00:00+02:00'),
         duration: 30,
         providerId: 'provider-1',
         facility: 'CO - Cherry Creek',
