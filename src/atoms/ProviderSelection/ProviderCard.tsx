@@ -74,7 +74,7 @@ const ProviderHeader: FC<{ provider: Provider }> = ({ provider }) => {
   const providerName = `${provider.firstName} ${provider.lastName}`;
   const location = provider.location?.state ?? '';
   return (
-    <div className='flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:justify-between'>
+    <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between'>
       <div className='self-center sm:self-auto'>
         <ProviderAvatar
           name={providerName}
@@ -82,8 +82,8 @@ const ProviderHeader: FC<{ provider: Provider }> = ({ provider }) => {
           classes='w-32 h-32'
         />
       </div>
-      <div>
-        <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-3'>
+      <div className='w-full sm:w-auto sm:gap-y-6'>
+        <div className='flex flex-col sm:flex-row items-center sm:justify-between justify-center mb-3'>
           <div>
             <h3 className='text-slate-800 text-lg m-0 font-semibold text-center sm:text-left'>
               {providerName}
@@ -185,7 +185,7 @@ const Slot: FC<{ count: number }> = ({ count }) => {
   return (
     <div
       className={clsx(
-        'rounded-full max-w-[130px] text-sm text-white text-center font-medium flex items-center justify-center px-3 py-1',
+        'rounded-full text-sm text-white text-center font-medium flex items-center justify-center px-3 py-1',
         {
           'bg-slate-300': count === 0,
           'bg-yellow-500': count > 0 && count <= 2,

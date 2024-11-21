@@ -12,7 +12,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: 'CO'
+          state: ''
         },
         firstName: 'Lauren',
         lastName: 'Jouzapaitis',
@@ -40,25 +40,25 @@ export const getMockProvidersResponse = () => {
             duration: 60,
             facility: 'CO - Cherry Creek',
             location: 'Telehealth'
-          },
-          {
-            eventId: 'a2qa6ececpacb952eqbb6sbeq0',
-            date: '2024-09-17',
-            providerId: '1637',
-            slotstart: '2024-09-17T14:00:00Z',
-            duration: 60,
-            facility: 'CO - Cherry Creek',
-            location: 'In-Person'
-          },
-          {
-            eventId: 'pl17mj3vh6d6t1sj7e4qsbvavg',
-            date: '2024-09-17',
-            providerId: '1637',
-            slotstart: '2024-09-17T15:00:00Z',
-            duration: 60,
-            facility: 'CO - Cherry Creek',
-            location: 'In-Person'
           }
+          // {
+          //   eventId: 'a2qa6ececpacb952eqbb6sbeq0',
+          //   date: '2024-09-17',
+          //   providerId: '1637',
+          //   slotstart: '2024-09-17T14:00:00Z',
+          //   duration: 60,
+          //   facility: 'CO - Cherry Creek',
+          //   location: 'In-Person'
+          // },
+          // {
+          //   eventId: 'pl17mj3vh6d6t1sj7e4qsbvavg',
+          //   date: '2024-09-17',
+          //   providerId: '1637',
+          //   slotstart: '2024-09-17T15:00:00Z',
+          //   duration: 60,
+          //   facility: 'CO - Cherry Creek',
+          //   location: 'In-Person'
+          // }
         ]
       },
       {
@@ -103,16 +103,16 @@ export const getMockProvidersResponse = () => {
             duration: 60,
             facility: 'CO - Greenwood Village',
             location: 'In-Person'
-          },
-          {
-            eventId: '26fsgfn18olbt06rvo20jdjfg0',
-            date: '2024-09-18',
-            providerId: '1642',
-            slotstart: '2024-09-18T17:00:00Z',
-            duration: 60,
-            facility: 'CO - Greenwood Village',
-            location: 'In-Person'
           }
+          // {
+          //   eventId: '26fsgfn18olbt06rvo20jdjfg0',
+          //   date: '2024-09-18',
+          //   providerId: '1642',
+          //   slotstart: '2024-09-18T17:00:00Z',
+          //   duration: 60,
+          //   facility: 'CO - Greenwood Village',
+          //   location: 'In-Person'
+          // }
         ]
       },
       {
@@ -145,6 +145,132 @@ export const getMockProvidersResponse = () => {
             date: '2024-09-17',
             providerId: '1733',
             slotstart: '2024-09-17T12:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'si8rekpo26dqlro4t37qh6m664',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T13:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'k502dms131icctm7sg2mnutl1o',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T14:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'si8rekpo26dqlro4t37qh6m664',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T13:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'k502dms131icctm7sg2mnutl1o',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T14:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'si8rekpo26dqlro4t37qh6m664',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T13:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'k502dms131icctm7sg2mnutl1o',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T14:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'si8rekpo26dqlro4t37qh6m664',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T13:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'k502dms131icctm7sg2mnutl1o',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T14:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'si8rekpo26dqlro4t37qh6m664',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T13:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'k502dms131icctm7sg2mnutl1o',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T14:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'si8rekpo26dqlro4t37qh6m664',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T13:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'k502dms131icctm7sg2mnutl1o',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T14:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'si8rekpo26dqlro4t37qh6m664',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T13:00:00Z',
+            duration: 60,
+            facility: 'NY - Union Square',
+            location: 'In-Person'
+          },
+          {
+            eventId: 'k502dms131icctm7sg2mnutl1o',
+            date: '2024-09-17',
+            providerId: '1733',
+            slotstart: '2024-09-17T14:00:00Z',
             duration: 60,
             facility: 'NY - Union Square',
             location: 'In-Person'
