@@ -13,7 +13,7 @@ export const AvailabilitySlots: FC<AvailabilitySlotsProps> = ({
 }) => {
   const slotsToMap = slots.slice(0, 3);
   return (
-    <div>
+    <div className='sm:min-w-[400px] mt-4'>
       <div className='mb-2 text-sm font-medium text-slate-600'>
         Next availability:
       </div>
