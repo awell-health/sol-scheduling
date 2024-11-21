@@ -334,7 +334,7 @@ const NavigationButton: FC<{
   return (
     <button
       onClick={onClick}
-      className={clsx('btn', {
+      className={clsx('btn sm:px-6 sm:py-2 px-3 py-1', {
         'btn-disabled opacity-50 cursor-not-allowed': isDisabled,
         'btn-secondary': !isDisabled
       })}

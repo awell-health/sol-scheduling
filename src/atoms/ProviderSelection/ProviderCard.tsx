@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { toFullNameState, toFullNameGender } from '@/lib/utils';
 import type { Provider } from './types';
 import { ProviderAvatar } from '../ProviderAvatar';
+import { AvailabilitySlots } from '../AvailabilitySlots';
 
 export type ProviderProps = {
   provider: Provider;
@@ -19,59 +20,14 @@ export const ProviderCard: FC<ProviderProps> = ({
   onSelect,
   text
 }) => {
-  const { button = 'Book appointment' } = text || {};
+  const { button = 'Select Provider' } = text || {};
 
-  const location = provider.location?.state ?? '';
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
-  const profileLink = provider.profileLink ?? '';
-  const providerName = `${provider.firstName} ${provider.lastName}`;
-
-  /*
-   * Using a variable to hide the profile link instead of removing it:
-   * They want to do some AB testing and might ask to add this back in at a later time
-   * See https://linear.app/awell/issue/ET-418/remove-link-to-bio
-   */
-  const showProfileLink = false;
 
   return (
     <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
-      <div className='flex flex-col min-[500px]:flex-row gap-2 align-center justify-between'>
-        <div className='flex gap-4 align-center'>
-          <ProviderAvatar
-            name={providerName}
-            image={provider.image}
-            classes='w-28 h-28 sm:w-32 sm:h-32'
-          />
-          <div className='flex flex-col justify-center'>
-            <h3 className='text-slate-800 text-lg m-0 font-semibold'>
-              {providerName}
-            </h3>
-            <div className='flex flex-col sm:flex-row sm:items-center'>
-              {location.length > 0 && (
-                <span className='text-slate-600 text-md'>
-                  {toFullNameState(location)}
-                </span>
-              )}
-              {showProfileLink && (
-                <>
-                  {location.length > 0 && profileLink.length > 0 && (
-                    <span className='text-slate-600 text-md hidden sm:inline px-1'>
-                      •
-                    </span>
-                  )}
-                  {profileLink.length > 0 && (
-                    <LinkToProfileItem link={profileLink} />
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className='flex items-center'>
-          <Slot count={provider.events?.length ?? 0} />
-        </div>
-      </div>
-      <div className={clsx('mt-4 bg-slate-100 rounded-md p-3')}>
+      <ProviderHeader provider={provider} />
+      <div className={clsx('mt-4 bg-slate-50 rounded-md p-3')}>
         <div>
           <ul className='flex flex-wrap list-none m-0 p-0 gap-y-4 mb-4'>
             {provider.gender && (
@@ -107,11 +63,73 @@ export const ProviderCard: FC<ProviderProps> = ({
   );
 };
 
+const ProviderHeader: FC<{ provider: Provider }> = ({ provider }) => {
+  /*
+   * Using a variable to hide the profile link instead of removing it:
+   * They want to do some AB testing and might ask to add this back in at a later time
+   * See https://linear.app/awell/issue/ET-418/remove-link-to-bio
+   */
+  const showProfileLink = false;
+  const profileLink = provider.profileLink ?? '';
+  const providerName = `${provider.firstName} ${provider.lastName}`;
+  const location = provider.location?.state ?? '';
+  return (
+    <div className='flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:justify-between'>
+      <div className='self-center sm:self-auto'>
+        <ProviderAvatar
+          name={providerName}
+          image={provider.image}
+          classes='w-32 h-32'
+        />
+      </div>
+      <div>
+        <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-3'>
+          <div>
+            <h3 className='text-slate-800 text-lg m-0 font-semibold text-center sm:text-left'>
+              {providerName}
+            </h3>
+            <div className='flex flex-col sm:flex-row justify-center sm:justify-start items-center'>
+              {location.length > 0 && (
+                <span className='text-slate-600 text-md'>
+                  {toFullNameState(location)}
+                </span>
+              )}
+              {showProfileLink && (
+                <>
+                  {location.length > 0 && profileLink.length > 0 && (
+                    <span className='text-slate-600 text-md hidden sm:inline px-1'>
+                      •
+                    </span>
+                  )}
+                  {profileLink.length > 0 && (
+                    <LinkToProfileItem link={profileLink} />
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+          <div className='self-center sm:self-auto mt-2 sm:mt-0'>
+            <Slot count={provider.events?.length ?? 0} />
+          </div>
+        </div>
+
+        <AvailabilitySlots
+          timeZone={Intl.DateTimeFormat().resolvedOptions().timeZone}
+          slots={provider.events}
+        />
+      </div>
+    </div>
+  );
+};
+
+const mainText = 'font-semibold text-primary';
+const subText = 'text-slate-600 text-md';
+
 const SingleItem: FC<{ label: string; value: string }> = ({ label, value }) => {
   return (
     <li className='flex-1 basis-1/2'>
-      <span className='font-semibold text-primary'>{label}: </span>
-      <span>{value}</span>
+      <span className={subText}>{label}: </span>
+      <span className={mainText}>{value}</span>
     </li>
   );
 };
@@ -129,14 +147,16 @@ const BioItem: FC<{ label: string; value: string }> = ({ label, value }) => {
       <span className='font-semibold text-primary'>{label}: </span>
       {isExpanded ? (
         <>
-          <span>{value}</span>
+          <span className='text-slate-600 text-md'>{value}</span>
           <button onClick={toggleBio} className={classes}>
             {' < Hide'}
           </button>
         </>
       ) : (
         <>
-          <span>{value.substring(0, 120)}...</span>
+          <span className='text-slate-600 text-md'>
+            {value.substring(0, 120)}...
+          </span>
           <button onClick={toggleBio} className={classes}>
             {' > Show more'}
           </button>
@@ -163,20 +183,18 @@ const LinkToProfileItem: FC<{ link: string }> = ({ link }) => {
 const Slot: FC<{ count: number }> = ({ count }) => {
   const slotText = count === 1 ? 'slot' : 'slots';
   return (
-    <div>
-      <div
-        className={clsx(
-          'rounded-full text-sm text-white text-center font-medium my-2 flex items-center justify-center px-3 py-1',
-          {
-            'bg-slate-300': count === 0,
-            'bg-yellow-500': count > 0 && count <= 2,
-            'bg-green-600': count > 2
-          }
-        )}
-        aria-hidden='true'
-      >
-        {count === 0 ? 'No slots' : `${count} ${slotText} available`}
-      </div>
+    <div
+      className={clsx(
+        'rounded-full max-w-[130px] text-sm text-white text-center font-medium flex items-center justify-center px-3 py-1',
+        {
+          'bg-slate-300': count === 0,
+          'bg-yellow-500': count > 0 && count <= 2,
+          'bg-green-600': count > 2
+        }
+      )}
+      aria-hidden='true'
+    >
+      {count === 0 ? 'No slots' : `${count} ${slotText} available`}
     </div>
   );
 };
