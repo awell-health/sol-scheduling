@@ -78,7 +78,7 @@ export const SchedulerSpec = async ({
   await userEvent.click(slotToBook);
 
   const bookButton = await canvas.findByRole('button', {
-    name: 'Confirm booking'
+    name: 'Book appointment'
   });
 
   expect(bookButton).toBeVisible();

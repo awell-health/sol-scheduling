@@ -20,7 +20,7 @@ export const ProviderCard: FC<ProviderProps> = ({
   onSelect,
   text
 }) => {
-  const { button = 'Book appointment' } = text || {};
+  const { button = 'Select Provider' } = text || {};
 
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
 
