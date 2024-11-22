@@ -1,11 +1,11 @@
 import '../../styles/globals.css';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { isEmpty, merge } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
 import { PreferencesProvider } from '../PreferencesProvider';
 import { SolApiProvider } from '../SolApiProvider/SolApiContext';
 import { SchedulingWizard } from '../SchedulingWizard';
-import { GetProvidersInputType } from '@/lib/api';
+// import { GetProvidersInputType } from '@/lib/api';
 
 export const SchedulingActivity: React.FC<SchedulingActivityProps> = ({
   providerId: prefilledProviderId,
@@ -17,23 +17,41 @@ export const SchedulingActivity: React.FC<SchedulingActivityProps> = ({
   onCompleteActivity
 }) => {
   const shouldSkipProviderSelection = !isEmpty(prefilledProviderId);
-  const filledProviderPreferences: GetProvidersInputType = merge(
-    {},
-    {
-      location: {
-        state: undefined,
-        facility: undefined
+  const filledProviderPreferences = useMemo(() => {
+    return merge(
+      {},
+      {
+        location: {
+          state: undefined,
+          facility: undefined
+        },
+        gender: undefined,
+        ethnicity: undefined,
+        language: undefined,
+        age: undefined,
+        clinicalFocus: undefined,
+        therapeuticModality: undefined
       },
-      gender: undefined,
-      ethnicity: undefined,
-      language: undefined,
-      age: undefined,
-      clinicalFocus: undefined,
-      therapeuticModality: undefined
-    },
-    providerPreferences
-  );
-
+      providerPreferences
+    );
+  }, [providerPreferences]);
+  // const filledProviderPreferences: GetProvidersInputType = merge(
+  //   {},
+  //   {
+  //     location: {
+  //       state: undefined,
+  //       facility: undefined
+  //     },
+  //     gender: undefined,
+  //     ethnicity: undefined,
+  //     language: undefined,
+  //     age: undefined,
+  //     clinicalFocus: undefined,
+  //     therapeuticModality: undefined
+  //   },
+  //   providerPreferences
+  // );
+  console.log('SchedulingActivity', filledProviderPreferences);
   return (
     <SolApiProvider
       fetchProviders={fetchProviders}

@@ -66,6 +66,7 @@ export const PreferencesProvider: FC<ContextProps> = ({
   skipProviderSelection,
   initialPreferences
 }) => {
+  console.log('ROBO initialPreferences', initialPreferences);
   // Filters and preferences for provider selection
   const [filters, setFilters] = useState<FilterType<FilterEnum>[]>(
     preferencesToFiltersArray(initialPreferences)
@@ -145,9 +146,10 @@ export const PreferencesProvider: FC<ContextProps> = ({
   useEffect(() => {
     if (skipProviderSelection) return;
     console.log(
-      'ROBO useEffect preferences, skipProviderSelection',
+      'ROBO useEffect preferences',
+      preferences,
       skipProviderSelection,
-      preferences
+      initialPreferences
     );
     fetchProviders(preferences);
   }, [preferences, skipProviderSelection]);
