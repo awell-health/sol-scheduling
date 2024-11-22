@@ -1,24 +1,27 @@
 import { FC } from 'react';
-import { type SlotType } from '../../lib/api';
+import { DeliveryMethod, type SlotType } from '../../lib/api';
 import { AvailabilitySlot } from './AvailabilitySlot';
 
 export interface AvailabilitySlotsProps {
   timeZone: string;
   slots: Array<SlotType>;
+  deliveryMethod?: DeliveryMethod;
 }
 
 export const AvailabilitySlots: FC<AvailabilitySlotsProps> = ({
   timeZone,
-  slots
+  slots,
+  deliveryMethod
 }) => {
-  const slotsToMap = slots.slice(0, 3);
+  const label =
+    slots.length > 0
+      ? 'Next Availability:'
+      : `${deliveryMethod ? `No ${deliveryMethod} slots available` : ''}`;
   return (
     <div className='sm:min-w-[400px] mt-4'>
-      <div className='mb-2 text-sm font-medium text-slate-600'>
-        Next availability:
-      </div>
+      <div className='mb-2 text-sm font-medium text-slate-600'>{label}</div>
       <div className='flex flex-row gap-2'>
-        {slotsToMap.map((slot) => (
+        {slots.map((slot) => (
           <AvailabilitySlot
             key={slot.eventId}
             timeZone={timeZone}

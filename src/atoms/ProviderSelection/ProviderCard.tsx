@@ -6,16 +6,19 @@ import { toFullNameState, toFullNameGender } from '@/lib/utils';
 import type { Provider } from './types';
 import { ProviderAvatar } from '../ProviderAvatar';
 import { AvailabilitySlots } from '../AvailabilitySlots';
+import { DeliveryMethod } from '@/lib/api/schema';
 
 export type ProviderProps = {
   provider: Provider;
   onSelect: (id: string) => void;
+  deliveryMethod?: DeliveryMethod;
   text?: {
     button?: string;
   };
 };
 
 export const ProviderCard: FC<ProviderProps> = ({
+  deliveryMethod,
   provider,
   onSelect,
   text
@@ -26,7 +29,7 @@ export const ProviderCard: FC<ProviderProps> = ({
 
   return (
     <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
-      <ProviderHeader provider={provider} />
+      <ProviderHeader provider={provider} deliveryMethod={deliveryMethod} />
       <div className={clsx('mt-4 bg-slate-50 rounded-md p-3')}>
         <div>
           <ul className='flex flex-wrap list-none m-0 p-0 gap-y-4 mb-4'>
@@ -63,7 +66,10 @@ export const ProviderCard: FC<ProviderProps> = ({
   );
 };
 
-const ProviderHeader: FC<{ provider: Provider }> = ({ provider }) => {
+const ProviderHeader: FC<{
+  provider: Provider;
+  deliveryMethod?: DeliveryMethod;
+}> = ({ provider, deliveryMethod }) => {
   /*
    * Using a variable to hide the profile link instead of removing it:
    * They want to do some AB testing and might ask to add this back in at a later time
@@ -73,6 +79,12 @@ const ProviderHeader: FC<{ provider: Provider }> = ({ provider }) => {
   const profileLink = provider.profileLink ?? '';
   const providerName = `${provider.firstName} ${provider.lastName}`;
   const location = provider.location?.state ?? '';
+  const slots =
+    deliveryMethod === 'In-Person'
+      ? provider.events
+          .filter((slot) => slot.location === 'In-Person')
+          .slice(0, 3)
+      : provider.events.slice(0, 3);
   return (
     <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between'>
       <div className='self-center sm:self-auto'>
@@ -108,14 +120,15 @@ const ProviderHeader: FC<{ provider: Provider }> = ({ provider }) => {
               )}
             </div>
           </div>
+
           <div className='self-center sm:self-auto mt-2 sm:mt-0'>
             <Slot count={provider.events?.length ?? 0} />
           </div>
         </div>
-
         <AvailabilitySlots
           timeZone={Intl.DateTimeFormat().resolvedOptions().timeZone}
-          slots={provider.events}
+          slots={slots}
+          deliveryMethod={deliveryMethod}
         />
       </div>
     </div>
