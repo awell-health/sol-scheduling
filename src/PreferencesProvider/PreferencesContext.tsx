@@ -66,7 +66,8 @@ export const PreferencesProvider: FC<ContextProps> = ({
   skipProviderSelection,
   initialPreferences
 }) => {
-  console.log('ROBO initialPreferences', initialPreferences);
+  // stupid hack to stop duplicate provider fetches on first render
+  const [isInitialized, setIsInitialized] = useState(false);
   // Filters and preferences for provider selection
   const [filters, setFilters] = useState<FilterType<FilterEnum>[]>(
     preferencesToFiltersArray(initialPreferences)
@@ -102,12 +103,6 @@ export const PreferencesProvider: FC<ContextProps> = ({
   } = useSolApi();
 
   const updateFilters = debounce((newFilters: FilterType<FilterEnum>[]) => {
-    console.log(
-      'updateFilters - initialPreferences',
-      initialPreferences,
-      'newFilters',
-      newFilters
-    );
     const updatedPreferences = updatePreferencesWithFilters(
       initialPreferences,
       newFilters
@@ -116,7 +111,6 @@ export const PreferencesProvider: FC<ContextProps> = ({
   }, 500);
 
   const updateFilter = (filter: FilterType<FilterEnum>) => {
-    console.log('calling updateFilter', filter);
     const updatedFilters = filters.map((f) => {
       if (f.key === filter.key) {
         return filter;
@@ -144,14 +138,8 @@ export const PreferencesProvider: FC<ContextProps> = ({
   }, [filters, activeFilter]);
 
   useEffect(() => {
-    if (skipProviderSelection) return;
-    console.log(
-      'ROBO useEffect preferences',
-      preferences,
-      skipProviderSelection,
-      initialPreferences
-    );
-    fetchProviders(preferences);
+    if (skipProviderSelection || isInitialized) return;
+    fetchProviders(preferences).finally(() => setIsInitialized(true));
   }, [preferences, skipProviderSelection]);
 
   useEffect(() => {

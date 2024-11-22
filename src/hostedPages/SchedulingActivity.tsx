@@ -1,11 +1,11 @@
 import '../../styles/globals.css';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { isEmpty, merge } from 'lodash-es';
 import { SchedulingActivityProps } from './types';
 import { PreferencesProvider } from '../PreferencesProvider';
 import { SolApiProvider } from '../SolApiProvider/SolApiContext';
 import { SchedulingWizard } from '../SchedulingWizard';
-// import { GetProvidersInputType } from '@/lib/api';
+import { GetProvidersInputType } from '@/lib/api';
 
 export const SchedulingActivity: React.FC<SchedulingActivityProps> = ({
   providerId: prefilledProviderId,
@@ -17,41 +17,24 @@ export const SchedulingActivity: React.FC<SchedulingActivityProps> = ({
   onCompleteActivity
 }) => {
   const shouldSkipProviderSelection = !isEmpty(prefilledProviderId);
-  const filledProviderPreferences = useMemo(() => {
-    return merge(
-      {},
-      {
-        location: {
-          state: undefined,
-          facility: undefined
-        },
-        gender: undefined,
-        ethnicity: undefined,
-        language: undefined,
-        age: undefined,
-        clinicalFocus: undefined,
-        therapeuticModality: undefined
+
+  const filledProviderPreferences: GetProvidersInputType = merge(
+    {},
+    {
+      location: {
+        state: undefined,
+        facility: undefined
       },
-      providerPreferences
-    );
-  }, [providerPreferences]);
-  // const filledProviderPreferences: GetProvidersInputType = merge(
-  //   {},
-  //   {
-  //     location: {
-  //       state: undefined,
-  //       facility: undefined
-  //     },
-  //     gender: undefined,
-  //     ethnicity: undefined,
-  //     language: undefined,
-  //     age: undefined,
-  //     clinicalFocus: undefined,
-  //     therapeuticModality: undefined
-  //   },
-  //   providerPreferences
-  // );
-  console.log('SchedulingActivity', filledProviderPreferences);
+      gender: undefined,
+      ethnicity: undefined,
+      language: undefined,
+      age: undefined,
+      clinicalFocus: undefined,
+      therapeuticModality: undefined
+    },
+    providerPreferences
+  );
+
   return (
     <SolApiProvider
       fetchProviders={fetchProviders}
