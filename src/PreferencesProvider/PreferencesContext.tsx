@@ -101,6 +101,12 @@ export const PreferencesProvider: FC<ContextProps> = ({
   } = useSolApi();
 
   const updateFilters = debounce((newFilters: FilterType<FilterEnum>[]) => {
+    console.log(
+      'updateFilters - initialPreferences',
+      initialPreferences,
+      'newFilters',
+      newFilters
+    );
     const updatedPreferences = updatePreferencesWithFilters(
       initialPreferences,
       newFilters
@@ -109,6 +115,7 @@ export const PreferencesProvider: FC<ContextProps> = ({
   }, 500);
 
   const updateFilter = (filter: FilterType<FilterEnum>) => {
+    console.log('calling updateFilter', filter);
     const updatedFilters = filters.map((f) => {
       if (f.key === filter.key) {
         return filter;
@@ -137,6 +144,11 @@ export const PreferencesProvider: FC<ContextProps> = ({
 
   useEffect(() => {
     if (skipProviderSelection) return;
+    console.log(
+      'ROBO useEffect preferences, skipProviderSelection',
+      skipProviderSelection,
+      preferences
+    );
     fetchProviders(preferences);
   }, [preferences, skipProviderSelection]);
 
