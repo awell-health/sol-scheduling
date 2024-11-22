@@ -12,7 +12,7 @@ export const getMockProvidersResponse = () => {
         language: '',
         location: {
           facility: '',
-          state: ''
+          state: 'CO'
         },
         firstName: 'Lauren',
         lastName: 'Jouzapaitis',
@@ -102,7 +102,7 @@ export const getMockProvidersResponse = () => {
             slotstart: '2024-09-18T16:00:00Z',
             duration: 60,
             facility: 'CO - Greenwood Village',
-            location: 'In-Person'
+            location: 'Telehealth'
           }
           // {
           //   eventId: '26fsgfn18olbt06rvo20jdjfg0',

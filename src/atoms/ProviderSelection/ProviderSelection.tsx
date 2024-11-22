@@ -44,6 +44,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
         <div className='flex flex-col gap-4'>
           {providers.map((provider) => (
             <ProviderCard
+              deliveryMethod={preferences.deliveryMethod}
               key={provider.id}
               provider={provider}
               onSelect={selectProvider}
