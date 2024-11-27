@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { errorSchema } from './shared.schema';
-import { Event } from './GetProviderAvailability.schema';
+import { errorSchema, ISO8601DateStringSchema } from './shared.schema';
 import {
   AgeSchema,
   ClinicalFocusSchema,
@@ -36,6 +35,17 @@ export const GetProvidersInputSchema = z.object({
 
 export type GetProvidersInputType = z.infer<typeof GetProvidersInputSchema>;
 
+export const ProviderEvent = z.object({
+  eventId: z.string(),
+  slotstart: ISO8601DateStringSchema,
+  providerId: z.string(),
+  date: ISO8601DateStringSchema,
+  duration: z.number(),
+  booked: z.boolean().optional(),
+  eventType: DeliveryMethodSchema,
+  facility: z.string()
+});
+
 /**
  * Marking some fields as optional to enforce
  * defensive programming in the front-end
@@ -62,7 +72,7 @@ export const GetProvidersResponseSchema = z
         image: z.string().optional(),
         profileLink: z.string().optional(),
         events: z
-          .array(Event)
+          .array(ProviderEvent)
           .optional()
           .transform((e) => {
             if (isNil(e) || e.length === 0) return [];

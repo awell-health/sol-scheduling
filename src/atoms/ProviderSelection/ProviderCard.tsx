@@ -82,7 +82,7 @@ const ProviderHeader: FC<{
   const slots =
     deliveryMethod === 'In-Person'
       ? provider.events
-          .filter((slot) => slot.location === 'In-Person')
+          .filter((slot) => slot.eventType === 'In-Person')
           .slice(0, 3)
       : provider.events.slice(0, 3);
   return (
