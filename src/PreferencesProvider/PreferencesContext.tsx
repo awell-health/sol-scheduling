@@ -66,8 +66,6 @@ export const PreferencesProvider: FC<ContextProps> = ({
   skipProviderSelection,
   initialPreferences
 }) => {
-  // stupid hack to stop duplicate provider fetches on first render
-  const [isInitialized, setIsInitialized] = useState(false);
   // Filters and preferences for provider selection
   const [filters, setFilters] = useState<FilterType<FilterEnum>[]>(
     preferencesToFiltersArray(initialPreferences)
@@ -138,8 +136,8 @@ export const PreferencesProvider: FC<ContextProps> = ({
   }, [filters, activeFilter]);
 
   useEffect(() => {
-    if (skipProviderSelection || isInitialized) return;
-    fetchProviders(preferences).finally(() => setIsInitialized(true));
+    if (skipProviderSelection) return;
+    fetchProviders(preferences);
   }, [preferences, skipProviderSelection]);
 
   useEffect(() => {
