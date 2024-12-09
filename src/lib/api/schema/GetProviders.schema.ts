@@ -13,24 +13,20 @@ import {
 } from './atoms';
 import { isEmpty, isNil } from 'lodash-es';
 
-const NullishSchema = z
-  .union([z.undefined(), z.literal('')])
-  .transform((v) => (isEmpty(v) ? undefined : v));
+const transformEmptyToUndefined = <T extends z.ZodType>(schema: T) =>
+  schema.transform((v): z.infer<T> | undefined => (isEmpty(v) ? undefined : v));
 
-/**
- * All parameters are optional
- */
 export const GetProvidersInputSchema = z.object({
-  age: z.union([AgeSchema, NullishSchema]).optional(),
-  gender: z.union([GenderSchema, NullishSchema]).optional(),
-  ethnicity: z.union([EthnicitySchema, NullishSchema]).optional(),
+  age: transformEmptyToUndefined(AgeSchema).optional(),
+  gender: transformEmptyToUndefined(GenderSchema).optional(),
+  ethnicity: transformEmptyToUndefined(EthnicitySchema).optional(),
   // Not implemented
-  language: z.union([LanguageSchema, NullishSchema]).optional(),
-  therapeuticModality: z
-    .union([TherapeuticModalitySchema, NullishSchema])
-    .optional(),
-  clinicalFocus: z.union([ClinicalFocusSchema, NullishSchema]).optional(),
-  deliveryMethod: z.union([DeliveryMethodSchema, NullishSchema]).optional(),
+  language: transformEmptyToUndefined(LanguageSchema).optional(),
+  therapeuticModality: transformEmptyToUndefined(
+    TherapeuticModalitySchema
+  ).optional(),
+  clinicalFocus: transformEmptyToUndefined(ClinicalFocusSchema).optional(),
+  deliveryMethod: transformEmptyToUndefined(DeliveryMethodSchema).optional(),
   location: z
     .object({
       facility: LocationFacilitySchema.optional(),
