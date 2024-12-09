@@ -149,6 +149,10 @@ export const SolApiProvider: FC<ContextProps> = ({
         .then(() => {
           const parsedPreferencesForSalesforce =
             preparePreferencesForSalesforce(preferences);
+          console.log(
+            'parsedPreferencesForSalesforce',
+            parsedPreferencesForSalesforce
+          );
           completeActivity(slot, parsedPreferencesForSalesforce);
         })
         .catch((error) => {

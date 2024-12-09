@@ -11,26 +11,38 @@ import {
   TherapeuticModalitySchema,
   LocationStateSchema
 } from './atoms';
-import { isNil } from 'lodash-es';
+import { isEmpty, isNil } from 'lodash-es';
+
+const NullishSchema = z
+  .union([z.undefined(), z.literal('')])
+  .transform((v) => (isEmpty(v) ? undefined : v));
 
 /**
  * All parameters are optional
  */
 export const GetProvidersInputSchema = z.object({
-  age: AgeSchema.optional(),
-  gender: GenderSchema.optional(),
-  ethnicity: EthnicitySchema.optional(),
+  age: z.union([AgeSchema, NullishSchema]).optional(),
+  gender: z.union([GenderSchema, NullishSchema]).optional(),
+  ethnicity: z.union([EthnicitySchema, NullishSchema]).optional(),
   // Not implemented
-  language: LanguageSchema.optional(),
-  therapeuticModality: TherapeuticModalitySchema.optional(),
-  clinicalFocus: ClinicalFocusSchema.optional(),
-  deliveryMethod: DeliveryMethodSchema.optional(),
+  language: z.union([LanguageSchema, NullishSchema]).optional(),
+  therapeuticModality: z
+    .union([TherapeuticModalitySchema, NullishSchema])
+    .optional(),
+  clinicalFocus: z.union([ClinicalFocusSchema, NullishSchema]).optional(),
+  deliveryMethod: z.union([DeliveryMethodSchema, NullishSchema]).optional(),
   location: z
     .object({
       facility: LocationFacilitySchema.optional(),
       state: LocationStateSchema.optional()
     })
     .optional()
+    .transform((location) => {
+      if (isNil(location) || isEmpty(location)) return undefined;
+      const { facility, state } = location;
+      if (!facility && !state) return undefined;
+      return { facility, state };
+    })
 });
 
 export type GetProvidersInputType = z.infer<typeof GetProvidersInputSchema>;

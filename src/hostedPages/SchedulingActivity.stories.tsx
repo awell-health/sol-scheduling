@@ -19,8 +19,7 @@ import {
   type GetProvidersResponseType,
   type GetProviderInputType,
   type GetProviderResponseType,
-  type SlotWithConfirmedLocation,
-  DeliveryMethod
+  type SlotWithConfirmedLocation
 } from '../lib/api';
 import { some } from 'lodash-es';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
@@ -39,8 +38,7 @@ const meta: Meta<typeof SchedulingActivityComponent> = {
     onBooking: fn(),
     providerPreferences: {
       age: '18',
-      clinicalFocus: [],
-      deliveryMethod: DeliveryMethod.InPerson
+      clinicalFocus: []
     } satisfies GetProvidersInputType
   },
   decorators: [

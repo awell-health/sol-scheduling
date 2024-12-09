@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { type LocationTypeType, type GetAvailabilitiesResponseType } from '..';
+import { isEmpty } from 'lodash-es';
 
 /**
  * An available slot
@@ -23,6 +24,12 @@ export type SlotWithConfirmedLocation = SlotType & {
 export const ISO8601DateStringSchema = z.coerce.date();
 
 export const errorSchema = z.object({
-  errorMessage: z.string().optional(),
-  errorCode: z.string().optional()
+  errorMessage: z
+    .string()
+    .optional()
+    .transform((v) => (isEmpty(v) ? undefined : v)),
+  errorCode: z
+    .string()
+    .optional()
+    .transform((v) => (isEmpty(v) ? undefined : v))
 });
