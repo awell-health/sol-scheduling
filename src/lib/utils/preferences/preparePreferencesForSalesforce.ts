@@ -1,5 +1,6 @@
 import {
   DeliveryMethodSchema,
+  GenderSchema,
   GetProvidersInputSchema,
   GetProvidersInputType
 } from '../../../lib/api';
@@ -16,10 +17,11 @@ import { z } from 'zod';
  */
 const SalesforcePreferencesSchema = GetProvidersInputSchema.extend({
   deliveryMethod: z
-    .union([DeliveryMethodSchema, z.undefined()])
+    .union([DeliveryMethodSchema, z.undefined(), z.literal('')])
     .transform((value) => {
       return value === undefined ? 'Both' : value;
-    })
+    }),
+  gender: z.union([GenderSchema, z.undefined(), z.literal('')])
 });
 
 export type SalesforcePreferencesType = z.infer<
