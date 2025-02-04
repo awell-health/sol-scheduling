@@ -249,10 +249,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           <span className='loading loading-infinity loading-lg text-primary'></span>
         </div>
       )}
-      <p className='text-sm text-gray-800'>
-        Select clinic location for in-person visits or telehealth for virtual
-        visits
-      </p>
       <LocationFilter
         options={availableFacilities}
         selected={selectedLocation}
@@ -297,27 +293,66 @@ const LocationFilter: FC<{
   selected: string;
   onSelect: (location: string) => void;
 }> = ({ options, selected, onSelect }) => {
+  const hasTelehealth = options.includes('Telehealth');
+  const inPersonOptions = options.filter((opt) => opt !== 'Telehealth');
+  const hasInPerson = inPersonOptions.length > 0;
+
   return (
-    <ul className='menu menu-horizontal rounded-box gap-2 pl-0'>
-      {options.map((option) => (
-        <li key={option}>
-          <button
-            className={clsx(
-              'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
-              {
-                'text-slate-800 border-1 border-slate-200 bg-white':
-                  option !== selected,
-                'border-1 border-primary ring-4 ring-secondary text-primary selected':
-                  option === selected
-              }
-            )}
-            onClick={() => onSelect(option)}
-          >
-            {option === 'Telehealth' ? option : option.slice(5)}
-          </button>
-        </li>
-      ))}
-    </ul>
+    <div className='flex flex-col gap-2 mb-4'>
+      <div className='flex items-center gap-4'>
+        {/* In-person section */}
+        {hasInPerson && (
+          <div className='flex flex-col gap-2 items-center self-start sm:self-auto'>
+            <p className='text-sm font-medium text-slate-500'>In Person</p>
+            <div className='flex flex-col sm:flex-row sm:gap-2 gap-1'>
+              {inPersonOptions.map((option) => (
+                <button
+                  key={option}
+                  className={clsx(
+                    'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
+                    {
+                      'text-slate-800 border-1 border-slate-200 bg-white':
+                        option !== selected,
+                      'border-1 border-primary ring-4 ring-secondary text-primary selected':
+                        option === selected
+                    }
+                  )}
+                  onClick={() => onSelect(option)}
+                >
+                  {option.slice(5)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Divider when both types are present */}
+        {hasInPerson && hasTelehealth && (
+          <div className='sm:h-16 h-20 w-px bg-slate-300' />
+        )}
+
+        {/* Telehealth section */}
+        {hasTelehealth && (
+          <div className='flex flex-col gap-2 items-center self-start sm:self-auto'>
+            <p className='text-sm font-medium text-slate-500'>Virtual</p>
+            <button
+              className={clsx(
+                'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
+                {
+                  'text-slate-800 border-1 border-slate-200 bg-white':
+                    'Telehealth' !== selected,
+                  'border-1 border-primary ring-4 ring-secondary text-primary selected':
+                    'Telehealth' === selected
+                }
+              )}
+              onClick={() => onSelect('Telehealth')}
+            >
+              Telehealth
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
