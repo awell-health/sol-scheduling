@@ -2,8 +2,6 @@ import { FC, useState, useMemo, useCallback, useEffect } from 'react';
 import { uniq } from 'lodash-es';
 import { differenceInDays } from 'date-fns';
 import clsx from 'clsx';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-
 import {
   format,
   addWeeks,
@@ -24,8 +22,10 @@ import {
 } from '../../../lib/api';
 import { DayCard } from './atoms/DayCard';
 import { filterByLocation } from '@/lib/utils/availabilities';
+import { NavigationButton } from './NavigationButton';
+import { LocationFilter } from './LocationFilter';
 
-export interface WeekCalendarProps {
+export interface Props {
   value: Date | null;
   availabilities: SlotType[];
   onLocationSelect: ({
@@ -44,18 +44,20 @@ export interface WeekCalendarProps {
   deliveryMethodPreference?: DeliveryMethodType;
 }
 
-export const WeekCalendar: FC<WeekCalendarProps> = ({
-  value,
-  availabilities,
-  onLocationSelect,
-  onDateSelect,
-  week = new Date(),
-  weekStartsOn = 'monday',
-  hideWeekends = true,
-  allowSchedulingInThePast = false,
-  loading,
-  deliveryMethodPreference = DeliveryMethod.Telehealth
-}) => {
+export const WeekCalendar: FC<Props> = (props) => {
+  const {
+    value,
+    availabilities,
+    onLocationSelect,
+    onDateSelect,
+    week = new Date(),
+    weekStartsOn = 'monday',
+    hideWeekends = true,
+    allowSchedulingInThePast = false,
+    loading,
+    deliveryMethodPreference = DeliveryMethod.Telehealth
+  } = props;
+
   const [currentWeek, setCurrentWeek] = useState(week);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
   const [selectedLocation, setSelectedLocation] = useState<string>('');
@@ -285,104 +287,5 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
         ))}
       </div>
     </div>
-  );
-};
-
-const LocationFilter: FC<{
-  options: Array<string>;
-  selected: string;
-  onSelect: (location: string) => void;
-}> = ({ options, selected, onSelect }) => {
-  const hasTelehealth = options.includes('Telehealth');
-  const inPersonOptions = options.filter((opt) => opt !== 'Telehealth');
-  const hasInPerson = inPersonOptions.length > 0;
-
-  return (
-    <div className='flex flex-col gap-2 mb-4'>
-      <div className='flex items-center gap-4'>
-        {/* In-person section */}
-        {hasInPerson && (
-          <div className='flex flex-col gap-2 items-center self-start sm:self-auto'>
-            <p className='text-sm font-medium text-slate-500'>In Person</p>
-            <div className='flex flex-col sm:flex-row sm:gap-2 gap-1'>
-              {inPersonOptions.map((option) => (
-                <button
-                  key={option}
-                  className={clsx(
-                    'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
-                    {
-                      'text-slate-800 border-1 border-slate-200 bg-white':
-                        option !== selected,
-                      'border-1 border-primary ring-4 ring-secondary text-primary selected':
-                        option === selected
-                    }
-                  )}
-                  onClick={() => onSelect(option)}
-                >
-                  {option.slice(5)}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Divider when both types are present */}
-        {hasInPerson && hasTelehealth && (
-          <div className='sm:h-16 h-20 w-px bg-slate-300' />
-        )}
-
-        {/* Telehealth section */}
-        {hasTelehealth && (
-          <div className='flex flex-col gap-2 items-center self-start sm:self-auto'>
-            <p className='text-sm font-medium text-slate-500'>Virtual</p>
-            <button
-              className={clsx(
-                'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
-                {
-                  'text-slate-800 border-1 border-slate-200 bg-white':
-                    'Telehealth' !== selected,
-                  'border-1 border-primary ring-4 ring-secondary text-primary selected':
-                    'Telehealth' === selected
-                }
-              )}
-              onClick={() => onSelect('Telehealth')}
-            >
-              Telehealth
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const NavigationButton: FC<{
-  direction: 'left' | 'right';
-  onClick: () => void;
-  isDisabled: boolean;
-}> = ({ direction, onClick, isDisabled }) => {
-  const chevronClasses = clsx(
-    'flex flex-none align-center justify-center',
-    'text-primary size-8 font-bold'
-  );
-
-  return (
-    <button
-      onClick={onClick}
-      className={clsx('btn sm:px-6 sm:py-2 px-3 py-1', {
-        'btn-disabled opacity-50 cursor-not-allowed': isDisabled,
-        'btn-secondary': !isDisabled
-      })}
-      disabled={isDisabled}
-      aria-label={
-        direction === 'left' ? 'Go to previous week' : 'Go to next week'
-      }
-    >
-      {direction === 'left' ? (
-        <ChevronLeftIcon className={chevronClasses} aria-hidden='true' />
-      ) : (
-        <ChevronRightIcon className={chevronClasses} aria-hidden='true' />
-      )}
-    </button>
   );
 };
