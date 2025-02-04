@@ -2,8 +2,6 @@ import { FC, useState, useMemo, useCallback, useEffect } from 'react';
 import { uniq } from 'lodash-es';
 import { differenceInDays } from 'date-fns';
 import clsx from 'clsx';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-
 import {
   format,
   addWeeks,
@@ -24,8 +22,10 @@ import {
 } from '../../../lib/api';
 import { DayCard } from './atoms/DayCard';
 import { filterByLocation } from '@/lib/utils/availabilities';
+import { NavigationButton } from './NavigationButton';
+import { LocationFilter } from './LocationFilter';
 
-export interface WeekCalendarProps {
+export interface Props {
   value: Date | null;
   availabilities: SlotType[];
   onLocationSelect: ({
@@ -44,18 +44,20 @@ export interface WeekCalendarProps {
   deliveryMethodPreference?: DeliveryMethodType;
 }
 
-export const WeekCalendar: FC<WeekCalendarProps> = ({
-  value,
-  availabilities,
-  onLocationSelect,
-  onDateSelect,
-  week = new Date(),
-  weekStartsOn = 'monday',
-  hideWeekends = true,
-  allowSchedulingInThePast = false,
-  loading,
-  deliveryMethodPreference = DeliveryMethod.Telehealth
-}) => {
+export const WeekCalendar: FC<Props> = (props) => {
+  const {
+    value,
+    availabilities,
+    onLocationSelect,
+    onDateSelect,
+    week = new Date(),
+    weekStartsOn = 'monday',
+    hideWeekends = true,
+    allowSchedulingInThePast = false,
+    loading,
+    deliveryMethodPreference = DeliveryMethod.Telehealth
+  } = props;
+
   const [currentWeek, setCurrentWeek] = useState(week);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
   const [selectedLocation, setSelectedLocation] = useState<string>('');
@@ -249,10 +251,6 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
           <span className='loading loading-infinity loading-lg text-primary'></span>
         </div>
       )}
-      <p className='text-sm text-gray-800'>
-        Select clinic location for in-person visits or telehealth for virtual
-        visits
-      </p>
       <LocationFilter
         options={availableFacilities}
         selected={selectedLocation}
@@ -289,65 +287,5 @@ export const WeekCalendar: FC<WeekCalendarProps> = ({
         ))}
       </div>
     </div>
-  );
-};
-
-const LocationFilter: FC<{
-  options: Array<string>;
-  selected: string;
-  onSelect: (location: string) => void;
-}> = ({ options, selected, onSelect }) => {
-  return (
-    <ul className='menu menu-horizontal rounded-box gap-2 pl-0'>
-      {options.map((option) => (
-        <li key={option}>
-          <button
-            className={clsx(
-              'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
-              {
-                'text-slate-800 border-1 border-slate-200 bg-white':
-                  option !== selected,
-                'border-1 border-primary ring-4 ring-secondary text-primary selected':
-                  option === selected
-              }
-            )}
-            onClick={() => onSelect(option)}
-          >
-            {option === 'Telehealth' ? option : option.slice(5)}
-          </button>
-        </li>
-      ))}
-    </ul>
-  );
-};
-
-const NavigationButton: FC<{
-  direction: 'left' | 'right';
-  onClick: () => void;
-  isDisabled: boolean;
-}> = ({ direction, onClick, isDisabled }) => {
-  const chevronClasses = clsx(
-    'flex flex-none align-center justify-center',
-    'text-primary size-8 font-bold'
-  );
-
-  return (
-    <button
-      onClick={onClick}
-      className={clsx('btn sm:px-6 sm:py-2 px-3 py-1', {
-        'btn-disabled opacity-50 cursor-not-allowed': isDisabled,
-        'btn-secondary': !isDisabled
-      })}
-      disabled={isDisabled}
-      aria-label={
-        direction === 'left' ? 'Go to previous week' : 'Go to next week'
-      }
-    >
-      {direction === 'left' ? (
-        <ChevronLeftIcon className={chevronClasses} aria-hidden='true' />
-      ) : (
-        <ChevronRightIcon className={chevronClasses} aria-hidden='true' />
-      )}
-    </button>
   );
 };
