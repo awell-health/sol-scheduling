@@ -101,9 +101,10 @@ export const WeekCalendar: FC<Props> = (props) => {
   }, [availabilities, deliveryMethodPreference]);
 
   useEffect(() => {
-    if (availabilities.length > 0) {
-      const firstAvailableSlot = availabilities.reduce((earliest, slot) =>
-        earliest && earliest.slotstart < slot.slotstart ? earliest : slot
+    if (filteredAvailabilities.length > 0) {
+      const firstAvailableSlot = filteredAvailabilities.reduce(
+        (earliest, slot) =>
+          earliest && earliest.slotstart < slot.slotstart ? earliest : slot
       );
 
       const firstAvailableWeekStart = startOfWeek(
@@ -115,7 +116,7 @@ export const WeekCalendar: FC<Props> = (props) => {
 
       setCurrentWeek(firstAvailableWeekStart);
     }
-  }, [availabilities, weekStartsOn]);
+  }, [filteredAvailabilities, weekStartsOn]);
 
   const handlePreviousWeek = useCallback(() => {
     setCurrentWeek((prevWeek) => subWeeks(prevWeek, 1));
@@ -243,7 +244,6 @@ export const WeekCalendar: FC<Props> = (props) => {
 
   // Calculate if we should disable the next week button
   const isNextWeekDisabled = differenceInDays(currentWeek, new Date()) >= 30;
-
   return (
     <div className='relative'>
       {loading && (
