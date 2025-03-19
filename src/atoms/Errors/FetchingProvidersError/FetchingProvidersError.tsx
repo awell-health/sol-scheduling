@@ -74,7 +74,7 @@ const ContactNumbers: FC = (): JSX.Element => {
   return (
     <div className='sol-p-3'>
       {' '}
-      <ul className='list-disc list-inside sol-space-y-1'>
+      <ul className='sol-list-disc sol-list-inside sol-space-y-1'>
         <li>
           <ContactNumber state='Colorado' number={PhoneNumbers.CO} />
         </li>
@@ -104,7 +104,7 @@ export const FetchingProvidersError: FC<FetchingProvidersErrorProps> = ({
     "Don't worry — our team will contact you shortly to arrange your appointment. You can also reach us directly at the following numbers:";
 
   return (
-    <div className={clsx('card bg-base-100 sol-shadow-md sol-p-6')}>
+    <div className={clsx('sol-card sol-bg-base-100 sol-shadow-md sol-p-6')}>
       <p
         className={clsx('sol-font-medium sol-text-xl sol-text-center sol-m-0')}
       >

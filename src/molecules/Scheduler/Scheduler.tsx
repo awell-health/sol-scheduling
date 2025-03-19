@@ -151,7 +151,7 @@ export const Scheduler: FC<SchedulerProps> = ({
           <ProviderAvatar
             name={providerName}
             image={provider?.image}
-            classes='w-28 h-28 sm:w-32 sm:h-32'
+            classes='sol-w-28 sol-h-28 sm:sol-w-32 sm:sol-h-32'
             loading={loadingProvider}
           />
         </div>
@@ -198,7 +198,7 @@ export const Scheduler: FC<SchedulerProps> = ({
             disabled={isBooking}
           >
             {isBooking ? (
-              <span className='loading loading-infinity loading-md sol-text-primary'></span>
+              <span className='sol-loading sol-loading-infinity sol-loading-md sol-text-primary'></span>
             ) : (
               button
             )}

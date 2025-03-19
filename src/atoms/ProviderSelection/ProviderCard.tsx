@@ -35,7 +35,7 @@ export const ProviderCard: FC<ProviderProps> = ({
       <ProviderHeader provider={provider} deliveryMethod={deliveryMethod} />
       <div className={clsx('sol-mt-4 sol-bg-slate-50 sol-rounded-md sol-p-3')}>
         <div>
-          <ul className='sol-flex sol-flex-wrap list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
+          <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
             {provider.gender && (
               <SingleItem
                 label='Gender'
@@ -46,7 +46,7 @@ export const ProviderCard: FC<ProviderProps> = ({
               <SingleItem label='Ethnicity' value={provider.ethnicity} />
             )}
           </ul>
-          <ul className='sol-flex sol-flex-wrap list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
+          <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
             {facilities.length > 0 && (
               <SingleItem
                 label={`Clinic Location${facilities.length > 1 ? 's' : ''}`}
@@ -94,7 +94,7 @@ const ProviderHeader: FC<{
         <ProviderAvatar
           name={providerName}
           image={provider.image}
-          classes='w-32 h-32'
+          classes='sol-w-32 sol-h-32'
         />
       </div>
       <div className='sol-w-full sm:sol-w-auto sm:sol-gap-y-6'>

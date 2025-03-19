@@ -63,7 +63,7 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
   const LoadingComponent = (): JSX.Element => {
     return (
       <div className='sol-h-full sol-w-full sol-flex sol-items-center sol-justify-center '>
-        <span className='loading loading-infinity loading-lg sol-text-primary'></span>
+        <span className='sol-loading sol-loading-infinity sol-loading-lg sol-text-primary'></span>
       </div>
     );
   };

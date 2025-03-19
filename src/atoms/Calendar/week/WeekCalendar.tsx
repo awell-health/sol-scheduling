@@ -248,7 +248,7 @@ export const WeekCalendar: FC<Props> = (props) => {
     <div className='sol-relative'>
       {loading && (
         <div className='sol-absolute sol-w-full sol-h-full sol-top-0 sol-left-0 sol-flex sol-items-center sol-justify-center sol-bg-opacity-70 sol-bg-white'>
-          <span className='loading loading-infinity loading-lg sol-text-primary'></span>
+          <span className='sol-loading sol-loading-infinity sol-loading-lg sol-text-primary'></span>
         </div>
       )}
       <LocationFilter

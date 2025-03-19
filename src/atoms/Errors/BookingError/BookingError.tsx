@@ -27,9 +27,9 @@ export const BookingError: FC<BookingErrorProps> = ({
       >
         {bookingConfirmationError}
       </p>
-      <div className={clsx('card bg-base-100 sol-shadow-md')}>
-        <div className='card-body sol-flex'>
-          <div className={clsx('card-title sol-justify-between')}>
+      <div className={clsx('sol-card sol-bg-base-100 sol-shadow-md')}>
+        <div className='sol-card-body sol-flex'>
+          <div className={clsx('sol-card-title sol-justify-between')}>
             <div className={clsx('sol-flex sol-flex-col')}>
               <p className='sol-font-normal sol-text-lg'>
                 You tried to schedule with
@@ -38,7 +38,7 @@ export const BookingError: FC<BookingErrorProps> = ({
             </div>
             <ProviderAvatar name={providerName} image={provider?.image} />
           </div>
-          <ul className={clsx('list-none sol-p-0 sol-m-0')}>
+          <ul className={clsx('sol-list-none sol-p-0 sol-m-0')}>
             <ListItem>
               <ListItem.Header>Time: </ListItem.Header>
               <time

@@ -63,8 +63,6 @@ All internal components in this project have been updated to use the prefixed Ta
 - Complex conditional classes in `clsx()` objects (including multi-line expressions)
 - Nested class structures
 
-The prefixing has been done with care to maintain code structure and readability, ensuring that complex components with conditional styling still work as expected.
-
 **Note on Component Consistency**:
 Special attention has been given to components with complex conditional class styling, including:
 
@@ -72,6 +70,28 @@ Special attention has been given to components with complex conditional class st
 - `Slots.tsx` with orientation-dependent classes
 - `NavigationButton.tsx` with dynamic direction styling
 - `DayCard.tsx` with date and availability-dependent styles
+
+#### Complete Prefixing Checklist
+
+The following categories of classes have been fully prefixed with `sol-`:
+
+- [x] Layout classes: `flex`, `grid`, `block`, etc.
+- [x] Spacing classes: `p-`, `m-`, `gap-`, etc.
+- [x] Sizing classes: `w-`, `h-`, `max-`, `min-`, etc.
+- [x] Typography classes: `text-`, `font-`, etc.
+- [x] Border classes: `border`, `rounded`, etc.
+- [x] Background classes: `bg-`
+- [x] Effect classes: `shadow`, `ring`, etc.
+- [x] Position classes: `top`, `left`, etc.
+- [x] DaisyUI component classes:
+  - [x] `card`, `card-body`, `card-title`
+  - [x] `avatar`
+  - [x] `btn` (when not using DaisyUI variants)
+  - [x] `loading`
+- [x] List styling: `list-none`, `list-disc`, etc.
+- [x] Custom props passing class names: `classes="w-32 h-32"` → `classes="sol-w-32 sol-h-32"`
+- [x] Complex nested conditions in clsx calls
+- [x] Template string class assignments
 
 All Tailwind classes in these components have been prefixed, maintaining all functionality and styling behavior while ensuring isolation from host projects.
 
