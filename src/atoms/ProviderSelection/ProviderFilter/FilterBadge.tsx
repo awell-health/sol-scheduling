@@ -26,9 +26,11 @@ const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
         setActiveFilter(filter.key);
       }}
     >
-      {label}
+      {' '}
+      {label}{' '}
       {isActive && (
         <>
+          {' '}
           <span
             className={clsx({
               'truncate max-w-[180px]': filter.selectType === 'multi'

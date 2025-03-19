@@ -64,13 +64,13 @@ const ContactNumbers: FC = (): JSX.Element => {
         </a>
         {copied === number && (
           <span className='sol-text-green-500 sol-ml-1'>
-            Copied to clipboard
+            {' '}
+            Copied to clipboard{' '}
           </span>
-        )}
+        )}{' '}
       </>
     );
   };
-
   return (
     <div className='sol-p-3'>
       {' '}

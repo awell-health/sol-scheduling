@@ -29,9 +29,9 @@ export const LocationFilter: FC<Props> = (props) => {
                   className={clsx(
                     'btn btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                     {
-                      'text-slate-800 border-1 border-slate-200 bg-white':
+                      'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                         option !== selected,
-                      'border-1 border-primary ring-4 ring-secondary text-primary selected':
+                      'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary sol-text-primary selected':
                         option === selected
                     }
                   )}
@@ -59,9 +59,9 @@ export const LocationFilter: FC<Props> = (props) => {
               className={clsx(
                 'btn btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                 {
-                  'text-slate-800 border-1 border-slate-200 bg-white':
+                  'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                     'Telehealth' !== selected,
-                  'border-1 border-primary ring-4 ring-secondary text-primary selected':
+                  'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary sol-text-primary selected':
                     'Telehealth' === selected
                 }
               )}

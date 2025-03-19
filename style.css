@@ -867,8 +867,17 @@ html {
   display: flex;
 }
 
+.sol-grid {
+  display: grid;
+}
+
 .sol-hidden {
   display: none;
+}
+
+.sol-size-8 {
+  width: 2rem;
+  height: 2rem;
 }
 
 .sol-h-20 {
@@ -943,6 +952,10 @@ html {
   cursor: pointer;
 }
 
+.sol-grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .sol-flex-row {
   flex-direction: row;
 }
@@ -977,6 +990,10 @@ html {
 
 .sol-gap-2 {
   gap: 0.5rem;
+}
+
+.sol-gap-3 {
+  gap: 0.75rem;
 }
 
 .sol-gap-4 {
@@ -1290,6 +1307,10 @@ html {
   text-decoration-line: none;
 }
 
+.sol-opacity-50 {
+  opacity: 0.5;
+}
+
 .sol-shadow-md {
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
@@ -1300,6 +1321,10 @@ html {
   --tw-shadow: 0 0 #0000;
   --tw-shadow-colored: 0 0 #0000;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.sol-outline-0 {
+  outline-width: 0px;
 }
 
 .sol-ring-4 {

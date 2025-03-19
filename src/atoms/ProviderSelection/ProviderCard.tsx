@@ -101,16 +101,19 @@ const ProviderHeader: FC<{
         <div className='sol-flex sol-flex-col sm:sol-flex-row sol-items-center sm:sol-justify-between sol-justify-center sol-mb-3'>
           <div>
             <h3 className='sol-text-slate-800 sol-text-lg sol-m-0 sol-font-semibold sol-text-center sm:sol-text-left'>
-              {providerName}
-            </h3>
+              {' '}
+              {providerName}{' '}
+            </h3>{' '}
             <div className='sol-flex sol-flex-col sm:sol-flex-row sol-justify-center sm:sol-justify-start sol-items-center'>
               {location.length > 0 && (
                 <span className='sol-text-slate-600 sol-text-md'>
-                  {toFullNameState(location)}
+                  {' '}
+                  {toFullNameState(location)}{' '}
                 </span>
-              )}
+              )}{' '}
               {showProfileLink && (
                 <>
+                  {' '}
                   {location.length > 0 && profileLink.length > 0 && (
                     <span className='sol-text-slate-600 sol-text-md sol-hidden sm:sol-inline sol-px-1'>
                       •
@@ -138,42 +141,47 @@ const ProviderHeader: FC<{
   );
 };
 
-const mainText = 'font-semibold text-primary';
-const subText = 'text-slate-600 text-md';
+const mainText = 'sol-font-semibold sol-text-primary';
+const subText = 'sol-text-slate-600 sol-text-md';
 
 const SingleItem: FC<{ label: string; value: string }> = ({ label, value }) => {
   return (
     <li className='sol-flex-1 sol-basis-1/2'>
-      <span className={subText}>{label}: </span>
-      <span className={mainText}>{value}</span>
+      {' '}
+      <span className={subText}>{label}: </span>{' '}
+      <span className={mainText}>{value}</span>{' '}
     </li>
   );
 };
 
 const BioItem: FC<{ label: string; value: string }> = ({ label, value }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
   const toggleBio = () => {
     setIsExpanded(!isExpanded);
   };
   const classes =
-    'text-blue-500 rounded-full text-sm text-blue font-medium flex items-center justify-center';
+    'sol-text-blue-500 sol-rounded-full sol-text-sm sol-text-blue sol-font-medium sol-flex sol-items-center sol-justify-center';
   return (
     <li className='sol-flex-1 sol-basis-full'>
-      <span className='sol-font-semibold sol-text-primary'>{label}: </span>
+      {' '}
+      <span className='sol-font-semibold sol-text-primary'>{label}: </span>{' '}
       {isExpanded ? (
         <>
-          <span className='sol-text-slate-600 sol-text-md'>{value}</span>
+          {' '}
+          <span className='sol-text-slate-600 sol-text-md'>{value}</span>{' '}
           <button onClick={toggleBio} className={classes}>
+            {' '}
             {' < Hide'}
           </button>
         </>
       ) : (
         <>
           <span className='sol-text-slate-600 sol-text-md'>
-            {value.substring(0, 120)}...
-          </span>
+            {' '}
+            {value.substring(0, 120)}...{' '}
+          </span>{' '}
           <button onClick={toggleBio} className={classes}>
+            {' '}
             {' > Show more'}
           </button>
         </>
@@ -201,11 +209,11 @@ const Slot: FC<{ count: number }> = ({ count }) => {
   return (
     <div
       className={clsx(
-        'rounded-full text-sm text-white text-center font-medium flex items-center justify-center px-3 py-1',
+        'sol-rounded-full sol-text-sm sol-text-white sol-text-center sol-font-medium sol-flex sol-items-center sol-justify-center sol-px-3 sol-py-1',
         {
-          'bg-slate-300': count === 0,
-          'bg-yellow-500': count > 0 && count <= 2,
-          'bg-green-600': count > 2
+          'sol-bg-slate-300': count === 0,
+          'sol-bg-yellow-500': count > 0 && count <= 2,
+          'sol-bg-green-600': count > 2
         }
       )}
       aria-hidden='true'

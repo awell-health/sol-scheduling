@@ -234,7 +234,12 @@ files.forEach((filePath) => {
       // Only process if it looks like a className context
       if (
         contextBefore.includes('className') ||
-        contextBefore.includes('clsx')
+        contextBefore.includes('clsx') ||
+        contextBefore.includes('text-') ||
+        contextBefore.includes('bg-') ||
+        contextBefore.includes('border') ||
+        contextBefore.includes('flex') ||
+        contextBefore.includes('rounded')
       ) {
         // Check if this looks like a class string (has spaces or Tailwind-like patterns)
         if (
@@ -268,7 +273,7 @@ files.forEach((filePath) => {
       }
     }
 
-    // Do the same for double-quoted strings
+    // Do the same for double-quoted strings but with improved contextual checks
     const doubleStringLiteralRegex = /"([^"]+)"/g;
 
     while ((match = doubleStringLiteralRegex.exec(newContent)) !== null) {
@@ -281,7 +286,12 @@ files.forEach((filePath) => {
       // Only process if it looks like a className context
       if (
         contextBefore.includes('className') ||
-        contextBefore.includes('clsx')
+        contextBefore.includes('clsx') ||
+        contextBefore.includes('text-') ||
+        contextBefore.includes('bg-') ||
+        contextBefore.includes('border') ||
+        contextBefore.includes('flex') ||
+        contextBefore.includes('rounded')
       ) {
         // Check if this looks like a class string (has spaces or Tailwind-like patterns)
         if (

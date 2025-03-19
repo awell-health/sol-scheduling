@@ -12,14 +12,14 @@ export const NavigationButton: FC<Props> = (props) => {
   const { direction, onClick, isDisabled } = props;
   const chevronClasses = clsx(
     'sol-flex sol-flex-none sol-align-center sol-justify-center',
-    'text-primary size-8 font-bold'
+    'sol-text-primary sol-size-8 sol-font-bold'
   );
 
   return (
     <button
       onClick={onClick}
       className={clsx('btn sm:sol-px-6 sm:sol-py-2 sol-px-3 sol-py-1', {
-        'btn-disabled opacity-50 cursor-not-allowed': isDisabled,
+        'btn-disabled sol-opacity-50 sol-cursor-not-allowed': isDisabled,
         'btn-secondary': !isDisabled
       })}
       disabled={isDisabled}

@@ -20,8 +20,9 @@ export const AvailabilitySlots: FC<AvailabilitySlotsProps> = ({
   return (
     <div className='sm:sol-min-w-[400px] sol-mt-4'>
       <div className='sol-mb-2 sol-text-sm sol-font-medium sol-text-slate-600'>
-        {label}
-      </div>
+        {' '}
+        {label}{' '}
+      </div>{' '}
       <div className='sol-flex sol-flex-row sol-gap-2'>
         {slots.map((slot) => (
           <AvailabilitySlot

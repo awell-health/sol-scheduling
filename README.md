@@ -65,6 +65,16 @@ All internal components in this project have been updated to use the prefixed Ta
 
 The prefixing has been done with care to maintain code structure and readability, ensuring that complex components with conditional styling still work as expected.
 
+**Note on Component Consistency**:
+Special attention has been given to components with complex conditional class styling, including:
+
+- `ProviderCard.tsx` with nested context-specific class names
+- `Slots.tsx` with orientation-dependent classes
+- `NavigationButton.tsx` with dynamic direction styling
+- `DayCard.tsx` with date and availability-dependent styles
+
+All Tailwind classes in these components have been prefixed, maintaining all functionality and styling behavior while ensuring isolation from host projects.
+
 You don't need to make any changes to the component code, as all of this was done automatically. When inspecting elements in the browser, you'll see classes like `sol-flex`, `sol-p-4`, and modifiers like `hover:sol-underline`.
 
 ### Using the Library
