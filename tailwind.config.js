@@ -5,7 +5,7 @@ const colors = require('tailwindcss/colors');
 
 const secondaryBtn = ({ addComponents }) => {
   addComponents({
-    '.btn-secondary': {
+    '.sol-btn-secondary': {
       padding: '.5rem 1rem',
       borderRadius: '.375rem',
       fontWeight: '600',
@@ -24,7 +24,7 @@ const secondaryBtn = ({ addComponents }) => {
 
 module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
-  prefix: '',
+  prefix: 'sol-',
   safelist: [],
   theme: {
     fontFamily: {
