@@ -1,6 +1,6 @@
 # SOL scheduling
 
-This project contains SOL's scheduling front-end component which is used in Hosted Pages to let a patient schedule an appointment with a provider. 
+This project contains SOL's scheduling front-end component which is used in Hosted Pages to let a patient schedule an appointment with a provider.
 
 This repository only contains the front-end. All the logic and interaction with APIs happens within the extension and the Hosted Pages app.
 
@@ -35,3 +35,54 @@ In this repository, this is handled by:
 
 - Importing the stylesheet in `.storybook/preview.ts`
 - All stories are decorated with the `<ThemeProvider />` component
+
+## Integrating with Other Tailwind Projects
+
+To avoid styling conflicts when using this library in another project that uses Tailwind CSS:
+
+### Prefixed Classes
+
+All Tailwind classes in this project are prefixed with `sol-` to prevent conflicts with your host project's Tailwind classes. For example, instead of `flex`, use `sol-flex`.
+
+#### Important Note About Modifiers
+
+Tailwind modifiers (like `hover:`, `focus:`, `sm:`, etc.) are correctly positioned before the `sol-` prefix. Examples:
+
+- `hover:underline` becomes `hover:sol-underline`
+- `focus:text-blue-500` becomes `focus:sol-text-blue-500`
+- `sm:p-4` becomes `sm:sol-p-4`
+
+This ensures proper functionality while still maintaining isolation from your host project's styles.
+
+### Component Styling
+
+All internal components in this project have been updated to use the prefixed Tailwind classes. You don't need to make any changes to the component code, as this was done automatically. When inspecting elements in the browser, you'll see classes like `sol-flex`, `sol-p-4`, etc.
+
+### Using the Library
+
+When importing components from this library, use the following approach:
+
+1. Import the components as usual:
+
+   ```js
+   import { SchedulingComponent } from '@awell-health/sol-scheduling';
+   ```
+
+2. Import the styles:
+
+   ```js
+   import '@awell-health/sol-scheduling/style.css';
+   ```
+
+3. Use the prefixed Tailwind classes for any custom styling or make sure to target the specific component wrapper:
+   ```jsx
+   <div className='sol-container'>
+     <SchedulingComponent />
+   </div>
+   ```
+
+This approach ensures that the library's styles won't conflict with your project's Tailwind styles.
+
+### Alternative: CSS Isolation
+
+If you're experiencing style conflicts despite the prefix, you can further isolate the library styles by wrapping the components in a specific CSS module or using Shadow DOM techniques.

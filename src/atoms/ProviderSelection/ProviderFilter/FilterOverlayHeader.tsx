@@ -17,22 +17,22 @@ export const FilterOverlayHeader: FC<Props> = ({ onChange }) => {
   }, [inputRef]);
 
   return (
-    <div className='flex justify-between items-center mb-2 mx-4'>
+    <div className='sol-flex sol-justify-between sol-items-center sol-mb-2 sol-mx-4'>
       <input
         type='text'
         placeholder={`Filter by ${filter.label}`}
-        className='input w-48 md:w-72 h-8 text-sm focus:outline-0 rounded-md focus:border-primary focus:border-1'
+        className='input sol-w-48 md:sol-w-72 sol-h-8 sol-text-sm focus:outline-0 sol-rounded-md focus:sol-border-primary focus:sol-border-1'
         onChange={(e) => onChange(e.target.value)}
         ref={inputRef}
       />
       <button
         aria-label='Close filter'
-        className='btn border-0 btn-circle shadow-none'
+        className='btn sol-border-0 btn-circle sol-shadow-none'
         onClick={() => setActiveFilter(null)}
       >
         <svg
           xmlns='http://www.w3.org/2000/svg'
-          className='h-6 w-6'
+          className='sol-h-6 sol-w-6'
           fill='none'
           viewBox='0 0 24 24'
           stroke='currentColor'

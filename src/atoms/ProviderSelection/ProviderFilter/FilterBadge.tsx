@@ -40,7 +40,7 @@ const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 24 24'
-            className='inline-block h-4 w-4 stroke-current cursor-pointer -mr-2'
+            className='inline-block sol-h-4 sol-w-4 stroke-current cursor-pointer -mr-2'
             aria-label={`Clear ${filter.label} filter`}
             onClick={(e) => {
               e.stopPropagation();

@@ -24,7 +24,7 @@ const secondaryBtn = ({ addComponents }) => {
 
 module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
-  prefix: '',
+  prefix: 'sol-',
   safelist: [],
   theme: {
     fontFamily: {

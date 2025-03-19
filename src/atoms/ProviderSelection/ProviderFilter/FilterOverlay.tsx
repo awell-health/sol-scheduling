@@ -49,7 +49,7 @@ const FilterOverlay: FC<FilterContainerProps> = ({ children }) => {
           }
         )}
       >
-        {activeFilter !== null && <div className='mt-2'>{children}</div>}
+        {activeFilter !== null && <div className='sol-mt-2'>{children}</div>}
       </div>
     </>
   );

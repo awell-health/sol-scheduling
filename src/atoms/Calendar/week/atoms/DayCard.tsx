@@ -72,7 +72,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
           }
         )}
       >
-        <div className='font-medium'>{format(day.date, 'EEE')}</div>
+        <div className='sol-font-medium'>{format(day.date, 'EEE')}</div>
         <div>{day.date.getDate()}</div>
         <div>{format(day.date, 'MMM')}</div>
       </time>
@@ -91,7 +91,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
 const NumberOfSlots: FC<{ count: number }> = ({ count }) => {
   const slotText = count === 1 ? 'slot' : 'slots';
   return (
-    <div className='flex mt-2 gap-2 md:gap-0 md:flex-col flex-row'>
+    <div className='sol-flex sol-mt-2 sol-gap-2 md:sol-gap-0 md:sol-flex-col sol-flex-row'>
       <div
         className={clsx(
           'rounded-full text-sm text-white font-medium my-2 self-center px-4 py-1 w-[85px]',

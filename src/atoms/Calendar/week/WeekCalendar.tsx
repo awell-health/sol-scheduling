@@ -245,10 +245,10 @@ export const WeekCalendar: FC<Props> = (props) => {
   // Calculate if we should disable the next week button
   const isNextWeekDisabled = differenceInDays(currentWeek, new Date()) >= 30;
   return (
-    <div className='relative'>
+    <div className='sol-relative'>
       {loading && (
-        <div className='absolute w-full h-full top-0 left-0 flex items-center justify-center bg-opacity-70 bg-white'>
-          <span className='loading loading-infinity loading-lg text-primary'></span>
+        <div className='sol-absolute sol-w-full sol-h-full sol-top-0 sol-left-0 sol-flex sol-items-center sol-justify-center sol-bg-opacity-70 sol-bg-white'>
+          <span className='loading loading-infinity loading-lg sol-text-primary'></span>
         </div>
       )}
       <LocationFilter
@@ -256,11 +256,11 @@ export const WeekCalendar: FC<Props> = (props) => {
         selected={selectedLocation}
         onSelect={handleSelectLocation}
       />
-      <div className='flex justify-between align-center mb-4 items-center'>
-        <div className='text-lg font-medium'>
+      <div className='sol-flex sol-justify-between align-center sol-mb-4 sol-items-center'>
+        <div className='sol-text-lg sol-font-medium'>
           {`${format(currentWeek, 'MMMM yyyy')}`}
         </div>
-        <div className='flex align-center text-center gap-2'>
+        <div className='sol-flex align-center sol-text-center sol-gap-2'>
           <NavigationButton
             direction='left'
             onClick={handlePreviousWeek}

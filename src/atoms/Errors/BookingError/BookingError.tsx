@@ -22,19 +22,19 @@ export const BookingError: FC<BookingErrorProps> = ({
     : `${provider?.firstName} ${provider?.lastName}`;
   return (
     <div>
-      <p className={clsx('font-medium text-xl text-center m-0')}>
+      <p className={clsx('sol-font-medium sol-text-xl sol-text-center sol-m-0')}>
         {bookingConfirmationError}
       </p>
-      <div className={clsx('card bg-base-100 shadow-md')}>
-        <div className='card-body flex'>
-          <div className={clsx('card-title justify-between')}>
-            <div className={clsx('flex flex-col')}>
-              <p className='font-normal text-lg'>You tried to schedule with</p>
-              <p className='font-semibold text-lg'>{providerName}</p>
+      <div className={clsx('card bg-base-100 sol-shadow-md')}>
+        <div className='card-body sol-flex'>
+          <div className={clsx('card-title sol-justify-between')}>
+            <div className={clsx('sol-flex sol-flex-col')}>
+              <p className='sol-font-normal sol-text-lg'>You tried to schedule with</p>
+              <p className='sol-font-semibold sol-text-lg'>{providerName}</p>
             </div>
             <ProviderAvatar name={providerName} image={provider?.image} />
           </div>
-          <ul className={clsx('list-none p-0 m-0')}>
+          <ul className={clsx('list-none sol-p-0 sol-m-0')}>
             <ListItem>
               <ListItem.Header>Time: </ListItem.Header>
               <time
@@ -58,7 +58,7 @@ export const BookingError: FC<BookingErrorProps> = ({
                 </ListItem>
               ))}
           </ul>
-          <p className={clsx('font-medium text-xl text-center m-0')}>
+          <p className={clsx('sol-font-medium sol-text-xl sol-text-center sol-m-0')}>
             Please go back and try again.
           </p>
         </div>
@@ -71,11 +71,11 @@ const ListItem: FC<{ children: React.ReactNode }> & {
   Header: FC<{ children: React.ReactNode }>;
 } = ({ children }) => {
   return (
-    <li className={clsx('py-4 border-t-slate-200 border-t')}>{children}</li>
+    <li className={clsx('sol-py-4 sol-border-t-slate-200 sol-border-t')}>{children}</li>
   );
 };
 
 ListItem.Header = ({ children }) => {
-  return <div className={clsx('font-bold')}>{children}</div>;
+  return <div className={clsx('sol-font-bold')}>{children}</div>;
 };
 ListItem.Header.displayName = 'ListItemHeader';

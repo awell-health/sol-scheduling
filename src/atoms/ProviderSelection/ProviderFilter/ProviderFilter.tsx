@@ -8,11 +8,11 @@ const ProviderFilter: FC = () => {
   const { filters } = usePreferences();
 
   return (
-    <div className='mb-2'>
+    <div className='sol-mb-2'>
       <FilterOverlay>
         <FilterOverlayContainer />
       </FilterOverlay>
-      <div className='flex flex-wrap'>
+      <div className='sol-flex sol-flex-wrap'>
         <FilterList filters={filters} />
       </div>
     </div>

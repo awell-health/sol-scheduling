@@ -34,7 +34,7 @@ export const ProviderAvatar: FC<ProviderAvatarProps> = ({
         {image ? (
           <img alt={initials} src={image} referrerPolicy='no-referrer' />
         ) : (
-          <span className='text-center text-secondary font-bold h-full flex items-center justify-center w-full'>
+          <span className='sol-text-center sol-text-secondary sol-font-bold sol-h-full sol-flex sol-items-center sol-justify-center sol-w-full'>
             {initials}
           </span>
         )}

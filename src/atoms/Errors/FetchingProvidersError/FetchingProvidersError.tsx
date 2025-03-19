@@ -18,16 +18,16 @@ interface RetryButtonProps {
 const RetryButton: FC<RetryButtonProps> = ({ onClick }) => {
   return (
     <div
-      className='flex justify-center flex-row items-center gap-1 cursor-pointer group my-4'
+      className='sol-flex sol-justify-center sol-flex-row sol-items-center sol-gap-1 cursor-pointer group sol-my-4'
       onClick={onClick}
     >
       <p
-        className={clsx('text-center text-blue-500 group-hover:text-blue-700')}
+        className={clsx('sol-text-center sol-text-blue-500 group-hover:text-blue-700')}
       >
         Try again
       </p>
       <ArrowPathIcon
-        className={clsx('h-4 w-4 fill-blue-500 group-hover:fill-blue-700')}
+        className={clsx('sol-h-4 sol-w-4 fill-blue-500 group-hover:fill-blue-700')}
       />
     </div>
   );
@@ -49,25 +49,25 @@ const ContactNumbers: FC = (): JSX.Element => {
   }) => {
     return (
       <>
-        <span className='font-semibold'>{state}: </span>
+        <span className='sol-font-semibold'>{state}: </span>
         <a
           href={`tel:+${number}`}
-          className='hover:underline'
+          className='hover:sol-underline'
           onClick={() => copyToClipboard(number)}
         >
           {number}
           {`${number === PhoneNumbers.NY ? ' (option 1)' : ''}`}
         </a>
         {copied === number && (
-          <span className='text-green-500 ml-1'>Copied to clipboard</span>
+          <span className='sol-text-green-500 sol-ml-1'>Copied to clipboard</span>
         )}
       </>
     );
   };
 
   return (
-    <div className='p-3'>
-      <ul className='list-disc list-inside space-y-1'>
+    <div className='sol-p-3'>
+      <ul className='list-disc list-inside sol-space-y-1'>
         <li>
           <ContactNumber state='Colorado' number={PhoneNumbers.CO} />
         </li>
@@ -97,12 +97,12 @@ export const FetchingProvidersError: FC<FetchingProvidersErrorProps> = ({
     "Don't worry — our team will contact you shortly to arrange your appointment. You can also reach us directly at the following numbers:";
 
   return (
-    <div className={clsx('card bg-base-100 shadow-md p-6')}>
-      <p className={clsx('font-medium text-xl text-center m-0')}>
+    <div className={clsx('card bg-base-100 sol-shadow-md sol-p-6')}>
+      <p className={clsx('sol-font-medium sol-text-xl sol-text-center sol-m-0')}>
         {FetchingProvidersError}
       </p>
       <RetryButton onClick={refetchFn} />
-      <p className={clsx('text-center')}>{FetchingProviderErrorMessage} </p>
+      <p className={clsx('sol-text-center')}>{FetchingProviderErrorMessage} </p>
       <ContactNumbers />
     </div>
   );

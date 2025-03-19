@@ -45,10 +45,10 @@ export const SchedulingActivity: React.FC<SchedulingActivityProps> = ({
     >
       <main
         id='ahp_main_content_with_scroll_hint'
-        className='flex-1'
+        className='sol-flex-1'
         data-theme='sol'
       >
-        <div className='max-w-[650px] px-4 py-0 mx-auto my-0 relative'>
+        <div className='sol-max-w-[650px] sol-px-4 sol-py-0 sol-mx-auto sol-my-0 sol-relative'>
           <PreferencesProvider
             initialPreferences={filledProviderPreferences}
             skipProviderSelection={shouldSkipProviderSelection}

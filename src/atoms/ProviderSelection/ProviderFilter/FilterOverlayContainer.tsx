@@ -78,7 +78,7 @@ const FilterOverlayContainer: FC<Props> = (props) => {
 
       {isLocationFilter && (
         <>
-          <div className='w-full mt-2 mb-1 z-20 font-semibold text-md flex'>
+          <div className='sol-w-full sol-mt-2 sol-mb-1 sol-z-20 sol-font-semibold sol-text-md sol-flex'>
             States
           </div>
           <div
@@ -88,7 +88,7 @@ const FilterOverlayContainer: FC<Props> = (props) => {
               <FilterOverlayBadge key={value} label={label} value={value} />
             ))}
           </div>
-          <div className='w-full mt-2 mb-1 z-20 font-semibold text-md flex'>
+          <div className='sol-w-full sol-mt-2 sol-mb-1 sol-z-20 sol-font-semibold sol-text-md sol-flex'>
             Facilities
           </div>
           <div

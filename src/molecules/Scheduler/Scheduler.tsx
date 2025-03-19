@@ -136,18 +136,18 @@ export const Scheduler: FC<SchedulerProps> = ({
 
   return (
     <div>
-      <div className='flex flex-row justify-between items-center gap-2 pb-6 mb-5 border-b-1 border-slate-200'>
-        <h4 className='font-semibold text-xl m-0 text-slate-800'>
+      <div className='sol-flex sol-flex-row sol-justify-between sol-items-center sol-gap-2 sol-pb-6 sol-mb-5 sol-border-b-1 sol-border-slate-200'>
+        <h4 className='sol-font-semibold sol-text-xl sol-m-0 sol-text-slate-800'>
           {title}
           <br />
 
           {loadingProvider ? (
-            <div className='skeleton h-6 w-48 bg-secondary' />
+            <div className='skeleton sol-h-6 sol-w-48 sol-bg-secondary' />
           ) : (
-            <span className='text-primary'>{providerName}</span>
+            <span className='sol-text-primary'>{providerName}</span>
           )}
         </h4>
-        <div className='order-last'>
+        <div className='sol-order-last'>
           <ProviderAvatar
             name={providerName}
             image={provider?.image}
@@ -167,12 +167,12 @@ export const Scheduler: FC<SchedulerProps> = ({
         />
       </div>
       {date && (
-        <div className='pt-6 mt-6 border-t-1 border-slate-200'>
-          <div className='mb-4'>
-            <h3 className='font-semibold text-xl m-0 text-slate-800 text-center'>
+        <div className='sol-pt-6 sol-mt-6 sol-border-t-1 sol-border-slate-200'>
+          <div className='sol-mb-4'>
+            <h3 className='sol-font-semibold sol-text-xl sol-m-0 sol-text-slate-800 sol-text-center'>
               {selectSlot}
             </h3>
-            <p className='text-center mt-1'>
+            <p className='sol-text-center sol-mt-1'>
               Times in {Intl.DateTimeFormat().resolvedOptions().timeZone}
             </p>
           </div>
@@ -186,7 +186,7 @@ export const Scheduler: FC<SchedulerProps> = ({
       )}
       {date && slot && (
         <div
-          className='py-6 mt-6 border-t-1 border-slate-200'
+          className='sol-py-6 sol-mt-6 sol-border-t-1 sol-border-slate-200'
           ref={bookingButtonRef}
         >
           <button
@@ -198,7 +198,7 @@ export const Scheduler: FC<SchedulerProps> = ({
             disabled={isBooking}
           >
             {isBooking ? (
-              <span className='loading loading-infinity loading-md text-primary'></span>
+              <span className='loading loading-infinity loading-md sol-text-primary'></span>
             ) : (
               button
             )}

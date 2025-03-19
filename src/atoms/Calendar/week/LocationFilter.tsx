@@ -14,13 +14,13 @@ export const LocationFilter: FC<Props> = (props) => {
   const hasInPerson = inPersonOptions.length > 0;
 
   return (
-    <div className='flex flex-col gap-2 mb-4'>
-      <div className='flex items-center gap-4'>
+    <div className='sol-flex sol-flex-col sol-gap-2 sol-mb-4'>
+      <div className='sol-flex sol-items-center sol-gap-4'>
         {/* In-person section */}
         {hasInPerson && (
-          <div className='flex flex-col gap-2 items-center self-start sm:self-auto'>
-            <p className='text-sm font-medium text-slate-500'>In Person</p>
-            <div className='flex flex-col sm:flex-row sm:gap-2 gap-1'>
+          <div className='sol-flex sol-flex-col sol-gap-2 sol-items-center sol-self-start sm:sol-self-auto'>
+            <p className='sol-text-sm sol-font-medium sol-text-slate-500'>In Person</p>
+            <div className='sol-flex sol-flex-col sm:sol-flex-row sm:sol-gap-2 sol-gap-1'>
               {inPersonOptions.map((option) => (
                 <button
                   key={option}
@@ -44,13 +44,13 @@ export const LocationFilter: FC<Props> = (props) => {
 
         {/* Divider when both types are present */}
         {hasInPerson && hasTelehealth && (
-          <div className='sm:h-16 h-20 w-px bg-slate-300' />
+          <div className='sm:sol-h-16 sol-h-20 sol-w-px sol-bg-slate-300' />
         )}
 
         {/* Telehealth section */}
         {hasTelehealth && (
-          <div className='flex flex-col gap-2 items-center self-start sm:self-auto'>
-            <p className='text-sm font-medium text-slate-500'>Virtual</p>
+          <div className='sol-flex sol-flex-col sol-gap-2 sol-items-center sol-self-start sm:sol-self-auto'>
+            <p className='sol-text-sm sol-font-medium sol-text-slate-500'>Virtual</p>
             <button
               className={clsx(
                 'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',

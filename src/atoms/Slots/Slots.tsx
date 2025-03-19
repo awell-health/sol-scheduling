@@ -54,14 +54,14 @@ export const Slots: FC<SlotsProps> = ({
   return (
     <div>
       {loading && (
-        <div className='flex justify-center'>
-          <span className='loading loading-infinity loading-lg text-primary'></span>
+        <div className='sol-flex sol-justify-center'>
+          <span className='loading loading-infinity loading-lg sol-text-primary'></span>
         </div>
       )}
       {!loading && isEmpty(slots) && <div>{noSlotsLabel}</div>}
       {!loading && !isEmpty(slots) && (
         <fieldset
-          className={clsx('m-0 p-0 b-0 w-full overflow-visible')}
+          className={clsx('sol-m-0 sol-p-0 b-0 sol-w-full sol-overflow-visible')}
           aria-label='Appointment type'
         >
           <RadioGroup
