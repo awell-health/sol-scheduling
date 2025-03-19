@@ -11,14 +11,14 @@ export interface Props {
 export const NavigationButton: FC<Props> = (props) => {
   const { direction, onClick, isDisabled } = props;
   const chevronClasses = clsx(
-    'flex flex-none align-center justify-center',
+    'sol-flex sol-flex-none sol-align-center sol-justify-center',
     'text-primary size-8 font-bold'
   );
 
   return (
     <button
       onClick={onClick}
-      className={clsx('btn sm:px-6 sm:py-2 px-3 py-1', {
+      className={clsx('btn sm:sol-px-6 sm:sol-py-2 sol-px-3 sol-py-1', {
         'btn-disabled opacity-50 cursor-not-allowed': isDisabled,
         'btn-secondary': !isDisabled
       })}

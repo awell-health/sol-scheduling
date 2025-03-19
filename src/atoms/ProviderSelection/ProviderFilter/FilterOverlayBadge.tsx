@@ -40,7 +40,7 @@ export const FilterOverlayBadge: FC<OptionProps> = ({ value, label }) => {
     <button
       key={value}
       className={clsx(
-        'btn btn-sm text-sm border-1 border-primary font-medium hover:bg-secondary hover:border-1 hover:border-primary',
+        'btn btn-sm sol-text-sm sol-border-1 sol-border-primary sol-font-medium hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
         {
           'border-1 border-primary ring-4 ring-secondary bg-white text-primary':
             filter.selectedOptions.includes(value),

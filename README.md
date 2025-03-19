@@ -56,7 +56,16 @@ This ensures proper functionality while still maintaining isolation from your ho
 
 ### Component Styling
 
-All internal components in this project have been updated to use the prefixed Tailwind classes. You don't need to make any changes to the component code, as this was done automatically. When inspecting elements in the browser, you'll see classes like `sol-flex`, `sol-p-4`, etc.
+All internal components in this project have been updated to use the prefixed Tailwind classes. This includes:
+
+- Simple class names (`flex` → `sol-flex`)
+- Classes with modifiers (`hover:text-blue-500` → `hover:sol-text-blue-500`)
+- Complex conditional classes in `clsx()` objects (including multi-line expressions)
+- Nested class structures
+
+The prefixing has been done with care to maintain code structure and readability, ensuring that complex components with conditional styling still work as expected.
+
+You don't need to make any changes to the component code, as all of this was done automatically. When inspecting elements in the browser, you'll see classes like `sol-flex`, `sol-p-4`, and modifiers like `hover:sol-underline`.
 
 ### Using the Library
 

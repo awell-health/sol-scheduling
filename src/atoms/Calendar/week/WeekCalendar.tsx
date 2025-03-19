@@ -256,11 +256,11 @@ export const WeekCalendar: FC<Props> = (props) => {
         selected={selectedLocation}
         onSelect={handleSelectLocation}
       />
-      <div className='sol-flex sol-justify-between align-center sol-mb-4 sol-items-center'>
+      <div className='sol-flex sol-justify-between sol-align-center sol-mb-4 sol-items-center'>
         <div className='sol-text-lg sol-font-medium'>
           {`${format(currentWeek, 'MMMM yyyy')}`}
         </div>
-        <div className='sol-flex align-center sol-text-center sol-gap-2'>
+        <div className='sol-flex sol-align-center sol-text-center sol-gap-2'>
           <NavigationButton
             direction='left'
             onClick={handlePreviousWeek}
@@ -275,7 +275,7 @@ export const WeekCalendar: FC<Props> = (props) => {
       </div>
       <div
         className={clsx(
-          'flex gap-2 lg:gap-3 flex-col md:flex-row overflow-x-auto'
+          'sol-flex sol-gap-2 lg:sol-gap-3 sol-flex-col md:sol-flex-row sol-overflow-x-auto'
         )}
       >
         {days.map((day) => (

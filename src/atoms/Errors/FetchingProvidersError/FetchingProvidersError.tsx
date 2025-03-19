@@ -18,16 +18,20 @@ interface RetryButtonProps {
 const RetryButton: FC<RetryButtonProps> = ({ onClick }) => {
   return (
     <div
-      className='sol-flex sol-justify-center sol-flex-row sol-items-center sol-gap-1 cursor-pointer group sol-my-4'
+      className='sol-flex sol-justify-center sol-flex-row sol-items-center sol-gap-1 sol-cursor-pointer group sol-my-4'
       onClick={onClick}
     >
       <p
-        className={clsx('sol-text-center sol-text-blue-500 group-hover:text-blue-700')}
+        className={clsx(
+          'sol-text-center sol-text-blue-500 group-hover:sol-text-blue-700'
+        )}
       >
         Try again
       </p>
       <ArrowPathIcon
-        className={clsx('sol-h-4 sol-w-4 fill-blue-500 group-hover:fill-blue-700')}
+        className={clsx(
+          'sol-h-4 sol-w-4 sol-fill-blue-500 group-hover:sol-fill-blue-700'
+        )}
       />
     </div>
   );
@@ -59,7 +63,9 @@ const ContactNumbers: FC = (): JSX.Element => {
           {`${number === PhoneNumbers.NY ? ' (option 1)' : ''}`}
         </a>
         {copied === number && (
-          <span className='sol-text-green-500 sol-ml-1'>Copied to clipboard</span>
+          <span className='sol-text-green-500 sol-ml-1'>
+            Copied to clipboard
+          </span>
         )}
       </>
     );
@@ -67,6 +73,7 @@ const ContactNumbers: FC = (): JSX.Element => {
 
   return (
     <div className='sol-p-3'>
+      {' '}
       <ul className='list-disc list-inside sol-space-y-1'>
         <li>
           <ContactNumber state='Colorado' number={PhoneNumbers.CO} />
@@ -98,7 +105,9 @@ export const FetchingProvidersError: FC<FetchingProvidersErrorProps> = ({
 
   return (
     <div className={clsx('card bg-base-100 sol-shadow-md sol-p-6')}>
-      <p className={clsx('sol-font-medium sol-text-xl sol-text-center sol-m-0')}>
+      <p
+        className={clsx('sol-font-medium sol-text-xl sol-text-center sol-m-0')}
+      >
         {FetchingProvidersError}
       </p>
       <RetryButton onClick={refetchFn} />

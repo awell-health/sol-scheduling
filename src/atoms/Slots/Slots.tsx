@@ -61,7 +61,9 @@ export const Slots: FC<SlotsProps> = ({
       {!loading && isEmpty(slots) && <div>{noSlotsLabel}</div>}
       {!loading && !isEmpty(slots) && (
         <fieldset
-          className={clsx('sol-m-0 sol-p-0 b-0 sol-w-full sol-overflow-visible')}
+          className={clsx(
+            'sol-m-0 sol-p-0 b-0 sol-w-full sol-overflow-visible'
+          )}
           aria-label='Appointment type'
         >
           <RadioGroup

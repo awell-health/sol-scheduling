@@ -34,7 +34,11 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
   const ProvidersComponent = (): JSX.Element => {
     return (
       <>
-        <h2 className={clsx('sol-text-slate-800 sol-text-2xl sol-font-semibold sol-mb-4')}>
+        <h2
+          className={clsx(
+            'sol-text-slate-800 sol-text-2xl sol-font-semibold sol-mb-4'
+          )}
+        >
           We found{' '}
           <span className='sol-text-primary'>
             {providers.length} {providersLabel}

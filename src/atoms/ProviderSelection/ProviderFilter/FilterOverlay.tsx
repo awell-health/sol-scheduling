@@ -31,7 +31,7 @@ const FilterOverlay: FC<FilterContainerProps> = ({ children }) => {
     <>
       <div
         className={clsx(
-          'fixed inset-0 transition-transform duration-500 ease-in-out z-40',
+          'sol-fixed inset-0 transition-transform duration-500 ease-in-out sol-z-40',
           {
             'bg-opacity-30 bg-black': isFiltered,
             'bg-opacity-0 hidden bg-transparent': !isFiltered
@@ -41,7 +41,7 @@ const FilterOverlay: FC<FilterContainerProps> = ({ children }) => {
       <div
         ref={ref}
         className={clsx(
-          'fixed top-0 left-1/2 transform -translate-x-1/2 max-w-[650px] w-full bg-slate-200 rounded-b-md text-slate-800 transition-transform duration-500 ease-in-out z-50 p-4',
+          'sol-fixed sol-top-0 sol-left-1/2 transform -translate-x-1/2 sol-max-w-[650px] sol-w-full sol-bg-slate-200 sol-rounded-b-md sol-text-slate-800 transition-transform duration-500 ease-in-out sol-z-50 sol-p-4',
           {
             'translate-y-0 p-4': isFiltered,
             '-translate-y-full p-0': !isFiltered,

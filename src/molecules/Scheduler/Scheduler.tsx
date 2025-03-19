@@ -190,7 +190,7 @@ export const Scheduler: FC<SchedulerProps> = ({
           ref={bookingButtonRef}
         >
           <button
-            className={clsx('btn w-full', {
+            className={clsx('btn sol-w-full', {
               'btn-secondary cursor-not-allowed': isBooking,
               'btn-primary': !isBooking
             })}

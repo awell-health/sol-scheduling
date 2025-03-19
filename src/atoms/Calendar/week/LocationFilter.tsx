@@ -19,13 +19,15 @@ export const LocationFilter: FC<Props> = (props) => {
         {/* In-person section */}
         {hasInPerson && (
           <div className='sol-flex sol-flex-col sol-gap-2 sol-items-center sol-self-start sm:sol-self-auto'>
-            <p className='sol-text-sm sol-font-medium sol-text-slate-500'>In Person</p>
+            <p className='sol-text-sm sol-font-medium sol-text-slate-500'>
+              In Person
+            </p>
             <div className='sol-flex sol-flex-col sm:sol-flex-row sm:sol-gap-2 sol-gap-1'>
               {inPersonOptions.map((option) => (
                 <button
                   key={option}
                   className={clsx(
-                    'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
+                    'btn btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                     {
                       'text-slate-800 border-1 border-slate-200 bg-white':
                         option !== selected,
@@ -50,10 +52,12 @@ export const LocationFilter: FC<Props> = (props) => {
         {/* Telehealth section */}
         {hasTelehealth && (
           <div className='sol-flex sol-flex-col sol-gap-2 sol-items-center sol-self-start sm:sol-self-auto'>
-            <p className='sol-text-sm sol-font-medium sol-text-slate-500'>Virtual</p>
+            <p className='sol-text-sm sol-font-medium sol-text-slate-500'>
+              Virtual
+            </p>
             <button
               className={clsx(
-                'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary',
+                'btn btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                 {
                   'text-slate-800 border-1 border-slate-200 bg-white':
                     'Telehealth' !== selected,

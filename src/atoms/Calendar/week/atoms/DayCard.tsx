@@ -48,15 +48,16 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
       onClick={() => onSelect(day.date)}
       disabled={cannotActivate(day)}
       className={clsx(
-        'flex flex-1 md:flex-col justify-between md:justify-center align-center p-3',
-        'font-bold text-lg text-center rounded-md',
-        'w-full md:w-auto',
+        'sol-flex sol-flex-1 md:sol-flex-col sol-justify-between md:sol-justify-center sol-align-center sol-p-3',
+        'sol-font-bold sol-text-lg sol-text-center sol-rounded-md',
+        'sol-w-full md:sol-w-auto',
         {
-          'border-slate-200 border-1 bg-white': !day.isSelected,
-          'border-1 border-primary ring-4 ring-secondary': day.isSelected,
-          'bg-slate-100 cursor-not-allowed text-slate-300 border-1 border-slate-200':
+          'sol-border-slate-200 sol-border-1 sol-bg-white': !day.isSelected,
+          'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary':
+            day.isSelected,
+          'sol-bg-slate-100 sol-cursor-not-allowed sol-text-slate-300 sol-border-1 sol-border-slate-200':
             day.isDisabled,
-          'hover:z-10 hover:bg-secondary hover:border-primary cursor-pointer':
+          'hover:sol-z-10 hover:sol-bg-secondary hover:sol-border-primary sol-cursor-pointer':
             !cannotActivate(day)
         }
       )}
@@ -64,11 +65,11 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
       <time
         dateTime={day.date.toISOString()}
         className={clsx(
-          'flex flex-row md:flex-none md:block gap-1 md:self-center',
+          'sol-flex sol-flex-row md:sol-flex-none md:sol-block sol-gap-1 md:sol-self-center',
           {
-            'text-slate-400': cannotActivate(day),
-            'text-slate-800': !cannotActivate(day) && !day.isSelected,
-            'text-primary': day.isSelected
+            'sol-text-slate-400': cannotActivate(day),
+            'sol-text-slate-800': !cannotActivate(day) && !day.isSelected,
+            'sol-text-primary': day.isSelected
           }
         )}
       >
@@ -77,8 +78,8 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
         <div>{format(day.date, 'MMM')}</div>
       </time>
       <div
-        className={clsx('self-center flex', {
-          'text-slate-400': true
+        className={clsx('sol-self-center sol-flex', {
+          'sol-text-slate-400': true
         })}
         ref={slotRef}
       >
@@ -94,11 +95,11 @@ const NumberOfSlots: FC<{ count: number }> = ({ count }) => {
     <div className='sol-flex sol-mt-2 sol-gap-2 md:sol-gap-0 md:sol-flex-col sol-flex-row'>
       <div
         className={clsx(
-          'rounded-full text-sm text-white font-medium my-2 self-center px-4 py-1 w-[85px]',
+          'sol-rounded-full sol-text-sm sol-text-white sol-font-medium sol-my-2 sol-self-center sol-px-4 sol-py-1 sol-w-[85px]',
           {
-            'bg-slate-300': count === 0,
-            'bg-yellow-500': count > 0 && count <= 2,
-            'bg-green-600': count > 2
+            'sol-bg-slate-300': count === 0,
+            'sol-bg-yellow-500': count > 0 && count <= 2,
+            'sol-bg-green-600': count > 2
           }
         )}
         aria-hidden='true'

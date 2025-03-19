@@ -68,7 +68,10 @@ const FilterOverlayContainer: FC<Props> = (props) => {
       <FilterOverlayHeader onChange={onTextFilteredOptionsChange} />
       {!isLocationFilter && (
         <div
-          className={clsx('flex w-full gap-2 px-4 flex-wrap z-20', className)}
+          className={clsx(
+            'sol-flex sol-w-full sol-gap-2 sol-px-4 sol-flex-wrap sol-z-20',
+            className
+          )}
         >
           {textFilteredOptions.map(({ label, value }) => (
             <FilterOverlayBadge key={value} label={label} value={value} />
@@ -82,7 +85,10 @@ const FilterOverlayContainer: FC<Props> = (props) => {
             States
           </div>
           <div
-            className={clsx('flex w-full gap-2 px-4 flex-wrap z-20', className)}
+            className={clsx(
+              'sol-flex sol-w-full sol-gap-2 sol-px-4 sol-flex-wrap sol-z-20',
+              className
+            )}
           >
             {locationFilter.states.map(({ label, value }) => (
               <FilterOverlayBadge key={value} label={label} value={value} />
@@ -92,7 +98,10 @@ const FilterOverlayContainer: FC<Props> = (props) => {
             Facilities
           </div>
           <div
-            className={clsx('flex w-full gap-2 px-4 flex-wrap z-20', className)}
+            className={clsx(
+              'sol-flex sol-w-full sol-gap-2 sol-px-4 sol-flex-wrap sol-z-20',
+              className
+            )}
           >
             {locationFilter.facilities.map(({ label, value }) => (
               <FilterOverlayBadge key={value} label={label} value={value} />

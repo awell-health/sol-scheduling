@@ -28,7 +28,10 @@ export const ProviderCard: FC<ProviderProps> = ({
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
 
   return (
-    <div key={provider.id} className='sol-rounded-md sol-border-1 sol-bg-white sol-p-4'>
+    <div
+      key={provider.id}
+      className='sol-rounded-md sol-border-1 sol-bg-white sol-p-4'
+    >
       <ProviderHeader provider={provider} deliveryMethod={deliveryMethod} />
       <div className={clsx('sol-mt-4 sol-bg-slate-50 sol-rounded-md sol-p-3')}>
         <div>
@@ -109,7 +112,7 @@ const ProviderHeader: FC<{
               {showProfileLink && (
                 <>
                   {location.length > 0 && profileLink.length > 0 && (
-                    <span className='sol-text-slate-600 sol-text-md hidden sm:inline sol-px-1'>
+                    <span className='sol-text-slate-600 sol-text-md sol-hidden sm:sol-inline sol-px-1'>
                       •
                     </span>
                   )}
