@@ -12,7 +12,7 @@ import {
   completeActivityMock
 } from './__mocks__/scheduler.mocks';
 import { mockFetchProvidersFn } from '@/lib/api/__mocks__';
-import { SchedulerSpec } from './Scheduler.spec';
+// import { SchedulerSpec } from './Scheduler.spec';
 
 const meta: Meta<typeof SchedulerComponent> = {
   title: 'Molecules/Scheduler',

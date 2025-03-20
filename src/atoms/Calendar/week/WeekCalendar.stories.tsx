@@ -4,10 +4,10 @@ import { ThemeProvider } from '@awell-health/ui-library';
 import { fn } from '@storybook/test';
 import { mockProviderAvailabilityResponse } from '@/lib/api/__mocks__';
 import {
-  NoAvailabilitiesSpec,
+  // NoAvailabilitiesSpec,
   NextWeekAvailabilitySpec,
-  CurrentWeekAvailabilitySpec,
-  WithAvailabilitiesAndInPersonPreferenceSpec
+  CurrentWeekAvailabilitySpec
+  // WithAvailabilitiesAndInPersonPreferenceSpec
 } from './WeekCalendar.spec';
 import { DeliveryMethod, EventDeliveryMethod } from '@/lib/api';
 
