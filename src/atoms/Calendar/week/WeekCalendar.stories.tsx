@@ -61,6 +61,7 @@ export const WithAvailabilities: Story = {
 
 export const TestWithAvailabilitiesAndInPersonPreference: Story = {
   play: WithAvailabilitiesAndInPersonPreferenceSpec,
+  tags: ['prefixing-wip'],
   args: {
     weekStartsOn: 'monday',
     hideWeekends: true,
