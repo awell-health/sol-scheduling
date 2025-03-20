@@ -24,7 +24,7 @@ export const TimezoneSelector: FC<TimezoneSelectorProps> = ({
         id='timezone-select'
         value={value}
         onChange={handleTimezoneChange}
-        className='select w-full text-slate-800 text-lg leading-5 border-1 border-slate-300 rounded-lg focus:outline-slate-300'
+        className='sol-select sol-w-full sol-text-slate-800 sol-text-lg sol-leading-5 sol-border-1 sol-border-slate-300 sol-rounded-lg focus:sol-outline-slate-300'
       >
         {moment.tz.names().map((timezone) => (
           <option key={timezone} value={timezone}>

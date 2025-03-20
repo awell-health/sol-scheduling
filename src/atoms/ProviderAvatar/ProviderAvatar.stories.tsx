@@ -6,7 +6,7 @@ const meta: Meta<typeof ProviderAvatarComponent> = {
   title: 'Atoms/ProviderAvatar',
   component: ProviderAvatarComponent,
   args: {
-    classes: 'w-24 h-24'
+    classes: 'sol-w-24 sol-h-24'
   },
   decorators: [
     (Story) => (

@@ -24,7 +24,7 @@ export const AvailabilitySlot: FC<AvailabilitySlotProps> = ({
   };
   // TODO - check if border-1 is actually working
   return (
-    <div className='rounded-md px-3 py-2 text-xs font-medium text-slate-800 border-1 border-slate-300 bg-white'>
+    <div className='sol-rounded-md sol-px-3 sol-py-2 sol-text-xs sol-font-medium sol-text-slate-800 sol-border-1 sol-border-slate-300 sol-bg-white'>
       {formatSlotTime(slotstart)}
     </div>
   );

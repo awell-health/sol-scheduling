@@ -17,13 +17,13 @@ const FilterOverlay: FC<FilterContainerProps> = ({ children }) => {
   // icky, but idk a better way to remove the scrollbar using the virtual dom
   useEffect(() => {
     if (isFiltered) {
-      document.body.classList.add('overflow-hidden');
+      document.body.classList.add('sol-overflow-hidden');
     } else {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove('sol-overflow-hidden');
     }
 
     return () => {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove('sol-overflow-hidden');
     };
   }, [isFiltered]);
 
@@ -31,25 +31,25 @@ const FilterOverlay: FC<FilterContainerProps> = ({ children }) => {
     <>
       <div
         className={clsx(
-          'fixed inset-0 transition-transform duration-500 ease-in-out z-40',
+          'sol-fixed sol-inset-0 sol-transition-transform sol-duration-500 sol-ease-in-out sol-z-40',
           {
-            'bg-opacity-30 bg-black': isFiltered,
-            'bg-opacity-0 hidden bg-transparent': !isFiltered
+            'sol-bg-opacity-30 sol-bg-black': isFiltered,
+            'sol-bg-opacity-0 sol-hidden sol-bg-transparent': !isFiltered
           }
         )}
       />
       <div
         ref={ref}
         className={clsx(
-          'fixed top-0 left-1/2 transform -translate-x-1/2 max-w-[650px] w-full bg-slate-200 rounded-b-md text-slate-800 transition-transform duration-500 ease-in-out z-50 p-4',
+          'sol-fixed sol-top-0 sol-left-1/2 sol-transform -sol-translate-x-1/2 sol-max-w-[650px] sol-w-full sol-bg-slate-200 sol-rounded-b-md sol-text-slate-800 sol-transition-transform sol-duration-500 sol-ease-in-out sol-z-50 sol-p-4',
           {
-            'translate-y-0 p-4': isFiltered,
-            '-translate-y-full p-0': !isFiltered,
-            'overflow-y-auto max-h-screen': true
+            'sol-translate-y-0 sol-p-4': isFiltered,
+            '-sol-translate-y-full sol-p-0': !isFiltered,
+            'sol-overflow-y-auto sol-max-h-screen': true
           }
         )}
       >
-        {activeFilter !== null && <div className='mt-2'>{children}</div>}
+        {activeFilter !== null && <div className='sol-mt-2'>{children}</div>}
       </div>
     </>
   );

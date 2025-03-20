@@ -28,11 +28,14 @@ export const ProviderCard: FC<ProviderProps> = ({
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
 
   return (
-    <div key={provider.id} className='rounded-md border-1 bg-white p-4'>
+    <div
+      key={provider.id}
+      className='sol-rounded-md sol-border-1 sol-bg-white sol-p-4'
+    >
       <ProviderHeader provider={provider} deliveryMethod={deliveryMethod} />
-      <div className={clsx('mt-4 bg-slate-50 rounded-md p-3')}>
+      <div className={clsx('sol-mt-4 sol-bg-slate-50 sol-rounded-md sol-p-3')}>
         <div>
-          <ul className='flex flex-wrap list-none m-0 p-0 gap-y-4 mb-4'>
+          <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
             {provider.gender && (
               <SingleItem
                 label='Gender'
@@ -43,7 +46,7 @@ export const ProviderCard: FC<ProviderProps> = ({
               <SingleItem label='Ethnicity' value={provider.ethnicity} />
             )}
           </ul>
-          <ul className='flex flex-wrap list-none m-0 p-0 gap-y-4 mb-4'>
+          <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
             {facilities.length > 0 && (
               <SingleItem
                 label={`Clinic Location${facilities.length > 1 ? 's' : ''}`}
@@ -56,7 +59,7 @@ export const ProviderCard: FC<ProviderProps> = ({
         <div>
           <button
             onClick={() => onSelect(provider.id)}
-            className={clsx('btn btn-primary w-full')}
+            className={clsx('sol-btn sol-btn-primary sol-w-full')}
           >
             {button}
           </button>
@@ -86,30 +89,33 @@ const ProviderHeader: FC<{
           .slice(0, 3)
       : provider.events.slice(0, 3);
   return (
-    <div className='flex flex-col sm:flex-row items-start sm:items-center sm:justify-between'>
-      <div className='self-center sm:self-auto'>
+    <div className='sol-flex sol-flex-col sm:sol-flex-row sol-items-start sm:sol-items-center sm:sol-justify-between'>
+      <div className='sol-self-center sm:sol-self-auto'>
         <ProviderAvatar
           name={providerName}
           image={provider.image}
-          classes='w-32 h-32'
+          classes='sol-w-32 sol-h-32'
         />
       </div>
-      <div className='w-full sm:w-auto sm:gap-y-6'>
-        <div className='flex flex-col sm:flex-row items-center sm:justify-between justify-center mb-3'>
+      <div className='sol-w-full sm:sol-w-auto sm:sol-gap-y-6'>
+        <div className='sol-flex sol-flex-col sm:sol-flex-row sol-items-center sm:sol-justify-between sol-justify-center sol-mb-3'>
           <div>
-            <h3 className='text-slate-800 text-lg m-0 font-semibold text-center sm:text-left'>
-              {providerName}
-            </h3>
-            <div className='flex flex-col sm:flex-row justify-center sm:justify-start items-center'>
+            <h3 className='sol-text-slate-800 sol-text-lg sol-m-0 sol-font-semibold sol-text-center sm:sol-text-left'>
+              {' '}
+              {providerName}{' '}
+            </h3>{' '}
+            <div className='sol-flex sol-flex-col sm:sol-flex-row sol-justify-center sm:sol-justify-start sol-items-center'>
               {location.length > 0 && (
-                <span className='text-slate-600 text-md'>
-                  {toFullNameState(location)}
+                <span className='sol-text-slate-600 sol-text-md'>
+                  {' '}
+                  {toFullNameState(location)}{' '}
                 </span>
-              )}
+              )}{' '}
               {showProfileLink && (
                 <>
+                  {' '}
                   {location.length > 0 && profileLink.length > 0 && (
-                    <span className='text-slate-600 text-md hidden sm:inline px-1'>
+                    <span className='sol-text-slate-600 sol-text-md sol-hidden sm:sol-inline sol-px-1'>
                       •
                     </span>
                   )}
@@ -121,7 +127,7 @@ const ProviderHeader: FC<{
             </div>
           </div>
 
-          <div className='self-center sm:self-auto mt-2 sm:mt-0'>
+          <div className='sol-self-center sm:sol-self-auto sol-mt-2 sm:sol-mt-0'>
             <Slot count={provider.events?.length ?? 0} />
           </div>
         </div>
@@ -135,42 +141,47 @@ const ProviderHeader: FC<{
   );
 };
 
-const mainText = 'font-semibold text-primary';
-const subText = 'text-slate-600 text-md';
+const mainText = 'sol-font-semibold sol-text-primary';
+const subText = 'sol-text-slate-600 sol-text-md';
 
 const SingleItem: FC<{ label: string; value: string }> = ({ label, value }) => {
   return (
-    <li className='flex-1 basis-1/2'>
-      <span className={subText}>{label}: </span>
-      <span className={mainText}>{value}</span>
+    <li className='sol-flex-1 sol-basis-1/2'>
+      {' '}
+      <span className={subText}>{label}: </span>{' '}
+      <span className={mainText}>{value}</span>{' '}
     </li>
   );
 };
 
 const BioItem: FC<{ label: string; value: string }> = ({ label, value }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
   const toggleBio = () => {
     setIsExpanded(!isExpanded);
   };
   const classes =
-    'text-blue-500 rounded-full text-sm text-blue font-medium flex items-center justify-center';
+    'sol-text-blue-500 sol-rounded-full sol-text-sm sol-text-blue sol-font-medium sol-flex sol-items-center sol-justify-center';
   return (
-    <li className='flex-1 basis-full'>
-      <span className='font-semibold text-primary'>{label}: </span>
+    <li className='sol-flex-1 sol-basis-full'>
+      {' '}
+      <span className='sol-font-semibold sol-text-primary'>{label}: </span>{' '}
       {isExpanded ? (
         <>
-          <span className='text-slate-600 text-md'>{value}</span>
+          {' '}
+          <span className='sol-text-slate-600 sol-text-md'>{value}</span>{' '}
           <button onClick={toggleBio} className={classes}>
+            {' '}
             {' < Hide'}
           </button>
         </>
       ) : (
         <>
-          <span className='text-slate-600 text-md'>
-            {value.substring(0, 120)}...
-          </span>
+          <span className='sol-text-slate-600 sol-text-md'>
+            {' '}
+            {value.substring(0, 120)}...{' '}
+          </span>{' '}
           <button onClick={toggleBio} className={classes}>
+            {' '}
             {' > Show more'}
           </button>
         </>
@@ -185,7 +196,7 @@ const LinkToProfileItem: FC<{ link: string }> = ({ link }) => {
       href={link}
       target='_blank'
       rel='noopener noreferrer'
-      className='link text-blue-500 no-underline hover:underline'
+      className='sol-link sol-text-blue-500 sol-no-underline hover:sol-underline'
       aria-label={`Visit provider profile page`}
     >
       View Profile
@@ -198,11 +209,11 @@ const Slot: FC<{ count: number }> = ({ count }) => {
   return (
     <div
       className={clsx(
-        'rounded-full text-sm text-white text-center font-medium flex items-center justify-center px-3 py-1',
+        'sol-rounded-full sol-text-sm sol-text-white sol-text-center sol-font-medium sol-flex sol-items-center sol-justify-center sol-px-3 sol-py-1',
         {
-          'bg-slate-300': count === 0,
-          'bg-yellow-500': count > 0 && count <= 2,
-          'bg-green-600': count > 2
+          'sol-bg-slate-300': count === 0,
+          'sol-bg-yellow-500': count > 0 && count <= 2,
+          'sol-bg-green-600': count > 2
         }
       )}
       aria-hidden='true'

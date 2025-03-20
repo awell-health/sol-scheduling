@@ -18,9 +18,12 @@ export const AvailabilitySlots: FC<AvailabilitySlotsProps> = ({
       ? 'Next Availability:'
       : `${deliveryMethod ? `No ${deliveryMethod} slots available` : ''}`;
   return (
-    <div className='sm:min-w-[400px] mt-4'>
-      <div className='mb-2 text-sm font-medium text-slate-600'>{label}</div>
-      <div className='flex flex-row gap-2'>
+    <div className='sm:sol-min-w-[400px] sol-mt-4'>
+      <div className='sol-mb-2 sol-text-sm sol-font-medium sol-text-slate-600'>
+        {' '}
+        {label}{' '}
+      </div>{' '}
+      <div className='sol-flex sol-flex-row sol-gap-2'>
         {slots.map((slot) => (
           <AvailabilitySlot
             key={slot.eventId}

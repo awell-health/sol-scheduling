@@ -34,14 +34,18 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
   const ProvidersComponent = (): JSX.Element => {
     return (
       <>
-        <h2 className={clsx('text-slate-800 text-2xl font-semibold mb-4')}>
+        <h2
+          className={clsx(
+            'sol-text-slate-800 sol-text-2xl sol-font-semibold sol-mb-4'
+          )}
+        >
           We found{' '}
-          <span className='text-primary'>
+          <span className='sol-text-primary'>
             {providers.length} {providersLabel}
           </span>{' '}
           for you
         </h2>
-        <div className='flex flex-col gap-4'>
+        <div className='sol-flex sol-flex-col sol-gap-4'>
           {providers.map((provider) => (
             <ProviderCard
               deliveryMethod={preferences.deliveryMethod}
@@ -58,8 +62,8 @@ export const ProviderSelection: FC<ProviderSelectionProps> = ({
 
   const LoadingComponent = (): JSX.Element => {
     return (
-      <div className='h-full w-full flex items-center justify-center '>
-        <span className='loading loading-infinity loading-lg text-primary'></span>
+      <div className='sol-h-full sol-w-full sol-flex sol-items-center sol-justify-center '>
+        <span className='sol-loading sol-loading-infinity sol-loading-lg sol-text-primary'></span>
       </div>
     );
   };

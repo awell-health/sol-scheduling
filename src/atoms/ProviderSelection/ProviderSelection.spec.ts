@@ -32,7 +32,7 @@ export const ProviderSelectionSpec = async ({
     autoClose?: boolean;
   }) => {
     const buttonText = button.innerText;
-    await expect(button).toHaveClass('border-slate-200');
+    await expect(button).toHaveClass('sol-border-slate-200');
     await userEvent.click(button);
     const closeButton = await canvas.findByLabelText('Close filter');
     await expect(closeButton).toBeVisible();
@@ -42,17 +42,17 @@ export const ProviderSelectionSpec = async ({
     await expect(filterButton).toHaveTextContent(filterName);
     await userEvent.click(filterButton);
     if (!autoClose) {
-      await expect(filterButton).toHaveClass('ring-secondary');
+      await expect(filterButton).toHaveClass('sol-ring-secondary');
       await userEvent.click(closeButton);
     }
     await expect(filterButton).not.toBeVisible();
-    await expect(button).toHaveClass('ring-secondary');
-    await expect(button).toHaveClass('text-primary');
+    await expect(button).toHaveClass('sol-ring-secondary');
+    await expect(button).toHaveClass('sol-text-primary');
     const clearFilter = await canvas.findByLabelText(
       `Clear ${buttonText} filter`
     );
     await userEvent.click(clearFilter);
-    await expect(button).toHaveClass('border-slate-200');
+    await expect(button).toHaveClass('sol-border-slate-200');
   };
   await testApplyFilter({
     button: ethnicityButton,

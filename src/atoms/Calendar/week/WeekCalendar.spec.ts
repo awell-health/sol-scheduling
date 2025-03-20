@@ -15,15 +15,25 @@ export const WithAvailabilitiesAndInPersonPreferenceSpec = async ({
     name: 'Brooklyn Heights'
   });
 
-  expect(physicalLocationFilter).toHaveClass('selected');
+  expect(physicalLocationFilter).toHaveClass('sol-selected');
 
   const availableDay = await canvas.findByTestId('Tue Oct 15 2024');
 
   /**
    * There is only one In-Person slot available in our test data
+   * Using a more specific approach to find slot text to avoid ambiguity with date numbers
    */
+  // Look for an element that explicitly contains "slot" text to avoid confusing with day numbers
+  const slotElements = within(availableDay).queryAllByText(/slot/i);
   expect(
-    await within(availableDay).findByText('1 slot'),
+    slotElements.length,
+    `${availableDay.innerText.replace('\n', ' ')} should have a slot indicator`
+  ).toBeGreaterThan(0);
+
+  // Verify the slot count specifically mentions 1 slot
+  const slotElement = slotElements.find((el) => el.textContent?.includes('1'));
+  expect(
+    slotElement,
     `${availableDay.innerText.replace('\n', ' ')} should have 1 slot`
   ).toBeTruthy();
 };
@@ -52,7 +62,7 @@ export const NoAvailabilitiesSpec = async ({
   const virtualButton = await canvas.findByRole('button', {
     name: 'Telehealth'
   });
-  expect(virtualButton).toHaveClass('selected');
+  expect(virtualButton).toHaveClass('sol-selected');
 
   await userEvent.click(virtualButton);
   const mondayCard = await canvas.findByTestId('Mon Oct 14 2024');

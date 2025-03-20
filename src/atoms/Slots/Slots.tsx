@@ -54,14 +54,16 @@ export const Slots: FC<SlotsProps> = ({
   return (
     <div>
       {loading && (
-        <div className='flex justify-center'>
-          <span className='loading loading-infinity loading-lg text-primary'></span>
+        <div className='sol-flex sol-justify-center'>
+          <span className='sol-loading sol-loading-infinity sol-loading-lg sol-text-primary'></span>
         </div>
       )}
       {!loading && isEmpty(slots) && <div>{noSlotsLabel}</div>}
       {!loading && !isEmpty(slots) && (
         <fieldset
-          className={clsx('m-0 p-0 b-0 w-full overflow-visible')}
+          className={clsx(
+            'sol-m-0 sol-p-0 b-0 sol-w-full sol-overflow-visible'
+          )}
           aria-label='Appointment type'
         >
           <RadioGroup
@@ -69,8 +71,9 @@ export const Slots: FC<SlotsProps> = ({
             data-testid='slots'
             onChange={handleSlotSelect}
             className={clsx({
-              'grid grid-cols-3 gap-3': orientation === 'horizontal',
-              'flex flex-col gap-3': orientation === 'vertical'
+              'sol-grid sol-grid-cols-3 sol-gap-3':
+                orientation === 'horizontal',
+              'sol-flex sol-flex-col sol-gap-3': orientation === 'vertical'
             })}
           >
             {slots?.map((slot) => (
@@ -80,11 +83,11 @@ export const Slots: FC<SlotsProps> = ({
                   value={slot.eventId}
                   aria-label={slot.slotstart.toISOString()}
                   className={clsx(
-                    'relative block cursor-pointer rounded-md px-3 py-4 text-center outline-0 font-medium hover:bg-secondary hover:border-1 hover:border-primary',
+                    'sol-relative sol-block sol-cursor-pointer sol-rounded-md sol-px-3 sol-py-4 sol-text-center sol-outline-0 sol-font-medium hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                     {
-                      'text-slate-800 border-1 border-slate-200  bg-white':
+                      'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                         selectedSlot?.eventId !== slot.eventId,
-                      'border-1 border-primary ring-4 ring-secondary text-primary':
+                      'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary sol-text-primary':
                         selectedSlot?.eventId === slot.eventId
                     }
                   )}

@@ -11,7 +11,7 @@ export type ProviderAvatarProps = {
 export const ProviderAvatar: FC<ProviderAvatarProps> = ({
   name,
   image,
-  classes = 'w-16 h-16',
+  classes = 'sol-w-16 sol-h-16',
   loading = false
 }) => {
   const initials = name
@@ -24,17 +24,19 @@ export const ProviderAvatar: FC<ProviderAvatarProps> = ({
   if (loading)
     return (
       <div
-        className={`skeleton ${classes} bg-secondary rounded-full shrink-0`}
+        className={`sol-skeleton ${classes} sol-bg-secondary sol-rounded-full sol-shrink-0`}
       />
     );
 
   return (
-    <div className='avatar'>
-      <div className={clsx(`rounded-full ${classes} bg-primary`)}>
+    <div className='sol-avatar'>
+      {' '}
+      <div className={clsx(`sol-rounded-full ${classes} sol-bg-primary`)}>
+        {' '}
         {image ? (
           <img alt={initials} src={image} referrerPolicy='no-referrer' />
         ) : (
-          <span className='text-center text-secondary font-bold h-full flex items-center justify-center w-full'>
+          <span className='sol-text-center sol-text-secondary sol-font-bold sol-h-full sol-flex sol-items-center sol-justify-center sol-w-full'>
             {initials}
           </span>
         )}

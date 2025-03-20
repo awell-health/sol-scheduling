@@ -1,6 +1,6 @@
 {
   "name": "@awell-health/sol-scheduling",
-  "version": "0.3.33",
+  "version": "0.3.34",
   "packageManager": "yarn@4.4.0",
   "repository": {
     "type": "git",
@@ -40,7 +40,8 @@
     "tailwind": "tailwindcss -i ./styles/globals.css -o ./style.css --watch",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
     "serve-docs": "node docs/server.cjs",
-    "build-docs": "node docs/generate-swagger-ui.cjs"
+    "build-docs": "node docs/generate-swagger-ui.cjs",
+    "update-classes": "node update-classnames.cjs"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -93,6 +94,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-storybook": "^0.8.0",
     "express": "^4.21.1",
+    "glob": "^11.0.1",
     "globals": "^15.9.0",
     "husky": "^9.1.4",
     "jest": "^29.7.0",
