@@ -142,7 +142,7 @@ export const Scheduler: FC<SchedulerProps> = ({
           <br />
 
           {loadingProvider ? (
-            <div className='skeleton sol-h-6 sol-w-48 sol-bg-secondary' />
+            <div className='sol-skeleton sol-h-6 sol-w-48 sol-bg-secondary' />
           ) : (
             <span className='sol-text-primary'>{providerName}</span>
           )}

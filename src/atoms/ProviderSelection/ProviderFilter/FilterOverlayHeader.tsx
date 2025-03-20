@@ -21,7 +21,7 @@ export const FilterOverlayHeader: FC<Props> = ({ onChange }) => {
       <input
         type='text'
         placeholder={`Filter by ${filter.label}`}
-        className='sol-input sol-w-48 md:sol-w-72 sol-h-8 sol-text-sm focus:outline-0 sol-rounded-md focus:sol-border-primary focus:sol-border-1'
+        className='sol-input sol-w-48 md:sol-w-72 sol-h-8 sol-text-sm focus:sol-outline-0 sol-rounded-md focus:sol-border-primary focus:sol-border-1'
         onChange={(e) => onChange(e.target.value)}
         ref={inputRef}
       />

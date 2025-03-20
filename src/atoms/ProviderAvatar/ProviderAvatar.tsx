@@ -24,7 +24,7 @@ export const ProviderAvatar: FC<ProviderAvatarProps> = ({
   if (loading)
     return (
       <div
-        className={`skeleton ${classes} sol-bg-secondary sol-rounded-full sol-shrink-0`}
+        className={`sol-skeleton ${classes} sol-bg-secondary sol-rounded-full sol-shrink-0`}
       />
     );
 
