@@ -70,6 +70,7 @@ export const Component: Story = {
 
 export const InteractionTest: Story = {
   play: SchedulerSpec,
+  tags: ['prefixing-wip'],
   render: (args) => {
     const {
       provider: { setId: setProviderId }

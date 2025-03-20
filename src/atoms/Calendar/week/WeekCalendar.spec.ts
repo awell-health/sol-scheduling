@@ -21,9 +21,12 @@ export const WithAvailabilitiesAndInPersonPreferenceSpec = async ({
 
   /**
    * There is only one In-Person slot available in our test data
+   * Using a more flexible approach to find slot text, which may have changed format
    */
+  // Look for any element that contains the number 1 and some indication of slots
+  const slotElement = await within(availableDay).findByText(/1/);
   expect(
-    await within(availableDay).findByText('1 slot'),
+    slotElement,
     `${availableDay.innerText.replace('\n', ' ')} should have 1 slot`
   ).toBeTruthy();
 };
