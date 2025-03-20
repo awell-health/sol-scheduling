@@ -1802,6 +1802,10 @@ html {
   height: 5rem;
 }
 
+.sol-h-24 {
+  height: 6rem;
+}
+
 .sol-h-28 {
   height: 7rem;
 }
@@ -1832,6 +1836,10 @@ html {
 
 .sol-w-16 {
   width: 4rem;
+}
+
+.sol-w-24 {
+  width: 6rem;
 }
 
 .sol-w-28 {

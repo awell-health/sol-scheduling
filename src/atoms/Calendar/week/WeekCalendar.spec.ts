@@ -62,7 +62,7 @@ export const NoAvailabilitiesSpec = async ({
   const virtualButton = await canvas.findByRole('button', {
     name: 'Telehealth'
   });
-  expect(virtualButton).toHaveClass('selected');
+  expect(virtualButton).toHaveClass('sol-selected');
 
   await userEvent.click(virtualButton);
   const mondayCard = await canvas.findByTestId('Mon Oct 14 2024');

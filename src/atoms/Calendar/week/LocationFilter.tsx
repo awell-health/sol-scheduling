@@ -31,7 +31,7 @@ export const LocationFilter: FC<Props> = (props) => {
                     {
                       'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                         option !== selected,
-                      'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary sol-text-primary selected':
+                      'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary sol-text-primary sol-selected':
                         option === selected
                     }
                   )}
@@ -61,7 +61,7 @@ export const LocationFilter: FC<Props> = (props) => {
                 {
                   'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                     'Telehealth' !== selected,
-                  'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary sol-text-primary selected':
+                  'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary sol-text-primary sol-selected':
                     'Telehealth' === selected
                 }
               )}
