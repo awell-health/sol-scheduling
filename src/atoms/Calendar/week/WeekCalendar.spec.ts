@@ -15,7 +15,7 @@ export const WithAvailabilitiesAndInPersonPreferenceSpec = async ({
     name: 'Brooklyn Heights'
   });
 
-  expect(physicalLocationFilter).toHaveClass('selected');
+  expect(physicalLocationFilter).toHaveClass('sol-selected');
 
   const availableDay = await canvas.findByTestId('Tue Oct 15 2024');
 
