@@ -59,7 +59,7 @@ export const ProviderCard: FC<ProviderProps> = ({
         <div>
           <button
             onClick={() => onSelect(provider.id)}
-            className={clsx('btn btn-primary sol-w-full')}
+            className={clsx('sol-btn sol-btn-primary sol-w-full')}
           >
             {button}
           </button>
@@ -196,7 +196,7 @@ const LinkToProfileItem: FC<{ link: string }> = ({ link }) => {
       href={link}
       target='_blank'
       rel='noopener noreferrer'
-      className='link sol-text-blue-500 sol-no-underline hover:sol-underline'
+      className='sol-link sol-text-blue-500 sol-no-underline hover:sol-underline'
       aria-label={`Visit provider profile page`}
     >
       View Profile

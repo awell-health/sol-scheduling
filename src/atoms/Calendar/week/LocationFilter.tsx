@@ -27,7 +27,7 @@ export const LocationFilter: FC<Props> = (props) => {
                 <button
                   key={option}
                   className={clsx(
-                    'btn btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
+                    'sol-btn sol-btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                     {
                       'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                         option !== selected,
@@ -57,7 +57,7 @@ export const LocationFilter: FC<Props> = (props) => {
             </p>
             <button
               className={clsx(
-                'btn btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
+                'sol-btn sol-btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                 {
                   'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                     'Telehealth' !== selected,

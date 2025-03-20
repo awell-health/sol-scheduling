@@ -98,7 +98,7 @@ export const SchedulingWizard: FC<SchedulingWizardProps> = ({
     <>
       {shouldShowBackButton && (
         <a
-          className='link link-primary sol-mb-4 sol-text-sm sol-no-underline hover:sol-underline'
+          className='sol-link sol-link-primary sol-mb-4 sol-text-sm sol-no-underline hover:sol-underline'
           onClick={handleBackToProvidersNavigation}
           type='button'
         >

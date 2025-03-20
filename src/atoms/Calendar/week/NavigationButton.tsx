@@ -18,9 +18,9 @@ export const NavigationButton: FC<Props> = (props) => {
   return (
     <button
       onClick={onClick}
-      className={clsx('btn sm:sol-px-6 sm:sol-py-2 sol-px-3 sol-py-1', {
-        'btn-disabled sol-opacity-50 sol-cursor-not-allowed': isDisabled,
-        'btn-secondary': !isDisabled
+      className={clsx('sol-btn sm:sol-px-6 sm:sol-py-2 sol-px-3 sol-py-1', {
+        'sol-btn-disabled sol-opacity-50 sol-cursor-not-allowed': isDisabled,
+        'sol-btn-secondary': !isDisabled
       })}
       disabled={isDisabled}
       aria-label={

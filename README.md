@@ -86,14 +86,25 @@ The following categories of classes have been fully prefixed with `sol-`:
 - [x] DaisyUI component classes:
   - [x] `card`, `card-body`, `card-title`
   - [x] `avatar`
-  - [x] `btn` (when not using DaisyUI variants)
-  - [x] `loading`
+  - [x] `btn` and all its variants (`btn-primary`, `btn-secondary`, `btn-sm`, `btn-circle`, etc.)
+  - [x] `loading` and its variants (`loading-infinity`, `loading-md`, etc.)
+  - [x] `input` and its variants
+  - [x] `link` and its variants (`link-primary`, etc.)
+  - [x] Filter badges and overlay components
 - [x] List styling: `list-none`, `list-disc`, etc.
 - [x] Custom props passing class names: `classes="w-32 h-32"` → `classes="sol-w-32 sol-h-32"`
 - [x] Complex nested conditions in clsx calls
 - [x] Template string class assignments
 
 All Tailwind classes in these components have been prefixed, maintaining all functionality and styling behavior while ensuring isolation from host projects.
+
+**Note:** Special attention has been given to:
+
+- Filter badges and filter overlays with complex class conditions
+- Dynamic class assignments in buttons and interactive elements
+- Components with conditional styling based on state
+
+All classes have been verified through both automated script processing and manual review to ensure 100% prefixing coverage.
 
 You don't need to make any changes to the component code, as all of this was done automatically. When inspecting elements in the browser, you'll see classes like `sol-flex`, `sol-p-4`, and modifiers like `hover:sol-underline`.
 

@@ -15,10 +15,12 @@ const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
     <button
       key={filter.key}
       className={clsx(
-        'btn btn-sm hover:bg-secondary hover:border-1 hover:border-primary m-1',
+        'sol-btn sol-btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary sol-m-1',
         {
-          'text-slate-800 border-1 border-slate-200 bg-white': !isActive,
-          'border-1 border-primary ring-4 ring-secondary text-primary': isActive
+          'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
+            !isActive,
+          'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary sol-text-primary':
+            isActive
         }
       )}
       onClick={(e) => {
@@ -33,7 +35,7 @@ const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
           {' '}
           <span
             className={clsx({
-              'truncate max-w-[180px]': filter.selectType === 'multi'
+              'sol-truncate sol-max-w-[180px]': filter.selectType === 'multi'
             })}
           >
             {displaySelectedValues<T>(filter)}
@@ -42,7 +44,7 @@ const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 24 24'
-            className='sol-inline-block sol-h-4 sol-w-4 sol-stroke-current sol-cursor-pointer -mr-2'
+            className='sol-inline-block sol-h-4 sol-w-4 sol-stroke-current sol-cursor-pointer -sol-mr-2'
             aria-label={`Clear ${filter.label} filter`}
             onClick={(e) => {
               e.stopPropagation();
