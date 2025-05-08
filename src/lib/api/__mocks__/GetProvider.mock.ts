@@ -6,19 +6,19 @@ export const getMockProviderResponse = () => {
    */
   const res = GetProviderResponseSchema.safeParse({
     data: {
-      id: '1820',
       location: {
-        facility: '',
-        state: 'NY - Brooklyn Heights'
+        facility: 'NY - Brooklyn Heights',
+        state: ''
       },
-      firstName: 'Nick',
-      lastName: 'Hellemans',
-      bio: "Nick Hellemans, Psy.D, LMSW, is an esteemed Psychotherapist with extensive experience in treating anxiety, depression, addictions, and personality disorders. She integrates a diverse range of therapeutic approaches and training, including Psychodynamic Therapy, Schema Therapy, Mentalization-based Therapy, Cognitive Behavioral Therapy and more. Luciana's tailored treatment approach is based on individual preferences and needs, emphasizing collaboration, trust, and creating a safe space for clients to address sensitive issues and overcome personal struggles with resilience and compassion.",
-      image: 'profile-image.jpg',
-      profileLink: 'https://solmentalhealth.com/providers/luciana-forzisi/'
-    },
-    errorMessage: '',
-    errorCode: ''
+      name: 'Emery Philip',
+      firstName: 'Emery',
+      lastName: 'Philip',
+      id: '1717',
+      bio: 'Emery Philip, P-MHC, graduated with a masters of Clinical Mental Health Counseling from Molloy University. Emery believes that we all have more power than we realize. Utilizing person-centered approach because you are the expert of yourself. Together, we create a therapeutic environment that is safe, supportive, and non-judge mental so you can be your most authentic self.\n',
+      image:
+        'https://solmentalhealth.com/wp-content/uploads/2023/04/emery-philip.jpg',
+      profileLink: 'https://solmentalhealth.com/providers/emery-philip/'
+    }
   });
 
   if (!res.success) {

@@ -7,7 +7,7 @@ import { mockProviderResponse } from '@/lib/api/__mocks__';
 import { SalesforcePreferencesType } from '@/lib/utils/preferences';
 import { action } from '@storybook/addon-actions';
 import { fn } from '@storybook/test';
-import * as schema from '../../../lib/api/schema';
+import { ProviderEventSchema } from '../../../lib/api/schema/molecules/ProviderEvent.schema';
 
 export const fetchProviderMock = fn(async (pid: string) => {
   // Track the call using Storybook's action
@@ -111,7 +111,7 @@ export const fetchAvailabilityMock = fn(async (pid: string) => {
           facility: 'NY - Brooklyn Heights',
           location: 'Telehealth'
         }
-      ].map((e) => schema.Event.parse(e))
+      ].map((e) => ProviderEventSchema.parse(e))
     }
   });
 });

@@ -1,6 +1,6 @@
 import { addDays, isSaturday, isSunday, setHours } from 'date-fns';
 import { GetAvailabilitiesResponseType } from '..';
-import * as schema from '../schema/GetProviderAvailability.schema';
+import { ProviderEventSchema } from '../schema/molecules/ProviderEvent.schema';
 
 const getNextWeekday = (date: Date): Date => {
   if (isSaturday(date)) {
@@ -33,6 +33,7 @@ export const mockProviderAvailabilityResponse: (
         date: '2024-10-17',
         duration: 60,
         booked: false,
+        eventType: 'Telehealth',
         facility: 'NY - Brooklyn Heights',
         location: 'Telehealth'
       },
@@ -52,6 +53,7 @@ export const mockProviderAvailabilityResponse: (
         date: '2024-10-18',
         duration: 60,
         booked: false,
+        eventType: 'Telehealth',
         facility: 'NY - Brooklyn Heights',
         location: 'In-Person'
       },
@@ -71,6 +73,7 @@ export const mockProviderAvailabilityResponse: (
         date: '2024-10-21',
         duration: 60,
         booked: false,
+        eventType: 'Telehealth',
         facility: 'NY - Brooklyn Heights',
         location: 'Telehealth'
       },
@@ -90,6 +93,7 @@ export const mockProviderAvailabilityResponse: (
         date: '2024-10-21',
         duration: 60,
         booked: false,
+        eventType: 'Telehealth',
         facility: 'NY - Brooklyn Heights',
         location: 'In-Person'
       },
@@ -109,9 +113,10 @@ export const mockProviderAvailabilityResponse: (
         date: '2024-10-22',
         duration: 60,
         booked: false,
+        eventType: 'Telehealth',
         facility: 'NY - Brooklyn Heights',
         location: 'Telehealth'
       }
-    ].map((e) => schema.Event.parse(e))
+    ].map((e) => ProviderEventSchema.parse(e))
   }
 });
