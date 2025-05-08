@@ -21,7 +21,6 @@ import {
   type GetProviderResponseType,
   type SlotWithConfirmedLocation
 } from '../lib/api';
-import { some } from 'lodash-es';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 
 const meta: Meta<typeof SchedulingActivityComponent> = {
@@ -85,22 +84,7 @@ export const Full: Story = {
         )) as GetProvidersResponseType;
 
         return {
-          data: data.filter((p) => {
-            if (
-              preferences.clinicalFocus &&
-              preferences.clinicalFocus.length > 0
-            ) {
-              return some(
-                preferences.clinicalFocus.map((f) =>
-                  p.clinicalFocus
-                    ?.map((cf) => cf.toLowerCase())
-                    .includes(f.toLowerCase())
-                )
-              );
-            } else {
-              return true;
-            }
-          }),
+          data,
           ...rest
         };
       },

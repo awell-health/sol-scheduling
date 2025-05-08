@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { uniq } from 'lodash-es';
 import clsx from 'clsx';
 
-import { toFullNameState, toFullNameGender } from '@/lib/utils';
+import { toFullNameState } from '@/lib/utils';
 import type { Provider } from './types';
 import { ProviderAvatar } from '../ProviderAvatar';
 import { AvailabilitySlots } from '../AvailabilitySlots';
@@ -35,7 +35,7 @@ export const ProviderCard: FC<ProviderProps> = ({
       <ProviderHeader provider={provider} deliveryMethod={deliveryMethod} />
       <div className={clsx('sol-mt-4 sol-bg-slate-50 sol-rounded-md sol-p-3')}>
         <div>
-          <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
+          {/* <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
             {provider.gender && (
               <SingleItem
                 label='Gender'
@@ -45,7 +45,7 @@ export const ProviderCard: FC<ProviderProps> = ({
             {provider.ethnicity && (
               <SingleItem label='Ethnicity' value={provider.ethnicity} />
             )}
-          </ul>
+          </ul> */}
           <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
             {facilities.length > 0 && (
               <SingleItem

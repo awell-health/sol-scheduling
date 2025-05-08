@@ -20,7 +20,6 @@ import {
   type GetProviderInputType,
   type GetProviderResponseType
 } from '../lib/api';
-import { some } from 'lodash-es';
 import { type SlotWithConfirmedLocation } from '@/lib/api/schema/shared.schema';
 import { type SalesforcePreferencesType } from '@/lib/utils/preferences';
 
@@ -82,22 +81,7 @@ export const SkipProvider: Story = {
         )) as GetProvidersResponseType;
 
         return {
-          data: data.filter((p) => {
-            if (
-              preferences.clinicalFocus &&
-              preferences.clinicalFocus.length > 0
-            ) {
-              return some(
-                preferences.clinicalFocus.map((f) =>
-                  p.clinicalFocus
-                    ?.map((cf) => cf.toLowerCase())
-                    .includes(f.toLowerCase())
-                )
-              );
-            } else {
-              return true;
-            }
-          }),
+          data,
           ...rest
         };
       },
