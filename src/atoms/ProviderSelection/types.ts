@@ -31,29 +31,17 @@ export interface FilterOption<T extends FilterEnum> {
   value: string;
 }
 
+export type FilterKey = keyof GetProvidersInputType | 'state' | 'facility';
+
 // FilterType Interface Definition
 export interface FilterType<T extends FilterEnum> {
   label: string;
-  key: keyof GetProvidersInputType; // key should match the field in GetProvidersInputType
+  key: FilterKey;
   selectType: 'single' | 'multi';
-  filterType: 'simple' | 'compound';
   enum: FilterEnum;
   options: FilterOption<T>[]; // array of FilterOption based on the enum
   selectedOptions: FilterType<T>['options'][0]['value'][];
 }
-
-// TODO: Implement CompoundFilterType and SimpleFilterType
-// export interface CompoundFilterType<T extends FilterEnum>
-//   extends Omit<FilterType<T>, 'selectedOptions'> {
-//   filterType: 'compound';
-//   options: Record<string, FilterOption<T>[]>;
-//   selectedOptions: CompoundFilterType<T>['options'][keyof CompoundFilterType<T>['options']][number]['value'][];
-// }
-
-// export interface SimpleFilterType<T extends FilterEnum> extends FilterType<T> {
-//   filterType: 'simple';
-//   options: FilterOption<T>[];
-// }
 
 export function isFilterType(f: unknown): f is FilterType<FilterEnum> {
   return (
@@ -72,19 +60,24 @@ export const optionsFromEnum = (enumType: FilterEnum) => {
   }));
 };
 
-export const optionsForLocation = () => {
-  const states = Object.entries(LocationState).map(([key, value]) => ({
+export const optionsForState = () => {
+  return Object.entries(LocationState).map(([key, value]) => ({
     label: LocationStateToNameMapping[
       key as keyof typeof LocationStateToNameMapping
     ] as string,
     value: value as string
   }));
+};
 
+export const optionsForFacility = (state: LocationState | undefined) => {
+  if (!state) {
+    return [];
+  }
   const facilities = Object.entries(LocationFacility).map(([_key, value]) => ({
     label: value.slice(5),
     value: value as string
   }));
-  return [...states, ...facilities];
+  return facilities.filter((facility) => facility.value.startsWith(state));
 };
 
 // mapping here because we cannot do it from the enum

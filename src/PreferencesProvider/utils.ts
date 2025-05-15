@@ -14,7 +14,8 @@ import {
   isFilterType,
   optionsFromEnum,
   optionsForGender,
-  optionsForLocation
+  optionsForState,
+  optionsForFacility
 } from '../atoms/ProviderSelection';
 
 const updatePreferencesWithFilters = (
@@ -27,6 +28,26 @@ const updatePreferencesWithFilters = (
       case 'therapeuticModality':
       case 'language':
         return;
+      case 'state': {
+        if (!prefs.location) {
+          prefs.location = {
+            state: undefined,
+            facility: undefined
+          };
+        }
+        prefs.location.state = filter.selectedOptions[0] as LocationState;
+        break;
+      }
+      case 'facility': {
+        if (!prefs.location) {
+          prefs.location = {
+            state: undefined,
+            facility: undefined
+          };
+        }
+        prefs.location.facility = filter.selectedOptions[0] as LocationFacility;
+        break;
+      }
       case 'location': {
         // really ugly code to handle the fact that the location filter is a compound filter
         if (prefs.location) {
@@ -91,7 +112,6 @@ const preferencesToFiltersArray = (
             key: 'gender',
             label: 'Gender',
             selectType: 'single',
-            filterType: 'simple',
             enum: Gender,
             options: optionsForGender(),
             selectedOptions: preferences[key] ? [preferences[key]] : []
@@ -102,7 +122,6 @@ const preferencesToFiltersArray = (
             key: 'ethnicity',
             label: 'Ethnicity',
             selectType: 'single',
-            filterType: 'simple',
             enum: Ethnicity,
             options: optionsFromEnum(Ethnicity),
             selectedOptions: preferences[key] ? [preferences[key]] : []
@@ -116,7 +135,6 @@ const preferencesToFiltersArray = (
             key: 'clinicalFocus',
             label: 'Clinical Focus',
             selectType: 'multi',
-            filterType: 'simple',
             enum: ClinicalFocus,
             options: optionsFromEnum(ClinicalFocus),
             selectedOptions: preferences[key] ? preferences[key] : []
@@ -127,32 +145,41 @@ const preferencesToFiltersArray = (
             key: 'deliveryMethod',
             label: 'Delivery Method',
             selectType: 'single',
-            filterType: 'simple',
             enum: DeliveryMethod,
             options: optionsFromEnum(DeliveryMethod),
             selectedOptions: preferences[key] ? [preferences[key]] : []
           };
         }
         case 'location': {
-          return {
-            key: 'location',
-            label: 'State | Facility',
-            selectType: 'single',
-            filterType: 'compound',
-            enum: { facility: LocationFacility, state: LocationState },
-            options: optionsForLocation(),
-            selectedOptions: preferences.location?.state
-              ? [preferences.location.state]
-              : preferences.location?.facility
+          return [
+            {
+              key: 'state',
+              label: 'State',
+              selectType: 'single',
+              enum: LocationState,
+              options: optionsForState(),
+              selectedOptions: preferences.location?.state
+                ? [preferences.location.state]
+                : []
+            },
+            {
+              key: 'facility',
+              label: 'Facility',
+              selectType: 'single',
+              enum: LocationFacility,
+              options: optionsForFacility(preferences.location?.state),
+              selectedOptions: preferences.location?.facility
                 ? [preferences.location.facility]
                 : []
-          };
+            }
+          ];
         }
         default: {
           return undefined;
         }
       }
     })
+    .flat()
     .filter((f) => isFilterType(f));
 };
 

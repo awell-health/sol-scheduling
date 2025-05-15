@@ -15,8 +15,11 @@ import {
   preferencesToFiltersArray,
   updatePreferencesWithFilters
 } from './utils';
-import { FilterType, FilterEnum } from '../atoms/ProviderSelection/types';
-import { debounce } from 'lodash-es';
+import {
+  FilterType,
+  FilterEnum,
+  FilterKey
+} from '../atoms/ProviderSelection/types';
 import { useSolApi } from '../SolApiProvider';
 
 type BookingInformation = {
@@ -32,10 +35,9 @@ type BookingInformation = {
 type PreferencesContextType = {
   preferences: GetProvidersInputType;
   filters: FilterType<FilterEnum>[];
-  setFilters: (filters: FilterType<FilterEnum>[]) => void;
   updateFilter: (filter: FilterType<FilterEnum>) => void;
-  activeFilter: keyof GetProvidersInputType | null;
-  setActiveFilter: (newFilterKey: keyof GetProvidersInputType | null) => void;
+  activeFilter: FilterKey | null;
+  setActiveFilter: (newFilterKey: FilterKey | null) => void;
   getActiveFilter: () => FilterType<FilterEnum>;
   providers: GetProvidersResponseType['data'];
   fetchProvidersError: unknown;
@@ -70,9 +72,7 @@ export const PreferencesProvider: FC<ContextProps> = ({
   const [filters, setFilters] = useState<FilterType<FilterEnum>[]>(
     preferencesToFiltersArray(initialPreferences)
   );
-  const [activeFilter, setActiveFilter] = useState<
-    keyof GetProvidersInputType | null
-  >(null);
+  const [activeFilter, setActiveFilter] = useState<FilterKey | null>(null);
 
   const [preferences, setPreferences] =
     useState<GetProvidersInputType>(initialPreferences);
@@ -100,14 +100,6 @@ export const PreferencesProvider: FC<ContextProps> = ({
     providers: { fetch: fetchProviders, data: providers, loading, error }
   } = useSolApi();
 
-  const updateFilters = debounce((newFilters: FilterType<FilterEnum>[]) => {
-    const updatedPreferences = updatePreferencesWithFilters(
-      initialPreferences,
-      newFilters
-    );
-    setPreferences(updatedPreferences);
-  }, 500);
-
   const updateFilter = (filter: FilterType<FilterEnum>) => {
     const updatedFilters = filters.map((f) => {
       if (f.key === filter.key) {
@@ -115,13 +107,16 @@ export const PreferencesProvider: FC<ContextProps> = ({
       }
       return f;
     });
+    console.log('update filter', updatedFilters);
     setFilters(updatedFilters);
-    updateFilters(updatedFilters);
+    const updatedPreferences = updatePreferencesWithFilters(
+      initialPreferences,
+      updatedFilters
+    );
+    setPreferences(updatedPreferences);
   };
 
-  const changeActiveFilter = (
-    newFilterKey: keyof GetProvidersInputType | null
-  ) => {
+  const changeActiveFilter = (newFilterKey: FilterKey | null) => {
     if (newFilterKey === null || newFilterKey === activeFilter) {
       setActiveFilter(null);
     } else if (newFilterKey !== null) {
@@ -136,9 +131,10 @@ export const PreferencesProvider: FC<ContextProps> = ({
   }, [filters, activeFilter]);
 
   useEffect(() => {
+    console.log('preferences updated', preferences);
     if (skipProviderSelection) return;
     fetchProviders(preferences);
-  }, [preferences, skipProviderSelection]);
+  }, [preferences, skipProviderSelection, filters]);
 
   useEffect(() => {
     setBookingInformation({
@@ -152,7 +148,6 @@ export const PreferencesProvider: FC<ContextProps> = ({
   const contextValue = {
     preferences,
     filters,
-    setFilters: updateFilters,
     updateFilter,
     activeFilter,
     setActiveFilter: changeActiveFilter,
