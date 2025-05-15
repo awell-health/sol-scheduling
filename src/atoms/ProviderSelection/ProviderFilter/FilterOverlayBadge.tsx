@@ -23,9 +23,7 @@ export const FilterOverlayBadge: FC<OptionProps> = ({ value, label }) => {
           selectedOptions: [value]
         });
       }
-      if (filter.key === 'location' && value && value.length > 2) {
-        setActiveFilter(null);
-      }
+      setActiveFilter(null);
     } else {
       updateFilter({
         ...filter,

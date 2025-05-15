@@ -9,7 +9,8 @@ interface Props {
 export const FilterList: FC<Props> = ({ filters }) => {
   const filterOrder = [
     'deliveryMethod',
-    'location',
+    'state',
+    'facility',
     'clinicalFocus',
     'gender',
     'ethnicity'
