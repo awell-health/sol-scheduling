@@ -517,7 +517,7 @@ html {
 }
 
 :root {
-  --p: 53.0119% 0.122342 44.914657;
+  --p: 55.5406% 0.047513 197.729299;
   --b1: 100% 0 0;
   --in: 72.06% 0.191 231.6;
   --su: 64.8% 0.150 160;
@@ -531,10 +531,10 @@ html {
   --btn-focus-scale: 0.95;
   --tab-border: 1px;
   --tab-radius: 0.5rem;
-  primary-focus: rgba(164, 81, 40, 0.9);
+  primary-focus: rgba(81, 124, 125, 0.9);
   --pc: 98.4152% 0.003413 247.857544;
-  --s: 92.9249% 0.027627 40.194184;
-  secondary-focus: rgba(239, 155, 140, 0.9);
+  --s: 90.211% 0.016307 206.430841;
+  secondary-focus: rgba(211, 226, 228, 0.9);
   --sc: 44.5533% 0.037447 257.280836;
   --rounded-box: 1rem;
   --rounded-badge: 1.9rem;
@@ -2065,6 +2065,11 @@ html {
 .sol-border-primary {
   --tw-border-opacity: 1;
   border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+}
+
+.sol-border-secondary {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
 }
 
 .sol-border-slate-200 {
