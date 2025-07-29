@@ -2146,11 +2146,6 @@ html {
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
 }
 
-.sol-bg-slate-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(100 116 139 / var(--tw-bg-opacity));
-}
-
 .sol-bg-opacity-0 {
   --tw-bg-opacity: 0;
 }
