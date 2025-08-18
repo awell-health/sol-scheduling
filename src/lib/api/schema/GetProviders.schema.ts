@@ -19,7 +19,7 @@ const transformEmptyToUndefined = <T extends z.ZodType>(schema: T) =>
   schema.transform((v): z.infer<T> | undefined => (isEmpty(v) ? undefined : v));
 
 export const GetProvidersInputSchema = z.object({
-  age: transformEmptyToUndefined(AgeSchema).default(30), //REV-477: default to 30 because if age is not set, the API will retur no providers
+  age: transformEmptyToUndefined(AgeSchema).optional(),
   gender: transformEmptyToUndefined(GenderSchema).optional(),
   ethnicity: transformEmptyToUndefined(EthnicitySchema).optional(),
   // Not implemented

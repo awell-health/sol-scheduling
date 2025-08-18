@@ -116,7 +116,19 @@ export const SolApiProvider: FC<ContextProps> = ({
       setLoadingProviders(true);
       setProvidersError(null);
       try {
-        const res = await fetchProviders(prefs);
+        /**
+         * REV-477: default to 30 because if age is not set, the API will return no providers
+         *
+         * We cannot set the default in the GetProviders.schema.ts file because we have been
+         * mixing up input and output types and changing that now is too risky.
+         * Instead, we set the default here.
+         */
+        const DEFAULT_AGE = 30;
+        const res = await fetchProviders({
+          ...prefs,
+          age: prefs.age ?? DEFAULT_AGE.toString()
+        });
+
         setProviders(res.data);
       } catch (e) {
         setProvidersError(e);
