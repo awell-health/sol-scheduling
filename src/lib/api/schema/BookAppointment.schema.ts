@@ -17,9 +17,7 @@ export type BookAppointmentInputType = z.infer<
 
 export const BookAppointmentResponseSchema = z
   .object({
-    data: z.object({
-      salesforceLeadId: z.string().optional(),
-    }).optional()
+    data: z.unknown()
   })
   .merge(errorSchema);
 
