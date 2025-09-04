@@ -19,7 +19,6 @@ export const BookAppointmentResponseSchema = z
   .object({
     data: z.object({
       salesforceLeadId: z.string().optional(),
-      magicLink: z.string().optional(),
     }).optional()
   })
   .merge(errorSchema);
