@@ -137,7 +137,7 @@ const ProviderHeader: FC<{
 const mainText = 'sol-font-semibold sol-text-primary';
 const SingleItem: FC<{ value: string }> = ({ value }) => {
   return (
-    <div className='sol-py-1 sol-text-center sol-bg-slate-100 sol-rounded-lg sol-px-1'>
+    <div className='sol-p-1 sol-text-center sol-bg-slate-100 sol-rounded-lg'>
       <span className={mainText}>{value}</span>
     </div>
   );
