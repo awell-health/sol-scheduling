@@ -13,16 +13,14 @@ export const AvailabilitySlots: FC<AvailabilitySlotsProps> = ({
   slots,
   deliveryMethod
 }) => {
-  const label =
-    slots.length > 0
-      ? 'Next Availability:'
-      : `${deliveryMethod ? `No ${deliveryMethod} slots available` : ''}`;
+  const label = slots.length === 0 && `No ${deliveryMethod} slots available`;
   return (
     <div className='sm:sol-min-w-[400px] sol-mt-4'>
-      <div className='sol-mb-2 sol-text-sm sol-font-medium sol-text-slate-600'>
-        {' '}
-        {label}{' '}
-      </div>{' '}
+      {label && (
+        <div className='sol-text-sm sol-font-medium sol-text-slate-600'>
+          {label}
+        </div>
+      )}
       <div className='sol-flex sol-flex-row sol-gap-2'>
         {slots.map((slot) => (
           <AvailabilitySlot

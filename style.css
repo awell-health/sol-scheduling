@@ -1806,10 +1806,6 @@ html {
   height: 7rem;
 }
 
-.sol-h-32 {
-  height: 8rem;
-}
-
 .sol-h-4 {
   height: 1rem;
 }
@@ -1840,10 +1836,6 @@ html {
 
 .sol-w-28 {
   width: 7rem;
-}
-
-.sol-w-32 {
-  width: 8rem;
 }
 
 .sol-w-4 {
@@ -1888,10 +1880,6 @@ html {
 
 .sol-shrink-0 {
   flex-shrink: 0;
-}
-
-.sol-basis-1\/2 {
-  flex-basis: 50%;
 }
 
 .sol-basis-full {
@@ -2042,6 +2030,10 @@ html {
   border-bottom-left-radius: 0.375rem;
 }
 
+.sol-border {
+  border-width: 1px;
+}
+
 .sol-border-0 {
   border-width: 0px;
 }
@@ -2127,11 +2119,6 @@ html {
   background-color: rgb(203 213 225 / var(--tw-bg-opacity));
 }
 
-.sol-bg-slate-50 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(248 250 252 / var(--tw-bg-opacity));
-}
-
 .sol-bg-transparent {
   background-color: transparent;
 }
@@ -2168,6 +2155,10 @@ html {
 
 .sol-p-0 {
   padding: 0px;
+}
+
+.sol-p-1 {
+  padding: 0.25rem;
 }
 
 .sol-p-3 {
