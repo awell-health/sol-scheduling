@@ -2157,6 +2157,10 @@ html {
   padding: 0px;
 }
 
+.sol-p-1 {
+  padding: 0.25rem;
+}
+
 .sol-p-3 {
   padding: 0.75rem;
 }
@@ -2167,10 +2171,6 @@ html {
 
 .sol-p-6 {
   padding: 1.5rem;
-}
-
-.sol-p-1 {
-  padding: 0.25rem;
 }
 
 .sol-px-1 {

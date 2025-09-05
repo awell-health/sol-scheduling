@@ -26,7 +26,7 @@ export const ProviderCard: FC<ProviderProps> = ({
   const { button = 'Select Provider' } = text || {};
 
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
-  const providerName = `${provider.firstName} ${provider.lastName}`;
+  const providerName = `${provider.firstName ?? ''} ${provider.lastName ?? ''}`;
 
   return (
     <div
@@ -41,9 +41,7 @@ export const ProviderCard: FC<ProviderProps> = ({
         />
         <div className='sol-flex sol-flex-col sol-gap-1'>
           {facilities.length > 0 &&
-            facilities.map((f, index) => (
-              <SingleItem key={index} value={f.slice(5)} />
-            ))}
+            facilities.map((f) => <SingleItem key={f} value={f.slice(5)} />)}
         </div>
       </div>
       <div className='sol-border' />
@@ -88,6 +86,7 @@ const ProviderHeader: FC<{
           .filter((slot) => slot.eventType === 'In-Person')
           .slice(0, 3)
       : provider.events.slice(0, 3);
+
   return (
     <div className='sol-flex sol-flex-col sm:sol-flex-row sol-items-start sm:sol-items-center sm:sol-justify-between'>
       <div className='sol-w-full sm:sol-w-auto sm:sol-gap-y-6'>
