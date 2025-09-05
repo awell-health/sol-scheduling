@@ -37,7 +37,7 @@ export const ProviderCard: FC<ProviderProps> = ({
         <ProviderAvatar
           name={providerName}
           image={provider.image}
-          classes='sol-w-32 sol-h-32'
+          classes='sm:sol-w-32 sm:sol-h-32 sol-w-24 sol-h-24'
         />
         <div className='sol-flex sol-flex-col sol-gap-1'>
           {facilities.length > 0 &&
@@ -137,7 +137,7 @@ const ProviderHeader: FC<{
 const mainText = 'sol-font-semibold sol-text-primary';
 const SingleItem: FC<{ value: string }> = ({ value }) => {
   return (
-    <div className='sol-py-1 sol-text-center sol-bg-slate-100 sol-rounded-lg'>
+    <div className='sol-py-1 sol-text-center sol-bg-slate-100 sol-rounded-lg sol-px-1'>
       <span className={mainText}>{value}</span>
     </div>
   );
