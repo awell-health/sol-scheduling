@@ -5,7 +5,8 @@ export const BookAppointmentInputSchema = z.object({
   eventId: z.string(),
   providerId: z.string(),
   userInfo: z.object({
-    userName: z.string()
+    userName: z.string(),
+    salesforceLeadId: z.string().optional()
   }),
   locationType: z.string()
 });
