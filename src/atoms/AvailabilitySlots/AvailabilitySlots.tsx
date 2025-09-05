@@ -15,7 +15,7 @@ export const AvailabilitySlots: FC<AvailabilitySlotsProps> = ({
 }) => {
   const label =
     slots.length > 0
-      ? 'Next Availability:'
+      ? ''
       : `${deliveryMethod ? `No ${deliveryMethod} slots available` : ''}`;
   return (
     <div className='sm:sol-min-w-[400px] sol-mt-4'>
