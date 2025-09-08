@@ -26,43 +26,41 @@ export const ProviderCard: FC<ProviderProps> = ({
   const { button = 'Select Provider' } = text || {};
 
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
+  const providerName = `${provider.firstName ?? ''} ${provider.lastName ?? ''}`;
 
   return (
     <div
       key={provider.id}
-      className='sol-rounded-md sol-border-1 sol-bg-white sol-p-4'
+      className='sol-rounded-md sol-border-1 sol-bg-white sol-p-4 sol-flex sol-gap-4'
     >
-      <ProviderHeader provider={provider} deliveryMethod={deliveryMethod} />
-      <div className={clsx('sol-mt-4 sol-bg-slate-50 sol-rounded-md sol-p-3')}>
-        <div>
-          {/* <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
-            {provider.gender && (
-              <SingleItem
-                label='Gender'
-                value={toFullNameGender(provider.gender)}
-              />
-            )}
-            {provider.ethnicity && (
-              <SingleItem label='Ethnicity' value={provider.ethnicity} />
-            )}
-          </ul> */}
-          <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
-            {facilities.length > 0 && (
-              <SingleItem
-                label={`Clinic Location${facilities.length > 1 ? 's' : ''}`}
-                value={facilities.map((f) => f.slice(5)).join(', ')}
-              />
-            )}
-            {provider.bio && <BioItem label='Bio' value={provider.bio} />}
-          </ul>
+      <div className='sol-flex sol-flex-col sol-justify-center sol-gap-2'>
+        <ProviderAvatar
+          name={providerName}
+          image={provider.image}
+          classes='sm:sol-w-32 sm:sol-h-32 sol-w-24 sol-h-24'
+        />
+        <div className='sol-flex sol-flex-col sol-gap-1'>
+          {facilities.length > 0 &&
+            facilities.map((f) => <SingleItem key={f} value={f.slice(5)} />)}
         </div>
-        <div>
-          <button
-            onClick={() => onSelect(provider.id)}
-            className={clsx('sol-btn sol-btn-primary sol-w-full')}
-          >
-            {button}
-          </button>
+      </div>
+      <div className='sol-border' />
+      <div>
+        <ProviderHeader provider={provider} deliveryMethod={deliveryMethod} />
+        <div className='sol-mt-4 sol-rounded-md'>
+          <div>
+            <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
+              {provider.bio && <BioItem value={provider.bio} />}
+            </ul>
+          </div>
+          <div>
+            <button
+              onClick={() => onSelect(provider.id)}
+              className={clsx('sol-btn sol-btn-primary sol-w-full')}
+            >
+              {button}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -88,15 +86,9 @@ const ProviderHeader: FC<{
           .filter((slot) => slot.eventType === 'In-Person')
           .slice(0, 3)
       : provider.events.slice(0, 3);
+
   return (
     <div className='sol-flex sol-flex-col sm:sol-flex-row sol-items-start sm:sol-items-center sm:sol-justify-between'>
-      <div className='sol-self-center sm:sol-self-auto'>
-        <ProviderAvatar
-          name={providerName}
-          image={provider.image}
-          classes='sol-w-32 sol-h-32'
-        />
-      </div>
       <div className='sol-w-full sm:sol-w-auto sm:sol-gap-y-6'>
         <div className='sol-flex sol-flex-col sm:sol-flex-row sol-items-center sm:sol-justify-between sol-justify-center sol-mb-3'>
           <div>
@@ -142,49 +134,39 @@ const ProviderHeader: FC<{
 };
 
 const mainText = 'sol-font-semibold sol-text-primary';
-const subText = 'sol-text-slate-600 sol-text-md';
-
-const SingleItem: FC<{ label: string; value: string }> = ({ label, value }) => {
+const SingleItem: FC<{ value: string }> = ({ value }) => {
   return (
-    <li className='sol-flex-1 sol-basis-1/2'>
-      {' '}
-      <span className={subText}>{label}: </span>{' '}
-      <span className={mainText}>{value}</span>{' '}
-    </li>
+    <div className='sol-p-1 sol-text-center sol-bg-slate-100 sol-rounded-lg'>
+      <span className={mainText}>{value}</span>
+    </div>
   );
 };
 
-const BioItem: FC<{ label: string; value: string }> = ({ label, value }) => {
+const BioItem: FC<{ value: string }> = ({ value }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleBio = () => {
     setIsExpanded(!isExpanded);
   };
   const classes =
-    'sol-text-blue-500 sol-rounded-full sol-text-sm sol-text-blue sol-font-medium sol-flex sol-items-center sol-justify-center';
+    'sol-text-blue-500 sol-rounded-full sol-text-sm sol-text-blue sol-font-medium ';
   return (
     <li className='sol-flex-1 sol-basis-full'>
-      {' '}
-      <span className='sol-font-semibold sol-text-primary'>{label}: </span>{' '}
       {isExpanded ? (
-        <>
-          {' '}
-          <span className='sol-text-slate-600 sol-text-md'>{value}</span>{' '}
+        <div>
+          <span className='sol-text-slate-600 sol-text-md'>{value}</span>
           <button onClick={toggleBio} className={classes}>
-            {' '}
-            {' < Hide'}
+            {'Hide'}
           </button>
-        </>
+        </div>
       ) : (
-        <>
+        <div>
           <span className='sol-text-slate-600 sol-text-md'>
-            {' '}
             {value.substring(0, 120)}...{' '}
-          </span>{' '}
-          <button onClick={toggleBio} className={classes}>
-            {' '}
-            {' > Show more'}
-          </button>
-        </>
+            <button onClick={toggleBio} className={classes}>
+              {'Read more'}
+            </button>
+          </span>
+        </div>
       )}
     </li>
   );
