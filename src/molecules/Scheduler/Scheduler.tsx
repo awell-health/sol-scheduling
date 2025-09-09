@@ -95,9 +95,18 @@ export const Scheduler: FC<SchedulerProps> = ({
     setSlot(null);
   };
 
+  const selectTimeRef = useRef<HTMLDivElement>(null);
   const bookingButtonRef = useRef<HTMLDivElement>(null);
 
-  const scrollToSlot = () => {
+  const scrollToTime = () => {
+    if (selectTimeRef.current) {
+      selectTimeRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+  const scrollToBookingButton = () => {
     if (bookingButtonRef.current) {
       bookingButtonRef.current.scrollIntoView({
         behavior: 'smooth',
@@ -107,7 +116,13 @@ export const Scheduler: FC<SchedulerProps> = ({
   };
 
   useEffect(() => {
-    scrollToSlot();
+    if (slot) {
+      scrollToBookingButton();
+    }
+  }, [slot]);
+
+  useEffect(() => {
+    scrollToTime();
   }, [date]);
 
   const handleSlotSelect = (slot: SlotType) => {
@@ -169,7 +184,7 @@ export const Scheduler: FC<SchedulerProps> = ({
       </div>
       {date && (
         <div
-          ref={bookingButtonRef}
+          ref={selectTimeRef}
           className='sol-pt-6 sol-mt-6 sol-mb-6 sol-border-t-1 sol-border-slate-200'
         >
           <div className='sol-flex sol-flex-row sol-items-center sol-justify-end sol-gap-1 sol-pb-2'>
@@ -197,7 +212,10 @@ export const Scheduler: FC<SchedulerProps> = ({
         </div>
       )}
       {date && slot && (
-        <div className='sol-py-6 sol-mt-6 sol-border-t-1 sol-border-slate-200'>
+        <div
+          ref={bookingButtonRef}
+          className='sol-py-6 sol-mt-6 sol-border-t-1 sol-border-slate-200'
+        >
           <button
             className={clsx('sol-btn sol-w-full', {
               'sol-btn-secondary sol-cursor-not-allowed': isBooking,
