@@ -111,7 +111,7 @@ export const Slots: FC<SlotsProps> = ({
                           : formatFacility(slot.facility)}
                       </div>
                     </div>
-                    <div className='sol-flex sol-justify-end sol-items-top sol-absolute sol-top-1 sol-right-1'>
+                    <div className='sol-flex sol-justify-end sol-absolute sol-top-1 sol-right-1'>
                       {slot.location === 'Telehealth' && (
                         <img src={videoChatIcon} alt='Video Chat Icon' />
                       )}
