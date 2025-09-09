@@ -11,6 +11,7 @@ import {
   type SlotWithConfirmedLocation
 } from '@/lib/api';
 import { filterByDate, filterByLocation } from '@/lib/utils/availabilities';
+import videoChatIcon from '@/assets/video-chat-icon.svg';
 
 export type SchedulerProps = {
   onBookingError: () => void;
@@ -168,6 +169,14 @@ export const Scheduler: FC<SchedulerProps> = ({
       </div>
       {date && (
         <div className='sol-pt-6 sol-mt-6 sol-border-t-1 sol-border-slate-200'>
+          <div className='sol-flex sol-flex-row sol-items-center sol-justify-end sol-gap-1'>
+            <div>
+              <img src={videoChatIcon} alt='Video Chat Icon' />
+            </div>
+            <div className='sol-text-sm sol-text-slate-500'>
+              Virtual Appointment
+            </div>
+          </div>
           <div className='sol-mb-4'>
             <h3 className='sol-font-semibold sol-text-xl sol-m-0 sol-text-slate-800 sol-text-center'>
               {selectSlot}

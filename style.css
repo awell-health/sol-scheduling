@@ -1676,6 +1676,22 @@ html {
   top: 0px;
 }
 
+.sol-right-1 {
+  right: 0.25rem;
+}
+
+.sol-top-1 {
+  top: 0.25rem;
+}
+
+.sol-right-2 {
+  right: 0.5rem;
+}
+
+.sol-top-2 {
+  top: 0.5rem;
+}
+
 .sol-z-20 {
   z-index: 20;
 }
@@ -1862,6 +1878,10 @@ html {
   width: 1px;
 }
 
+.sol-w-1\/2 {
+  width: 50%;
+}
+
 .sol-max-w-\[180px\] {
   max-width: 180px;
 }
@@ -1947,6 +1967,10 @@ html {
 
 .sol-items-center {
   align-items: center;
+}
+
+.sol-justify-end {
+  justify-content: flex-end;
 }
 
 .sol-justify-center {
@@ -2213,6 +2237,11 @@ html {
   padding-bottom: 1.5rem;
 }
 
+.sol-py-5 {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
 .sol-pb-6 {
   padding-bottom: 1.5rem;
 }
@@ -2223,6 +2252,10 @@ html {
 
 .sol-text-center {
   text-align: center;
+}
+
+.sol-text-right {
+  text-align: right;
 }
 
 .sol-text-2xl {

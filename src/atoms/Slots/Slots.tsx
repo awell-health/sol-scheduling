@@ -3,6 +3,7 @@ import { Field, Radio, RadioGroup } from '@headlessui/react';
 import { isEmpty } from 'lodash-es';
 import { type SlotType } from '../../lib/api';
 import clsx from 'clsx';
+import videoChatIcon from '@/assets/video-chat-icon.svg';
 
 export interface SlotsProps {
   timeZone: string;
@@ -83,7 +84,7 @@ export const Slots: FC<SlotsProps> = ({
                   value={slot.eventId}
                   aria-label={slot.slotstart.toISOString()}
                   className={clsx(
-                    'sol-relative sol-block sol-cursor-pointer sol-rounded-md sol-px-3 sol-py-4 sol-text-center sol-outline-0 sol-font-medium hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
+                    'sol-relative sol-block sol-cursor-pointer sol-rounded-md sol-text-center sol-outline-0 sol-font-medium hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                     {
                       'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                         selectedSlot?.eventId !== slot.eventId,
@@ -92,7 +93,23 @@ export const Slots: FC<SlotsProps> = ({
                     }
                   )}
                 >
-                  {formatSlotTime(slot.slotstart)}
+                  <div className='sol-flex sol-items-center sol-justify-center sol-gap-2 sol-relative sol-px-4 sol-py-5'>
+                    <div>
+                      <div className='sol-text-center'>
+                        {formatSlotTime(slot.slotstart)}
+                      </div>
+                      <div className='sol-text-center sol-text-sm sol-text-slate-500'>
+                        {slot.location === 'Telehealth'
+                          ? 'Virtual'
+                          : slot.facility.slice(5)}
+                      </div>
+                    </div>
+                    <div className='sol-flex sol-justify-end sol-items-top sol-absolute sol-top-1 sol-right-1'>
+                      {slot.location === 'Telehealth' && (
+                        <img src={videoChatIcon} alt='Video Chat Icon' />
+                      )}
+                    </div>
+                  </div>
                 </Radio>
               </Field>
             ))}
