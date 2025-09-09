@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { isEmpty, isNil } from 'lodash-es';
+import { cloneDeep, isEmpty, isNil } from 'lodash-es';
 import { Slots, WeekCalendar } from '@/atoms';
 import { usePreferences } from '@/PreferencesProvider';
 import { useSolApi } from '@/SolApiProvider';
@@ -11,6 +11,7 @@ import {
   type SlotWithConfirmedLocation
 } from '@/lib/api';
 import { filterByDate, filterByLocation } from '@/lib/utils/availabilities';
+import videoChatIcon from '@/assets/video-chat-icon.svg';
 
 export type SchedulerProps = {
   onBookingError: () => void;
@@ -37,8 +38,7 @@ export const Scheduler: FC<SchedulerProps> = ({
 
   const { allowSchedulingInThePast = false } = opts || {};
 
-  const { setSelectedSlot, bookingInformation, setLocation, preferences } =
-    usePreferences();
+  const { setSelectedSlot, bookingInformation } = usePreferences();
   const {
     provider: { getId: provivderId }
   } = useSolApi();
@@ -50,15 +50,22 @@ export const Scheduler: FC<SchedulerProps> = ({
       loading: loadingProvider
     },
     availabilities: {
-      data: availabilities,
+      data: fetchedAvailabilities,
       loading,
       fetch: fetchAvailabilities
     },
     booking: { book: bookAppointment, isBooking }
   } = useSolApi();
-
+  const [availabilities, setAvailabilities] = useState<SlotType[]>([]);
   const [date, setDate] = useState<Date | null>(null);
   const [slot, setSlot] = useState<SlotType | null>(null);
+
+  useEffect(() => {
+    const sortedFetchedAvailabilities = cloneDeep(fetchedAvailabilities).sort(
+      (a, b) => a.slotstart.getTime() - b.slotstart.getTime()
+    );
+    setAvailabilities(sortedFetchedAvailabilities);
+  }, [fetchedAvailabilities]);
 
   useEffect(() => {
     if (provivderId === null) {
@@ -88,20 +95,35 @@ export const Scheduler: FC<SchedulerProps> = ({
     setSlot(null);
   };
 
+  const selectTimeRef = useRef<HTMLDivElement>(null);
   const bookingButtonRef = useRef<HTMLDivElement>(null);
 
-  const scrollToSlot = () => {
+  const scrollToTime = () => {
+    if (selectTimeRef.current) {
+      selectTimeRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+  const scrollToBookingButton = () => {
     if (bookingButtonRef.current) {
       bookingButtonRef.current.scrollIntoView({
         behavior: 'smooth',
-        block: 'center'
+        block: 'start'
       });
     }
   };
 
   useEffect(() => {
-    scrollToSlot();
+    if (slot) {
+      scrollToBookingButton();
+    }
   }, [slot]);
+
+  useEffect(() => {
+    scrollToTime();
+  }, [date]);
 
   const handleSlotSelect = (slot: SlotType) => {
     setSlot(slot);
@@ -122,10 +144,6 @@ export const Scheduler: FC<SchedulerProps> = ({
       onBookingError
     );
   };
-
-  const selectedDeliveryMethodPreferences = useMemo(() => {
-    return preferences.deliveryMethod;
-  }, [preferences]);
 
   if (provivderId === null) {
     return <div>No provider selected.</div>;
@@ -161,13 +179,22 @@ export const Scheduler: FC<SchedulerProps> = ({
           value={date}
           availabilities={availabilities}
           onDateSelect={handleDateSelect}
-          onLocationSelect={setLocation}
-          deliveryMethodPreference={selectedDeliveryMethodPreferences}
           allowSchedulingInThePast={allowSchedulingInThePast}
         />
       </div>
       {date && (
-        <div className='sol-pt-6 sol-mt-6 sol-border-t-1 sol-border-slate-200'>
+        <div
+          ref={selectTimeRef}
+          className='sol-pt-6 sol-mt-6 sol-mb-6 sol-border-t-1 sol-border-slate-200'
+        >
+          <div className='sol-flex sol-flex-row sol-items-center sol-justify-end sol-gap-1 sol-pb-2'>
+            <div>
+              <img src={videoChatIcon} alt='Video Chat Icon' />
+            </div>
+            <div className='sol-text-sm sol-text-slate-500'>
+              Virtual Appointment
+            </div>
+          </div>
           <div className='sol-mb-4'>
             <h3 className='sol-font-semibold sol-text-xl sol-m-0 sol-text-slate-800 sol-text-center'>
               {selectSlot}
@@ -186,8 +213,8 @@ export const Scheduler: FC<SchedulerProps> = ({
       )}
       {date && slot && (
         <div
-          className='sol-py-6 sol-mt-6 sol-border-t-1 sol-border-slate-200'
           ref={bookingButtonRef}
+          className='sol-py-6 sol-mt-6 sol-border-t-1 sol-border-slate-200'
         >
           <button
             className={clsx('sol-btn sol-w-full', {

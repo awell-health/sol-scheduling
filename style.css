@@ -1672,8 +1672,16 @@ html {
   left: 50%;
 }
 
+.sol-right-1 {
+  right: 0.25rem;
+}
+
 .sol-top-0 {
   top: 0px;
+}
+
+.sol-top-1 {
+  top: 0.25rem;
 }
 
 .sol-z-20 {
@@ -1743,6 +1751,10 @@ html {
 
 .sol-mb-5 {
   margin-bottom: 1.25rem;
+}
+
+.sol-mb-6 {
+  margin-bottom: 1.5rem;
 }
 
 .sol-ml-1 {
@@ -1949,12 +1961,20 @@ html {
   align-items: center;
 }
 
+.sol-justify-end {
+  justify-content: flex-end;
+}
+
 .sol-justify-center {
   justify-content: center;
 }
 
 .sol-justify-between {
   justify-content: space-between;
+}
+
+.sol-justify-evenly {
+  justify-content: space-evenly;
 }
 
 .sol-gap-1 {
@@ -2213,6 +2233,10 @@ html {
   padding-bottom: 1.5rem;
 }
 
+.sol-pb-2 {
+  padding-bottom: 0.5rem;
+}
+
 .sol-pb-6 {
   padding-bottom: 1.5rem;
 }
@@ -2223,6 +2247,10 @@ html {
 
 .sol-text-center {
   text-align: center;
+}
+
+.sol-align-top {
+  vertical-align: top;
 }
 
 .sol-text-2xl {

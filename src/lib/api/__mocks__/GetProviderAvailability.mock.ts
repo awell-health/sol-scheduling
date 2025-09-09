@@ -116,6 +116,46 @@ export const mockProviderAvailabilityResponse: (
         eventType: 'Telehealth',
         facility: 'NY - Brooklyn Heights',
         location: 'Telehealth'
+      },
+      {
+        eventId: 't68403en62hji9lad095mv2srk',
+        slotstart: setHours(
+          addDays(getNextWeekday(new Date()), 2).toISOString(),
+          14
+        ),
+        provider: {
+          location: {
+            facility: '',
+            state: ''
+          }
+        },
+        providerId: '1717',
+        date: '2024-10-23',
+        duration: 60,
+        booked: false,
+        eventType: 'Telehealth',
+        facility: 'NY - Brooklyn Heights',
+        location: 'In-Person'
+      },
+      {
+        eventId: 't68403en62hji9lad095mv2sra',
+        slotstart: setHours(
+          addDays(getNextWeekday(new Date()), 2).toISOString(),
+          15
+        ),
+        provider: {
+          location: {
+            facility: '',
+            state: ''
+          }
+        },
+        providerId: '1717',
+        date: '2024-10-23',
+        duration: 60,
+        booked: false,
+        eventType: 'Telehealth',
+        facility: 'NY - Brooklyn Heights',
+        location: 'In-Person'
       }
     ].map((e) => ProviderEventSchema.parse(e))
   }
