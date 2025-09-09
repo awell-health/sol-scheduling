@@ -38,8 +38,7 @@ export const Scheduler: FC<SchedulerProps> = ({
 
   const { allowSchedulingInThePast = false } = opts || {};
 
-  const { setSelectedSlot, bookingInformation, setLocation, preferences } =
-    usePreferences();
+  const { setSelectedSlot, bookingInformation } = usePreferences();
   const {
     provider: { getId: provivderId }
   } = useSolApi();
@@ -51,15 +50,22 @@ export const Scheduler: FC<SchedulerProps> = ({
       loading: loadingProvider
     },
     availabilities: {
-      data: availabilities,
+      data: fetchedAvailabilities,
       loading,
       fetch: fetchAvailabilities
     },
     booking: { book: bookAppointment, isBooking }
   } = useSolApi();
-
+  const [availabilities, setAvailabilities] = useState<SlotType[]>([]);
   const [date, setDate] = useState<Date | null>(null);
   const [slot, setSlot] = useState<SlotType | null>(null);
+
+  useEffect(() => {
+    fetchedAvailabilities.sort(
+      (a, b) => a.slotstart.getTime() - b.slotstart.getTime()
+    );
+    setAvailabilities(fetchedAvailabilities);
+  }, [fetchedAvailabilities]);
 
   useEffect(() => {
     if (provivderId === null) {
@@ -124,10 +130,6 @@ export const Scheduler: FC<SchedulerProps> = ({
     );
   };
 
-  const selectedDeliveryMethodPreferences = useMemo(() => {
-    return preferences.deliveryMethod;
-  }, [preferences]);
-
   if (provivderId === null) {
     return <div>No provider selected.</div>;
   }
@@ -162,8 +164,6 @@ export const Scheduler: FC<SchedulerProps> = ({
           value={date}
           availabilities={availabilities}
           onDateSelect={handleDateSelect}
-          onLocationSelect={setLocation}
-          deliveryMethodPreference={selectedDeliveryMethodPreferences}
           allowSchedulingInThePast={allowSchedulingInThePast}
         />
       </div>

@@ -9,7 +9,7 @@ import {
   CurrentWeekAvailabilitySpec
   // WithAvailabilitiesAndInPersonPreferenceSpec
 } from './WeekCalendar.spec';
-import { DeliveryMethod, EventDeliveryMethod } from '@/lib/api';
+import { EventDeliveryMethod } from '@/lib/api';
 
 const meta: Meta<typeof WeekCalendarComponent> = {
   title: 'Atoms/Calendar/Week',
@@ -17,7 +17,7 @@ const meta: Meta<typeof WeekCalendarComponent> = {
   parameters: {
     mockingDate: new Date('2024-10-14T18:00:00.000Z')
   },
-  args: { onDateSelect: fn(), onLocationSelect: fn() },
+  args: { onDateSelect: fn() },
   decorators: [
     (Story) => {
       return (
@@ -66,7 +66,6 @@ export const TestWithAvailabilitiesAndInPersonPreference: Story = {
   args: {
     weekStartsOn: 'monday',
     hideWeekends: true,
-    deliveryMethodPreference: DeliveryMethod.InPerson,
     /**
      * Test with two In-Person availabilities on different locations.
      * Should set location filter to the first availability location.

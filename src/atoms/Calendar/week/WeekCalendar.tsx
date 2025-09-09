@@ -1,5 +1,4 @@
 import { FC, useState, useMemo, useCallback, useEffect } from 'react';
-import { uniq } from 'lodash-es';
 import { differenceInDays } from 'date-fns';
 import clsx from 'clsx';
 import {
@@ -13,98 +12,40 @@ import {
   isSameDay,
   isBefore
 } from 'date-fns';
-import {
-  DeliveryMethod,
-  DeliveryMethodType,
-  LocationType,
-  type LocationTypeType,
-  type SlotType
-} from '../../../lib/api';
+import { type SlotType } from '../../../lib/api';
 import { DayCard } from './atoms/DayCard';
-import { filterByLocation } from '@/lib/utils/availabilities';
 import { NavigationButton } from './NavigationButton';
-import { LocationFilter } from './LocationFilter';
 
 export interface Props {
   value: Date | null;
   availabilities: SlotType[];
-  onLocationSelect: ({
-    confirmedLocation,
-    facility
-  }: {
-    confirmedLocation: LocationTypeType;
-    facility?: string;
-  }) => void;
   onDateSelect: (date: Date | null) => void;
   week?: Date;
   weekStartsOn?: 'sunday' | 'monday';
   hideWeekends?: boolean;
   allowSchedulingInThePast?: boolean;
   loading?: boolean;
-  deliveryMethodPreference?: DeliveryMethodType;
 }
 
 export const WeekCalendar: FC<Props> = (props) => {
   const {
     value,
     availabilities,
-    onLocationSelect,
     onDateSelect,
     week = new Date(),
     weekStartsOn = 'monday',
     hideWeekends = true,
     allowSchedulingInThePast = false,
-    loading,
-    deliveryMethodPreference = DeliveryMethod.Telehealth
+    loading
   } = props;
 
   const [currentWeek, setCurrentWeek] = useState(week);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
-  const [selectedLocation, setSelectedLocation] = useState<string>('');
-  const [filteredAvailabilities, setFilteredAvailabilities] = useState<
-    SlotType[]
-  >([]);
-
-  /**
-   * On the initial render, select the preferred location based on the delivery method preference:
-   * - If the preference is Telehealth, select Telehealth.
-   * - If the preference is InPerson, select the first available facility.
-   */
-  useEffect(() => {
-    const preferredLocation =
-      deliveryMethodPreference === DeliveryMethod.Telehealth
-        ? 'Telehealth'
-        : availabilities[0]?.facility || 'Telehealth';
-
-    setSelectedLocation(preferredLocation);
-    onLocationSelect({
-      confirmedLocation:
-        preferredLocation === 'Telehealth'
-          ? LocationType.Telehealth
-          : LocationType.InPerson,
-      facility:
-        preferredLocation === 'Telehealth' ? undefined : preferredLocation
-    });
-
-    const _filtered = filterByLocation({
-      availabilities,
-      location: {
-        confirmedLocation:
-          preferredLocation === 'Telehealth'
-            ? LocationType.Telehealth
-            : LocationType.InPerson,
-        facility:
-          preferredLocation === 'Telehealth' ? undefined : preferredLocation
-      }
-    });
-    setFilteredAvailabilities(_filtered);
-  }, [availabilities, deliveryMethodPreference]);
 
   useEffect(() => {
-    if (filteredAvailabilities.length > 0) {
-      const firstAvailableSlot = filteredAvailabilities.reduce(
-        (earliest, slot) =>
-          earliest && earliest.slotstart < slot.slotstart ? earliest : slot
+    if (availabilities.length > 0) {
+      const firstAvailableSlot = availabilities.reduce((earliest, slot) =>
+        earliest && earliest.slotstart < slot.slotstart ? earliest : slot
       );
 
       const firstAvailableWeekStart = startOfWeek(
@@ -116,7 +57,7 @@ export const WeekCalendar: FC<Props> = (props) => {
 
       setCurrentWeek(firstAvailableWeekStart);
     }
-  }, [filteredAvailabilities, weekStartsOn]);
+  }, [availabilities, weekStartsOn]);
 
   const handlePreviousWeek = useCallback(() => {
     setCurrentWeek((prevWeek) => subWeeks(prevWeek, 1));
@@ -125,49 +66,6 @@ export const WeekCalendar: FC<Props> = (props) => {
   const handleNextWeek = useCallback(() => {
     setCurrentWeek((prevWeek) => addWeeks(prevWeek, 1));
   }, []);
-
-  const handleSelectLocation = useCallback(
-    (location: string) => {
-      const confirmedLocation =
-        location === 'Telehealth'
-          ? LocationType.Telehealth
-          : LocationType.InPerson;
-
-      const _location = {
-        confirmedLocation,
-        facility: location === 'Telehealth' ? undefined : location
-      };
-
-      setSelectedLocation(location);
-      onLocationSelect(_location);
-
-      setSelectedDate(null);
-      onDateSelect(null);
-
-      const _filtered = filterByLocation({
-        availabilities,
-        location: _location
-      });
-      setFilteredAvailabilities(_filtered);
-    },
-    [availabilities]
-  );
-
-  // Get unique facilities from availabilities
-  const availableFacilities = useMemo(() => {
-    // Extract the 'facility' field from each slot
-    const uniqueFacilities = uniq(
-      availabilities.map((slot) => {
-        return slot.facility ? slot.facility : 'Telehealth';
-      })
-    );
-    // Add 'Telehealth' if it's not already in the array
-    if (!uniqueFacilities.includes('Telehealth')) {
-      uniqueFacilities.push('Telehealth');
-    }
-
-    return uniqueFacilities;
-  }, [availabilities]);
 
   const handleDateClick = useCallback(
     (date: Date) => {
@@ -179,11 +77,11 @@ export const WeekCalendar: FC<Props> = (props) => {
 
   const isAvailable = useCallback(
     (date: Date) => {
-      return filteredAvailabilities.some((availableSlot) =>
+      return availabilities.some((availableSlot) =>
         isSameDay(date, availableSlot.slotstart)
       );
     },
-    [filteredAvailabilities]
+    [availabilities]
   );
 
   const isDisabled = useCallback(
@@ -199,11 +97,10 @@ export const WeekCalendar: FC<Props> = (props) => {
 
   const countAvailabilities = useCallback(
     (date: Date) => {
-      return filteredAvailabilities.filter((slot) =>
-        isSameDay(slot.slotstart, date)
-      ).length;
+      return availabilities.filter((slot) => isSameDay(slot.slotstart, date))
+        .length;
     },
-    [filteredAvailabilities]
+    [availabilities]
   );
 
   const days = useMemo(() => {
@@ -234,8 +131,7 @@ export const WeekCalendar: FC<Props> = (props) => {
     selectedDate,
     hideWeekends,
     weekStartsOn,
-    selectedLocation,
-    filteredAvailabilities,
+    availabilities,
     allowSchedulingInThePast
   ]);
 
@@ -251,11 +147,6 @@ export const WeekCalendar: FC<Props> = (props) => {
           <span className='sol-loading sol-loading-infinity sol-loading-lg sol-text-primary'></span>
         </div>
       )}
-      <LocationFilter
-        options={availableFacilities}
-        selected={selectedLocation}
-        onSelect={handleSelectLocation}
-      />
       <div className='sol-flex sol-justify-between sol-align-center sol-mb-4 sol-items-center'>
         <div className='sol-text-lg sol-font-medium'>
           {`${format(currentWeek, 'MMMM yyyy')}`}
