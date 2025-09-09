@@ -169,7 +169,7 @@ export const Scheduler: FC<SchedulerProps> = ({
       </div>
       {date && (
         <div className='sol-pt-6 sol-mt-6 sol-border-t-1 sol-border-slate-200'>
-          <div className='sol-flex sol-flex-row sol-items-center sol-justify-end sol-gap-1'>
+          <div className='sol-flex sol-flex-row sol-items-center sol-justify-end sol-gap-1 sol-pb-2'>
             <div>
               <img src={videoChatIcon} alt='Video Chat Icon' />
             </div>

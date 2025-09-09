@@ -84,7 +84,7 @@ export const Slots: FC<SlotsProps> = ({
                   value={slot.eventId}
                   aria-label={slot.slotstart.toISOString()}
                   className={clsx(
-                    'sol-relative sol-block sol-cursor-pointer sol-rounded-md sol-text-center sol-outline-0 sol-font-medium hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
+                    'sol-h-full sol-relative sol-block sol-cursor-pointer sol-rounded-md sol-text-center sol-outline-0 sol-font-medium hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                     {
                       'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                         selectedSlot?.eventId !== slot.eventId,
@@ -93,8 +93,8 @@ export const Slots: FC<SlotsProps> = ({
                     }
                   )}
                 >
-                  <div className='sol-flex sol-items-center sol-justify-center sol-gap-2 sol-relative sol-px-4 sol-py-5'>
-                    <div>
+                  <div className='sol-h-full sol-flex sol-items-center sol-justify-center sol-gap-2 sol-px-3 sol-py-4'>
+                    <div className='sol-p-1 sol-flex sol-flex-col sol-items-center sol-justify-center sol-align-top'>
                       <div className='sol-text-center'>
                         {formatSlotTime(slot.slotstart)}
                       </div>

@@ -2185,6 +2185,10 @@ html {
   padding: 1.5rem;
 }
 
+.sol-p-2 {
+  padding: 0.5rem;
+}
+
 .sol-px-1 {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -2230,6 +2234,16 @@ html {
   padding-bottom: 1.5rem;
 }
 
+.sol-px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.sol-py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
 .sol-pb-6 {
   padding-bottom: 1.5rem;
 }
@@ -2238,8 +2252,16 @@ html {
   padding-top: 1.5rem;
 }
 
+.sol-pb-2 {
+  padding-bottom: 0.5rem;
+}
+
 .sol-text-center {
   text-align: center;
+}
+
+.sol-align-top {
+  vertical-align: top;
 }
 
 .sol-text-2xl {
