@@ -86,6 +86,22 @@ export const TestWithAvailabilitiesAndInPersonPreference: Story = {
         duration: 60,
         facility: 'NY - Long Island City',
         location: EventDeliveryMethod.InPerson
+      },
+      {
+        eventId: 't68403en62hji9lad095mv2srk',
+        slotstart: new Date('2024-10-16T21:30:00Z'), // Wednesday, same week
+        providerId: '1717',
+        duration: 60,
+        facility: 'NY - Long Island City',
+        location: EventDeliveryMethod.InPerson
+      },
+      {
+        eventId: 't68403en62hji9lad095mv2srk',
+        slotstart: new Date('2024-10-16T21:45:00Z'), // Wednesday, same week
+        providerId: '1717',
+        duration: 60,
+        facility: 'NY - Long Island City',
+        location: EventDeliveryMethod.InPerson
       }
     ]
   }
