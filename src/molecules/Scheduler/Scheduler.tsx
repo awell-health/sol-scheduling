@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { isEmpty, isNil } from 'lodash-es';
+import { cloneDeep, isEmpty, isNil } from 'lodash-es';
 import { Slots, WeekCalendar } from '@/atoms';
 import { usePreferences } from '@/PreferencesProvider';
 import { useSolApi } from '@/SolApiProvider';
@@ -61,10 +61,10 @@ export const Scheduler: FC<SchedulerProps> = ({
   const [slot, setSlot] = useState<SlotType | null>(null);
 
   useEffect(() => {
-    fetchedAvailabilities.sort(
+    const sortedFetchedAvailabilities = cloneDeep(fetchedAvailabilities).sort(
       (a, b) => a.slotstart.getTime() - b.slotstart.getTime()
     );
-    setAvailabilities(fetchedAvailabilities);
+    setAvailabilities(sortedFetchedAvailabilities);
   }, [fetchedAvailabilities]);
 
   useEffect(() => {

@@ -40,6 +40,13 @@ export const Slots: FC<SlotsProps> = ({
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
 
+  const formatFacility = (facility: string) => {
+    if (facility.length > 5) {
+      return facility.slice(5);
+    }
+    return facility;
+  };
+
   const handleSlotSelect = useCallback(
     (eventId: string) => {
       const slot: SlotType = slots?.find(
@@ -101,7 +108,7 @@ export const Slots: FC<SlotsProps> = ({
                       <div className='sol-text-center sol-text-sm sol-text-slate-500'>
                         {slot.location === 'Telehealth'
                           ? 'Virtual'
-                          : slot.facility.slice(5)}
+                          : formatFacility(slot.facility)}
                       </div>
                     </div>
                     <div className='sol-flex sol-justify-end sol-items-top sol-absolute sol-top-1 sol-right-1'>

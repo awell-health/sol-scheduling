@@ -1,5 +1,6 @@
 import { FC, useState, useMemo, useCallback, useEffect } from 'react';
 import { differenceInDays } from 'date-fns';
+import { min } from 'lodash-es';
 import clsx from 'clsx';
 import {
   format,
@@ -44,16 +45,13 @@ export const WeekCalendar: FC<Props> = (props) => {
 
   useEffect(() => {
     if (availabilities.length > 0) {
-      const firstAvailableSlot = availabilities.reduce((earliest, slot) =>
-        earliest && earliest.slotstart < slot.slotstart ? earliest : slot
-      );
+      const firstAvailableSlot = min(
+        availabilities.map((slot) => slot.slotstart)
+      ) as Date;
 
-      const firstAvailableWeekStart = startOfWeek(
-        firstAvailableSlot.slotstart,
-        {
-          weekStartsOn: weekStartsOn === 'sunday' ? 0 : 1
-        }
-      );
+      const firstAvailableWeekStart = startOfWeek(firstAvailableSlot, {
+        weekStartsOn: weekStartsOn === 'sunday' ? 0 : 1
+      });
 
       setCurrentWeek(firstAvailableWeekStart);
     }
