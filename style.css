@@ -1773,6 +1773,10 @@ html {
   margin-top: 1.5rem;
 }
 
+.sol-mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .sol-block {
   display: block;
 }
