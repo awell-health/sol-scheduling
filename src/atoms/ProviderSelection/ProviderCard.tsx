@@ -47,7 +47,7 @@ export const ProviderCard: FC<ProviderProps> = ({
         provider={provider}
         deliveryMethod={deliveryMethod}
         facilities={facilities}
-        text={text?.button}
+        text={text}
         onSelect={onSelect}
       />
     </div>
@@ -59,9 +59,9 @@ const ProviderHeader: FC<{
   deliveryMethod?: DeliveryMethod;
   facilities: string[];
   onSelect: (id: string) => void;
-  text?: string;
+  text?: { button?: string };
 }> = ({ provider, deliveryMethod, facilities, text, onSelect }) => {
-  const { button = 'Select Provider' } = { button: text } || {};
+  const button = text?.button ?? 'Select Provider';
   /*
    * Using a variable to hide the profile link instead of removing it:
    * They want to do some AB testing and might ask to add this back in at a later time
@@ -96,12 +96,10 @@ const ProviderHeader: FC<{
       </div>
       {location.length > 0 && (
         <div className='sol-flex sol-flex-col sm:sol-flex-row sol-justify-center sm:sol-justify-start sol-items-center'>
-          (
           <span className='sol-text-slate-600 sol-text-md'>
             {' '}
             {toFullNameState(location)}{' '}
           </span>
-          )
           {showProfileLink && (
             <>
               {' '}
