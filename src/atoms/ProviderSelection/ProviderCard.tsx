@@ -79,7 +79,7 @@ const ProviderHeader: FC<{
       : provider.events.slice(0, 3);
 
   return (
-    <div className='sol-flex sol-flex-col sol-items-baseline sol-gap-2 sol-justify-evenly'>
+    <div className='sol-flex sol-flex-col sol-items-baseline sol-gap-3 sol-justify-evenly'>
       <h3 className='sol-text-slate-800 sol-text-lg sol-m-0 sol-font-semibold sol-text-center sm:sol-text-left'>
         {' '}
         {providerName}{' '}
