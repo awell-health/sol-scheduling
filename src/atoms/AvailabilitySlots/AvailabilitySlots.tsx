@@ -15,7 +15,7 @@ export const AvailabilitySlots: FC<AvailabilitySlotsProps> = ({
 }) => {
   const label = slots.length === 0 && `No ${deliveryMethod} slots available`;
   return (
-    <div className='sm:sol-min-w-[400px] sol-mt-4'>
+    <div className='sm:sol-min-w-[400px]'>
       {label && (
         <div className='sol-text-sm sol-font-medium sol-text-slate-600'>
           {label}

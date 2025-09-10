@@ -7,6 +7,7 @@ import type { Provider } from './types';
 import { ProviderAvatar } from '../ProviderAvatar';
 import { AvailabilitySlots } from '../AvailabilitySlots';
 import { DeliveryMethod } from '@/lib/api/schema';
+import locationIcon from '@/assets/location-icon.svg';
 
 export type ProviderProps = {
   provider: Provider;
@@ -23,46 +24,32 @@ export const ProviderCard: FC<ProviderProps> = ({
   onSelect,
   text
 }) => {
-  const { button = 'Select Provider' } = text || {};
-
   const facilities = uniq((provider?.events ?? []).map((e) => e.facility));
   const providerName = `${provider.firstName ?? ''} ${provider.lastName ?? ''}`;
 
   return (
     <div
       key={provider.id}
-      className='sol-rounded-md sol-border-1 sol-bg-white sol-p-4 sol-flex sol-gap-4'
+      className='sol-rounded-md sol-border-1 sol-bg-white sol-flex sol-justify-center sol-p-4 sol-gap-3'
     >
-      <div className='sol-flex sol-flex-col sol-justify-evenly sol-gap-2'>
+      <div className='sol-flex sol-flex-col sol-justify-evenly sol-gap-2 sol-w-auto'>
         <ProviderAvatar
           name={providerName}
           image={provider.image}
-          classes='sm:sol-w-32 sm:sol-h-32 sol-w-24 sol-h-24'
+          classes='sm:sol-w-36 sm:sol-h-36 sol-w-28 sol-h-28'
         />
-        <div className='sol-flex sol-flex-col sol-gap-1'>
-          {facilities.length > 0 &&
-            facilities.map((f) => <SingleItem key={f} value={f.slice(5)} />)}
+        <div className='sol-self-center sm:sol-self-auto'>
+          <Slot count={provider.events?.length ?? 0} />
         </div>
       </div>
       <div className='sol-border' />
-      <div>
-        <ProviderHeader provider={provider} deliveryMethod={deliveryMethod} />
-        <div className='sol-mt-4 sol-rounded-md'>
-          <div>
-            <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4 sol-mb-4'>
-              {provider.bio && <BioItem value={provider.bio} />}
-            </ul>
-          </div>
-          <div>
-            <button
-              onClick={() => onSelect(provider.id)}
-              className={clsx('sol-btn sol-btn-primary sol-w-full')}
-            >
-              {button}
-            </button>
-          </div>
-        </div>
-      </div>
+      <ProviderHeader
+        provider={provider}
+        deliveryMethod={deliveryMethod}
+        facilities={facilities}
+        text={text?.button}
+        onSelect={onSelect}
+      />
     </div>
   );
 };
@@ -70,7 +57,11 @@ export const ProviderCard: FC<ProviderProps> = ({
 const ProviderHeader: FC<{
   provider: Provider;
   deliveryMethod?: DeliveryMethod;
-}> = ({ provider, deliveryMethod }) => {
+  facilities: string[];
+  onSelect: (id: string) => void;
+  text?: string;
+}> = ({ provider, deliveryMethod, facilities, text, onSelect }) => {
+  const { button = 'Select Provider' } = { button: text } || {};
   /*
    * Using a variable to hide the profile link instead of removing it:
    * They want to do some AB testing and might ask to add this back in at a later time
@@ -88,56 +79,74 @@ const ProviderHeader: FC<{
       : provider.events.slice(0, 3);
 
   return (
-    <div className='sol-flex sol-flex-col sm:sol-flex-row sol-items-start sm:sol-items-center sm:sol-justify-between'>
-      <div className='sol-w-full sm:sol-w-auto sm:sol-gap-y-6'>
-        <div className='sol-flex sol-flex-col sm:sol-flex-row sol-items-center sm:sol-justify-between sol-justify-center sol-mb-3'>
-          <div>
-            <h3 className='sol-text-slate-800 sol-text-lg sol-m-0 sol-font-semibold sol-text-center sm:sol-text-left'>
+    <div className='sol-flex sol-flex-col sol-items-baseline sol-gap-2 sol-justify-evenly'>
+      <h3 className='sol-text-slate-800 sol-text-lg sol-m-0 sol-font-semibold sol-text-center sm:sol-text-left'>
+        {' '}
+        {providerName}{' '}
+      </h3>{' '}
+      <div className='sol-grid sol-grid-cols-3 sol-gap-3 sol-justify-start'>
+        {facilities &&
+          facilities.length > 0 &&
+          facilities.map((f) => <SingleItem key={f} value={f.slice(5)} />)}
+      </div>
+      <div>
+        <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4'>
+          {provider.bio && <BioItem value={provider.bio} />}
+        </ul>
+      </div>
+      {location.length > 0 && (
+        <div className='sol-flex sol-flex-col sm:sol-flex-row sol-justify-center sm:sol-justify-start sol-items-center'>
+          (
+          <span className='sol-text-slate-600 sol-text-md'>
+            {' '}
+            {toFullNameState(location)}{' '}
+          </span>
+          )
+          {showProfileLink && (
+            <>
               {' '}
-              {providerName}{' '}
-            </h3>{' '}
-            <div className='sol-flex sol-flex-col sm:sol-flex-row sol-justify-center sm:sol-justify-start sol-items-center'>
-              {location.length > 0 && (
-                <span className='sol-text-slate-600 sol-text-md'>
-                  {' '}
-                  {toFullNameState(location)}{' '}
+              {location.length > 0 && profileLink.length > 0 && (
+                <span className='sol-text-slate-600 sol-text-md sol-hidden sm:sol-inline sol-px-1'>
+                  •
                 </span>
-              )}{' '}
-              {showProfileLink && (
-                <>
-                  {' '}
-                  {location.length > 0 && profileLink.length > 0 && (
-                    <span className='sol-text-slate-600 sol-text-md sol-hidden sm:sol-inline sol-px-1'>
-                      •
-                    </span>
-                  )}
-                  {profileLink.length > 0 && (
-                    <LinkToProfileItem link={profileLink} />
-                  )}
-                </>
               )}
-            </div>
-          </div>
-
-          <div className='sol-self-center sm:sol-self-auto sol-mt-2 sm:sol-mt-0'>
-            <Slot count={provider.events?.length ?? 0} />
-          </div>
+              {profileLink.length > 0 && (
+                <LinkToProfileItem link={profileLink} />
+              )}
+            </>
+          )}
         </div>
-        <AvailabilitySlots
-          timeZone={Intl.DateTimeFormat().resolvedOptions().timeZone}
-          slots={slots}
-          deliveryMethod={deliveryMethod}
-        />
+      )}
+      <AvailabilitySlots
+        timeZone={Intl.DateTimeFormat().resolvedOptions().timeZone}
+        slots={slots}
+        deliveryMethod={deliveryMethod}
+      />
+      <div className='sol-rounded-md sol-w-full'>
+        <button
+          onClick={() => onSelect(provider.id)}
+          className='sol-btn sol-btn-primary sol-w-full sol-min-h-10 sol-h-10'
+        >
+          {button}
+        </button>
       </div>
     </div>
   );
 };
 
-const mainText = 'sol-font-semibold sol-text-primary';
 const SingleItem: FC<{ value: string }> = ({ value }) => {
   return (
-    <div className='sol-p-1 sol-text-center sol-bg-slate-100 sol-rounded-lg'>
-      <span className={mainText}>{value}</span>
+    <div className='sol-flex sol-items-center' aria-hidden='true'>
+      <img
+        src={locationIcon}
+        alt='Location icon'
+        className='sol-w-5 sol-h-5 sol-text-slate-500'
+      />
+      <div className='sol-p-1 sol-text-center'>
+        <span className='sol-font-semibold sol-text-primary sol-text-sm'>
+          {value}
+        </span>
+      </div>
     </div>
   );
 };
