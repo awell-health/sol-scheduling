@@ -104,7 +104,7 @@ const NumberOfSlots: FC<{ count: number }> = ({ count }) => {
         )}
         aria-hidden='true'
       >
-        {count === 0 ? 'No slots' : `${count + 10}`}
+        {count === 0 ? 'No slots' : `${count}`}
         <span className='sm:sol-inline sol-hidden'> {slotText}</span>
       </div>
     </div>
