@@ -134,7 +134,7 @@ const ProviderHeader: FC<{
 
 const SingleItem: FC<{ value: string }> = ({ value }) => {
   return (
-    <div className='sol-flex sol-items-center' aria-hidden='true'>
+    <div className='sol-flex sol-items-center'>
       <img
         src={locationIcon}
         alt='Location icon'
