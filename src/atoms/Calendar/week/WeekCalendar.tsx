@@ -1,18 +1,6 @@
 import { FC, useState, useMemo, useCallback, useEffect } from 'react';
-import { differenceInDays } from 'date-fns';
-import { min } from 'lodash-es';
 import clsx from 'clsx';
-import {
-  format,
-  addWeeks,
-  subWeeks,
-  startOfWeek,
-  endOfWeek,
-  eachDayOfInterval,
-  isToday,
-  isSameDay,
-  isBefore
-} from 'date-fns';
+import { format, isToday, isSameDay, isBefore } from 'date-fns';
 import { type SlotType } from '../../../lib/api';
 import { DayCard } from './atoms/DayCard';
 import { NavigationButton } from './NavigationButton';
@@ -21,9 +9,6 @@ export interface Props {
   value: Date | null;
   availabilities: SlotType[];
   onDateSelect: (date: Date | null) => void;
-  week?: Date;
-  weekStartsOn?: 'sunday' | 'monday';
-  hideWeekends?: boolean;
   allowSchedulingInThePast?: boolean;
   loading?: boolean;
 }
@@ -33,37 +18,56 @@ export const WeekCalendar: FC<Props> = (props) => {
     value,
     availabilities,
     onDateSelect,
-    week = new Date(),
-    weekStartsOn = 'monday',
-    hideWeekends = true,
     allowSchedulingInThePast = false,
     loading
   } = props;
 
-  const [currentWeek, setCurrentWeek] = useState(week);
+  const [isLargeScreen, setIsLargeScreen] = useState(
+    typeof window !== 'undefined' ? window.innerWidth >= 768 : false
+  );
+  const daysToShow = isLargeScreen ? 5 : 5;
+  const [currentStartIndex, setCurrentStartIndex] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
 
+  const availableDates = useMemo(() => {
+    const uniqueDates = Array.from(
+      new Set(
+        availabilities.map((slot) => format(slot.slotstart, 'yyyy-MM-dd'))
+      )
+    )
+      .map((dateStr) => new Date(dateStr))
+      .sort((a, b) => a.getTime() - b.getTime());
+
+    return uniqueDates;
+  }, [availabilities]);
+
   useEffect(() => {
-    if (availabilities.length > 0) {
-      const firstAvailableSlot = min(
-        availabilities.map((slot) => slot.slotstart)
-      ) as Date;
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 768);
+    };
 
-      const firstAvailableWeekStart = startOfWeek(firstAvailableSlot, {
-        weekStartsOn: weekStartsOn === 'sunday' ? 0 : 1
-      });
-
-      setCurrentWeek(firstAvailableWeekStart);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
     }
-  }, [availabilities, weekStartsOn]);
-
-  const handlePreviousWeek = useCallback(() => {
-    setCurrentWeek((prevWeek) => subWeeks(prevWeek, 1));
   }, []);
 
-  const handleNextWeek = useCallback(() => {
-    setCurrentWeek((prevWeek) => addWeeks(prevWeek, 1));
-  }, []);
+  useEffect(() => {
+    setCurrentStartIndex(0);
+    onDateSelect(null);
+  }, [availabilities, daysToShow]);
+
+  const handlePrevious = useCallback(() => {
+    setCurrentStartIndex((prevIndex) => prevIndex - daysToShow);
+    onDateSelect(null);
+    setSelectedDate(null);
+  }, [daysToShow]);
+
+  const handleNext = useCallback(() => {
+    setCurrentStartIndex((prevIndex) => prevIndex + daysToShow);
+    onDateSelect(null);
+    setSelectedDate(null);
+  }, [daysToShow]);
 
   const handleDateClick = useCallback(
     (date: Date) => {
@@ -102,11 +106,12 @@ export const WeekCalendar: FC<Props> = (props) => {
   );
 
   const days = useMemo(() => {
-    const weekStartsOnIndex = weekStartsOn === 'sunday' ? 0 : 1;
-    const start = startOfWeek(currentWeek, { weekStartsOn: weekStartsOnIndex });
-    const end = endOfWeek(currentWeek, { weekStartsOn: weekStartsOnIndex });
+    const visibleDates = availableDates.slice(
+      currentStartIndex,
+      currentStartIndex + daysToShow
+    );
 
-    let generatedDays = eachDayOfInterval({ start, end }).map((date) => ({
+    const generatedDays = visibleDates.map((date) => ({
       date,
       isToday: isToday(date),
       isSelected: selectedDate ? isSameDay(date, selectedDate) : false,
@@ -115,29 +120,23 @@ export const WeekCalendar: FC<Props> = (props) => {
       shortDayName: format(date, 'EEE'),
       availabilitiesCount: countAvailabilities(date)
     }));
-
-    if (hideWeekends) {
-      generatedDays = generatedDays.filter(
-        (day) =>
-          format(day.date, 'EEE') !== 'Sat' && format(day.date, 'EEE') !== 'Sun'
-      );
-    }
-
     return generatedDays;
   }, [
-    currentWeek,
+    availableDates,
+    currentStartIndex,
+    daysToShow,
     selectedDate,
-    hideWeekends,
-    weekStartsOn,
-    availabilities,
-    allowSchedulingInThePast
+    isDisabled,
+    isAvailable,
+    countAvailabilities
   ]);
 
-  // Calculate if we should disable the previous week button
-  const isPreviousWeekDisabled = differenceInDays(currentWeek, new Date()) <= 0;
+  // Calculate if we should disable the previous navigation button
+  const isPreviousDisabled = currentStartIndex === 0;
 
-  // Calculate if we should disable the next week button
-  const isNextWeekDisabled = differenceInDays(currentWeek, new Date()) >= 30;
+  // Calculate if we should disable the next navigation button
+  const isNextDisabled =
+    currentStartIndex + daysToShow >= availableDates.length;
   return (
     <div className='sol-relative'>
       {loading && (
@@ -147,24 +146,26 @@ export const WeekCalendar: FC<Props> = (props) => {
       )}
       <div className='sol-flex sol-justify-between sol-align-center sol-mb-4 sol-items-center'>
         <div className='sol-text-lg sol-font-medium'>
-          {`${format(currentWeek, 'MMMM yyyy')}`}
+          {availableDates.length > 0 &&
+            `${format(availableDates[currentStartIndex], 'MMMM yyyy')}`}
         </div>
         <div className='sol-flex sol-align-center sol-text-center sol-gap-2'>
           <NavigationButton
             direction='left'
-            onClick={handlePreviousWeek}
-            isDisabled={isPreviousWeekDisabled}
+            onClick={handlePrevious}
+            isDisabled={isPreviousDisabled}
           />
           <NavigationButton
             direction='right'
-            onClick={handleNextWeek}
-            isDisabled={isNextWeekDisabled}
+            onClick={handleNext}
+            isDisabled={isNextDisabled}
           />
         </div>
       </div>
       <div
         className={clsx(
-          'sol-flex sol-gap-2 lg:sol-gap-3 sol-flex-col md:sol-flex-row sol-overflow-x-auto'
+          'sol-grid sol-gap-2 sol-grid-cols-5 md:sol-gap-1'
+          // 'sol-flex sol-gap-2 sol-flex-row sol-overflow-x-auto'
         )}
       >
         {days.map((day) => (

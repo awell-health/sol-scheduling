@@ -48,9 +48,9 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
       onClick={() => onSelect(day.date)}
       disabled={cannotActivate(day)}
       className={clsx(
-        'sol-flex sol-flex-1 md:sol-flex-col sol-justify-between md:sol-justify-center sol-align-center sol-p-3',
+        'sol-flex sol-flex-1 sol-flex-col sol-justify-between sol-justify-center sol-align-center sol-p-3',
         'sol-font-bold sol-text-lg sol-text-center sol-rounded-md',
-        'sol-w-full md:sol-w-auto',
+        'sol-w-full sol-w-auto',
         {
           'sol-border-slate-200 sol-border-1 sol-bg-white': !day.isSelected,
           'sol-border-1 sol-border-primary sol-ring-4 sol-ring-secondary':
@@ -65,16 +65,15 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
       <time
         dateTime={day.date.toISOString()}
         className={clsx(
-          'sol-flex sol-flex-row md:sol-flex-none md:sol-block sol-gap-1 md:sol-self-center',
+          'sol-flex sol-flex-col sol-flex-none sol-block sol-gap-1 sol-self-center sol-text-sm sm:sol-text-lg',
           {
             'sol-text-slate-400': cannotActivate(day),
-            'sol-text-slate-800': !cannotActivate(day) && !day.isSelected,
-            'sol-text-primary': day.isSelected
+            'sol-text-slate-800': !cannotActivate(day) && !day.isSelected
           }
         )}
       >
-        <div className='sol-font-medium'>{format(day.date, 'EEE')}</div>
-        <div>{day.date.getDate()}</div>
+        <div>{format(day.date, 'EEE')}</div>
+        <div className='sol-text-lg'>{day.date.getDate()}</div>
         <div>{format(day.date, 'MMM')}</div>
       </time>
       <div
@@ -92,10 +91,10 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
 const NumberOfSlots: FC<{ count: number }> = ({ count }) => {
   const slotText = count === 1 ? 'slot' : 'slots';
   return (
-    <div className='sol-flex sol-mt-2 sol-gap-2 md:sol-gap-0 md:sol-flex-col sol-flex-row'>
+    <div className='sol-flex sol-mt-2 sol-gap-2 sol-gap-0 sol-flex-col sol-flex-row'>
       <div
         className={clsx(
-          'sol-rounded-full sol-text-sm sol-text-white sol-font-medium sol-my-2 sol-self-center sol-px-4 sol-py-1 sol-w-[85px]',
+          'sol-rounded-full sol-text-sm sol-text-white sol-font-medium sol-my-2 sol-self-center sol-px-1 sol-py-1 sol-w-[40px] sm:sol-w-[85px]',
           {
             'sol-bg-slate-300': count === 0,
             'sol-bg-yellow-500': count > 0 && count <= 2,
@@ -104,7 +103,8 @@ const NumberOfSlots: FC<{ count: number }> = ({ count }) => {
         )}
         aria-hidden='true'
       >
-        {count === 0 ? 'No slots' : `${count} ${slotText}`}
+        {count === 0 ? 'No slots' : `${count}`}
+        <span className='sm:sol-inline sol-hidden'> {slotText}</span>
       </div>
     </div>
   );

@@ -37,25 +37,19 @@ type Story = StoryObj<typeof meta>;
 export const Loading: Story = {
   args: {
     availabilities: [],
-    loading: true,
-    weekStartsOn: 'monday',
-    hideWeekends: true
+    loading: true
   }
 };
 
 export const NoAvailabilities: Story = {
   args: {
-    availabilities: [],
-    weekStartsOn: 'monday',
-    hideWeekends: true
+    availabilities: []
   }
 };
 
 export const WithAvailabilities: Story = {
   args: {
-    availabilities: mockProviderAvailabilityResponse('1717').data['1717'],
-    weekStartsOn: 'monday',
-    hideWeekends: true
+    availabilities: mockProviderAvailabilityResponse('1717').data['1717']
   }
 };
 
@@ -64,8 +58,6 @@ export const TestWithAvailabilitiesAndInPersonPreference: Story = {
   // play: WithAvailabilitiesAndInPersonPreferenceSpec,
   tags: ['prefixing-wip'],
   args: {
-    weekStartsOn: 'monday',
-    hideWeekends: true,
     /**
      * Test with two In-Person availabilities on different locations.
      * Should set location filter to the first availability location.
