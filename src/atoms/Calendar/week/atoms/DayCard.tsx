@@ -94,7 +94,8 @@ const NumberOfSlots: FC<{ count: number }> = ({ count }) => {
     <div className='sol-flex sol-mt-2 sol-gap-2 sol-gap-0 sol-flex-col sol-flex-row'>
       <div
         className={clsx(
-          'sol-rounded-full sol-text-sm sol-text-white sol-font-medium sol-my-2 sol-self-center sol-px-1 sol-py-1 sol-w-[50px] sm:sol-w-[85px]',
+          'sol-rounded-full sol-text-sm sol-text-white sol-font-medium sol-my-2 sol-self-center sol-px-4 sol-py-1 sol-w-[50px] sm:sol-w-[85px]',
+
           {
             'sol-bg-slate-300': count === 0,
             'sol-bg-yellow-500': count > 0 && count <= 2,

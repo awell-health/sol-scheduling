@@ -41,7 +41,7 @@ export const WeekCalendar: FC<Props> = (props) => {
   useEffect(() => {
     setCurrentStartIndex(0);
     onDateSelect(null);
-  }, [availabilities, daysToShow]);
+  }, [availabilities]);
 
   const handlePrevious = useCallback(() => {
     setCurrentStartIndex((prevIndex) => prevIndex - daysToShow);
@@ -116,6 +116,16 @@ export const WeekCalendar: FC<Props> = (props) => {
     isAvailable,
     countAvailabilities
   ]);
+
+  // Click first available date on enter for the first time
+  useEffect(() => {
+    if (selectedDate === null && days.length > 0) {
+      const firstAvailableDay = days.find((day) => day.isAvailable);
+      if (firstAvailableDay) {
+        handleDateClick(firstAvailableDay.date);
+      }
+    }
+  }, [days, selectedDate, handleDateClick]);
 
   // Calculate if we should disable the previous navigation button
   const isPreviousDisabled = currentStartIndex === 0;

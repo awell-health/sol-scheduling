@@ -1838,6 +1838,10 @@ html {
   height: 100%;
 }
 
+.sol-h-\[110px\] {
+  height: 110px;
+}
+
 .sol-max-h-screen {
   max-height: 100vh;
 }
@@ -1874,8 +1878,8 @@ html {
   width: 1.5rem;
 }
 
-.sol-w-\[40px\] {
-  width: 40px;
+.sol-w-\[50px\] {
+  width: 50px;
 }
 
 .sol-w-auto {
@@ -1888,10 +1892,6 @@ html {
 
 .sol-w-px {
   width: 1px;
-}
-
-.sol-w-\[50px\] {
-  width: 50px;
 }
 
 .sol-max-w-\[180px\] {
@@ -2223,6 +2223,10 @@ html {
 
 .sol-p-6 {
   padding: 1.5rem;
+}
+
+.sol-p-2 {
+  padding: 0.5rem;
 }
 
 .sol-px-1 {

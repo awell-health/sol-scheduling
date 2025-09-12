@@ -100,7 +100,7 @@ export const Slots: FC<SlotsProps> = ({
                     }
                   )}
                 >
-                  <div className='sol-h-full sol-flex sol-items-center sol-justify-center sol-gap-2 sol-px-3 sol-py-4 sol-h-[100px]'>
+                  <div className='sol-h-full sol-flex sol-items-center sol-justify-center sol-gap-2 sol-px-3 sol-py-4 sol-h-[110px]'>
                     <div className='sol-p-1 sol-flex sol-flex-col sol-items-center sol-justify-center sol-align-top'>
                       <div className='sol-text-center'>
                         {formatSlotTime(slot.slotstart)}
