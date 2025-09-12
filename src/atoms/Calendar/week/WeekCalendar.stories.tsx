@@ -4,10 +4,9 @@ import { ThemeProvider } from '@awell-health/ui-library';
 import { fn } from '@storybook/test';
 import { mockProviderAvailabilityResponse } from '@/lib/api/__mocks__';
 import {
-  // NoAvailabilitiesSpec,
+  NoAvailabilitiesSpec,
   NextWeekAvailabilitySpec,
   CurrentWeekAvailabilitySpec
-  // WithAvailabilitiesAndInPersonPreferenceSpec
 } from './WeekCalendar.spec';
 import { EventDeliveryMethod } from '@/lib/api';
 
@@ -100,14 +99,11 @@ export const TestWithAvailabilitiesAndInPersonPreference: Story = {
 };
 
 export const TestNoAvailabilities: Story = {
-  // TODO: Fix this test
-  // play: NoAvailabilitiesSpec,
+  play: NoAvailabilitiesSpec,
   render: (args) => {
     const noAvailArgs = {
       ...args,
-      availabilities: [],
-      weekStartsOn: 'monday' as const,
-      hideWeekends: true
+      availabilities: []
     };
     return <WeekCalendarComponent {...noAvailArgs} />;
   }
@@ -136,9 +132,7 @@ export const TestCurrentWeekAvailability: Story = {
           facility: 'NY - Brooklyn Heights',
           location: EventDeliveryMethod.Telehealth
         }
-      ],
-      weekStartsOn: 'monday' as const,
-      hideWeekends: true
+      ]
     };
     return <WeekCalendarComponent {...scrollToAvailabilitiesArgs} />;
   }
@@ -167,9 +161,7 @@ export const TestNextWeekAvailability: Story = {
           facility: 'NY - Brooklyn Heights',
           location: EventDeliveryMethod.Telehealth
         }
-      ],
-      weekStartsOn: 'monday' as const,
-      hideWeekends: true
+      ]
     };
     return <WeekCalendarComponent {...scrollToAvailabilitiesArgs} />;
   }
