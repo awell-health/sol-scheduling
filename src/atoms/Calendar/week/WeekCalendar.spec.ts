@@ -1,4 +1,4 @@
-import { within, userEvent, expect } from '@storybook/test';
+import { within, expect } from '@storybook/test';
 
 /**
  * For all tests below, the current date is mocked to be 2024-10-14
@@ -45,58 +45,30 @@ export const NoAvailabilitiesSpec = async ({
 }) => {
   const canvas = within(canvasElement);
 
-  const prevWeekButton = await canvas.findByLabelText('Go to previous week');
-  const nextWeekButton = await canvas.findByLabelText('Go to next week');
+  const prevButton = await canvas.findByLabelText('Go to previous week');
+  const nextButton = await canvas.findByLabelText('Go to next week');
 
   await expect(
-    prevWeekButton,
-    'prevWeekButton should be disabled'
+    prevButton,
+    'prevButton should be disabled when no availabilities'
   ).toBeDisabled();
 
-  // Current week should be visible
-  expect(
-    await canvas.findByTestId('Mon Oct 14 2024'),
-    'Oct 14 2024 should be visible'
-  ).toBeVisible();
-
-  const virtualButton = await canvas.findByRole('button', {
-    name: 'Telehealth'
-  });
-  expect(virtualButton).toHaveClass('sol-selected');
-
-  await userEvent.click(virtualButton);
-  const mondayCard = await canvas.findByTestId('Mon Oct 14 2024');
-  const tuesdayCard = await canvas.findByTestId('Tue Oct 15 2024');
-  const wednesdayCard = await canvas.findByTestId('Wed Oct 16 2024');
-  const thursdayCard = await canvas.findByTestId('Thu Oct 17 2024');
-  const fridayCard = await canvas.findByTestId('Fri Oct 18 2024');
-  for (const card of [
-    mondayCard,
-    tuesdayCard,
-    wednesdayCard,
-    thursdayCard,
-    fridayCard
-  ]) {
-    expect(
-      await within(card).findByText('No slots'),
-      `${card.innerText.replace('\n', ' ')} should have no slots`
-    ).toBeTruthy();
-  }
-
-  // Go to next week
-  await userEvent.click(nextWeekButton);
-  expect(
-    await canvas.findByTestId('Mon Oct 21 2024'),
-    'Oct 21 2024 should be visible'
-  ).toBeVisible();
-  await userEvent.click(nextWeekButton);
-  await userEvent.click(nextWeekButton);
-  await userEvent.click(nextWeekButton);
-  await userEvent.click(nextWeekButton);
   await expect(
-    nextWeekButton,
-    'nextWeekButton should be disabled after 5 weeks in advance'
+    nextButton,
+    'nextButton should be disabled when no availabilities'
   ).toBeDisabled();
+
+  // With no availabilities, no day cards should be rendered
+  // The grid should be empty
+  const dayCards = canvas.queryAllByRole('button', { name: /.*/ });
+  const dayTestIds = dayCards.filter((card) =>
+    card.getAttribute('data-testid')?.includes('2024')
+  );
+
+  expect(
+    dayTestIds.length,
+    'No day cards should be rendered when there are no availabilities'
+  ).toBe(0);
 };
 
 export const CurrentWeekAvailabilitySpec = async ({
@@ -106,17 +78,18 @@ export const CurrentWeekAvailabilitySpec = async ({
 }) => {
   const canvas = within(canvasElement);
 
-  const prevWeekButton = await canvas.findByLabelText('Go to previous week');
+  const prevButton = await canvas.findByLabelText('Go to previous week');
 
   await expect(
-    prevWeekButton,
-    'prevWeekButton should be disabled'
+    prevButton,
+    'prevButton should be disabled (at start of available dates)'
   ).toBeDisabled();
 
-  // Current week should be visible
+  // Since the component now only shows available dates, we should check for the availability dates
+  // From the test story, we have availabilities on 2024-10-15 (Tuesday) and 2024-10-22 (Tuesday)
   expect(
-    await canvas.findByTestId('Mon Oct 14 2024'),
-    'Oct 14 2024 should be visible'
+    await canvas.findByTestId('Tue Oct 15 2024'),
+    'Oct 15 2024 should be visible (first available date)'
   ).toBeVisible();
 };
 
@@ -127,20 +100,21 @@ export const NextWeekAvailabilitySpec = async ({
 }) => {
   const canvas = within(canvasElement);
 
-  // Next week should be visible
+  // The component now shows dates with availabilities, starting from the first available date
+  // From the test story, we have availabilities on 2024-10-21 and 2024-10-28
   expect(
     await canvas.findByTestId('Mon Oct 21 2024'),
-    'Oct 21 2024 should be visible'
+    'Oct 21 2024 should be visible (first available date)'
   ).toBeVisible();
 
-  const prevWeekButton = await canvas.findByLabelText('Go to previous week');
+  const prevButton = await canvas.findByLabelText('Go to previous week');
 
   /**
-   * First availability is week after this week and we do allow user
-   * to go to the previous week, which is the current week.
+   * Since we're starting from the first availability date and there are no earlier
+   * available dates, the previous button should be disabled
    */
   await expect(
-    prevWeekButton,
-    'prevWeekButton should not be disabled'
-  ).not.toBeDisabled();
+    prevButton,
+    'prevButton should be disabled at the start of available dates'
+  ).toBeDisabled();
 };
