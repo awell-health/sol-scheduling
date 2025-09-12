@@ -22,10 +22,7 @@ export const WeekCalendar: FC<Props> = (props) => {
     loading
   } = props;
 
-  const [isLargeScreen, setIsLargeScreen] = useState(
-    typeof window !== 'undefined' ? window.innerWidth >= 768 : false
-  );
-  const daysToShow = isLargeScreen ? 5 : 5;
+  const daysToShow = 5;
   const [currentStartIndex, setCurrentStartIndex] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
 
@@ -40,17 +37,6 @@ export const WeekCalendar: FC<Props> = (props) => {
 
     return uniqueDates;
   }, [availabilities]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsLargeScreen(window.innerWidth >= 768);
-    };
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, []);
 
   useEffect(() => {
     setCurrentStartIndex(0);
