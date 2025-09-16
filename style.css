@@ -1830,6 +1830,10 @@ html {
   height: 2rem;
 }
 
+.sol-h-\[110px\] {
+  height: 110px;
+}
+
 .sol-h-full {
   height: 100%;
 }
@@ -1870,8 +1874,8 @@ html {
   width: 1.5rem;
 }
 
-.sol-w-\[85px\] {
-  width: 85px;
+.sol-w-\[50px\] {
+  width: 50px;
 }
 
 .sol-w-auto {
@@ -1953,6 +1957,10 @@ html {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.sol-grid-cols-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 .sol-flex-row {
   flex-direction: row;
 }
@@ -1991,6 +1999,10 @@ html {
 
 .sol-justify-evenly {
   justify-content: space-evenly;
+}
+
+.sol-gap-0 {
+  gap: 0px;
 }
 
 .sol-gap-1 {
@@ -2508,6 +2520,10 @@ html {
     width: 9rem;
   }
 
+  .sm\:sol-w-\[85px\] {
+    width: 85px;
+  }
+
   .sm\:sol-min-w-\[400px\] {
     min-width: 400px;
   }
@@ -2541,48 +2557,19 @@ html {
   .sm\:sol-text-left {
     text-align: left;
   }
+
+  .sm\:sol-text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
 }
 
 @media (min-width: 768px) {
-  .md\:sol-block {
-    display: block;
-  }
-
   .md\:sol-w-72 {
     width: 18rem;
   }
 
-  .md\:sol-w-auto {
-    width: auto;
-  }
-
-  .md\:sol-flex-none {
-    flex: none;
-  }
-
-  .md\:sol-flex-row {
-    flex-direction: row;
-  }
-
-  .md\:sol-flex-col {
-    flex-direction: column;
-  }
-
-  .md\:sol-justify-center {
-    justify-content: center;
-  }
-
-  .md\:sol-gap-0 {
-    gap: 0px;
-  }
-
-  .md\:sol-self-center {
-    align-self: center;
-  }
-}
-
-@media (min-width: 1024px) {
-  .lg\:sol-gap-3 {
-    gap: 0.75rem;
+  .md\:sol-gap-1 {
+    gap: 0.25rem;
   }
 }
