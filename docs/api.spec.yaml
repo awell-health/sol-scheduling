@@ -36,6 +36,9 @@ paths:
                 therapeuticModality:
                   $ref: '#/components/schemas/TherapeuticModalityPreference'
                   required: false
+                timeOfTheDay:
+                  $ref: '#/components/schemas/TimeOfTheDayPreference'
+                  required: false
                 clinicalFocus:
                   $ref: '#/components/schemas/ClinicalFocusPreference'
                   required: false
@@ -405,6 +408,13 @@ components:
         - Therapy
         - Psychiatric
       example: Therapy
+    TimeOfTheDayPreference:
+      type: string
+      enum:
+        - Morning
+        - Afternoon
+        - Evening
+      example: Morning
     ClinicalFocusPreference:
       type: array
       items:

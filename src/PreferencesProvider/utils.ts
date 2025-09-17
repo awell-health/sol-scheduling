@@ -6,7 +6,9 @@ import {
   GetProvidersInputType,
   GetProvidersInputSchema,
   LocationState,
-  LocationFacility
+  LocationFacility,
+  TimeOfTheDay,
+  Modality
 } from '../lib/api';
 import {
   FilterEnum,
@@ -25,9 +27,21 @@ const updatePreferencesWithFilters = (
   filters.forEach((filter) => {
     switch (filter.key) {
       case 'age':
-      case 'therapeuticModality':
       case 'language':
         return;
+      case 'therapeuticModality': {
+        const selectedModality = filter.selectedOptions[0] as Modality;
+        if (selectedModality === Modality.Therapy) {
+          prefs.therapeuticModality = 'Therapy';
+        } else if (selectedModality) {
+          prefs.therapeuticModality = 'Psychiatric';
+        }
+        break;
+      }
+      case 'timeOfTheDay': {
+        prefs.timeOfTheDay = filter.selectedOptions[0] as TimeOfTheDay;
+        break;
+      }
       case 'state': {
         if (!prefs.location) {
           prefs.location = {
@@ -129,6 +143,33 @@ const preferencesToFiltersArray = (
         }
         case 'language': {
           return undefined;
+        }
+        case 'therapeuticModality': {
+          return {
+            key: 'therapeuticModality',
+            label: 'Therapeutic Modality',
+            selectType: 'single',
+            enum: Modality,
+            options: optionsFromEnum(Modality),
+            selectedOptions: preferences[key]
+              ? // Map back from transformed value to original enum value
+                preferences[key] === 'Therapy'
+                ? [Modality.Therapy]
+                : preferences[key] === 'Psychiatric'
+                  ? [Modality.Psychiatric]
+                  : []
+              : []
+          };
+        }
+        case 'timeOfTheDay': {
+          return {
+            key: 'timeOfTheDay',
+            label: 'Time of Day',
+            selectType: 'single',
+            enum: TimeOfTheDay,
+            options: optionsFromEnum(TimeOfTheDay),
+            selectedOptions: preferences[key] ? [preferences[key]] : []
+          };
         }
         case 'clinicalFocus': {
           return {
