@@ -9,3 +9,4 @@ export * from './LocationState.schema';
 export * from './TherapeuticModality.schema';
 export * from './DeliveryMethod.schema';
 export * from './EventDeliveryMethod.schema';
+export * from './TimeOfTheDay.schema';
