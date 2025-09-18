@@ -33,7 +33,8 @@ export const WeekCalendar: FC<Props> = (props) => {
       )
     )
       .map((dateStr) => new Date(dateStr))
-      .sort((a, b) => a.getTime() - b.getTime());
+      .sort((a, b) => a.getTime() - b.getTime())
+      .filter((day) => !isDisabled(day) && countAvailabilities(day) > 0);
 
     return uniqueDates;
   }, [availabilities]);
@@ -92,20 +93,17 @@ export const WeekCalendar: FC<Props> = (props) => {
   );
 
   const days = useMemo(() => {
-    const visibleDates = availableDates.slice(
-      currentStartIndex,
-      currentStartIndex + daysToShow
-    );
-
-    const generatedDays = visibleDates.map((date) => ({
-      date,
-      isToday: isToday(date),
-      isSelected: selectedDate ? isSameDay(date, selectedDate) : false,
-      isDisabled: isDisabled(date),
-      isAvailable: isAvailable(date),
-      shortDayName: format(date, 'EEE'),
-      availabilitiesCount: countAvailabilities(date)
-    }));
+    const generatedDays = availableDates
+      .slice(currentStartIndex, currentStartIndex + daysToShow)
+      .map((date) => ({
+        date,
+        isToday: isToday(date),
+        isSelected: selectedDate ? isSameDay(date, selectedDate) : false,
+        isDisabled: isDisabled(date),
+        isAvailable: isAvailable(date),
+        shortDayName: format(date, 'EEE'),
+        availabilitiesCount: countAvailabilities(date)
+      }));
     return generatedDays;
   }, [
     availableDates,
