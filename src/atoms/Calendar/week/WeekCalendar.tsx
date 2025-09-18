@@ -90,7 +90,7 @@ export const WeekCalendar: FC<Props> = (props) => {
       .filter((day) => !isDisabled(day) && countAvailabilities(day) > 0);
 
     return uniqueDates;
-  }, [availabilities]);
+  }, [availabilities, isDisabled, countAvailabilities]);
 
   const days = useMemo(() => {
     const generatedDays = availableDates
