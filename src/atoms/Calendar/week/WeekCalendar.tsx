@@ -26,19 +26,6 @@ export const WeekCalendar: FC<Props> = (props) => {
   const [currentStartIndex, setCurrentStartIndex] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
 
-  const availableDates = useMemo(() => {
-    const uniqueDates = Array.from(
-      new Set(
-        availabilities.map((slot) => format(slot.slotstart, 'yyyy-MM-dd'))
-      )
-    )
-      .map((dateStr) => new Date(dateStr))
-      .sort((a, b) => a.getTime() - b.getTime())
-      .filter((day) => !isDisabled(day) && countAvailabilities(day) > 0);
-
-    return uniqueDates;
-  }, [availabilities]);
-
   useEffect(() => {
     setCurrentStartIndex(0);
     onDateSelect(null);
@@ -91,6 +78,19 @@ export const WeekCalendar: FC<Props> = (props) => {
     },
     [availabilities]
   );
+
+  const availableDates = useMemo(() => {
+    const uniqueDates = Array.from(
+      new Set(
+        availabilities.map((slot) => format(slot.slotstart, 'yyyy-MM-dd'))
+      )
+    )
+      .map((dateStr) => new Date(dateStr))
+      .sort((a, b) => a.getTime() - b.getTime())
+      .filter((day) => !isDisabled(day) && countAvailabilities(day) > 0);
+
+    return uniqueDates;
+  }, [availabilities]);
 
   const days = useMemo(() => {
     const generatedDays = availableDates
