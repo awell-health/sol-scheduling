@@ -26,18 +26,6 @@ export const WeekCalendar: FC<Props> = (props) => {
   const [currentStartIndex, setCurrentStartIndex] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
 
-  const availableDates = useMemo(() => {
-    const uniqueDates = Array.from(
-      new Set(
-        availabilities.map((slot) => format(slot.slotstart, 'yyyy-MM-dd'))
-      )
-    )
-      .map((dateStr) => new Date(dateStr))
-      .sort((a, b) => a.getTime() - b.getTime());
-
-    return uniqueDates;
-  }, [availabilities]);
-
   useEffect(() => {
     setCurrentStartIndex(0);
     onDateSelect(null);
@@ -91,21 +79,31 @@ export const WeekCalendar: FC<Props> = (props) => {
     [availabilities]
   );
 
-  const days = useMemo(() => {
-    const visibleDates = availableDates.slice(
-      currentStartIndex,
-      currentStartIndex + daysToShow
-    );
+  const availableDates = useMemo(() => {
+    const uniqueDates = Array.from(
+      new Set(
+        availabilities.map((slot) => format(slot.slotstart, 'yyyy-MM-dd'))
+      )
+    )
+      .map((dateStr) => new Date(dateStr))
+      .sort((a, b) => a.getTime() - b.getTime())
+      .filter((day) => !isDisabled(day) && countAvailabilities(day) > 0);
 
-    const generatedDays = visibleDates.map((date) => ({
-      date,
-      isToday: isToday(date),
-      isSelected: selectedDate ? isSameDay(date, selectedDate) : false,
-      isDisabled: isDisabled(date),
-      isAvailable: isAvailable(date),
-      shortDayName: format(date, 'EEE'),
-      availabilitiesCount: countAvailabilities(date)
-    }));
+    return uniqueDates;
+  }, [availabilities, isDisabled, countAvailabilities]);
+
+  const days = useMemo(() => {
+    const generatedDays = availableDates
+      .slice(currentStartIndex, currentStartIndex + daysToShow)
+      .map((date) => ({
+        date,
+        isToday: isToday(date),
+        isSelected: selectedDate ? isSameDay(date, selectedDate) : false,
+        isDisabled: isDisabled(date),
+        isAvailable: isAvailable(date),
+        shortDayName: format(date, 'EEE'),
+        availabilitiesCount: countAvailabilities(date)
+      }));
     return generatedDays;
   }, [
     availableDates,
