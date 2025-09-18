@@ -9,7 +9,8 @@ import {
   GenderSchema,
   LanguageSchema,
   TherapeuticModalitySchema,
-  LocationStateSchema
+  LocationStateSchema,
+  TimeOfTheDaySchema
 } from './atoms';
 import { isEmpty, isNil } from 'lodash-es';
 import { ProviderEventSchema } from './molecules/ProviderEvent.schema';
@@ -40,7 +41,10 @@ export const GetProvidersInputSchema = z.object({
       const { facility, state } = location;
       if (!facility && !state) return undefined;
       return { facility, state };
-    })
+    }),
+  timeOfTheDay: transformEmptyToUndefined(TimeOfTheDaySchema).optional(),
+  // Not implemented
+  insurance: z.string().optional()
 });
 
 export type GetProvidersInputType = z.infer<typeof GetProvidersInputSchema>;
