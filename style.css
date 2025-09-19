@@ -667,8 +667,8 @@ html {
 .sol-avatar img {
   height: 100%;
   width: 100%;
-  -o-object-fit: fill;
-     object-fit: fill;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .sol-avatar.sol-placeholder > div {
@@ -794,8 +794,8 @@ html {
 
 .sol-card.sol-image-full > figure img {
   height: 100%;
-  -o-object-fit: fill;
-     object-fit: fill;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .sol-card.sol-image-full > .sol-card-body {
@@ -1648,6 +1648,11 @@ html {
   background-color: #f9e2da;
 }
 
+.sol-avatar img {
+  -o-object-fit: fill !important;
+     object-fit: fill !important;
+}
+
 .sol-fixed {
   position: fixed;
 }
@@ -2446,6 +2451,8 @@ html {
 .sol-ease-in-out {
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Custom overrides */
 
 .hover\:sol-z-10:hover {
   z-index: 10;
