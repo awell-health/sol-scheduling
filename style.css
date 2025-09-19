@@ -794,8 +794,8 @@ html {
 
 .sol-card.sol-image-full > figure img {
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  -o-object-fit: fill;
+     object-fit: fill;
 }
 
 .sol-card.sol-image-full > .sol-card-body {
