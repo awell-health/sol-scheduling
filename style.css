@@ -667,8 +667,8 @@ html {
 .sol-avatar img {
   height: 100%;
   width: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  -o-object-fit: fill;
+     object-fit: fill;
 }
 
 .sol-avatar.sol-placeholder > div {
