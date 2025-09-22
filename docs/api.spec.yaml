@@ -36,6 +36,15 @@ paths:
                 therapeuticModality:
                   $ref: '#/components/schemas/TherapeuticModalityPreference'
                   required: false
+                timeOfTheDay:
+                  $ref: '#/components/schemas/TimeOfTheDayPreference'
+                  required: false
+                language:
+                  $ref: '#/components/schemas/LanguagePreference'
+                  required: false
+                insurance:
+                  $ref: '#/components/schemas/InsurancePreference'
+                  required: false
                 clinicalFocus:
                   $ref: '#/components/schemas/ClinicalFocusPreference'
                   required: false
@@ -405,6 +414,47 @@ components:
         - Therapy
         - Psychiatric
       example: Therapy
+    TimeOfTheDayPreference:
+      type: string
+      enum:
+        - Morning
+        - Afternoon
+        - Evening
+      example: Morning
+    LanguagePreference:
+      type: string
+      enum:
+        - Arabic
+        - Bulgarian
+        - Chinese (Mandarin)
+        - Creole
+        - French
+        - German
+        - Hebrew
+        - Hindi
+        - Italian
+        - Russian
+        - Spanish
+        - Urdu
+      description: The preferred language of the provider.
+      example: Spanish
+    InsurancePreference:
+      type: string
+      enum:
+        - Aetna
+        - BCBS / Anthem
+        - Cigna / Evernorth
+        - Elevance / Carelon
+        - First Health
+        - Kaiser
+        - Magnacare
+        - Multiplan
+        - Northwell Direct
+        - Tricare
+        - United / Optum
+        - Other
+      description: The preferred insurance provider.
+      example: Aetna
     ClinicalFocusPreference:
       type: array
       items:

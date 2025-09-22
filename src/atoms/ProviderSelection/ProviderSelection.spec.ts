@@ -24,6 +24,18 @@ export const ProviderSelectionSpec = async ({
   const facilityButton = await canvas.findByRole('button', {
     name: 'Facility'
   });
+  const timeOfTheDayButton = await canvas.findByRole('button', {
+    name: 'Time of Day'
+  });
+  const therapeuticModality = await canvas.findByRole('button', {
+    name: 'Therapeutic Modality'
+  });
+  const languageButton = await canvas.findByRole('button', {
+    name: 'Language'
+  });
+  const insuranceButton = await canvas.findByRole('button', {
+    name: 'Insurance'
+  });
 
   const testApplyFilter = async ({
     button,
@@ -84,6 +96,26 @@ export const ProviderSelectionSpec = async ({
   await testApplyFilter({
     button: facilityButton,
     filterName: 'Cherry Creek',
+    autoClose: true
+  });
+  await testApplyFilter({
+    button: timeOfTheDayButton,
+    filterName: 'Morning',
+    autoClose: true
+  });
+  await testApplyFilter({
+    button: therapeuticModality,
+    filterName: 'Therapy',
+    autoClose: true
+  });
+  await testApplyFilter({
+    button: languageButton,
+    filterName: 'Spanish',
+    autoClose: true
+  });
+  await testApplyFilter({
+    button: insuranceButton,
+    filterName: 'Aetna',
     autoClose: true
   });
 };
