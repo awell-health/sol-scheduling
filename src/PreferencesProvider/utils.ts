@@ -8,7 +8,9 @@ import {
   LocationState,
   LocationFacility,
   TimeOfTheDay,
-  Modality
+  Modality,
+  Language,
+  Insurance
 } from '../lib/api';
 import {
   FilterEnum,
@@ -27,8 +29,15 @@ const updatePreferencesWithFilters = (
   filters.forEach((filter) => {
     switch (filter.key) {
       case 'age':
-      case 'language':
         return;
+      case 'language': {
+        prefs.language = filter.selectedOptions[0] as Language;
+        break;
+      }
+      case 'insurance': {
+        prefs.insurance = filter.selectedOptions[0] as Insurance;
+        break;
+      }
       case 'therapeuticModality': {
         const selectedModality = filter.selectedOptions[0] as Modality;
         if (selectedModality === Modality.Therapy) {
@@ -142,7 +151,24 @@ const preferencesToFiltersArray = (
           };
         }
         case 'language': {
-          return undefined;
+          return {
+            key: 'language',
+            label: 'Language',
+            selectType: 'single',
+            enum: Language,
+            options: optionsFromEnum(Language),
+            selectedOptions: preferences[key] ? [preferences[key]] : []
+          };
+        }
+        case 'insurance': {
+          return {
+            key: 'insurance',
+            label: 'Insurance',
+            selectType: 'single',
+            enum: Insurance,
+            options: optionsFromEnum(Insurance),
+            selectedOptions: preferences[key] ? [preferences[key]] : []
+          };
         }
         case 'therapeuticModality': {
           return {
