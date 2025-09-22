@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom overrides */
+@layer components {
+  .sol-avatar img {
+    object-fit: fill !important;
+  }
+}
