@@ -1528,6 +1528,14 @@ html {
   }
 }
 
+.sol-btn-xs {
+  height: 1.5rem;
+  min-height: 1.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  font-size: 0.75rem;
+}
+
 .sol-btn-sm {
   height: 2rem;
   min-height: 2rem;
@@ -1536,9 +1544,29 @@ html {
   font-size: 0.875rem;
 }
 
+.sol-btn-md {
+  height: 3rem;
+  min-height: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.875rem;
+}
+
+.sol-btn-square:where(.sol-btn-xs) {
+  height: 1.5rem;
+  width: 1.5rem;
+  padding: 0px;
+}
+
 .sol-btn-square:where(.sol-btn-sm) {
   height: 2rem;
   width: 2rem;
+  padding: 0px;
+}
+
+.sol-btn-square:where(.sol-btn-md) {
+  height: 3rem;
+  width: 3rem;
   padding: 0px;
 }
 
@@ -1709,8 +1737,8 @@ html {
   margin: 0px;
 }
 
-.sol-m-1 {
-  margin: 0.25rem;
+.sol-m-\[2px\] {
+  margin: 2px;
 }
 
 .sol-mx-4 {

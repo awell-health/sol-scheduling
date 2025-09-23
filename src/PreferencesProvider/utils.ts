@@ -141,14 +141,7 @@ const preferencesToFiltersArray = (
           };
         }
         case 'ethnicity': {
-          return {
-            key: 'ethnicity',
-            label: 'Ethnicity',
-            selectType: 'single',
-            enum: Ethnicity,
-            options: optionsFromEnum(Ethnicity),
-            selectedOptions: preferences[key] ? [preferences[key]] : []
-          };
+          return undefined;
         }
         case 'language': {
           return {
@@ -173,7 +166,7 @@ const preferencesToFiltersArray = (
         case 'therapeuticModality': {
           return {
             key: 'therapeuticModality',
-            label: 'Therapeutic Modality',
+            label: 'Service',
             selectType: 'single',
             enum: Modality,
             options: optionsFromEnum(Modality),
@@ -210,7 +203,7 @@ const preferencesToFiltersArray = (
         case 'deliveryMethod': {
           return {
             key: 'deliveryMethod',
-            label: 'Delivery Method',
+            label: 'Delivery',
             selectType: 'single',
             enum: DeliveryMethod,
             options: optionsFromEnum(DeliveryMethod),

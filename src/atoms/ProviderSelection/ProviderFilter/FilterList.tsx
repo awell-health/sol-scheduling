@@ -8,12 +8,15 @@ interface Props {
 
 export const FilterList: FC<Props> = ({ filters }) => {
   const filterOrder = [
-    'deliveryMethod',
     'state',
     'facility',
-    'clinicalFocus',
+    'therapeuticModality',
+    'deliveryMethod',
+    'timeOfTheDay',
     'gender',
-    'ethnicity'
+    'clinicalFocus',
+    'language',
+    'insurance'
   ];
   // Sort the filters array based on the desired order
   filters.sort((a, b) => {
