@@ -15,7 +15,7 @@ const FilterBadge = <T extends FilterEnum>({ filter }: Props<T>) => {
     <button
       key={filter.key}
       className={clsx(
-        'sol-btn sol-btn-sm hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary sol-m-1',
+        'sol-btn sol-btn-xs hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary sol-m-1',
         {
           'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
             !isActive,

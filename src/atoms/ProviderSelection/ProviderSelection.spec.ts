@@ -9,14 +9,11 @@ export const ProviderSelectionSpec = async ({
   const genderButton = await canvas.findByRole('button', {
     name: 'Gender'
   });
-  const ethnicityButton = await canvas.findByRole('button', {
-    name: 'Ethnicity'
-  });
   const clinicalFocusButton = await canvas.findByRole('button', {
     name: 'Clinical Focus'
   });
   const deliveryMethodButton = await canvas.findByRole('button', {
-    name: 'Delivery Method'
+    name: 'Delivery'
   });
   const stateButton = await canvas.findByRole('button', {
     name: 'State'
@@ -28,7 +25,7 @@ export const ProviderSelectionSpec = async ({
     name: 'Time of Day'
   });
   const therapeuticModality = await canvas.findByRole('button', {
-    name: 'Therapeutic Modality'
+    name: 'Service'
   });
   const languageButton = await canvas.findByRole('button', {
     name: 'Language'
@@ -69,11 +66,6 @@ export const ProviderSelectionSpec = async ({
     // await userEvent.click(clearFilter);
     // await expect(button).toHaveClass('sol-border-slate-200');
   };
-  await testApplyFilter({
-    button: ethnicityButton,
-    filterName: 'White',
-    autoClose: true
-  });
   await testApplyFilter({
     button: genderButton,
     filterName: 'Female',
