@@ -1897,6 +1897,10 @@ html {
   width: 1.5rem;
 }
 
+.sol-w-\[150px\] {
+  width: 150px;
+}
+
 .sol-w-\[50px\] {
   width: 50px;
 }
@@ -1911,66 +1915,6 @@ html {
 
 .sol-w-px {
   width: 1px;
-}
-
-.sol-w-\[\] {
-  width: ;
-}
-
-.sol-w-\[1\] {
-  width: 1;
-}
-
-.sol-w-\[11\] {
-  width: 11;
-}
-
-.sol-w-\[110\] {
-  width: 110;
-}
-
-.sol-w-\[110p\] {
-  width: 110p;
-}
-
-.sol-w-\[110px\] {
-  width: 110px;
-}
-
-.sol-w-\[11px\] {
-  width: 11px;
-}
-
-.sol-w-\[115px\] {
-  width: 115px;
-}
-
-.sol-w-\[112px\] {
-  width: 112px;
-}
-
-.sol-w-\[1px\] {
-  width: 1px;
-}
-
-.sol-w-\[12px\] {
-  width: 12px;
-}
-
-.sol-w-\[120px\] {
-  width: 120px;
-}
-
-.sol-w-\[130px\] {
-  width: 130px;
-}
-
-.sol-w-\[140px\] {
-  width: 140px;
-}
-
-.sol-w-\[150px\] {
-  width: 150px;
 }
 
 .sol-max-w-\[180px\] {
@@ -2679,10 +2623,6 @@ html {
 
   .sm\:sol-self-auto {
     align-self: auto;
-  }
-
-  .sm\:sol-self-center {
-    align-self: center;
   }
 
   .sm\:sol-px-3 {

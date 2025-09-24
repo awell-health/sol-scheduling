@@ -30,7 +30,7 @@ export const ProviderCard: FC<ProviderProps> = ({
   return (
     <div
       key={provider.id}
-      className='sol-flex sol-flex-col sm:sol-flex-row sol-rounded-md sol-border-1 sol-bg-white sol-flex sol-justify-center sol-p-4 sol-gap-2 sm:sol-gap-3'
+      className='sol-flex sol-flex-col sm:sol-flex-row sol-rounded-md sol-border-1 sol-bg-white sol-justify-center sol-p-4 sol-gap-2 sm:sol-gap-3'
     >
       <div className='sol-flex sol-gap-4 sm:sol-flex-col sm:sol-justify-evenly sm:sol-gap-2 sol-w-auto'>
         <ProviderAvatar
