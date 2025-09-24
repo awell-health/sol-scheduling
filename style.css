@@ -1796,6 +1796,10 @@ html {
   display: inline-block;
 }
 
+.sol-inline {
+  display: inline;
+}
+
 .sol-flex {
   display: flex;
 }
@@ -1849,10 +1853,6 @@ html {
   height: 2rem;
 }
 
-.sol-h-\[110px\] {
-  height: 110px;
-}
-
 .sol-h-full {
   height: 100%;
 }
@@ -1867,6 +1867,10 @@ html {
 
 .sol-w-16 {
   width: 4rem;
+}
+
+.sol-w-20 {
+  width: 5rem;
 }
 
 .sol-w-24 {
@@ -1907,6 +1911,66 @@ html {
 
 .sol-w-px {
   width: 1px;
+}
+
+.sol-w-\[\] {
+  width: ;
+}
+
+.sol-w-\[1\] {
+  width: 1;
+}
+
+.sol-w-\[11\] {
+  width: 11;
+}
+
+.sol-w-\[110\] {
+  width: 110;
+}
+
+.sol-w-\[110p\] {
+  width: 110p;
+}
+
+.sol-w-\[110px\] {
+  width: 110px;
+}
+
+.sol-w-\[11px\] {
+  width: 11px;
+}
+
+.sol-w-\[115px\] {
+  width: 115px;
+}
+
+.sol-w-\[112px\] {
+  width: 112px;
+}
+
+.sol-w-\[1px\] {
+  width: 1px;
+}
+
+.sol-w-\[12px\] {
+  width: 12px;
+}
+
+.sol-w-\[120px\] {
+  width: 120px;
+}
+
+.sol-w-\[130px\] {
+  width: 130px;
+}
+
+.sol-w-\[140px\] {
+  width: 140px;
+}
+
+.sol-w-\[150px\] {
+  width: 150px;
 }
 
 .sol-max-w-\[180px\] {
@@ -1970,6 +2034,10 @@ html {
 
 .sol-list-none {
   list-style-type: none;
+}
+
+.sol-grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .sol-grid-cols-3 {
@@ -2296,10 +2364,6 @@ html {
   text-align: center;
 }
 
-.sol-align-top {
-  vertical-align: top;
-}
-
 .sol-text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -2517,8 +2581,20 @@ html {
 }
 
 @media (min-width: 640px) {
+  .sm\:sol-absolute {
+    position: absolute;
+  }
+
+  .sm\:sol-block {
+    display: block;
+  }
+
   .sm\:sol-inline {
     display: inline;
+  }
+
+  .sm\:sol-hidden {
+    display: none;
   }
 
   .sm\:sol-h-16 {
@@ -2533,6 +2609,14 @@ html {
     height: 9rem;
   }
 
+  .sm\:sol-h-7 {
+    height: 1.75rem;
+  }
+
+  .sm\:sol-h-\[110px\] {
+    height: 110px;
+  }
+
   .sm\:sol-w-32 {
     width: 8rem;
   }
@@ -2541,28 +2625,69 @@ html {
     width: 9rem;
   }
 
+  .sm\:sol-w-7 {
+    width: 1.75rem;
+  }
+
   .sm\:sol-w-\[85px\] {
     width: 85px;
+  }
+
+  .sm\:sol-w-auto {
+    width: auto;
   }
 
   .sm\:sol-min-w-\[400px\] {
     min-width: 400px;
   }
 
+  .sm\:sol-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .sm\:sol-flex-row {
     flex-direction: row;
+  }
+
+  .sm\:sol-flex-col {
+    flex-direction: column;
+  }
+
+  .sm\:sol-items-start {
+    align-items: flex-start;
+  }
+
+  .sm\:sol-items-center {
+    align-items: center;
   }
 
   .sm\:sol-justify-start {
     justify-content: flex-start;
   }
 
+  .sm\:sol-justify-evenly {
+    justify-content: space-evenly;
+  }
+
   .sm\:sol-gap-2 {
     gap: 0.5rem;
   }
 
+  .sm\:sol-gap-3 {
+    gap: 0.75rem;
+  }
+
   .sm\:sol-self-auto {
     align-self: auto;
+  }
+
+  .sm\:sol-self-center {
+    align-self: center;
+  }
+
+  .sm\:sol-px-3 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
 
   .sm\:sol-px-6 {
@@ -2575,6 +2700,11 @@ html {
     padding-bottom: 0.5rem;
   }
 
+  .sm\:sol-py-4 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
   .sm\:sol-text-left {
     text-align: left;
   }
@@ -2582,6 +2712,11 @@ html {
   .sm\:sol-text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
+  }
+
+  .sm\:sol-text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 }
 

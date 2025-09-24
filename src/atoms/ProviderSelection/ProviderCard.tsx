@@ -30,19 +30,22 @@ export const ProviderCard: FC<ProviderProps> = ({
   return (
     <div
       key={provider.id}
-      className='sol-rounded-md sol-border-1 sol-bg-white sol-flex sol-justify-center sol-p-4 sol-gap-3'
+      className='sol-flex sol-flex-col sm:sol-flex-row sol-rounded-md sol-border-1 sol-bg-white sol-flex sol-justify-center sol-p-4 sol-gap-2 sm:sol-gap-3'
     >
-      <div className='sol-flex sol-flex-col sol-justify-evenly sol-gap-2 sol-w-auto'>
+      <div className='sol-flex sol-gap-4 sm:sol-flex-col sm:sol-justify-evenly sm:sol-gap-2 sol-w-auto'>
         <ProviderAvatar
           name={providerName}
           image={provider.image}
-          classes='sm:sol-w-36 sm:sol-h-36 sol-w-28 sol-h-28'
+          classes='sm:sol-w-36 sm:sol-h-36 sol-w-20 sol-h-20'
         />
-        <div className='sol-self-center sm:sol-self-auto'>
+        <div className='sol-self-center sm:sol-self-auto sol-flex sol-flex-col sm:sol-items-center sm:sol-items-start sol-gap-2'>
+          <h3 className='sol-block sm:sol-hidden sol-text-slate-800 sol-text-xl sol-m-0 sol-font-semibold sm:sol-text-left'>
+            {providerName}
+          </h3>
           <Slot count={provider.events?.length ?? 0} />
         </div>
       </div>
-      <div className='sol-border' />
+      <div className='sol-border sol-hidden sm:sol-block' />
       <ProviderHeader
         provider={provider}
         deliveryMethod={deliveryMethod}
@@ -79,12 +82,12 @@ const ProviderHeader: FC<{
       : provider.events.slice(0, 3);
 
   return (
-    <div className='sol-flex sol-flex-col sol-items-baseline sol-gap-3 sol-justify-evenly'>
-      <h3 className='sol-text-slate-800 sol-text-lg sol-m-0 sol-font-semibold sol-text-center sm:sol-text-left'>
+    <div className='sol-flex sol-flex-col sol-items-baseline sol-gap-2 sm:sol-gap-3 sol-justify-evenly'>
+      <h3 className='sol-hidden sm:sol-block sol-text-slate-800 sol-text-lg sol-m-0 sol-font-semibold sol-text-center sm:sol-text-left'>
         {' '}
         {providerName}{' '}
       </h3>{' '}
-      <div className='sol-grid sol-grid-cols-3 sol-gap-3 sol-justify-start'>
+      <div className='sol-grid sol-grid-cols-2 sm:sol-grid-cols-3 sol-gap-3 sol-justify-start'>
         {facilities &&
           facilities.length > 0 &&
           facilities.map((f) => <SingleItem key={f} value={f.slice(5)} />)}
@@ -141,7 +144,7 @@ const SingleItem: FC<{ value: string }> = ({ value }) => {
         className='sol-w-5 sol-h-5 sol-text-slate-500'
       />
       <div className='sol-p-1 sol-text-center'>
-        <span className='sol-font-semibold sol-text-primary sol-text-sm'>
+        <span className='sol-font-semibold sol-text-primary sol-text-md sm:sol-text-sm'>
           {value}
         </span>
       </div>
@@ -167,8 +170,14 @@ const BioItem: FC<{ value: string }> = ({ value }) => {
         </div>
       ) : (
         <div>
-          <span className='sol-text-slate-600 sol-text-md'>
+          <span className='sol-text-slate-600 sol-text-md sol-hidden sm:sol-inline'>
             {value.substring(0, 120)}...{' '}
+            <button onClick={toggleBio} className={classes}>
+              {'Read more'}
+            </button>
+          </span>
+          <span className='sol-text-slate-600 sol-text-sm sol-inline sm:sol-hidden'>
+            {value.substring(0, 30)}...{' '}
             <button onClick={toggleBio} className={classes}>
               {'Read more'}
             </button>
@@ -198,7 +207,7 @@ const Slot: FC<{ count: number }> = ({ count }) => {
   return (
     <div
       className={clsx(
-        'sol-rounded-full sol-text-sm sol-text-white sol-text-center sol-font-medium sol-flex sol-items-center sol-justify-center sol-px-3 sol-py-1',
+        'sol-w-[150px] sol-rounded-full sol-text-sm sol-text-white sol-text-center sol-font-medium sol-flex sol-items-center sol-justify-center sol-px-3 sol-py-1',
         {
           'sol-bg-slate-300': count === 0,
           'sol-bg-yellow-500': count > 0 && count <= 2,
