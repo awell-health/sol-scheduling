@@ -8,7 +8,6 @@ import {
   Modality,
   TimeOfTheDay,
   Language,
-  Insurance,
   LocationState,
   LocationFacility,
   LocationStateToNameMapping,
@@ -25,7 +24,6 @@ export type FilterEnum = Record<string, string | number> &
     | typeof Modality
     | typeof TimeOfTheDay
     | typeof Language
-    | typeof Insurance
     | typeof ClinicalFocus
     | typeof DeliveryMethod
     | typeof LocationState

@@ -15,8 +15,7 @@ export const FilterList: FC<Props> = ({ filters }) => {
     'timeOfTheDay',
     'gender',
     'clinicalFocus',
-    'language',
-    'insurance'
+    'language'
   ];
   // Sort the filters array based on the desired order
   filters.sort((a, b) => {

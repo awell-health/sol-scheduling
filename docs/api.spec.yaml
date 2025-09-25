@@ -440,19 +440,6 @@ components:
       example: Spanish
     InsurancePreference:
       type: string
-      enum:
-        - Aetna
-        - BCBS / Anthem
-        - Cigna / Evernorth
-        - Elevance / Carelon
-        - First Health
-        - Kaiser
-        - Magnacare
-        - Multiplan
-        - Northwell Direct
-        - Tricare
-        - United / Optum
-        - Other
       description: The preferred insurance provider.
       example: Aetna
     ClinicalFocusPreference:
