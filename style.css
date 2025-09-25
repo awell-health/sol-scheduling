@@ -1833,10 +1833,6 @@ html {
   height: 6rem;
 }
 
-.sol-h-28 {
-  height: 7rem;
-}
-
 .sol-h-4 {
   height: 1rem;
 }
@@ -1875,10 +1871,6 @@ html {
 
 .sol-w-24 {
   width: 6rem;
-}
-
-.sol-w-28 {
-  width: 7rem;
 }
 
 .sol-w-4 {
@@ -1994,6 +1986,10 @@ html {
 
 .sol-flex-row {
   flex-direction: row;
+}
+
+.sol-flex-row-reverse {
+  flex-direction: row-reverse;
 }
 
 .sol-flex-col {
@@ -2304,6 +2300,10 @@ html {
   padding-top: 1.5rem;
 }
 
+.sol-text-left {
+  text-align: left;
+}
+
 .sol-text-center {
   text-align: center;
 }
@@ -2609,6 +2609,10 @@ html {
     justify-content: flex-start;
   }
 
+  .sm\:sol-justify-center {
+    justify-content: center;
+  }
+
   .sm\:sol-justify-evenly {
     justify-content: space-evenly;
   }
@@ -2647,6 +2651,10 @@ html {
 
   .sm\:sol-text-left {
     text-align: left;
+  }
+
+  .sm\:sol-text-center {
+    text-align: center;
   }
 
   .sm\:sol-text-lg {
