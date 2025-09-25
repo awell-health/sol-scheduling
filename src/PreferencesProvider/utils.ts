@@ -9,8 +9,7 @@ import {
   LocationFacility,
   TimeOfTheDay,
   Modality,
-  Language,
-  Insurance
+  Language
 } from '../lib/api';
 import {
   FilterEnum,
@@ -29,13 +28,10 @@ const updatePreferencesWithFilters = (
   filters.forEach((filter) => {
     switch (filter.key) {
       case 'age':
+      case 'insurance':
         return;
       case 'language': {
         prefs.language = filter.selectedOptions[0] as Language;
-        break;
-      }
-      case 'insurance': {
-        prefs.insurance = filter.selectedOptions[0] as Insurance;
         break;
       }
       case 'therapeuticModality': {
@@ -154,14 +150,7 @@ const preferencesToFiltersArray = (
           };
         }
         case 'insurance': {
-          return {
-            key: 'insurance',
-            label: 'Insurance',
-            selectType: 'single',
-            enum: Insurance,
-            options: optionsFromEnum(Insurance),
-            selectedOptions: preferences[key] ? [preferences[key]] : []
-          };
+          return undefined;
         }
         case 'therapeuticModality': {
           return {

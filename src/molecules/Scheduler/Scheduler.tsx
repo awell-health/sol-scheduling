@@ -169,7 +169,7 @@ export const Scheduler: FC<SchedulerProps> = ({
           <ProviderAvatar
             name={providerName}
             image={provider?.image}
-            classes='sol-w-28 sol-h-28 sm:sol-w-32 sm:sol-h-32'
+            classes='sol-w-20 sol-h-20 sm:sol-w-32 sm:sol-h-32'
             loading={loadingProvider}
           />
         </div>
@@ -187,21 +187,23 @@ export const Scheduler: FC<SchedulerProps> = ({
           ref={selectTimeRef}
           className='sol-pt-6 sol-mt-6 sol-mb-6 sol-border-t-1 sol-border-slate-200'
         >
-          <div className='sol-flex sol-flex-row sol-items-center sol-justify-end sol-gap-1 sol-pb-2'>
-            <div>
-              <img src={videoChatIcon} alt='Video Chat Icon' />
+          <div className='sol-flex sol-flex-row-reverse sm:sol-flex-col sol-justify-evenly sm:sol-justify-center sol-gap-2 sol-w-full'>
+            <div className='sol-flex sol-flex-row sol-items-normal sm:sol-items-center sol-justify-end sol-gap-1 sol-pb-2'>
+              <div>
+                <img src={videoChatIcon} alt='Video Chat Icon' />
+              </div>
+              <div className='sol-text-sm sol-text-slate-500'>
+                Virtual Appointment
+              </div>
             </div>
-            <div className='sol-text-sm sol-text-slate-500'>
-              Virtual Appointment
+            <div className='sol-mb-4 sol-text-left sm:sol-text-center'>
+              <h3 className='sol-font-semibold sol-text-xl sol-m-0 sol-text-slate-800'>
+                {selectSlot}
+              </h3>
+              <p className='sol-mt-1'>
+                Times in {Intl.DateTimeFormat().resolvedOptions().timeZone}
+              </p>
             </div>
-          </div>
-          <div className='sol-mb-4'>
-            <h3 className='sol-font-semibold sol-text-xl sol-m-0 sol-text-slate-800 sol-text-center'>
-              {selectSlot}
-            </h3>
-            <p className='sol-text-center sol-mt-1'>
-              Times in {Intl.DateTimeFormat().resolvedOptions().timeZone}
-            </p>
           </div>
           <Slots
             value={slot}

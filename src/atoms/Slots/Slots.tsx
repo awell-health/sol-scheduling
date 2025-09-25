@@ -91,7 +91,7 @@ export const Slots: FC<SlotsProps> = ({
                   value={slot.eventId}
                   aria-label={slot.slotstart.toISOString()}
                   className={clsx(
-                    'sol-relative sol-block sol-cursor-pointer sol-rounded-md sol-text-center sol-outline-0 sol-font-medium hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
+                    'sol-h-full sol-relative sol-block sol-cursor-pointer sol-rounded-md sol-text-center sol-outline-0 sol-font-medium hover:sol-bg-secondary hover:sol-border-1 hover:sol-border-primary',
                     {
                       'sol-text-slate-800 sol-border-1 sol-border-slate-200 sol-bg-white':
                         selectedSlot?.eventId !== slot.eventId,
@@ -100,21 +100,27 @@ export const Slots: FC<SlotsProps> = ({
                     }
                   )}
                 >
-                  <div className='sol-flex sol-items-center sol-justify-center sol-gap-2 sol-px-3 sol-py-4 sol-h-[110px]'>
-                    <div className='sol-p-1 sol-flex sol-flex-col sol-items-center sol-justify-center sol-align-top'>
-                      <div className='sol-text-center'>
-                        {formatSlotTime(slot.slotstart)}
+                  <div className='sol-flex sol-items-center sol-justify-center sol-gap-2 sm:sol-px-3 sol-py-2 sm:sol-py-4 sm:sol-h-[110px]'>
+                    <div className='sol-flex sol-flex-col sol-items-center sol-p-1 sol-gap-1'>
+                      <div className='sol-flex sol-gap-1 sol-items-center'>
+                        <div className='sol-text-center sol-text-md sm:sol-text-lg'>
+                          {formatSlotTime(slot.slotstart)}
+                        </div>
+                        <div className='sol-flex sol-justify-end sm:sol-absolute sol-top-1 sol-right-1'>
+                          {slot.location === 'Telehealth' && (
+                            <img
+                              src={videoChatIcon}
+                              alt='Video Chat Icon'
+                              className='sol-w-5 sol-h-5 sm:sol-w-7 sm:sol-h-7'
+                            />
+                          )}
+                        </div>
                       </div>
-                      <div className='sol-text-center sol-text-sm sol-text-slate-500'>
+                      <div className='sol-text-center sol-text-xs sm:sol-text-sm sol-text-slate-500'>
                         {slot.location === 'Telehealth'
                           ? 'Virtual'
                           : formatFacility(slot.facility)}
                       </div>
-                    </div>
-                    <div className='sol-flex sol-justify-end sol-absolute sol-top-1 sol-right-1'>
-                      {slot.location === 'Telehealth' && (
-                        <img src={videoChatIcon} alt='Video Chat Icon' />
-                      )}
                     </div>
                   </div>
                 </Radio>

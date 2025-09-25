@@ -65,7 +65,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
       <time
         dateTime={day.date.toISOString()}
         className={clsx(
-          'sol-flex sol-flex-col sol-flex-none sol-block sol-gap-1 sol-self-center sol-text-sm sm:sol-text-lg',
+          'sol-flex sol-flex-col sol-flex-none sol-block sol-gap-1 sol-self-center sol-text-md sm:sol-text-lg',
           {
             'sol-text-slate-400': cannotActivate(day),
             'sol-text-slate-800': !cannotActivate(day) && !day.isSelected
@@ -74,7 +74,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
       >
         <div>{format(day.date, 'EEE')}</div>
         <div className='sol-text-lg'>{day.date.getDate()}</div>
-        <div>{format(day.date, 'MMM')}</div>
+        <div className='sol-hidden sm:sol-block'>{format(day.date, 'MMM')}</div>
       </time>
       <div
         className={clsx('sol-self-center sol-flex', {
