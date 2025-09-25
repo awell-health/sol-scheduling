@@ -19,7 +19,7 @@ export const NavigationButton: FC<Props> = (props) => {
     <button
       onClick={onClick}
       className={clsx(
-        'sol-btn sol-px-6 sm:sol-py-2 sol-px-3 sol-py-1 sol-border-secondary hover:sol-border-primary hover:sol-bg-secondary',
+        'sol-btn sol-px-6 sm:sol-py-2 sol-py-1 sol-border-secondary hover:sol-border-primary hover:sol-bg-secondary',
         {
           'sol-btn-disabled sol-opacity-50 sol-cursor-not-allowed': isDisabled,
           'sol-btn-secondary': !isDisabled
