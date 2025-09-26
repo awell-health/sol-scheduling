@@ -100,10 +100,10 @@ export const Slots: FC<SlotsProps> = ({
                     }
                   )}
                 >
-                  <div className='sol-flex sol-items-center sol-justify-center sol-gap-2 sm:sol-px-3 sol-py-2 sm:sol-py-4 sm:sol-h-[110px]'>
+                  <div className='sol-flex sol-items-center sol-justify-center sol-gap-2 sm:sol-px-3 sol-py-2 sm:sol-py-4 sm:sol-h-17'>
                     <div className='sol-flex sol-flex-col sol-items-center sol-p-1 sol-gap-1'>
                       <div className='sol-flex sol-gap-1 sol-items-center'>
-                        <div className='sol-text-center sol-text-md sm:sol-text-lg'>
+                        <div className='sol-text-center sol-text-md'>
                           {formatSlotTime(slot.slotstart)}
                         </div>
                         <div className='sol-flex sol-justify-end sm:sol-absolute sol-top-1 sol-right-1'>
@@ -116,7 +116,7 @@ export const Slots: FC<SlotsProps> = ({
                           )}
                         </div>
                       </div>
-                      <div className='sol-text-center sol-text-xs sm:sol-text-sm sol-text-slate-500'>
+                      <div className='sol-text-center sol-font-normal sol-text-xs sm:sol-text-sm sol-text-slate-500'>
                         {slot.location === 'Telehealth'
                           ? 'Virtual'
                           : formatFacility(slot.facility)}

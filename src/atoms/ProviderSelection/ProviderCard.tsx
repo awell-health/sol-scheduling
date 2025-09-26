@@ -38,7 +38,7 @@ export const ProviderCard: FC<ProviderProps> = ({
           image={provider.image}
           classes='sm:sol-w-36 sm:sol-h-36 sol-w-20 sol-h-20'
         />
-        <div className='sol-self-center sm:sol-self-auto sol-flex sol-flex-col sm:sol-items-center sm:sol-items-start sol-gap-2'>
+        <div className='sol-self-center sm:sol-self-auto sol-flex sol-flex-col sm:sol-items-center sm:sol-items-start sol-gap-1 sm:sol-gap-2'>
           <h3 className='sol-block sm:sol-hidden sol-text-slate-800 sol-text-xl sol-m-0 sol-font-semibold sm:sol-text-left'>
             {providerName}
           </h3>
@@ -141,10 +141,10 @@ const SingleItem: FC<{ value: string }> = ({ value }) => {
       <img
         src={locationIcon}
         alt='Location icon'
-        className='sol-w-5 sol-h-5 sol-text-slate-500'
+        className='sol-w-4 sol-h-4 sol-text-slate-500'
       />
-      <div className='sol-p-1 sol-text-center'>
-        <span className='sol-font-semibold sol-text-primary sol-text-md sm:sol-text-sm'>
+      <div className='sol-px-1 sol-text-center'>
+        <span className='sol-font-semibold sol-text-primary sol-text-sm'>
           {value}
         </span>
       </div>
@@ -158,26 +158,26 @@ const BioItem: FC<{ value: string }> = ({ value }) => {
     setIsExpanded(!isExpanded);
   };
   const classes =
-    'sol-text-blue-500 sol-rounded-full sol-text-sm sol-text-blue sol-font-medium ';
+    'sol-text-blue-500 sol-rounded-full sol-text-sm sol-text-blue';
   return (
     <li className='sol-flex-1 sol-basis-full'>
       {isExpanded ? (
         <div>
-          <span className='sol-text-slate-600 sol-text-md'>{value}</span>
+          <span className='sol-text-slate-600 sol-text-sm'>{value}</span>
           <button onClick={toggleBio} className={classes}>
             {'Hide'}
           </button>
         </div>
       ) : (
         <div>
-          <span className='sol-text-slate-600 sol-text-md sol-hidden sm:sol-inline'>
+          <span className='sol-text-slate-600 sol-text-sm sol-hidden sm:sol-inline'>
             {value.substring(0, 120)}...{' '}
             <button onClick={toggleBio} className={classes}>
               {'Read more'}
             </button>
           </span>
           <span className='sol-text-slate-600 sol-text-sm sol-inline sm:sol-hidden'>
-            {value.substring(0, 30)}...{' '}
+            {value.substring(0, 35)}...{' '}
             <button onClick={toggleBio} className={classes}>
               {'Read more'}
             </button>
@@ -207,7 +207,7 @@ const Slot: FC<{ count: number }> = ({ count }) => {
   return (
     <div
       className={clsx(
-        'sol-w-[150px] sol-rounded-full sol-text-sm sol-text-white sol-text-center sol-font-medium sol-flex sol-items-center sol-justify-center sol-px-3 sol-py-1',
+        'sol-w-[145px] sol-rounded-full sol-text-sm sol-text-white sol-text-center sol-flex sol-items-center sol-justify-center sol-py-[2px] sol-px-2',
         {
           'sol-bg-slate-300': count === 0,
           'sol-bg-yellow-500': count > 0 && count <= 2,

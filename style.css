@@ -1889,8 +1889,8 @@ html {
   width: 1.5rem;
 }
 
-.sol-w-\[150px\] {
-  width: 150px;
+.sol-w-\[145px\] {
+  width: 145px;
 }
 
 .sol-w-\[50px\] {
@@ -2253,6 +2253,11 @@ html {
   padding-right: 0.25rem;
 }
 
+.sol-px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 .sol-px-3 {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -2291,6 +2296,11 @@ html {
 .sol-py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
+}
+
+.sol-py-\[2px\] {
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .sol-pb-2 {
@@ -2560,10 +2570,6 @@ html {
 
   .sm\:sol-h-7 {
     height: 1.75rem;
-  }
-
-  .sm\:sol-h-\[110px\] {
-    height: 110px;
   }
 
   .sm\:sol-w-32 {
