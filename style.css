@@ -2572,6 +2572,10 @@ html {
     height: 1.75rem;
   }
 
+  .sm\:sol-h-3 {
+    height: 0.75rem;
+  }
+
   .sm\:sol-w-32 {
     width: 8rem;
   }
@@ -2590,6 +2594,10 @@ html {
 
   .sm\:sol-w-auto {
     width: auto;
+  }
+
+  .sm\:sol-w-3 {
+    width: 0.75rem;
   }
 
   .sm\:sol-min-w-\[400px\] {

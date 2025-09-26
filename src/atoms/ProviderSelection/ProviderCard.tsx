@@ -30,7 +30,7 @@ export const ProviderCard: FC<ProviderProps> = ({
   return (
     <div
       key={provider.id}
-      className='sol-flex sol-flex-col sm:sol-flex-row sol-rounded-md sol-border-1 sol-bg-white sol-justify-center sol-p-4 sol-gap-2 sm:sol-gap-3'
+      className='sol-flex sol-flex-col sm:sol-flex-row sol-rounded-md sol-border-1 sol-bg-white sol-justify-center sol-p-3 sol-gap-2 sm:sol-gap-3'
     >
       <div className='sol-flex sol-gap-4 sm:sol-flex-col sm:sol-justify-evenly sm:sol-gap-2 sol-w-auto'>
         <ProviderAvatar
@@ -82,7 +82,7 @@ const ProviderHeader: FC<{
       : provider.events.slice(0, 3);
 
   return (
-    <div className='sol-flex sol-flex-col sol-items-baseline sol-gap-2 sm:sol-gap-3 sol-justify-evenly'>
+    <div className='sol-flex sol-flex-col sol-items-baseline sol-gap-3 sol-justify-evenly'>
       <h3 className='sol-hidden sm:sol-block sol-text-slate-800 sol-text-lg sol-m-0 sol-font-semibold sol-text-center sm:sol-text-left'>
         {' '}
         {providerName}{' '}
@@ -92,11 +92,7 @@ const ProviderHeader: FC<{
           facilities.length > 0 &&
           facilities.map((f) => <SingleItem key={f} value={f.slice(5)} />)}
       </div>
-      <div>
-        <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4'>
-          {provider.bio && <BioItem value={provider.bio} />}
-        </ul>
-      </div>
+      {provider.bio && <BioItem value={provider.bio} />}
       {location.length > 0 && (
         <div className='sol-flex sol-flex-col sm:sol-flex-row sol-justify-center sm:sol-justify-start sol-items-center'>
           <span className='sol-text-slate-600 sol-text-md'>
@@ -141,6 +137,7 @@ const SingleItem: FC<{ value: string }> = ({ value }) => {
       <img
         src={locationIcon}
         alt='Location icon'
+        role='presentation'
         className='sol-w-4 sol-h-4 sol-text-slate-500'
       />
       <div className='sol-px-1 sol-text-center'>
@@ -159,32 +156,23 @@ const BioItem: FC<{ value: string }> = ({ value }) => {
   };
   const classes =
     'sol-text-blue-500 sol-rounded-full sol-text-sm sol-text-blue';
-  return (
-    <li className='sol-flex-1 sol-basis-full'>
-      {isExpanded ? (
-        <div>
-          <span className='sol-text-slate-600 sol-text-sm'>{value}</span>
-          <button onClick={toggleBio} className={classes}>
-            {'Hide'}
-          </button>
-        </div>
-      ) : (
-        <div>
-          <span className='sol-text-slate-600 sol-text-sm sol-hidden sm:sol-inline'>
-            {value.substring(0, 120)}...{' '}
-            <button onClick={toggleBio} className={classes}>
-              {'Read more'}
-            </button>
-          </span>
-          <span className='sol-text-slate-600 sol-text-sm sol-inline sm:sol-hidden'>
-            {value.substring(0, 35)}...{' '}
-            <button onClick={toggleBio} className={classes}>
-              {'Read more'}
-            </button>
-          </span>
-        </div>
-      )}
-    </li>
+  return isExpanded ? (
+    <span className='sol-text-slate-600 sol-text-sm'>
+      {value}{' '}
+      <button onClick={toggleBio} className={classes}>
+        {'Hide'}
+      </button>
+    </span>
+  ) : (
+    <span className='sol-text-slate-600 sol-text-sm'>
+      <span className='sol-hidden sm:sol-inline'>
+        {value.substring(0, 120)}...{' '}
+      </span>
+      <span className='sm:sol-hidden'>{value.substring(0, 35)}... </span>
+      <button onClick={toggleBio} className={classes}>
+        {'Read more'}
+      </button>
+    </span>
   );
 };
 
