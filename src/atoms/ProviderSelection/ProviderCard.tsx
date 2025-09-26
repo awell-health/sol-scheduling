@@ -170,7 +170,7 @@ const BioItem: FC<{ value: string }> = ({ value }) => {
       </span>
       <span className='sm:sol-hidden'>{value.substring(0, 35)}... </span>
       <button onClick={toggleBio} className={classes}>
-        {'Read more'}
+        {'Read bio'}
       </button>
     </span>
   );

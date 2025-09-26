@@ -187,7 +187,7 @@ export const Scheduler: FC<SchedulerProps> = ({
           ref={selectTimeRef}
           className='sol-pt-6 sol-mt-6 sol-mb-6 sol-border-t-1 sol-border-slate-200'
         >
-          <div className='sol-flex sol-flex-row-reverse sm:sol-flex-col sol-justify-evenly sm:sol-justify-center sol-gap-2 sol-w-full'>
+          <div className='sol-flex sol-flex-row-reverse sm:sol-flex-col sol-justify-between sm:sol-justify-center sol-gap-2 sol-w-full'>
             <div className='sol-flex sol-flex-row sol-items-normal sm:sol-items-center sol-justify-end sol-gap-1 sol-pb-2'>
               <div>
                 <img src={videoChatIcon} alt='Video Chat Icon' />

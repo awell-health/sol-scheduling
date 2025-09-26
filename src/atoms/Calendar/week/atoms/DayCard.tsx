@@ -72,8 +72,8 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
           }
         )}
       >
-        <div>{format(day.date, 'EEE')}</div>
-        <div className='sol-text-lg'>{day.date.getDate()}</div>
+        <div className='sol-font-normal'>{format(day.date, 'EEE')}</div>
+        <div>{day.date.getDate()}</div>
         <div className='sol-hidden'>{format(day.date, 'MMM')}</div>
       </time>
       <div
