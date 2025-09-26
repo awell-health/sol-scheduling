@@ -64,7 +64,7 @@ const ProviderHeader: FC<{
   onSelect: (id: string) => void;
   text?: { button?: string };
 }> = ({ provider, deliveryMethod, facilities, text, onSelect }) => {
-  const button = text?.button ?? 'Select Provider';
+  const button = text?.button ?? 'See Full Availability';
   /*
    * Using a variable to hide the profile link instead of removing it:
    * They want to do some AB testing and might ask to add this back in at a later time
@@ -87,7 +87,7 @@ const ProviderHeader: FC<{
         {' '}
         {providerName}{' '}
       </h3>{' '}
-      <div className='sol-grid sol-grid-cols-2 sm:sol-grid-cols-3 sol-gap-3 sol-justify-start'>
+      <div className='sol-grid sol-grid-cols-2 sol-gap-3 sol-justify-start'>
         {facilities &&
           facilities.length > 0 &&
           facilities.map((f) => <SingleItem key={f} value={f.slice(5)} />)}
