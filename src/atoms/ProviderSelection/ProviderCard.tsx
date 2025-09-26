@@ -30,7 +30,7 @@ export const ProviderCard: FC<ProviderProps> = ({
   return (
     <div
       key={provider.id}
-      className='sol-flex sol-flex-col sm:sol-flex-row sol-rounded-md sol-border-1 sol-bg-white sol-justify-center sol-p-4 sol-gap-2 sm:sol-gap-3'
+      className='sol-flex sol-flex-col sm:sol-flex-row sol-rounded-md sol-border-1 sol-bg-white sol-justify-center sol-p-3 sol-gap-2 sm:sol-gap-3'
     >
       <div className='sol-flex sol-gap-4 sm:sol-flex-col sm:sol-justify-evenly sm:sol-gap-2 sol-w-auto'>
         <ProviderAvatar
@@ -38,7 +38,7 @@ export const ProviderCard: FC<ProviderProps> = ({
           image={provider.image}
           classes='sm:sol-w-36 sm:sol-h-36 sol-w-20 sol-h-20'
         />
-        <div className='sol-self-center sm:sol-self-auto sol-flex sol-flex-col sm:sol-items-center sm:sol-items-start sol-gap-2'>
+        <div className='sol-self-center sm:sol-self-auto sol-flex sol-flex-col sm:sol-items-center sm:sol-items-start sol-gap-1 sm:sol-gap-2'>
           <h3 className='sol-block sm:sol-hidden sol-text-slate-800 sol-text-xl sol-m-0 sol-font-semibold sm:sol-text-left'>
             {providerName}
           </h3>
@@ -64,7 +64,7 @@ const ProviderHeader: FC<{
   onSelect: (id: string) => void;
   text?: { button?: string };
 }> = ({ provider, deliveryMethod, facilities, text, onSelect }) => {
-  const button = text?.button ?? 'Select Provider';
+  const button = text?.button ?? 'See Full Availability';
   /*
    * Using a variable to hide the profile link instead of removing it:
    * They want to do some AB testing and might ask to add this back in at a later time
@@ -82,21 +82,17 @@ const ProviderHeader: FC<{
       : provider.events.slice(0, 3);
 
   return (
-    <div className='sol-flex sol-flex-col sol-items-baseline sol-gap-2 sm:sol-gap-3 sol-justify-evenly'>
+    <div className='sol-flex sol-flex-col sol-items-baseline sol-gap-3 sol-justify-evenly'>
       <h3 className='sol-hidden sm:sol-block sol-text-slate-800 sol-text-lg sol-m-0 sol-font-semibold sol-text-center sm:sol-text-left'>
         {' '}
         {providerName}{' '}
       </h3>{' '}
-      <div className='sol-grid sol-grid-cols-2 sm:sol-grid-cols-3 sol-gap-3 sol-justify-start'>
+      <div className='sol-grid sol-grid-cols-2 sol-gap-3 sol-justify-start'>
         {facilities &&
           facilities.length > 0 &&
           facilities.map((f) => <SingleItem key={f} value={f.slice(5)} />)}
       </div>
-      <div>
-        <ul className='sol-flex sol-flex-wrap sol-list-none sol-m-0 sol-p-0 sol-gap-y-4'>
-          {provider.bio && <BioItem value={provider.bio} />}
-        </ul>
-      </div>
+      {provider.bio && <BioItem value={provider.bio} />}
       {location.length > 0 && (
         <div className='sol-flex sol-flex-col sm:sol-flex-row sol-justify-center sm:sol-justify-start sol-items-center'>
           <span className='sol-text-slate-600 sol-text-md'>
@@ -141,10 +137,11 @@ const SingleItem: FC<{ value: string }> = ({ value }) => {
       <img
         src={locationIcon}
         alt='Location icon'
-        className='sol-w-5 sol-h-5 sol-text-slate-500'
+        role='presentation'
+        className='sol-w-4 sol-h-4 sol-text-slate-500'
       />
-      <div className='sol-p-1 sol-text-center'>
-        <span className='sol-font-semibold sol-text-primary sol-text-md sm:sol-text-sm'>
+      <div className='sol-px-1 sol-text-center'>
+        <span className='sol-font-semibold sol-text-primary sol-text-sm'>
           {value}
         </span>
       </div>
@@ -158,33 +155,24 @@ const BioItem: FC<{ value: string }> = ({ value }) => {
     setIsExpanded(!isExpanded);
   };
   const classes =
-    'sol-text-blue-500 sol-rounded-full sol-text-sm sol-text-blue sol-font-medium ';
-  return (
-    <li className='sol-flex-1 sol-basis-full'>
-      {isExpanded ? (
-        <div>
-          <span className='sol-text-slate-600 sol-text-md'>{value}</span>
-          <button onClick={toggleBio} className={classes}>
-            {'Hide'}
-          </button>
-        </div>
-      ) : (
-        <div>
-          <span className='sol-text-slate-600 sol-text-md sol-hidden sm:sol-inline'>
-            {value.substring(0, 120)}...{' '}
-            <button onClick={toggleBio} className={classes}>
-              {'Read more'}
-            </button>
-          </span>
-          <span className='sol-text-slate-600 sol-text-sm sol-inline sm:sol-hidden'>
-            {value.substring(0, 30)}...{' '}
-            <button onClick={toggleBio} className={classes}>
-              {'Read more'}
-            </button>
-          </span>
-        </div>
-      )}
-    </li>
+    'sol-text-blue-500 sol-rounded-full sol-text-sm sol-text-blue';
+  return isExpanded ? (
+    <span className='sol-text-slate-600 sol-text-sm'>
+      {value}{' '}
+      <button onClick={toggleBio} className={classes}>
+        {'Hide'}
+      </button>
+    </span>
+  ) : (
+    <span className='sol-text-slate-600 sol-text-sm'>
+      <span className='sol-hidden sm:sol-inline'>
+        {value.substring(0, 120)}...{' '}
+      </span>
+      <span className='sm:sol-hidden'>{value.substring(0, 30)}... </span>
+      <button onClick={toggleBio} className={classes}>
+        {'Read bio'}
+      </button>
+    </span>
   );
 };
 
@@ -207,7 +195,7 @@ const Slot: FC<{ count: number }> = ({ count }) => {
   return (
     <div
       className={clsx(
-        'sol-w-[150px] sol-rounded-full sol-text-sm sol-text-white sol-text-center sol-font-medium sol-flex sol-items-center sol-justify-center sol-px-3 sol-py-1',
+        'sol-w-[145px] sol-rounded-full sol-text-sm sol-text-white sol-text-center sol-flex sol-items-center sol-justify-center sol-py-[2px] sol-px-2',
         {
           'sol-bg-slate-300': count === 0,
           'sol-bg-yellow-500': count > 0 && count <= 2,

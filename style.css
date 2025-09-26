@@ -1796,10 +1796,6 @@ html {
   display: inline-block;
 }
 
-.sol-inline {
-  display: inline;
-}
-
 .sol-flex {
   display: flex;
 }
@@ -1889,12 +1885,12 @@ html {
   width: 1.5rem;
 }
 
-.sol-w-\[150px\] {
-  width: 150px;
+.sol-w-\[145px\] {
+  width: 145px;
 }
 
-.sol-w-\[50px\] {
-  width: 50px;
+.sol-w-\[40px\] {
+  width: 40px;
 }
 
 .sol-w-auto {
@@ -1927,10 +1923,6 @@ html {
 
 .sol-shrink-0 {
   flex-shrink: 0;
-}
-
-.sol-basis-full {
-  flex-basis: 100%;
 }
 
 .-sol-translate-x-1\/2 {
@@ -2046,10 +2038,6 @@ html {
 
 .sol-gap-4 {
   gap: 1rem;
-}
-
-.sol-gap-y-4 {
-  row-gap: 1rem;
 }
 
 .sol-space-y-1 > :not([hidden]) ~ :not([hidden]) {
@@ -2253,6 +2241,11 @@ html {
   padding-right: 0.25rem;
 }
 
+.sol-px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 .sol-px-3 {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -2291,6 +2284,11 @@ html {
 .sol-py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
+}
+
+.sol-py-\[2px\] {
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .sol-pb-2 {
@@ -2534,6 +2532,10 @@ html {
     position: absolute;
   }
 
+  .sm\:sol-mt-2 {
+    margin-top: 0.5rem;
+  }
+
   .sm\:sol-block {
     display: block;
   }
@@ -2550,6 +2552,10 @@ html {
     height: 4rem;
   }
 
+  .sm\:sol-h-20 {
+    height: 5rem;
+  }
+
   .sm\:sol-h-32 {
     height: 8rem;
   }
@@ -2560,10 +2566,6 @@ html {
 
   .sm\:sol-h-7 {
     height: 1.75rem;
-  }
-
-  .sm\:sol-h-\[110px\] {
-    height: 110px;
   }
 
   .sm\:sol-w-32 {
@@ -2637,6 +2639,11 @@ html {
   .sm\:sol-px-3 {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
+  }
+
+  .sm\:sol-px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .sm\:sol-py-2 {

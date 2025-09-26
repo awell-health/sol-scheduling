@@ -139,7 +139,7 @@ export const WeekCalendar: FC<Props> = (props) => {
         </div>
       )}
       <div className='sol-flex sol-justify-between sol-align-center sol-mb-4 sol-items-center'>
-        <div className='sol-text-lg sol-font-medium'>
+        <div className='sol-text-lg sol-font-bold'>
           {availableDates.length > 0 &&
             `${format(availableDates[currentStartIndex], 'MMMM yyyy')}`}
         </div>
