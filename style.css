@@ -1889,8 +1889,8 @@ html {
   width: 145px;
 }
 
-.sol-w-\[50px\] {
-  width: 50px;
+.sol-w-\[40px\] {
+  width: 40px;
 }
 
 .sol-w-auto {
@@ -2532,6 +2532,10 @@ html {
     position: absolute;
   }
 
+  .sm\:sol-mt-2 {
+    margin-top: 0.5rem;
+  }
+
   .sm\:sol-block {
     display: block;
   }
@@ -2635,6 +2639,11 @@ html {
   .sm\:sol-px-3 {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
+  }
+
+  .sm\:sol-px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .sm\:sol-py-2 {

@@ -65,7 +65,7 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
       <time
         dateTime={day.date.toISOString()}
         className={clsx(
-          'sol-flex sol-flex-col sol-flex-none sol-block sol-gap-1 sol-self-center sol-text-md sm:sol-text-lg',
+          'sol-flex sol-flex-col sol-flex-none sol-block sol-self-center sol-text-md sm:sol-text-lg',
           {
             'sol-text-slate-400': cannotActivate(day),
             'sol-text-slate-800': !cannotActivate(day) && !day.isSelected
@@ -91,10 +91,10 @@ export const DayCard: FC<DayCardProps> = ({ onSelect, day }) => {
 const NumberOfSlots: FC<{ count: number }> = ({ count }) => {
   const slotText = count === 1 ? 'slot' : 'slots';
   return (
-    <div className='sol-flex sol-mt-2 sol-gap-2 sol-gap-0 sol-flex-col sol-flex-row'>
+    <div className='sol-flex sm:sol-mt-2 sol-gap-2 sol-gap-0 sol-flex-col sol-flex-row'>
       <div
         className={clsx(
-          'sol-rounded-full sol-text-sm sol-text-white sol-font-medium sol-my-2 sol-self-center sol-px-4 sol-py-1 sol-w-[50px] sm:sol-w-[85px]',
+          'sol-rounded-full sol-text-sm sol-text-white sol-font-medium sol-my-2 sol-self-center sm:sol-px-4 sol-py-1 sol-w-[40px] sm:sol-w-[85px]',
 
           {
             'sol-bg-slate-300': count === 0,
