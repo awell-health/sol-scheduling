@@ -100,7 +100,7 @@ export const Slots: FC<SlotsProps> = ({
                     }
                   )}
                 >
-                  <div className='sol-flex sol-items-center sol-justify-center sol-gap-2 sm:sol-px-3 sol-py-2 sm:sol-py-4 sm:sol-h-17'>
+                  <div className='sol-flex sol-items-center sol-justify-center sol-gap-2 sm:sol-px-3 sol-py-2 sm:sol-py-4 sm:sol-h-20'>
                     <div className='sol-flex sol-flex-col sol-items-center sol-p-1 sol-gap-1'>
                       <div className='sol-flex sol-gap-1 sol-items-center'>
                         <div className='sol-text-center sol-text-md'>

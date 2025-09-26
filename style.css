@@ -1796,10 +1796,6 @@ html {
   display: inline-block;
 }
 
-.sol-inline {
-  display: inline;
-}
-
 .sol-flex {
   display: flex;
 }
@@ -1929,10 +1925,6 @@ html {
   flex-shrink: 0;
 }
 
-.sol-basis-full {
-  flex-basis: 100%;
-}
-
 .-sol-translate-x-1\/2 {
   --tw-translate-x: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -2046,10 +2038,6 @@ html {
 
 .sol-gap-4 {
   gap: 1rem;
-}
-
-.sol-gap-y-4 {
-  row-gap: 1rem;
 }
 
 .sol-space-y-1 > :not([hidden]) ~ :not([hidden]) {
@@ -2560,6 +2548,10 @@ html {
     height: 4rem;
   }
 
+  .sm\:sol-h-20 {
+    height: 5rem;
+  }
+
   .sm\:sol-h-32 {
     height: 8rem;
   }
@@ -2570,10 +2562,6 @@ html {
 
   .sm\:sol-h-7 {
     height: 1.75rem;
-  }
-
-  .sm\:sol-h-3 {
-    height: 0.75rem;
   }
 
   .sm\:sol-w-32 {
@@ -2594,10 +2582,6 @@ html {
 
   .sm\:sol-w-auto {
     width: auto;
-  }
-
-  .sm\:sol-w-3 {
-    width: 0.75rem;
   }
 
   .sm\:sol-min-w-\[400px\] {
