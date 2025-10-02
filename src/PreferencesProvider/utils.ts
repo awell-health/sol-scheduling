@@ -38,8 +38,10 @@ const updatePreferencesWithFilters = (
         const selectedModality = filter.selectedOptions[0] as Modality;
         if (selectedModality === Modality.Therapy) {
           prefs.therapeuticModality = 'Therapy';
-        } else if (selectedModality) {
+        } else if (selectedModality === Modality.Psychiatric) {
           prefs.therapeuticModality = 'Psychiatric';
+        } else {
+          prefs.therapeuticModality = undefined;
         }
         break;
       }
