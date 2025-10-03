@@ -10,7 +10,7 @@ import {
   type SlotType,
   type SlotWithConfirmedLocation
 } from '@/lib/api';
-import { filterByDate, filterByLocation } from '@/lib/utils/availabilities';
+import { filterByDate } from '@/lib/utils/availabilities';
 import videoChatIcon from '@/assets/video-chat-icon.svg';
 
 export type SchedulerProps = {
@@ -81,12 +81,7 @@ export const Scheduler: FC<SchedulerProps> = ({
       return [];
     } else {
       const sameDaySlots = filterByDate({ availabilities, date });
-      const slotsThatMatchLocation = filterByLocation({
-        availabilities: sameDaySlots,
-        location: bookingInformation?.location
-      });
-
-      return slotsThatMatchLocation;
+      return sameDaySlots;
     }
   }, [availabilities, date, loading, bookingInformation]);
 
