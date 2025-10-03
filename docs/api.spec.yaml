@@ -489,9 +489,9 @@ components:
         - MD - Silver Spring
         - MD - Gaithersburg
         - MD - Frederick
-        - MD - Downtown
-        - MD - Ballston
-        - MD - Tysons
+        - DC - Downtown
+        - VA - Ballston
+        - VA - Tysons
         - NY - Brooklyn Heights
         - NY - Union Square
         - NY - Long Island City

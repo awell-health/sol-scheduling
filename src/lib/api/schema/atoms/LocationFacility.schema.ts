@@ -12,7 +12,7 @@ export enum LocationFacility {
   SilverSpring = 'MD - Silver Spring',
   Gaithersburg = 'MD - Gaithersburg',
   Frederick = 'MD - Frederick',
-  Downtown = 'MD - Downtown',
+  Downtown = 'DC - Downtown',
   Ballston = 'VA - Ballston',
   Tysons = 'VA - Tysons',
   BrooklynHeights = 'NY - Brooklyn Heights',
