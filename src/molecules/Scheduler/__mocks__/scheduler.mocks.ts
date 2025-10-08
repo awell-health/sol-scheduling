@@ -32,84 +32,89 @@ export const fetchAvailabilityMock = fn(async (pid: string) => {
     data: {
       [pid]: [
         {
-          eventId: 't68403en62hji9lad095mv2srk',
-          slotstart: '2024-10-17T21:00:00Z',
+          eventId: '1D50DD19-E17B-4744-82A8-20436F8B5B27',
+          slotstart: '2025-10-09T12:00:00Z',
           provider: {
             location: {
               facility: '',
               state: ''
             }
           },
-          providerId: '1717',
-          date: '2024-10-17',
+          providerId: '2081',
+          date: '2025-10-09',
           duration: 60,
           booked: false,
-          facility: 'NY - Brooklyn Heights',
+          eventType: 'Telehealth',
+          facility: 'NY - Massapequa',
           location: 'Telehealth'
         },
         {
-          eventId: 'jnkmeiuv63uimngvjdb6ja5iro',
-          slotstart: '2024-10-18T14:00:00Z',
+          eventId: 'C636D781-0E68-4EF4-A535-7467919EF7FF',
+          slotstart: '2025-11-04T18:00:00Z',
           provider: {
             location: {
               facility: '',
               state: ''
             }
           },
-          providerId: '1717',
-          date: '2024-10-18',
+          providerId: '2081',
+          date: '2025-11-04',
           duration: 60,
           booked: false,
-          facility: 'NY - Brooklyn Heights',
+          eventType: 'In-Person',
+          facility: 'NY - Massapequa',
           location: 'In-Person'
         },
         {
-          eventId: '981t7pvlkc96vjntovihr16h9g',
-          slotstart: '2024-10-21T18:00:00Z',
+          eventId: 'AC7A9E24-A843-485A-99AF-C39FE7698B55',
+          slotstart: '2025-11-05T17:30:00Z',
           provider: {
             location: {
               facility: '',
               state: ''
             }
           },
-          providerId: '1717',
-          date: '2024-10-21',
+          providerId: '2081',
+          date: '2025-11-05',
           duration: 60,
           booked: false,
-          facility: 'NY - Brooklyn Heights',
-          location: 'Telehealth'
-        },
-        {
-          eventId: 'u2dtb7c5vff90jv5s46b3hake0',
-          slotstart: '2024-10-21T19:00:00Z',
-          provider: {
-            location: {
-              facility: '',
-              state: ''
-            }
-          },
-          providerId: '1717',
-          date: '2024-10-21',
-          duration: 60,
-          booked: false,
-          facility: 'NY - Brooklyn Heights',
+          eventType: 'In-Person',
+          facility: 'NY - Melville',
           location: 'In-Person'
         },
         {
-          eventId: 'isber21m91efnlqduai88kt1h8',
-          slotstart: '2024-10-22T15:00:00Z',
+          eventId: '268FF98A-BE5A-482E-B3AC-39048AB7F135',
+          slotstart: '2025-11-05T19:30:00Z',
           provider: {
             location: {
               facility: '',
               state: ''
             }
           },
-          providerId: '1717',
-          date: '2024-10-22',
+          providerId: '2081',
+          date: '2025-11-05',
           duration: 60,
           booked: false,
-          facility: 'NY - Brooklyn Heights',
-          location: 'Telehealth'
+          eventType: 'In-Person',
+          facility: 'NY - Melville',
+          location: 'In-Person'
+        },
+        {
+          eventId: 'B6B02E8C-0892-4759-BBA9-D376530A40EB',
+          slotstart: '2025-11-05T21:30:00Z',
+          provider: {
+            location: {
+              facility: '',
+              state: ''
+            }
+          },
+          providerId: '2081',
+          date: '2025-11-05',
+          duration: 60,
+          booked: false,
+          eventType: 'In-Person',
+          facility: 'NY - Melville',
+          location: 'In-Person'
         }
       ].map((e) => ProviderEventSchema.parse(e))
     }
