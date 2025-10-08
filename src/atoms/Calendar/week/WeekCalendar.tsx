@@ -1,6 +1,6 @@
 import { FC, useState, useMemo, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
-import { format, isToday, isSameDay, isBefore } from 'date-fns';
+import { format, isToday, isSameDay, isBefore, startOfDay } from 'date-fns';
 import { type SlotType } from '../../../lib/api';
 import { DayCard } from './atoms/DayCard';
 import { NavigationButton } from './NavigationButton';
@@ -80,15 +80,18 @@ export const WeekCalendar: FC<Props> = (props) => {
   );
 
   const availableDates = useMemo(() => {
-    const uniqueDates = Array.from(
-      new Set(
-        availabilities.map((slot) => format(slot.slotstart, 'yyyy-MM-dd'))
-      )
-    )
-      .map((dateStr) => new Date(dateStr))
+    const dateMap = new Map<string, Date>();
+    availabilities.forEach((slot) => {
+      const localDateKey = format(slot.slotstart, 'yyyy-MM-dd');
+      if (!dateMap.has(localDateKey)) {
+        const dayStart = startOfDay(slot.slotstart);
+        dateMap.set(localDateKey, dayStart);
+      }
+    });
+
+    const uniqueDates = Array.from(dateMap.values())
       .sort((a, b) => a.getTime() - b.getTime())
       .filter((day) => !isDisabled(day) && countAvailabilities(day) > 0);
-
     return uniqueDates;
   }, [availabilities, isDisabled, countAvailabilities]);
 
@@ -140,8 +143,7 @@ export const WeekCalendar: FC<Props> = (props) => {
       )}
       <div className='sol-flex sol-justify-between sol-align-center sol-mb-4 sol-items-center'>
         <div className='sol-text-lg sol-font-bold'>
-          {availableDates.length > 0 &&
-            `${format(availableDates[currentStartIndex], 'MMMM yyyy')}`}
+          {selectedDate && `${format(selectedDate, 'MMMM yyyy')}`}
         </div>
         <div className='sol-flex sol-align-center sol-text-center sol-gap-2'>
           <NavigationButton
