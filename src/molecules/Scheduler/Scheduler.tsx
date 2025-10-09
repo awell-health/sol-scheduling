@@ -167,13 +167,6 @@ export const Scheduler: FC<SchedulerProps> = ({
       confirmedLocation
     } satisfies SlotWithConfirmedLocation;
 
-    console.log(
-      'Booking slot:',
-      slotWithDeliveryMethod,
-      bookingInformation,
-      onBookingError
-    );
-
     void bookAppointment(
       slotWithDeliveryMethod,
       bookingInformation.preferences,
