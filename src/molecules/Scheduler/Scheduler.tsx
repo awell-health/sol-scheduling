@@ -7,6 +7,7 @@ import { useSolApi } from '@/SolApiProvider';
 import { ProviderAvatar } from '@/atoms/ProviderAvatar';
 import {
   LocationType,
+  EventDeliveryMethod,
   type SlotType,
   type SlotWithConfirmedLocation
 } from '@/lib/api';
@@ -60,11 +61,36 @@ export const Scheduler: FC<SchedulerProps> = ({
   const [date, setDate] = useState<Date | null>(null);
   const [slot, setSlot] = useState<SlotType | null>(null);
 
+  /**
+   * Transforms availabilities to include virtual options for in-person slots.
+   * - Virtual slots remain as-is
+   * - In-Person slots are duplicated: one remains In-Person, one becomes Virtual
+   *   Moreover, both slots share the same eventId (with '_virtual' suffix for virtual)
+   */
+  const transformAvailabilities = (slots: SlotType[]): SlotType[] => {
+    const transformedSlots: SlotType[] = [];
+
+    slots.forEach((slot) => {
+      transformedSlots.push(slot);
+      if (slot.location === EventDeliveryMethod.InPerson) {
+        const virtualSlot = cloneDeep(slot);
+        virtualSlot.eventId = `${virtualSlot.eventId}_virtual`;
+        virtualSlot.location = EventDeliveryMethod.Telehealth;
+        transformedSlots.push(virtualSlot);
+      }
+    });
+
+    return transformedSlots;
+  };
+
   useEffect(() => {
-    const sortedFetchedAvailabilities = cloneDeep(fetchedAvailabilities).sort(
+    const transformedAvailabilities = transformAvailabilities(
+      fetchedAvailabilities
+    );
+    const sortedAvailabilities = cloneDeep(transformedAvailabilities).sort(
       (a, b) => a.slotstart.getTime() - b.slotstart.getTime()
     );
-    setAvailabilities(sortedFetchedAvailabilities);
+    setAvailabilities(sortedAvailabilities);
   }, [fetchedAvailabilities]);
 
   useEffect(() => {
@@ -126,12 +152,27 @@ export const Scheduler: FC<SchedulerProps> = ({
   };
 
   const handleBooking = (slot: SlotType) => {
+    const originalEventId = slot.eventId.endsWith('_virtual')
+      ? slot.eventId.replace('_virtual', '')
+      : slot.eventId;
+
+    const confirmedLocation =
+      slot.location === EventDeliveryMethod.Telehealth
+        ? LocationType.Telehealth
+        : LocationType.InPerson;
+
     const slotWithDeliveryMethod = {
       ...slot,
-      confirmedLocation:
-        bookingInformation?.location?.confirmedLocation ??
-        LocationType.Telehealth
+      eventId: originalEventId,
+      confirmedLocation
     } satisfies SlotWithConfirmedLocation;
+
+    console.log(
+      'Booking slot:',
+      slotWithDeliveryMethod,
+      bookingInformation,
+      onBookingError
+    );
 
     void bookAppointment(
       slotWithDeliveryMethod,
