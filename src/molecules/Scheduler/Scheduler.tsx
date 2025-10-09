@@ -68,10 +68,9 @@ export const Scheduler: FC<SchedulerProps> = ({
    *   Moreover, both slots share the same eventId (with '_virtual' suffix for virtual)
    */
   const transformAvailabilities = (slots: SlotType[]): SlotType[] => {
-    const transformedSlots: SlotType[] = [];
+    const transformedSlots: SlotType[] = cloneDeep(slots);
 
     slots.forEach((slot) => {
-      transformedSlots.push(slot);
       if (slot.location === EventDeliveryMethod.InPerson) {
         const virtualSlot = cloneDeep(slot);
         virtualSlot.eventId = `${virtualSlot.eventId}_virtual`;
