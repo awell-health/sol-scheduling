@@ -10,21 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn
+        run: pnpm install
 
       - name: Build Swagger UI
-        run: yarn build-docs
+        run: pnpm --filter @awell-health/sol-scheduling run build-docs
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/dist
+          publish_dir: ./packages/scheduler/docs/dist

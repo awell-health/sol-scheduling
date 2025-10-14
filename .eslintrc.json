@@ -26,5 +26,26 @@
     "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
     "react/prop-types": "warn"
   },
-  "ignorePatterns": ["vite.config.js"]
+  "overrides": [
+    {
+      "files": ["**/*.stories.ts", "**/*.stories.tsx"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["**/*.d.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["**/*.js"],
+      "excludedFiles": ["**/*.cjs"],
+      "parserOptions": {
+        "project": null
+      }
+    }
+  ],
+  "ignorePatterns": ["vite.config.js", "**/*.js"]
 }
