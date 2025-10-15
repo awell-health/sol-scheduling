@@ -29,14 +29,27 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Check for beta tag and enter beta mode if needed
+        run: |
+          if [[ "${{ github.event.workflow_run.head_commit.message }}" == *"[beta]"* ]]; then
+            echo "Beta tag detected in commit message, entering beta mode..."
+            pnpm changeset pre enter beta || echo "Already in beta mode or failed to enter"
+          fi
+
       - name: Build
-        run: pnpm --filter @awell-health/sol-scheduling build
+        run: pnpm build
 
       - name: Configure npm auth
         run: npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
-      - name: Publish package
-        working-directory: packages/scheduler
-        run: npm publish --access public
+      - name: Version and publish packages
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm changeset:version
+          publish: pnpm changeset:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
