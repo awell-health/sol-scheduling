@@ -23,7 +23,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install -w
+        run: pnpm install
 
       - name: Build
         run: pnpm --filter @awell-health/sol-scheduling build
