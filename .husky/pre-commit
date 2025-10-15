@@ -1,1 +1,1 @@
-yarn lint-staged
+pnpm --filter @awell-health/sol-scheduling exec lint-staged

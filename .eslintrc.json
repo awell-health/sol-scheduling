@@ -24,7 +24,38 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
-    "react/prop-types": "warn"
+    "react/prop-types": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "ignoreRestSiblings": true,
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
+    
   },
-  "ignorePatterns": ["vite.config.js"]
+  "overrides": [
+    {
+      "files": ["**/*.stories.ts", "**/*.stories.tsx"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["**/*.d.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["**/*.js"],
+      "excludedFiles": ["**/*.cjs"],
+      "parserOptions": {
+        "project": null
+      }
+    }
+  ],
+  "ignorePatterns": ["vite.config.js", "**/*.js"]
 }

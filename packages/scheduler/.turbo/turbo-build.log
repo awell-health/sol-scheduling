@@ -1,0 +1,21 @@
+
+
+> @awell-health/sol-scheduling@0.5.0-beta.0 build /Users/jb/awell/sol-scheduling/packages/scheduler
+> tsc && vite build
+
+[36mvite v5.4.20 [32mbuilding for production...[36m[39m
+[2K[1Gtransforming (1) [2msrc/index.ts[22m[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (342) [2m../../node_modules/.pnpm/lodash-es@4.17.21/node_modules/lodash-es/lodash.default.js[22m[2K[1G[2K[1G
+🌼   [35mdaisyUI[39m [2m4.12.24[22m
+├─ [32m✔︎[39m 1 theme added[2m		https://daisyui.com/docs/themes[22m
+╰─ [32m❤︎[39m [0mSupport daisyUI project:[0m	[2mhttps://opencollective.com/daisyui[22m
+
+[2K[1Gtransforming (354) [2m../../node_modules/.pnpm/zod@3.25.76/node_modules/zod/index.js[22m[2K[1Gtransforming (571) [2msrc/assets/location-icon.svg[22m[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1G[2K[1Gtransforming (762) [2m../../node_modules/.pnpm/@heroicons+react@2.2.0_react@18.3.1/node_modules/@heroicons/react/24/solid/esm/index.js[22m[2K[1Gtransforming (1090) [2m../../node_modules/.pnpm/date-fns@3.6.0/node_modules/date-fns/yearsToMonths.mjs[22m[2K[1Gtransforming (1547) [2m../../node_modules/.pnpm/@react-aria+utils@3.31.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@react-aria/utils/dist/useId.mjs[22m[2K[1G[2K[1G[32m✓[39m 1734 modules transformed.
+[2K[1Grendering chunks (1)...[2K[1G[32m
+[36m[vite:dts][32m Start generate declaration files...[39m
+[2K[1Gcomputing gzip size (0)...[2K[1Gcomputing gzip size (1)...[2K[1Gcomputing gzip size (2)...[2K[1G[2mdist/[22m[35mstyle.css    [39m[1m[2m 40.72 kB[22m[1m[22m[2m │ gzip:  8.07 kB[22m
+[2mdist/[22m[36mindex.es.js  [39m[1m[2m237.48 kB[22m[1m[22m[2m │ gzip: 58.42 kB[22m[2m │ map: 842.06 kB[22m
+[32m[36m[vite:dts][32m Declaration files built in 1874ms.
+[39m
+[2K[1Grendering chunks (1)...[2K[1G[2K[1Gcomputing gzip size (1)...[2K[1Gcomputing gzip size (2)...[2K[1G[2mdist/[22m[35mstyle.css     [39m[1m[2m 40.72 kB[22m[1m[22m[2m │ gzip:  8.07 kB[22m
+[2mdist/[22m[36mindex.umd.js  [39m[1m[2m171.32 kB[22m[1m[22m[2m │ gzip: 50.50 kB[22m[2m │ map: 818.73 kB[22m
+[32m✓ built in 3.39s[39m

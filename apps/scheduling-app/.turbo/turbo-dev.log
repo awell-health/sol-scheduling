@@ -1,0 +1,756 @@
+
+> scheduling-app@0.0.0 dev /Users/jb/awell/sol-scheduling/apps/scheduling-app
+> next dev
+
+   [1m[38;2;173;127;168m▲ Next.js 15.5.5[39m[22m
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.85:3000
+   - Environments: .env.local
+
+ [32m[1m✓[22m[39m Starting...
+ [32m[1m✓[22m[39m Ready in 1378ms
+ [37m[1m○[22m[39m Compiling /api/sol/providers/[id]/availability ...
+ [32m[1m✓[22m[39m Compiled /api/sol/providers/[id]/availability in 557ms (445 modules)
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+Sample availability slot: {
+  "eventId": "9BF99372-13A8-4334-B098-333956F93A82",
+  "slotstart": "2025-10-15T22:30:00Z",
+  "provider": {
+    "location": {
+      "facility": "",
+      "state": ""
+    }
+  },
+  "providerId": "2038",
+  "date": "2025-10-15",
+  "duration": 60,
+  "booked": false,
+  "eventType": "In-Person",
+  "facility": "CO - Boulder",
+  "location": "In-Person",
+  "salesforceLeadId": ""
+}
+SOL: Getting availability: success {
+  providerId: [32m'2038'[39m,
+  responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
+  performance: [33m523[39m
+}
+ GET /api/sol/providers/2038/availability [32m200[39m in 1453ms
+Sample availability slot: {
+  "eventId": "9BF99372-13A8-4334-B098-333956F93A82",
+  "slotstart": "2025-10-15T22:30:00Z",
+  "provider": {
+    "location": {
+      "facility": "",
+      "state": ""
+    }
+  },
+  "providerId": "2038",
+  "date": "2025-10-15",
+  "duration": 60,
+  "booked": false,
+  "eventType": "In-Person",
+  "facility": "CO - Boulder",
+  "location": "In-Person",
+  "salesforceLeadId": ""
+}
+SOL: Getting availability: success {
+  providerId: [32m'2038'[39m,
+  responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
+  performance: [33m539[39m
+}
+ GET /api/sol/providers/2038/availability [32m200[39m in 1465ms
+SOL: Getting provider: success {
+  providerId: [32m'2038'[39m,
+  responseBody: {
+    data: {
+      location: [36m[Object][39m,
+      name: [32m'Bryan Handwork'[39m,
+      firstName: [32m'Bryan'[39m,
+      lastName: [32m'Handwork'[39m,
+      id: [32m'2038'[39m,
+      bio: [32m'I began my journey in healthcare by dedicating many years to Emergency Medicine as a Paramedic, before advancing my training and earning my Physician Assistant degree from Loma Linda University in Southern California in 2018. Since then, I have spent five enriching years working in addiction medicine at a residential treatment center in Boulder, Colorado.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'In my role, I have had the privilege of supporting adult patients of all ages as they navigate challenges such as anxiety, depression, bipolar disorder, cravings, withdrawal symptoms, and sleep difficulties. A significant aspect of my work has been empowering patients to simplify their medication regimens—focusing solely on treatments that are truly therapeutic and necessary. I take pride in partnering with individuals to help them achieve this goal, always approaching care with compassion and respect for where they are in their healing journey.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'My philosophy centers on addressing the "whole person" rather than just isolated symptoms. This requires taking the time to truly understand a patient’s history and fostering a collaborative partnership between patient and provider. Building these meaningful connections is not only integral to effective care—it is also deeply fulfilling for me.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'As a Colorado native, I find joy outside of my professional life skiing with my three children, navigating rivers during peak water flows, and pursuing my creative passion as a blacksmith, crafting artistic architectural metal projects in my workshop.'[39m,
+      image: [32m'https://solmentalhealth.com/wp-content/uploads/2024/11/Bryan-Handiwork.png'[39m,
+      profileLink: [32m'https://solmentalhealth.com/providers/bryan-handwork/'[39m
+    },
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
+  performance: [33m655[39m
+}
+ GET /api/sol/providers/2038 [32m200[39m in 1592ms
+SOL: Getting provider: success {
+  providerId: [32m'2038'[39m,
+  responseBody: {
+    data: {
+      location: [36m[Object][39m,
+      name: [32m'Bryan Handwork'[39m,
+      firstName: [32m'Bryan'[39m,
+      lastName: [32m'Handwork'[39m,
+      id: [32m'2038'[39m,
+      bio: [32m'I began my journey in healthcare by dedicating many years to Emergency Medicine as a Paramedic, before advancing my training and earning my Physician Assistant degree from Loma Linda University in Southern California in 2018. Since then, I have spent five enriching years working in addiction medicine at a residential treatment center in Boulder, Colorado.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'In my role, I have had the privilege of supporting adult patients of all ages as they navigate challenges such as anxiety, depression, bipolar disorder, cravings, withdrawal symptoms, and sleep difficulties. A significant aspect of my work has been empowering patients to simplify their medication regimens—focusing solely on treatments that are truly therapeutic and necessary. I take pride in partnering with individuals to help them achieve this goal, always approaching care with compassion and respect for where they are in their healing journey.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'My philosophy centers on addressing the "whole person" rather than just isolated symptoms. This requires taking the time to truly understand a patient’s history and fostering a collaborative partnership between patient and provider. Building these meaningful connections is not only integral to effective care—it is also deeply fulfilling for me.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'As a Colorado native, I find joy outside of my professional life skiing with my three children, navigating rivers during peak water flows, and pursuing my creative passion as a blacksmith, crafting artistic architectural metal projects in my workshop.'[39m,
+      image: [32m'https://solmentalhealth.com/wp-content/uploads/2024/11/Bryan-Handiwork.png'[39m,
+      profileLink: [32m'https://solmentalhealth.com/providers/bryan-handwork/'[39m
+    },
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
+  performance: [33m6144[39m
+}
+ GET /api/sol/providers/2038 [32m200[39m in 7083ms
+ [37m[1m○[22m[39m Compiling / ...
+ [32m[1m✓[22m[39m Compiled / in 1226ms (588 modules)
+ GET / [32m200[39m in 1524ms
+ [32m[1m✓[22m[39m Compiled in 128ms (248 modules)
+ [32m[1m✓[22m[39m Compiled /api/sol/providers in 132ms (729 modules)
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+SOL: Getting providers: parsing body {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  modifiedInput: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  context: [90mundefined[39m
+}
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+SOL: Getting providers: parsing body {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  modifiedInput: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  context: [90mundefined[39m
+}
+SOL: Getting providers: success {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  responseBody: {
+    data: [
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m
+    ],
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
+  performance: [33m9505[39m,
+  context: [90mundefined[39m
+}
+ POST /api/sol/providers [32m200[39m in 9731ms
+SOL: Getting providers: success {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  responseBody: {
+    data: [
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m
+    ],
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
+  performance: [33m10042[39m,
+  context: [90mundefined[39m
+}
+ POST /api/sol/providers [32m200[39m in 10268ms
+ [32m[1m✓[22m[39m Compiled /api/sol/providers/[id]/availability in 120ms (497 modules)
+ [32m[1m✓[22m[39m Compiled (499 modules)
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+SOL: Getting provider: success {
+  providerId: [32m'2038'[39m,
+  responseBody: {
+    data: {
+      location: [36m[Object][39m,
+      name: [32m'Bryan Handwork'[39m,
+      firstName: [32m'Bryan'[39m,
+      lastName: [32m'Handwork'[39m,
+      id: [32m'2038'[39m,
+      bio: [32m'I began my journey in healthcare by dedicating many years to Emergency Medicine as a Paramedic, before advancing my training and earning my Physician Assistant degree from Loma Linda University in Southern California in 2018. Since then, I have spent five enriching years working in addiction medicine at a residential treatment center in Boulder, Colorado.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'In my role, I have had the privilege of supporting adult patients of all ages as they navigate challenges such as anxiety, depression, bipolar disorder, cravings, withdrawal symptoms, and sleep difficulties. A significant aspect of my work has been empowering patients to simplify their medication regimens—focusing solely on treatments that are truly therapeutic and necessary. I take pride in partnering with individuals to help them achieve this goal, always approaching care with compassion and respect for where they are in their healing journey.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'My philosophy centers on addressing the "whole person" rather than just isolated symptoms. This requires taking the time to truly understand a patient’s history and fostering a collaborative partnership between patient and provider. Building these meaningful connections is not only integral to effective care—it is also deeply fulfilling for me.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'As a Colorado native, I find joy outside of my professional life skiing with my three children, navigating rivers during peak water flows, and pursuing my creative passion as a blacksmith, crafting artistic architectural metal projects in my workshop.'[39m,
+      image: [32m'https://solmentalhealth.com/wp-content/uploads/2024/11/Bryan-Handiwork.png'[39m,
+      profileLink: [32m'https://solmentalhealth.com/providers/bryan-handwork/'[39m
+    },
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
+  performance: [33m438[39m
+}
+ GET /api/sol/providers/2038 [32m200[39m in 685ms
+Sample availability slot: {
+  "eventId": "9BF99372-13A8-4334-B098-333956F93A82",
+  "slotstart": "2025-10-15T22:30:00Z",
+  "provider": {
+    "location": {
+      "facility": "",
+      "state": ""
+    }
+  },
+  "providerId": "2038",
+  "date": "2025-10-15",
+  "duration": 60,
+  "booked": false,
+  "eventType": "In-Person",
+  "facility": "CO - Boulder",
+  "location": "In-Person",
+  "salesforceLeadId": ""
+}
+SOL: Getting availability: success {
+  providerId: [32m'2038'[39m,
+  responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
+  performance: [33m610[39m
+}
+ GET /api/sol/providers/2038/availability [32m200[39m in 869ms
+SOL: Getting provider: success {
+  providerId: [32m'2038'[39m,
+  responseBody: {
+    data: {
+      location: [36m[Object][39m,
+      name: [32m'Bryan Handwork'[39m,
+      firstName: [32m'Bryan'[39m,
+      lastName: [32m'Handwork'[39m,
+      id: [32m'2038'[39m,
+      bio: [32m'I began my journey in healthcare by dedicating many years to Emergency Medicine as a Paramedic, before advancing my training and earning my Physician Assistant degree from Loma Linda University in Southern California in 2018. Since then, I have spent five enriching years working in addiction medicine at a residential treatment center in Boulder, Colorado.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'In my role, I have had the privilege of supporting adult patients of all ages as they navigate challenges such as anxiety, depression, bipolar disorder, cravings, withdrawal symptoms, and sleep difficulties. A significant aspect of my work has been empowering patients to simplify their medication regimens—focusing solely on treatments that are truly therapeutic and necessary. I take pride in partnering with individuals to help them achieve this goal, always approaching care with compassion and respect for where they are in their healing journey.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'My philosophy centers on addressing the "whole person" rather than just isolated symptoms. This requires taking the time to truly understand a patient’s history and fostering a collaborative partnership between patient and provider. Building these meaningful connections is not only integral to effective care—it is also deeply fulfilling for me.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'As a Colorado native, I find joy outside of my professional life skiing with my three children, navigating rivers during peak water flows, and pursuing my creative passion as a blacksmith, crafting artistic architectural metal projects in my workshop.'[39m,
+      image: [32m'https://solmentalhealth.com/wp-content/uploads/2024/11/Bryan-Handiwork.png'[39m,
+      profileLink: [32m'https://solmentalhealth.com/providers/bryan-handwork/'[39m
+    },
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
+  performance: [33m3643[39m
+}
+ GET /api/sol/providers/2038 [32m200[39m in 3896ms
+Sample availability slot: {
+  "eventId": "9BF99372-13A8-4334-B098-333956F93A82",
+  "slotstart": "2025-10-15T22:30:00Z",
+  "provider": {
+    "location": {
+      "facility": "",
+      "state": ""
+    }
+  },
+  "providerId": "2038",
+  "date": "2025-10-15",
+  "duration": 60,
+  "booked": false,
+  "eventType": "In-Person",
+  "facility": "CO - Boulder",
+  "location": "In-Person",
+  "salesforceLeadId": ""
+}
+SOL: Getting availability: success {
+  providerId: [32m'2038'[39m,
+  responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
+  performance: [33m6207[39m
+}
+ GET /api/sol/providers/2038/availability [32m200[39m in 6468ms
+ [32m[1m✓[22m[39m Compiled in 233ms (575 modules)
+ GET / [32m200[39m in 157ms
+ [32m[1m✓[22m[39m Compiled /api/sol/providers/[id] in 136ms (495 modules)
+ [32m[1m✓[22m[39m Compiled (499 modules)
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+SOL: Getting providers: parsing body {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  modifiedInput: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  context: [90mundefined[39m
+}
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+SOL: Getting provider: success {
+  providerId: [32m'2038'[39m,
+  responseBody: {
+    data: {
+      location: [36m[Object][39m,
+      name: [32m'Bryan Handwork'[39m,
+      firstName: [32m'Bryan'[39m,
+      lastName: [32m'Handwork'[39m,
+      id: [32m'2038'[39m,
+      bio: [32m'I began my journey in healthcare by dedicating many years to Emergency Medicine as a Paramedic, before advancing my training and earning my Physician Assistant degree from Loma Linda University in Southern California in 2018. Since then, I have spent five enriching years working in addiction medicine at a residential treatment center in Boulder, Colorado.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'In my role, I have had the privilege of supporting adult patients of all ages as they navigate challenges such as anxiety, depression, bipolar disorder, cravings, withdrawal symptoms, and sleep difficulties. A significant aspect of my work has been empowering patients to simplify their medication regimens—focusing solely on treatments that are truly therapeutic and necessary. I take pride in partnering with individuals to help them achieve this goal, always approaching care with compassion and respect for where they are in their healing journey.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'My philosophy centers on addressing the "whole person" rather than just isolated symptoms. This requires taking the time to truly understand a patient’s history and fostering a collaborative partnership between patient and provider. Building these meaningful connections is not only integral to effective care—it is also deeply fulfilling for me.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'As a Colorado native, I find joy outside of my professional life skiing with my three children, navigating rivers during peak water flows, and pursuing my creative passion as a blacksmith, crafting artistic architectural metal projects in my workshop.'[39m,
+      image: [32m'https://solmentalhealth.com/wp-content/uploads/2024/11/Bryan-Handiwork.png'[39m,
+      profileLink: [32m'https://solmentalhealth.com/providers/bryan-handwork/'[39m
+    },
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
+  performance: [33m586[39m
+}
+ GET /api/sol/providers/2038 [32m200[39m in 884ms
+Sample availability slot: {
+  "eventId": "9BF99372-13A8-4334-B098-333956F93A82",
+  "slotstart": "2025-10-15T22:30:00Z",
+  "provider": {
+    "location": {
+      "facility": "",
+      "state": ""
+    }
+  },
+  "providerId": "2038",
+  "date": "2025-10-15",
+  "duration": 60,
+  "booked": false,
+  "eventType": "In-Person",
+  "facility": "CO - Boulder",
+  "location": "In-Person",
+  "salesforceLeadId": ""
+}
+SOL: Getting availability: success {
+  providerId: [32m'2038'[39m,
+  responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
+  performance: [33m701[39m
+}
+ GET /api/sol/providers/2038/availability [32m200[39m in 990ms
+SOL: Getting providers: success {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  responseBody: {
+    data: [
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m
+    ],
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
+  performance: [33m2278[39m,
+  context: [90mundefined[39m
+}
+ POST /api/sol/providers [32m200[39m in 2586ms
+ [32m[1m✓[22m[39m Compiled in 186ms (747 modules)
+ GET / [32m200[39m in 150ms
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+SOL: Getting providers: parsing body {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  modifiedInput: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  context: [90mundefined[39m
+}
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+SOL: Getting providers: parsing body {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  modifiedInput: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  context: [90mundefined[39m
+}
+SOL: Getting providers: success {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  responseBody: {
+    data: [
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m
+    ],
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
+  performance: [33m4154[39m,
+  context: [90mundefined[39m
+}
+ POST /api/sol/providers [32m200[39m in 4179ms
+SOL: Getting providers: success {
+  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
+  responseBody: {
+    data: [
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m
+    ],
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
+  performance: [33m4301[39m,
+  context: [90mundefined[39m
+}
+ POST /api/sol/providers [32m200[39m in 4321ms
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
+Sample availability slot: {
+  "eventId": "9BF99372-13A8-4334-B098-333956F93A82",
+  "slotstart": "2025-10-15T22:30:00Z",
+  "provider": {
+    "location": {
+      "facility": "",
+      "state": ""
+    }
+  },
+  "providerId": "2038",
+  "date": "2025-10-15",
+  "duration": 60,
+  "booked": false,
+  "eventType": "In-Person",
+  "facility": "CO - Boulder",
+  "location": "In-Person",
+  "salesforceLeadId": ""
+}
+SOL: Getting availability: success {
+  providerId: [32m'2038'[39m,
+  responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
+  performance: [33m480[39m
+}
+ GET /api/sol/providers/2038/availability [32m200[39m in 516ms
+Sample availability slot: {
+  "eventId": "9BF99372-13A8-4334-B098-333956F93A82",
+  "slotstart": "2025-10-15T22:30:00Z",
+  "provider": {
+    "location": {
+      "facility": "",
+      "state": ""
+    }
+  },
+  "providerId": "2038",
+  "date": "2025-10-15",
+  "duration": 60,
+  "booked": false,
+  "eventType": "In-Person",
+  "facility": "CO - Boulder",
+  "location": "In-Person",
+  "salesforceLeadId": ""
+}
+SOL: Getting availability: success {
+  providerId: [32m'2038'[39m,
+  responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
+  performance: [33m483[39m
+}
+ GET /api/sol/providers/2038/availability [32m200[39m in 516ms
+SOL: Getting provider: success {
+  providerId: [32m'2038'[39m,
+  responseBody: {
+    data: {
+      location: [36m[Object][39m,
+      name: [32m'Bryan Handwork'[39m,
+      firstName: [32m'Bryan'[39m,
+      lastName: [32m'Handwork'[39m,
+      id: [32m'2038'[39m,
+      bio: [32m'I began my journey in healthcare by dedicating many years to Emergency Medicine as a Paramedic, before advancing my training and earning my Physician Assistant degree from Loma Linda University in Southern California in 2018. Since then, I have spent five enriching years working in addiction medicine at a residential treatment center in Boulder, Colorado.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'In my role, I have had the privilege of supporting adult patients of all ages as they navigate challenges such as anxiety, depression, bipolar disorder, cravings, withdrawal symptoms, and sleep difficulties. A significant aspect of my work has been empowering patients to simplify their medication regimens—focusing solely on treatments that are truly therapeutic and necessary. I take pride in partnering with individuals to help them achieve this goal, always approaching care with compassion and respect for where they are in their healing journey.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'My philosophy centers on addressing the "whole person" rather than just isolated symptoms. This requires taking the time to truly understand a patient’s history and fostering a collaborative partnership between patient and provider. Building these meaningful connections is not only integral to effective care—it is also deeply fulfilling for me.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'As a Colorado native, I find joy outside of my professional life skiing with my three children, navigating rivers during peak water flows, and pursuing my creative passion as a blacksmith, crafting artistic architectural metal projects in my workshop.'[39m,
+      image: [32m'https://solmentalhealth.com/wp-content/uploads/2024/11/Bryan-Handiwork.png'[39m,
+      profileLink: [32m'https://solmentalhealth.com/providers/bryan-handwork/'[39m
+    },
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
+  performance: [33m547[39m
+}
+ GET /api/sol/providers/2038 [32m200[39m in 571ms
+SOL: Getting provider: success {
+  providerId: [32m'2038'[39m,
+  responseBody: {
+    data: {
+      location: [36m[Object][39m,
+      name: [32m'Bryan Handwork'[39m,
+      firstName: [32m'Bryan'[39m,
+      lastName: [32m'Handwork'[39m,
+      id: [32m'2038'[39m,
+      bio: [32m'I began my journey in healthcare by dedicating many years to Emergency Medicine as a Paramedic, before advancing my training and earning my Physician Assistant degree from Loma Linda University in Southern California in 2018. Since then, I have spent five enriching years working in addiction medicine at a residential treatment center in Boulder, Colorado.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'In my role, I have had the privilege of supporting adult patients of all ages as they navigate challenges such as anxiety, depression, bipolar disorder, cravings, withdrawal symptoms, and sleep difficulties. A significant aspect of my work has been empowering patients to simplify their medication regimens—focusing solely on treatments that are truly therapeutic and necessary. I take pride in partnering with individuals to help them achieve this goal, always approaching care with compassion and respect for where they are in their healing journey.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'My philosophy centers on addressing the "whole person" rather than just isolated symptoms. This requires taking the time to truly understand a patient’s history and fostering a collaborative partnership between patient and provider. Building these meaningful connections is not only integral to effective care—it is also deeply fulfilling for me.\r\n'[39m +
+        [32m'\r\n'[39m +
+        [32m'As a Colorado native, I find joy outside of my professional life skiing with my three children, navigating rivers during peak water flows, and pursuing my creative passion as a blacksmith, crafting artistic architectural metal projects in my workshop.'[39m,
+      image: [32m'https://solmentalhealth.com/wp-content/uploads/2024/11/Bryan-Handiwork.png'[39m,
+      profileLink: [32m'https://solmentalhealth.com/providers/bryan-handwork/'[39m
+    },
+    errorMessage: [32m''[39m,
+    errorCode: [32m''[39m
+  },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
+  performance: [33m560[39m
+}
+ GET /api/sol/providers/2038 [32m200[39m in 586ms
+[?25h
