@@ -1,3 +1,4 @@
+'use client';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { cloneDeep, isEmpty, isNil } from 'lodash-es';

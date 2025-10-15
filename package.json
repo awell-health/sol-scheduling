@@ -12,14 +12,17 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
-    "build": "pnpm -r --filter ./packages/* run build",
-    "dev": "pnpm -r --filter ./packages/* run dev",
-    "lint": "pnpm -r --filter ./packages/* run lint",
-    "format": "pnpm -r --filter ./packages/* run format",
-    "test": "pnpm -r --filter ./packages/* run test",
+    "build": "turbo run build",
+    "build:app": "turbo run build --filter scheduling-app",
+    "dev": "turbo run dev",
+    "dev:app": "turbo run dev --filter scheduling-app",
+    "lint": "turbo run lint",
+    "format": "pnpm -r run format",
+    "test": "turbo run test",
     "storybook": "pnpm --filter @awell-health/sol-scheduling run storybook",
     "build-storybook": "pnpm --filter @awell-health/sol-scheduling run build-storybook",
     "prepare": "husky"
@@ -38,7 +41,8 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "husky": "^9.1.4"
+    "husky": "^9.1.4",
+    "turbo": "^2.5.8"
   },
   "packageManager": "pnpm@10.15.0+sha512.486ebc259d3e999a4e8691ce03b5cac4a71cbeca39372a9b762cb500cfdf0873e2cb16abe3d951b1ee2cf012503f027b98b6584e4df22524e0c7450d9ec7aa7b"
 }

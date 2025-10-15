@@ -1,3 +1,4 @@
+'use client';
 import { BookingError, ProviderSelection } from '../atoms';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Scheduler } from '../molecules';

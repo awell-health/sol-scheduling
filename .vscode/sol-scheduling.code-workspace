@@ -21,7 +21,8 @@
     },
     "eslint.nodePath": ".yarn/sdks",
     "eslint.run": "onSave",
-    "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs"
+    "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs",
+    "tailwindCSS.experimental.configFile": "./packages/scheduler/tailwind.config.js"
   },
   "extensions": {
     "recommendations": [

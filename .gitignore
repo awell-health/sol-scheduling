@@ -22,3 +22,7 @@ node_modules
 .DS_Store
 
 stats.html
+
+.env.local
+!.env.example
+.env

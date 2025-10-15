@@ -1,0 +1,6 @@
+{
+  "/api/sol/providers/route": "app/api/sol/providers/route.js",
+  "/api/sol/providers/[id]/availability/route": "app/api/sol/providers/[id]/availability/route.js",
+  "/api/sol/providers/[id]/route": "app/api/sol/providers/[id]/route.js",
+  "/page": "app/page.js"
+}
