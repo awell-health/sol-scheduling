@@ -26,3 +26,5 @@ stats.html
 .env.local
 !.env.example
 .env
+
+.turbo/

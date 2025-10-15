@@ -8,61 +8,15 @@
    - Environments: .env.local
 
  [32m[1m✓[22m[39m Starting...
- [32m[1m✓[22m[39m Ready in 1360ms
- [37m[1m○[22m[39m Compiling / ...
- [32m[1m✓[22m[39m Compiled / in 2s (595 modules)
-[PostHog.js] You have already initialized PostHog! Re-initializing is a no-op
- [31m[1m⨯[22m[39m ReferenceError: self is not defined
-    at eval (app/instrumental-client.ts:4:13)
-    at <unknown> (rsc)/./app/instrumental-client.ts [90m(/Users/jb/awell/sol-scheduling/apps/scheduling-app/[39m.next/server/app/page.js:85:1[90m)[39m
-    at eval (webpack-internal:///(rsc)/./app/page.tsx:8:78)
-    at <unknown> (rsc)/./app/page.tsx [90m(/Users/jb/awell/sol-scheduling/apps/scheduling-app/[39m.next/server/app/page.js:107:1[90m)[39m
-[0m [90m 2 |[39m
- [90m 3 |[39m [36mif[39m (process[33m.[39menv[33m.[39m[33mNEXT_PUBLIC_POSTHOG_KEY[39m) {  
-[31m[1m>[22m[39m[90m 4 |[39m     posthog[33m.[39minit(process[33m.[39menv[33m.[39m[33mNEXT_PUBLIC_POSTHOG_KEY[39m[33m,[39m {
- [90m   |[39m             [31m[1m^[22m[39m
- [90m 5 |[39m         api_host[33m:[39m process[33m.[39menv[33m.[39m[33mNEXT_PUBLIC_POSTHOG_HOST[39m[33m,[39m
- [90m 6 |[39m         defaults[33m:[39m [32m'2025-05-24'[39m
- [90m 7 |[39m     })[33m;[39m[0m
- [31m[1m⨯[22m[39m ReferenceError: self is not defined
-    at eval (app/instrumental-client.ts:4:13)
-    at <unknown> (rsc)/./app/instrumental-client.ts [90m(/Users/jb/awell/sol-scheduling/apps/scheduling-app/[39m.next/server/app/page.js:85:1[90m)[39m
-    at eval (webpack-internal:///(rsc)/./app/page.tsx:8:78)
-    at <unknown> (rsc)/./app/page.tsx [90m(/Users/jb/awell/sol-scheduling/apps/scheduling-app/[39m.next/server/app/page.js:107:1[90m)[39m
-[0m [90m 2 |[39m
- [90m 3 |[39m [36mif[39m (process[33m.[39menv[33m.[39m[33mNEXT_PUBLIC_POSTHOG_KEY[39m) {  
-[31m[1m>[22m[39m[90m 4 |[39m     posthog[33m.[39minit(process[33m.[39menv[33m.[39m[33mNEXT_PUBLIC_POSTHOG_KEY[39m[33m,[39m {
- [90m   |[39m             [31m[1m^[22m[39m
- [90m 5 |[39m         api_host[33m:[39m process[33m.[39menv[33m.[39m[33mNEXT_PUBLIC_POSTHOG_HOST[39m[33m,[39m
- [90m 6 |[39m         defaults[33m:[39m [32m'2025-05-24'[39m
- [90m 7 |[39m     })[33m;[39m[0m {
-  page: [32m'/'[39m
-}
- [37m[1m○[22m[39m Compiling /_error ...
- [32m[1m✓[22m[39m Compiled /_error in 1101ms (912 modules)
- GET / [31m500[39m in 3934ms
- [31m[1m⨯[22m[39m ./app/instrumental-client.ts
-Error: 
-
-Caused by:
-    0: Failed to read source code from /Users/jb/awell/sol-scheduling/apps/scheduling-app/app/instrumental-client.ts
-    1: No such file or directory (os error 2)
-
-Import trace for requested module:
-./app/instrumental-client.ts
-./app/page.tsx
- GET / [31m500[39m in 1323ms
- [33m[1m⚠[22m[39m Fast Refresh had to perform a full reload due to a runtime error.
- [33m[1m⚠[22m[39m Fast Refresh had to perform a full reload due to a runtime error.
- GET / [31m500[39m in 54ms
- [33m[1m⚠[22m[39m Fast Refresh had to perform a full reload due to a runtime error.
- [32m[1m✓[22m[39m Compiled in 229ms (910 modules)
- GET / [32m200[39m in 48ms
- GET / [32m200[39m in 206ms
-(node:83372) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+ [32m[1m✓[22m[39m Ready in 1426ms
+(node:14256) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)
- [37m[1m○[22m[39m Compiling /api/sol/providers ...
- [32m[1m✓[22m[39m Compiled /api/sol/providers in 522ms (1079 modules)
+ [37m[1m○[22m[39m Compiling / ...
+ [32m[1m✓[22m[39m Compiled / in 1158ms (580 modules)
+ GET / [32m200[39m in 1608ms
+ [32m[1m✓[22m[39m Compiled in 200ms (249 modules)
+ GET / [32m200[39m in 55ms
+ [32m[1m✓[22m[39m Compiled /api/sol/providers in 306ms (735 modules)
 Environment variables check: {
   SOL_AUTH_URL: [32m'✓ Set'[39m,
   SOL_CLIENT_ID: [32m'✓ Set'[39m,
@@ -115,10 +69,10 @@ SOL: Getting providers: success {
     errorCode: [32m''[39m
   },
   url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
-  performance: [33m8402[39m,
+  performance: [33m3356[39m,
   context: [90mundefined[39m
 }
- POST /api/sol/providers [32m200[39m in 9035ms
+ POST /api/sol/providers [32m200[39m in 3772ms
 SOL: Getting providers: success {
   requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
   responseBody: {
@@ -135,88 +89,11 @@ SOL: Getting providers: success {
     errorCode: [32m''[39m
   },
   url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
-  performance: [33m8542[39m,
+  performance: [33m3417[39m,
   context: [90mundefined[39m
 }
- POST /api/sol/providers [32m200[39m in 9172ms
- GET / [32m200[39m in 156ms
-Environment variables check: {
-  SOL_AUTH_URL: [32m'✓ Set'[39m,
-  SOL_CLIENT_ID: [32m'✓ Set'[39m,
-  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
-  SOL_RESOURCE: [32m'✓ Set'[39m
-}
-OAuth Request: {
-  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
-  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  grantType: [32m'client_credentials'[39m
-}
-Environment variables check: {
-  SOL_AUTH_URL: [32m'✓ Set'[39m,
-  SOL_CLIENT_ID: [32m'✓ Set'[39m,
-  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
-  SOL_RESOURCE: [32m'✓ Set'[39m
-}
-OAuth Request: {
-  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
-  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  grantType: [32m'client_credentials'[39m
-}
-OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
-SOL: Getting providers: parsing body {
-  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  modifiedInput: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  context: [90mundefined[39m
-}
-OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
-SOL: Getting providers: parsing body {
-  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  modifiedInput: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  context: [90mundefined[39m
-}
-SOL: Getting providers: success {
-  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  responseBody: {
-    data: [
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m
-    ],
-    errorMessage: [32m''[39m,
-    errorCode: [32m''[39m
-  },
-  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
-  performance: [33m2638[39m,
-  context: [90mundefined[39m
-}
- POST /api/sol/providers [32m200[39m in 2659ms
-SOL: Getting providers: success {
-  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  responseBody: {
-    data: [
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m
-    ],
-    errorMessage: [32m''[39m,
-    errorCode: [32m''[39m
-  },
-  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
-  performance: [33m3071[39m,
-  context: [90mundefined[39m
-}
- POST /api/sol/providers [32m200[39m in 3089ms
- [32m[1m✓[22m[39m Compiled /api/sol/providers/[id]/availability in 459ms (1080 modules)
+ POST /api/sol/providers [32m200[39m in 3734ms
+ [32m[1m✓[22m[39m Compiled /api/sol/providers/[id]/availability in 217ms (739 modules)
 Environment variables check: {
   SOL_AUTH_URL: [32m'✓ Set'[39m,
   SOL_CLIENT_ID: [32m'✓ Set'[39m,
@@ -266,9 +143,21 @@ SOL: Getting provider: success {
     errorCode: [32m''[39m
   },
   url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
-  performance: [33m719[39m
+  performance: [33m322[39m
 }
- GET /api/sol/providers/2038 [32m200[39m in 1628ms
+ GET /api/sol/providers/2038 [32m200[39m in 938ms
+Environment variables check: {
+  SOL_AUTH_URL: [32m'✓ Set'[39m,
+  SOL_CLIENT_ID: [32m'✓ Set'[39m,
+  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
+  SOL_RESOURCE: [32m'✓ Set'[39m
+}
+OAuth Request: {
+  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
+  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
+  grantType: [32m'client_credentials'[39m
+}
 Sample availability slot: {
   "eventId": "58DD69D5-1926-4530-B08D-9B22F8324E48",
   "slotstart": "2025-10-16T13:00:00Z",
@@ -291,137 +180,9 @@ SOL: Getting availability: success {
   providerId: [32m'2038'[39m,
   responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
   url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
-  performance: [33m719[39m
+  performance: [33m345[39m
 }
- GET /api/sol/providers/2038/availability [32m200[39m in 1627ms
-Environment variables check: {
-  SOL_AUTH_URL: [32m'✓ Set'[39m,
-  SOL_CLIENT_ID: [32m'✓ Set'[39m,
-  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
-  SOL_RESOURCE: [32m'✓ Set'[39m
-}
-OAuth Request: {
-  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
-  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  grantType: [32m'client_credentials'[39m
-}
-Environment variables check: {
-  SOL_AUTH_URL: [32m'✓ Set'[39m,
-  SOL_CLIENT_ID: [32m'✓ Set'[39m,
-  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
-  SOL_RESOURCE: [32m'✓ Set'[39m
-}
-OAuth Request: {
-  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
-  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  grantType: [32m'client_credentials'[39m
-}
-OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
-OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
-Sample availability slot: {
-  "eventId": "58DD69D5-1926-4530-B08D-9B22F8324E48",
-  "slotstart": "2025-10-16T13:00:00Z",
-  "provider": {
-    "location": {
-      "facility": "",
-      "state": ""
-    }
-  },
-  "providerId": "2038",
-  "date": "2025-10-16",
-  "duration": 60,
-  "booked": false,
-  "eventType": "In-Person",
-  "facility": "CO - Boulder",
-  "location": "In-Person",
-  "salesforceLeadId": ""
-}
-SOL: Getting availability: success {
-  providerId: [32m'2038'[39m,
-  responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
-  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
-  performance: [33m214[39m
-}
- GET /api/sol/providers/2038/availability [32m200[39m in 231ms
- [32m[1m✓[22m[39m Compiled /api/sol/providers in 99ms (691 modules)
-Environment variables check: {
-  SOL_AUTH_URL: [32m'✓ Set'[39m,
-  SOL_CLIENT_ID: [32m'✓ Set'[39m,
-  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
-  SOL_RESOURCE: [32m'✓ Set'[39m
-}
-OAuth Request: {
-  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
-  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  grantType: [32m'client_credentials'[39m
-}
-OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
-SOL: Getting providers: parsing body {
-  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  modifiedInput: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  context: [90mundefined[39m
-}
-SOL: Getting providers: success {
-  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  responseBody: {
-    data: [
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m
-    ],
-    errorMessage: [32m''[39m,
-    errorCode: [32m''[39m
-  },
-  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
-  performance: [33m3748[39m,
-  context: [90mundefined[39m
-}
- POST /api/sol/providers [32m200[39m in 3887ms
-SOL: Getting provider: success {
-  providerId: [32m'2038'[39m,
-  responseBody: {
-    data: {
-      location: [36m[Object][39m,
-      name: [32m'Bryan Handwork'[39m,
-      firstName: [32m'Bryan'[39m,
-      lastName: [32m'Handwork'[39m,
-      id: [32m'2038'[39m,
-      bio: [32m'I began my journey in healthcare by dedicating many years to Emergency Medicine as a Paramedic, before advancing my training and earning my Physician Assistant degree from Loma Linda University in Southern California in 2018. Since then, I have spent five enriching years working in addiction medicine at a residential treatment center in Boulder, Colorado.\r\n'[39m +
-        [32m'\r\n'[39m +
-        [32m'In my role, I have had the privilege of supporting adult patients of all ages as they navigate challenges such as anxiety, depression, bipolar disorder, cravings, withdrawal symptoms, and sleep difficulties. A significant aspect of my work has been empowering patients to simplify their medication regimens—focusing solely on treatments that are truly therapeutic and necessary. I take pride in partnering with individuals to help them achieve this goal, always approaching care with compassion and respect for where they are in their healing journey.\r\n'[39m +
-        [32m'\r\n'[39m +
-        [32m'My philosophy centers on addressing the "whole person" rather than just isolated symptoms. This requires taking the time to truly understand a patient’s history and fostering a collaborative partnership between patient and provider. Building these meaningful connections is not only integral to effective care—it is also deeply fulfilling for me.\r\n'[39m +
-        [32m'\r\n'[39m +
-        [32m'As a Colorado native, I find joy outside of my professional life skiing with my three children, navigating rivers during peak water flows, and pursuing my creative passion as a blacksmith, crafting artistic architectural metal projects in my workshop.'[39m,
-      image: [32m'https://sandbox-media.solmentalhealth.com/wp-content/uploads/2024/11/Bryan-Handiwork.png'[39m,
-      profileLink: [32m'https://solmentalhealth.com/providers/bryan-handwork/'[39m
-    },
-    errorMessage: [32m''[39m,
-    errorCode: [32m''[39m
-  },
-  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
-  performance: [33m5804[39m
-}
- GET /api/sol/providers/2038 [32m200[39m in 5818ms
-Environment variables check: {
-  SOL_AUTH_URL: [32m'✓ Set'[39m,
-  SOL_CLIENT_ID: [32m'✓ Set'[39m,
-  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
-  SOL_RESOURCE: [32m'✓ Set'[39m
-}
-OAuth Request: {
-  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
-  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  grantType: [32m'client_credentials'[39m
-}
+ GET /api/sol/providers/2038/availability [32m200[39m in 963ms
 Environment variables check: {
   SOL_AUTH_URL: [32m'✓ Set'[39m,
   SOL_CLIENT_ID: [32m'✓ Set'[39m,
@@ -459,21 +220,9 @@ SOL: Getting provider: success {
     errorCode: [32m''[39m
   },
   url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
-  performance: [33m645[39m
+  performance: [33m240[39m
 }
- GET /api/sol/providers/2038 [32m200[39m in 666ms
-Environment variables check: {
-  SOL_AUTH_URL: [32m'✓ Set'[39m,
-  SOL_CLIENT_ID: [32m'✓ Set'[39m,
-  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
-  SOL_RESOURCE: [32m'✓ Set'[39m
-}
-OAuth Request: {
-  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
-  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  grantType: [32m'client_credentials'[39m
-}
+ GET /api/sol/providers/2038 [32m200[39m in 248ms
 Sample availability slot: {
   "eventId": "58DD69D5-1926-4530-B08D-9B22F8324E48",
   "slotstart": "2025-10-16T13:00:00Z",
@@ -496,9 +245,10 @@ SOL: Getting availability: success {
   providerId: [32m'2038'[39m,
   responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
   url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
-  performance: [33m671[39m
+  performance: [33m250[39m
 }
- GET /api/sol/providers/2038/availability [32m200[39m in 701ms
+ GET /api/sol/providers/2038/availability [32m200[39m in 258ms
+ [32m[1m✓[22m[39m Compiled /api/sol/appointments in 263ms (738 modules)
 Environment variables check: {
   SOL_AUTH_URL: [32m'✓ Set'[39m,
   SOL_CLIENT_ID: [32m'✓ Set'[39m,
@@ -512,94 +262,26 @@ OAuth Request: {
   grantType: [32m'client_credentials'[39m
 }
 OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
-OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
-SOL: Getting provider: success {
-  providerId: [32m'2038'[39m,
-  responseBody: {
-    data: {
-      location: [36m[Object][39m,
-      name: [32m'Bryan Handwork'[39m,
-      firstName: [32m'Bryan'[39m,
-      lastName: [32m'Handwork'[39m,
-      id: [32m'2038'[39m,
-      bio: [32m'I began my journey in healthcare by dedicating many years to Emergency Medicine as a Paramedic, before advancing my training and earning my Physician Assistant degree from Loma Linda University in Southern California in 2018. Since then, I have spent five enriching years working in addiction medicine at a residential treatment center in Boulder, Colorado.\r\n'[39m +
-        [32m'\r\n'[39m +
-        [32m'In my role, I have had the privilege of supporting adult patients of all ages as they navigate challenges such as anxiety, depression, bipolar disorder, cravings, withdrawal symptoms, and sleep difficulties. A significant aspect of my work has been empowering patients to simplify their medication regimens—focusing solely on treatments that are truly therapeutic and necessary. I take pride in partnering with individuals to help them achieve this goal, always approaching care with compassion and respect for where they are in their healing journey.\r\n'[39m +
-        [32m'\r\n'[39m +
-        [32m'My philosophy centers on addressing the "whole person" rather than just isolated symptoms. This requires taking the time to truly understand a patient’s history and fostering a collaborative partnership between patient and provider. Building these meaningful connections is not only integral to effective care—it is also deeply fulfilling for me.\r\n'[39m +
-        [32m'\r\n'[39m +
-        [32m'As a Colorado native, I find joy outside of my professional life skiing with my three children, navigating rivers during peak water flows, and pursuing my creative passion as a blacksmith, crafting artistic architectural metal projects in my workshop.'[39m,
-      image: [32m'https://sandbox-media.solmentalhealth.com/wp-content/uploads/2024/11/Bryan-Handiwork.png'[39m,
-      profileLink: [32m'https://solmentalhealth.com/providers/bryan-handwork/'[39m
-    },
-    errorMessage: [32m''[39m,
-    errorCode: [32m''[39m
+SOL: Booking appointment: parsing body {
+  requestBody: {
+    eventId: [32m'58DD69D5-1926-4530-B08D-9B22F8324E48'[39m,
+    providerId: [32m'2038'[39m,
+    userInfo: { userName: [32m'Demo Patient'[39m },
+    locationType: [32m'Telehealth'[39m
   },
-  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/provider/info?providerId=2038'[39m,
-  performance: [33m167[39m
-}
- GET /api/sol/providers/2038 [32m200[39m in 177ms
-Sample availability slot: {
-  "eventId": "58DD69D5-1926-4530-B08D-9B22F8324E48",
-  "slotstart": "2025-10-16T13:00:00Z",
-  "provider": {
-    "location": {
-      "facility": "",
-      "state": ""
-    }
-  },
-  "providerId": "2038",
-  "date": "2025-10-16",
-  "duration": 60,
-  "booked": false,
-  "eventType": "In-Person",
-  "facility": "CO - Boulder",
-  "location": "In-Person",
-  "salesforceLeadId": ""
-}
-SOL: Getting availability: success {
-  providerId: [32m'2038'[39m,
-  responseBody: { data: { [32m'2038'[39m: [36m[Array][39m }, errorMessage: [32m''[39m, errorCode: [32m''[39m },
-  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/list'[39m,
-  performance: [33m187[39m
-}
- GET /api/sol/providers/2038/availability [32m200[39m in 195ms
-Environment variables check: {
-  SOL_AUTH_URL: [32m'✓ Set'[39m,
-  SOL_CLIENT_ID: [32m'✓ Set'[39m,
-  SOL_CLIENT_SECRET: [32m'✓ Set'[39m,
-  SOL_RESOURCE: [32m'✓ Set'[39m
-}
-OAuth Request: {
-  url: [32m'https://login.microsoftonline.com/b0fb22a6-3060-4388-9a97-cdfc342994d8/oauth2/token'[39m,
-  clientId: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  resource: [32m'57ca2858-b3a3-432c-952f-e81688072593'[39m,
-  grantType: [32m'client_credentials'[39m
-}
-OAuth Success: { tokenType: [32m'Bearer'[39m, expiresIn: [32m'3599'[39m, scope: [90mundefined[39m }
-SOL: Getting providers: parsing body {
-  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  modifiedInput: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
   context: [90mundefined[39m
 }
-SOL: Getting providers: success {
-  requestBody: { location: { state: [32m'CO'[39m }, age: [32m'35'[39m },
-  responseBody: {
-    data: [
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m, [36m[Object][39m,
-      [36m[Object][39m, [36m[Object][39m
-    ],
-    errorMessage: [32m''[39m,
-    errorCode: [32m''[39m
+SOL: Booking appointment: success {
+  requestBody: {
+    eventId: [32m'58DD69D5-1926-4530-B08D-9B22F8324E48'[39m,
+    providerId: [32m'2038'[39m,
+    userInfo: { userName: [32m'Demo Patient'[39m },
+    locationType: [32m'Telehealth'[39m
   },
-  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/v2/provider'[39m,
-  performance: [33m1156[39m,
+  responseBody: { data: [32m''[39m, errorMessage: [32m''[39m, errorCode: [32m''[39m },
+  url: [32m'https://func-smh-ss-webapi-stage-003.azurewebsites.net/api/event/book'[39m,
+  performance: [33m2993[39m,
   context: [90mundefined[39m
 }
- POST /api/sol/providers [32m200[39m in 1166ms
+ POST /api/sol/appointments [32m200[39m in 3317ms
 [?25h
