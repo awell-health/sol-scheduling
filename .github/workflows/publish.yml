@@ -1,13 +1,17 @@
 name: Publish npm package
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Build and test"]
     branches:
       - 'main'
+    types:
+      - completed
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
