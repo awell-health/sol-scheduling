@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Shared ESLint 9 flat configs for the monorepo",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests in eslint-config\" && exit 0"
   },
   "keywords": [],
   "author": "",
