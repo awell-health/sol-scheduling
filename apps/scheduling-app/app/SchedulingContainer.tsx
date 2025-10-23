@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import type { SchedulingActivityProps } from '../../../packages/scheduler/dist/hostedPages/types';
-import type { GetProvidersInputType } from '../../../packages/scheduler/dist/index.d.ts';
+import type { GetProvidersInputType, LocationState } from '../../../packages/scheduler/dist/index.d.ts';
 import {
   useProvider,
   useProviders,
@@ -14,7 +14,7 @@ import {
 import '../../../packages/scheduler/dist/style.css';
 
 const SchedulingActivity = dynamic(
-  () => import('../../../packages/scheduler/dist/index.es.js' as any).then((mod) => ({ default: mod.SchedulingActivity })),
+  () => import('../../../packages/scheduler/dist').then((mod) => ({ default: mod.SchedulingActivity })),
   { ssr: false }
 ) as React.ComponentType<SchedulingActivityProps>;
 
@@ -33,7 +33,7 @@ export const SchedulingContainer = () => {
     clinicalFocus: undefined,
     deliveryMethod: undefined,
     location: {
-      state: "CO" as any,
+      state: "CO" as LocationState,
       facility: undefined,
     },
   });

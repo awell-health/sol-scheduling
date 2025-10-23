@@ -6,7 +6,7 @@ interface UseAvailabilityConfig {
 }
 
 // Helper function to transform slotstart from string to Date
-const transformAvailabilityDates = (data: any): any => {
+const transformAvailabilityDates = (data: GetAvailabilitiesResponseType['data'][string]): GetAvailabilitiesResponseType['data'][string] => {
   if (!data) return data;
 
   if (Array.isArray(data)) {

@@ -14,7 +14,7 @@ const EnvSchema = z.object({
   SOL_RESOURCE: z.string().nonempty('SOL_RESOURCE env variable is missing'),
 });
 
-const SettingsSchema = HeadersSchema.merge(EnvSchema);
+export const SettingsSchema = HeadersSchema.merge(EnvSchema);
 
 export type SolEnvSettings = z.infer<typeof SettingsSchema>;
 

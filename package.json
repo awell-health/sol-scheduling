@@ -6,7 +6,8 @@
     "url": "git+https://github.com/awell-health/sol-scheduling.git"
   },
   "author": {
-    "name": "awellHealth"
+    "name": "Awell Health",
+    "url": "https://awellhealth.com"
   },
   "license": "UNLICENSED",
   "private": true,

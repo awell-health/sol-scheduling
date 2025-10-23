@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 /// <reference types="vitest" />
 
 import { resolve } from 'path';
