@@ -42,7 +42,7 @@ describe('mocks', () => {
       const providerOne = res.data;
       const providerTwo = res2.data.find((p) => p.id === providerOne.id);
       expect(providerTwo).toBeDefined();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { events, ...providerTwoMinusEvents } = providerTwo!;
       expect(providerOne).toStrictEqual(providerTwoMinusEvents);
     });

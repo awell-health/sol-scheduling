@@ -9,6 +9,7 @@ describe('Utility Functions for Location and Facility', () => {
       const facilities = getFacilitiesByState(LocationState.CO);
       expect(facilities).toEqual([
         LocationFacility.CherryCreek,
+        LocationFacility.ColoradoSprings,
         LocationFacility.GreenwoodVillage,
         LocationFacility.CentralPark,
         LocationFacility.Lakewood,
@@ -56,7 +57,8 @@ describe('Utility Functions for Location and Facility', () => {
         LocationFacility.Manhasset,
         LocationFacility.Melville,
         LocationFacility.ValleyStream,
-        LocationFacility.Massapequa
+        LocationFacility.Massapequa,
+        LocationFacility.WhitePlains
       ]);
     });
 

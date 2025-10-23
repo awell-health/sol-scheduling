@@ -7,6 +7,7 @@ import {
 export const stateToFacilitiesMap: Record<LocationState, LocationFacility[]> = {
   CO: [
     LocationFacility.CherryCreek,
+    LocationFacility.ColoradoSprings,
     LocationFacility.GreenwoodVillage,
     LocationFacility.CentralPark,
     LocationFacility.Lakewood,
@@ -33,7 +34,8 @@ export const stateToFacilitiesMap: Record<LocationState, LocationFacility[]> = {
     LocationFacility.Manhasset,
     LocationFacility.Melville,
     LocationFacility.ValleyStream,
-    LocationFacility.Massapequa
+    LocationFacility.Massapequa,
+    LocationFacility.WhitePlains
   ],
   TX: [
     LocationFacility.Woodlands,

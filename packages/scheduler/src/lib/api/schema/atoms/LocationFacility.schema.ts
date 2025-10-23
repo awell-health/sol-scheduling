@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export enum LocationFacility {
   CherryCreek = 'CO - Cherry Creek',
+  ColoradoSprings = 'CO - Colorado Springs',
   GreenwoodVillage = 'CO - Greenwood Village',
   CentralPark = 'CO - Central Park',
   Lakewood = 'CO - Lakewood',
@@ -28,6 +29,7 @@ export enum LocationFacility {
   Melville = 'NY - Melville',
   ValleyStream = 'NY - Valley Stream',
   Massapequa = 'NY - Massapequa',
+  WhitePlains = 'NY - White Plains',
   Woodlands = 'TX - Woodlands',
   UpperKirby = 'TX - Upper Kirby',
   Austin = 'TX - Austin'
