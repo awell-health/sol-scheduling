@@ -1,9 +1,7 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useState } from 'react';
-import type { SchedulingActivityProps } from '../../../packages/scheduler/dist/hostedPages/types';
-import type { GetProvidersInputType, LocationState } from '../../../packages/scheduler/dist/index.d.ts';
+import { SchedulingActivity, type GetProvidersInputType, type LocationState } from '@awell-health/sol-scheduling';
 import {
   useProvider,
   useProviders,
@@ -11,12 +9,9 @@ import {
   useBooking,
   useCompleteActivity
 } from './hooks';
-import '../../../packages/scheduler/dist/style.css';
+import '@awell-health/sol-scheduling/style.css';
 
-const SchedulingActivity = dynamic(
-  () => import('../../../packages/scheduler/dist').then((mod) => ({ default: mod.SchedulingActivity })),
-  { ssr: false }
-) as React.ComponentType<SchedulingActivityProps>;
+
 
 export const SchedulingContainer = () => {
   // Configuration - these would normally come from environment or props

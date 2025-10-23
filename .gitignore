@@ -27,4 +27,4 @@ stats.html
 !.env.example
 .env
 
-.turbo/
+**/.turbo/
