@@ -1,5 +1,3 @@
-'use client';
-
 import { SchedulingContainer } from "./SchedulingContainer";
 
 export default function Page() {
