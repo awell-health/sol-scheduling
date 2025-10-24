@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         performance: new Date().valueOf() - startTime,
         context: logContext,
       });
-      return NextResponse.json({ data: [] }, { status: 404 });
+      return NextResponse.json({ data: [] }, { status: 200 });
     }
 
     console.log(`${logMessage}: success`, {

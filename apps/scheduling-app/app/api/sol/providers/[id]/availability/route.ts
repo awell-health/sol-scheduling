@@ -66,7 +66,7 @@ export async function GET(
         url,
         performance: new Date().valueOf() - startTime,
       });
-      return NextResponse.json({ data: [] }, { status: 404 });
+      return NextResponse.json({ data: [] }, { status: 200 });
     }
 
     console.log(`${logMessage}: success`, {
