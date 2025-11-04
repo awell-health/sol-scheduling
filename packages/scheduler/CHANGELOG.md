@@ -1,5 +1,11 @@
 # @awell-health/sol-scheduling
 
+## 0.5.1
+
+### Patch Changes
+
+- 5ed3567: Updated provider filters
+
 ## 0.5.0
 
 ### Minor Changes
