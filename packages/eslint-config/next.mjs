@@ -14,7 +14,7 @@ const config = [
     rules: {
       ...nextRules,
       // Ensure React in JSX scope rule stays off
-      'react/react-in-jsx-scope': 'off'
+      'react/react-in-jsx-scope': 'off',
     }
   },
   {

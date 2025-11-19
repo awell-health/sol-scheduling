@@ -47,7 +47,7 @@ const config = [
         1,
         { extensions: ['.ts', '.tsx'] }
       ],
-      'react/prop-types': 'warn',
+      'react/prop-types': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {

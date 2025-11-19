@@ -2,6 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@awell-health/sol-scheduling'],
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'media.sandbox-media.solmentalhealth.com'
+      }
+    ]
+  },
   async rewrites() {
     return [
       {
