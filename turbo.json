@@ -4,7 +4,16 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**"],
+      "env": [
+        "SOL_AUTH_URL",
+        "SOL_CLIENT_ID",
+        "SOL_CLIENT_SECRET",
+        "SOL_RESOURCE",
+        "SOL_PROVIDERS_ENDPOINT",
+        "SOL_AVAILABILITY_ENDPOINT",
+        "SOL_BOOKING_ENDPOINT"
+      ]
     },
     "dev": {
       "cache": false,
