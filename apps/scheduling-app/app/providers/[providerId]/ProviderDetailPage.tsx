@@ -193,7 +193,7 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
         setProviderError(null);
         const response = await getProviderAction(providerId);
         if (!cancelled) {
-          setProvider(response.data);
+          setProvider(response.data as ProviderSummary);
         }
       } catch (err) {
         if (!cancelled) {

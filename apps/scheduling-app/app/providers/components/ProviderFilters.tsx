@@ -222,7 +222,7 @@ export function ProviderFilters({
           ? ({
               ...values.location,
               facility: undefined
-            } as ProviderSearchFilters['location'])
+            } as unknown as ProviderSearchFilters['location'])
           : undefined
       };
       updateFilters(next);

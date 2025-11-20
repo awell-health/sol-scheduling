@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { isEmpty, isNil } from 'lodash-es';
+import isEmpty from 'lodash/isEmpty';
+import isNil from 'lodash/isNil';
 
 export enum Gender {
   Male = 'M',
@@ -249,7 +250,7 @@ export const GetProvidersInputSchema = z.object({
     .optional()
     .transform((location) => {
       if (isNil(location) || isEmpty(location)) return undefined;
-      const { facility, state } = location;
+      const { facility, state } = location as { facility: LocationFacility; state: LocationState };
       if (!facility && !state) return undefined;
       return { facility, state };
     }),
@@ -266,7 +267,7 @@ export const GetProvidersResponseSchema = z
             .array(ProviderEventSchema)
             .optional()
             .transform((events) => {
-              if (isNil(events) || events.length === 0) return [];
+              if (isNil(events) || events?.length === 0) return [];
               return events;
             })
         })

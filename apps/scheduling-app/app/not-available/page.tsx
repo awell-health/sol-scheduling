@@ -1,7 +1,7 @@
 type NotAvailablePageProps = {
-  searchParams?: {
+  searchParams: Promise<{
     state?: string;
-  };
+  }>;
 };
 
 import { StartOverButton } from './StartOverButton';
@@ -15,10 +15,10 @@ async function submitNotAvailable(formData: FormData) {
   console.log('Not-available submission received', { phone, state });
 }
 
-export default function NotAvailablePage({
+export default async function NotAvailablePage({
   searchParams
 }: NotAvailablePageProps) {
-  const state = searchParams?.state;
+  const { state } = await searchParams;
 
   return (
     <main className='min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8'>

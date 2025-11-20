@@ -3,10 +3,7 @@
 import * as React from 'react';
 import { Input } from './input';
 
-export interface PhoneInputProps
-  extends React.ComponentPropsWithoutRef<typeof Input> {}
-
-export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
+export const PhoneInput = React.forwardRef<HTMLInputElement, React.ComponentPropsWithoutRef<typeof Input>>(
   (props, ref) => {
     return (
       <Input

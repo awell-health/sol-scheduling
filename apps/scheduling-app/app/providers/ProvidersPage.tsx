@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
+  LocationFacility,
   LocationState,
   LocationStateToNameMapping,
   Modality,
@@ -288,7 +289,7 @@ export function ProvidersPage() {
       const nextFilters: ProviderSearchFilters = {
         ...pendingFilters,
         location: {
-          facility: pendingFilters.location?.facility,
+          facility: pendingFilters.location?.facility as LocationFacility,
           state: code as LocationState
         }
       };

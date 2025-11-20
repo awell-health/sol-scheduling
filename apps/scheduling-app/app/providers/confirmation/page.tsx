@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 
 type ConfirmationPageProps = {
-  searchParams?: {
+  searchParams: Promise<{
     providerId?: string;
     providerName?: string;
     providerImage?: string;
@@ -12,28 +12,18 @@ type ConfirmationPageProps = {
     locationType?: string;
     facility?: string;
     state?: string;
-  };
+  }>;
 };
 
 const PLACEHOLDER_AVATAR = '/images/avatar.svg';
 
-export default function AppointmentConfirmationPage({
+export default async function AppointmentConfirmationPage({
   searchParams
 }: ConfirmationPageProps) {
-  const startsAtRaw = searchParams?.startsAt;
-  const providerName = searchParams?.providerName ?? 'Your provider';
-  const providerImage = searchParams?.providerImage || PLACEHOLDER_AVATAR;
-  const durationMinutes = searchParams?.duration
-    ? Number.parseInt(searchParams.duration, 10)
-    : undefined;
-  const facility = searchParams?.facility;
-  const state = searchParams?.state;
-  const locationType = searchParams?.locationType;
-
-  const startsAt = startsAtRaw ? new Date(startsAtRaw) : null;
+  const { startsAt, providerName, providerImage, duration, facility, state, locationType } = await searchParams;
 
   const formattedDateTime = startsAt
-    ? format(startsAt, "EEEE, MMMM d 'at' h:mm a")
+    ? format(new Date(startsAt), "EEEE, MMMM d 'at' h:mm a")
     : null;
 
   let locationLabel = 'Location to be confirmed';
@@ -70,8 +60,8 @@ export default function AppointmentConfirmationPage({
           <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6'>
             <div className='relative h-20 w-20 flex-none overflow-hidden rounded-full bg-slate-100 sm:h-24 sm:w-24'>
               <Image
-                src={providerImage}
-                alt={providerName}
+                src={providerImage ?? PLACEHOLDER_AVATAR}
+                alt={providerName ?? 'Your provider'}
                 sizes='96px'
                 fill
                 unoptimized
@@ -95,8 +85,8 @@ export default function AppointmentConfirmationPage({
                   </p>
                   <p className='mt-0.5'>
                     {formattedDateTime ?? 'To be confirmed'}
-                    {durationMinutes
-                      ? ` · ${durationMinutes} minute appointment`
+                    {duration
+                      ? ` · ${duration} minute appointment`
                       : null}
                   </p>
                 </div>

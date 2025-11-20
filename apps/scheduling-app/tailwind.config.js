@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-import lineClamp from '@tailwindcss/line-clamp';
 
 const config = {
   content: [
@@ -46,8 +45,7 @@ const config = {
         card: '0 8px 24px rgba(18, 21, 22, 0.08)'
       }
     }
-  },
-  plugins: [lineClamp]
+  }
 };
 
 export default config;
