@@ -27,7 +27,6 @@ const SelectTrigger = React.forwardRef<
     )}
     {...props}
   >
-    <SelectValue />
     {children}
     <RadixSelect.Icon asChild>
       <ChevronDownIcon className='ml-2 h-4 w-4 text-slate-500' />

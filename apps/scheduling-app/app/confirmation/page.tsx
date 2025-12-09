@@ -1,9 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { format } from 'date-fns';
+import { BeginIntakeButton } from './BeginIntakeButton';
+
+export const metadata: Metadata = {
+  title: 'Appointment confirmed | SOL Mental Health',
+  description:
+    'View the details of your booked appointment with a SOL Mental Health provider.'
+};
 
 type ConfirmationPageProps = {
   searchParams: Promise<{
+    eventId?: string;
     providerId?: string;
     providerName?: string;
     providerImage?: string;
@@ -12,6 +21,7 @@ type ConfirmationPageProps = {
     locationType?: string;
     facility?: string;
     state?: string;
+    returnUrl?: string;
   }>;
 };
 
@@ -20,7 +30,30 @@ const PLACEHOLDER_AVATAR = '/images/avatar.svg';
 export default async function AppointmentConfirmationPage({
   searchParams
 }: ConfirmationPageProps) {
-  const { startsAt, providerName, providerImage, duration, facility, state, locationType } = await searchParams;
+  const {
+    eventId,
+    providerId,
+    startsAt,
+    providerName,
+    providerImage,
+    duration,
+    facility,
+    state,
+    locationType,
+    returnUrl
+  } = await searchParams;
+
+  // Build event details object for intake form
+  const eventDetails = {
+    eventId,
+    providerId,
+    providerName,
+    startsAt,
+    duration,
+    locationType,
+    facility,
+    state,
+  };
 
   const formattedDateTime = startsAt
     ? format(new Date(startsAt), "EEEE, MMMM d 'at' h:mm a")
@@ -102,13 +135,21 @@ export default async function AppointmentConfirmationPage({
           </div>
         </section>
 
-        <div className='flex flex-wrap items-center justify-between gap-3'>
-          <Link
-            href='/providers'
-            className='inline-flex h-10 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50'
-          >
-            Back to providers
-          </Link>
+        <div className='space-y-4'>
+          <div className='flex flex-wrap items-center gap-3'>
+            {eventId && (
+              <BeginIntakeButton
+                eventId={eventId}
+                eventDetails={eventDetails}
+              />
+            )}
+            <Link
+              href={returnUrl ?? '/providers'}
+              className='inline-flex h-11 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50'
+            >
+              Back to providers
+            </Link>
+          </div>
           <p className='text-xs text-slate-500'>
             You&apos;ll receive a confirmation shortly with details on how to join
             or where to go for your visit.

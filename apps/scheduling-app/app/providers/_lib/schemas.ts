@@ -293,8 +293,7 @@ export const BookAppointmentInputSchema = z.object({
   providerId: z.string(),
   userInfo: z.object({
     userName: z.string(),
-    salesforceLeadId: z.string().optional(),
-    insuranceCarrier: z.string().optional()
+    // salesforceLeadId: z.string().optional()
   }),
   locationType: z.string()
 });

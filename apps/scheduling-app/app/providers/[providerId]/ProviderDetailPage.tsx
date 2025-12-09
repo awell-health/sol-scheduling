@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { format, startOfToday } from 'date-fns';
 import {
   DayButton,
@@ -12,6 +12,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  isValidPhoneNumber,
+  type E164Number,
+} from '../../../components/ui/phone-input';
+import {
   AvailabilitySlot,
   ProviderSummary
 } from '../_lib/types';
@@ -20,7 +24,9 @@ import {
   getAvailabilityAction,
   getProviderAction
 } from '../actions';
-import { clearSolPreferenceStorage } from '../_lib/preferences';
+import { usePostHog } from 'posthog-js/react';
+import { useOnboarding } from '../_lib/onboarding';
+import { getAnyStoredLeadId } from '../_lib/salesforce';
 import { ProviderBio } from '../components/ProviderBio';
 import { MapPinIcon, VideoCameraIcon } from '../components/icons/ProviderIcons';
 import { Calendar } from '../../../components/ui/calendar';
@@ -34,11 +40,11 @@ import {
 import { Input } from '../../../components/ui/input';
 import { PhoneInput } from '../../../components/ui/phone-input';
 import { Label } from '../../../components/ui/label';
+import { Button } from '../../../components/ui/button';
 import Link from 'next/link';
 
 const PATIENT_NAME = 'Demo Patient';
-const PLACEHOLDER_AVATAR =
-  '/images/avatar.svg';
+const PLACEHOLDER_AVATAR = '/images/avatar.svg';
 
 const INSURANCE_OPTIONS = [
   { value: 'Aetna', label: 'Aetna' },
@@ -75,10 +81,17 @@ type BookingState =
   | { status: 'error'; message: string };
 
 const BookingFormSchema = z.object({
+  // Phone is stored in E.164 format (e.g., "+16175551234")
   phone: z
     .string()
     .nonempty('Mobile number is required')
-    .refine((value) => value.replace(/\D/g, '').length === 10, {
+    .refine((value) => {
+      try {
+        return isValidPhoneNumber(value, 'US');
+      } catch {
+        return false;
+      }
+    }, {
       message: 'Please enter a valid U.S. phone number.'
     }),
   visitMode: z.enum(['In-Person', 'Telehealth']).optional(),
@@ -104,18 +117,18 @@ type BookingFormValues = z.infer<typeof BookingFormSchema>;
     return `${year}-${month}-${day}`;
   };
   
-  const { day, modifiers, ...buttonProps } = props;
+  const { day, modifiers, daySlotMap, ...buttonProps } = props;
   const date = day.date;
-    const key = getLocalDayKey(date);
-    const count = props.daySlotMap.get(key)?.length ?? 0;
+  const key = getLocalDayKey(date);
+  const count = daySlotMap.get(key)?.length ?? 0;
   const today = startOfToday();
   const isFuture = date >= today;
-    const hasSlots = count > 0 && isFuture;
+  const hasSlots = count > 0 && isFuture;
 
-    let secondaryLabel: string | null = null;
-    if (isFuture) {
-      secondaryLabel = count > 0 ? String(count) : '-';
-    }
+  let secondaryLabel: string | null = null;
+  if (isFuture) {
+    secondaryLabel = count > 0 ? String(count) : '-';
+  }
 
   return (
     <DayButton {...buttonProps} day={day} modifiers={modifiers}>
@@ -137,7 +150,17 @@ type BookingFormValues = z.infer<typeof BookingFormSchema>;
   );
 };
 
-export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerId }) => {
+type ProviderDetailPageProps = {
+  providerId: string;
+};
+
+export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
+  providerId
+}) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const posthog = usePostHog();
+  const { preferences, returnUrl, isOnboardingComplete, isInitialized } = useOnboarding();
   const [provider, setProvider] = useState<ProviderSummary | null>(null);
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [providerError, setProviderError] = useState<string | null>(null);
@@ -177,6 +200,23 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
   const visitMode = watch('visitMode');
   const consent = watch('consent');
 
+  // Redirect to onboarding if not complete
+  useEffect(() => {
+    if (isInitialized && !isOnboardingComplete) {
+      router.replace(`/onboarding?target=${encodeURIComponent(pathname)}`);
+    }
+  }, [isInitialized, isOnboardingComplete, pathname, router]);
+
+  // Pre-fill phone and insurance from onboarding preferences
+  useEffect(() => {
+    if (preferences.phone) {
+      setValue('phone', preferences.phone);
+    }
+    if (preferences.insurance) {
+      setValue('insuranceCarrier', preferences.insurance);
+    }
+  }, [preferences.phone, preferences.insurance, setValue]);
+
   const getLocalDayKey = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -188,12 +228,21 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
     let cancelled = false;
 
     async function loadProvider() {
+      const frontendStart = performance.now();
       try {
         setProviderLoading(true);
         setProviderError(null);
         const response = await getProviderAction(providerId);
+        const frontendMs = Math.round(performance.now() - frontendStart);
+        
         if (!cancelled) {
           setProvider(response.data as ProviderSummary);
+          
+          posthog?.capture('api_call_provider', {
+            provider_id: providerId,
+            frontend_rt_ms: frontendMs,
+            sol_api_rt_ms: response._timing?.solApiMs,
+          });
         }
       } catch (err) {
         if (!cancelled) {
@@ -214,7 +263,7 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
     return () => {
       cancelled = true;
     };
-  }, [providerId]);
+  }, [providerId, posthog]);
 
   useEffect(() => {
     const headerEl = headerRef.current;
@@ -240,10 +289,13 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
     let cancelled = false;
 
     async function loadAvailability() {
+      const frontendStart = performance.now();
       try {
         setAvailabilityLoading(true);
         setAvailabilityError(null);
         const response = await getAvailabilityAction(providerId);
+        const frontendMs = Math.round(performance.now() - frontendStart);
+        
         const providerSlots = response.data?.[providerId] ?? [];
         const sortedSlots = providerSlots
           .map((slot) => ({
@@ -257,6 +309,13 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
           );
         if (!cancelled) {
           setSlots(sortedSlots);
+          
+          posthog?.capture('api_call_availability', {
+            provider_id: providerId,
+            frontend_rt_ms: frontendMs,
+            sol_api_rt_ms: response._timing?.solApiMs,
+            slot_count: sortedSlots.length,
+          });
         }
       } catch (err) {
         if (!cancelled) {
@@ -277,7 +336,7 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
     return () => {
       cancelled = true;
     };
-  }, [providerId]);
+  }, [providerId, posthog]);
 
   const upcomingSlots = useMemo(() => {
     const now = Date.now();
@@ -447,8 +506,6 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
     });
   };
 
-  const router = useRouter();
-
   const handleSubmitBooking = async (data: BookingFormValues) => {
     if (!selectedSlot) return;
 
@@ -459,17 +516,33 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
       'Virtual';
 
     setBookingState({ status: 'booking', eventId: selectedSlot.eventId });
+    const frontendStart = performance.now();
     try {
-      await bookAppointmentAction({
+      const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const leadId = getAnyStoredLeadId();
+      
+      const bookingResult = await bookAppointmentAction({
         eventId: selectedSlot.eventId,
         providerId: selectedSlot.providerId,
         userInfo: {
           userName: PATIENT_NAME,
+          ...(leadId ? { salesforceLeadId: leadId } : {}),
           ...(data.insuranceCarrier
             ? { insuranceCarrier: data.insuranceCarrier }
             : {})
         },
-        locationType: chosenLocation
+        locationType: chosenLocation,
+        patientTimezone: browserTimezone,
+        clinicalFocus: preferences.service ?? undefined,
+      });
+      const frontendMs = Math.round(performance.now() - frontendStart);
+
+      // Capture booking timing
+      posthog?.capture('api_call_booking', {
+        provider_id: selectedSlot.providerId,
+        frontend_rt_ms: frontendMs,
+        sol_api_rt_ms: bookingResult._timing?.solApiMs,
+        location_type: chosenLocation,
       });
 
       setBookingState({
@@ -477,8 +550,13 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
         message: 'Appointment requested successfully. We will confirm shortly.'
       });
 
-      // Clear SOL browsing preferences once a booking is completed.
-      clearSolPreferenceStorage();
+      // NOTE: Lead update is now handled by the postBookingWorkflow
+      // which is triggered inside bookAppointmentAction.
+
+      // NOTE: We intentionally do NOT clear preferences here.
+      // Clearing them breaks the flow because the user would be redirected
+      // back to onboarding when navigating to /providers after booking.
+      // Preferences should persist so the user can book additional appointments.
 
       const providerNameForParams =
         provider?.firstName && provider?.lastName
@@ -486,6 +564,7 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
           : provider?.firstName || provider?.lastName || 'Provider';
 
       const params = new URLSearchParams({
+        eventId: selectedSlot.eventId,
         providerId: selectedSlot.providerId,
         providerName: providerNameForParams,
         providerImage: provider?.image ?? '',
@@ -496,7 +575,11 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
         state: provider?.location?.state ?? ''
       });
 
-      router.push(`/providers/confirmation?${params.toString()}`);
+      if (returnUrl) {
+        params.set('returnUrl', returnUrl);
+      }
+
+      router.push(`/confirmation?${params.toString()}`);
     } catch (err) {
       console.error('Failed to book appointment', err);
       setBookingState({
@@ -564,17 +647,15 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
             </p>
           )}
         </div>
-        <button
-          type='button'
+        <Button
+          variant={isSelected ? 'secondary' : 'outline'}
+          size='sm'
           onClick={() => handleSelectSlot(slot)}
-          className={`mt-2 inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold transition ${
-            isSelected
-              ? 'bg-secondary text-secondary-foreground shadow-card'
-              : 'border border-slate-200 bg-white text-primary hover:bg-slate-50'
-          }`}
+          flashOnClick
+          className='mt-2'
         >
           {isSelected ? 'Selected' : 'Select'}
-        </button>
+        </Button>
       </li>
     );
   };
@@ -583,6 +664,17 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
     provider?.firstName && provider?.lastName
       ? `${provider.firstName} ${provider.lastName}`
       : provider?.firstName || provider?.lastName || 'Provider';
+
+  // Show loading state until context is initialized or during redirect
+  if (!isInitialized || !isOnboardingComplete) {
+    return (
+      <div className='flex flex-col gap-6'>
+        <div className='flex min-h-[60vh] items-center justify-center'>
+          <span className='text-sm text-slate-500'>Loading…</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='flex flex-col gap-6'>
@@ -652,9 +744,21 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
           Loading provider details…
         </div>
       ) : providerError ? (
-        <div className='rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-800'>
-          {providerError}
-        </div>
+        <section className='rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-700 shadow-sm'>
+          <h2 className='text-base font-semibold text-primary'>
+            We can&apos;t find this provider
+          </h2>
+          <p className='mt-2'>
+            The link you followed may be out of date, or this provider is no longer
+            available. Please go back and choose a different provider.
+          </p>
+          <Link
+            href='/providers'
+            className='mt-4 inline-flex h-9 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50'
+          >
+            Back to providers
+          </Link>
+        </section>
       ) : (
         provider && (
           <section className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm'>
@@ -798,11 +902,6 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
         </div>
       )}
 
-      {bookingState.status === 'error' && (
-        <div className='rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800'>
-          {bookingState.message}
-        </div>
-      )}
       {selectedSlot && (
         <section
           ref={bookingFormRef}
@@ -844,17 +943,20 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
                 render={({ field }) => (
                   <PhoneInput
                     id='phone'
-                    {...field}
+                    value={(field.value as E164Number) || undefined}
+                    onChange={(value) => field.onChange(value ?? '')}
+                    onBlur={field.onBlur}
                     className={
                       errors.phone
                         ? 'border-red-500 focus-visible:ring-red-500/20'
                         : undefined
                     }
+                    usOnly
                   />
                 )}
               />
               <p className='text-xs text-slate-500'>
-                We’ll use this number to send updates about your appointment. U.S. numbers
+                We'll use this number to send updates about your appointment. U.S. numbers
                 only.
               </p>
               {errors.phone && (
@@ -929,7 +1031,7 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
                 }}
               />
               <p className='text-xs text-slate-500'>
-                Help us to confirm your coverage. If you&apos;re not sure, you can
+                Please confirm your coverage. If you&apos;re not sure, you can
                 leave this blank.
               </p>
             </div>
@@ -1038,6 +1140,12 @@ export const ProviderDetailPage: React.FC<{ providerId: string }> = ({ providerI
             >
               {bookingState.status === 'booking' ? 'Booking…' : 'Book appointment'}
             </button>
+
+            {bookingState.status === 'error' && (
+              <div className='mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800'>
+                {bookingState.message}
+              </div>
+            )}
           </form>
         </section>
       )}
