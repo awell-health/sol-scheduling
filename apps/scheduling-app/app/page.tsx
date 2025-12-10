@@ -1,10 +1,5 @@
-import { SchedulingContainer } from "./SchedulingContainer";
+import { redirect } from 'next/navigation';
 
-export default function Page() {
-  return (
-    <main style={{ padding: 24 }}>
-      <SchedulingContainer />
-    </main>
-  )
+export default function HomePage() {
+  redirect('/providers');
 }
-
