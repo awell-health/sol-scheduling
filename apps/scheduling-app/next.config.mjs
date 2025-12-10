@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+import { withWorkflow } from 'workflow/next';
+
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@awell-health/sol-scheduling'],
@@ -26,4 +28,4 @@ const nextConfig = {
   skipTrailingSlashRedirect: true,
 }
 
-export default nextConfig
+export default withWorkflow(nextConfig);
