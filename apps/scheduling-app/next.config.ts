@@ -1,7 +1,7 @@
-/** @type {import('next').NextConfig} */
 import { withWorkflow } from 'workflow/next';
+import type { NextConfig } from 'next';
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@awell-health/sol-scheduling'],
   images: {

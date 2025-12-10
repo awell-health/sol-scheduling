@@ -22,6 +22,7 @@ import {
   ProvidersResponse,
   ProviderSearchFilters
 } from './_lib/types';
+import { postBookingWorkflow } from '../../lib/workflow';
 
 /** Timing metadata returned from API actions */
 export type ApiTiming = {
@@ -254,20 +255,14 @@ export async function bookAppointmentAction(payload: {
 
     const parsed = BookAppointmentResponseSchema.parse(data);
 
-    // Trigger post-booking workflow (fire-and-forget)
-    // Import dynamically to avoid circular dependencies
-    import('../../lib/workflow').then(({ postBookingWorkflow }) => {
-      postBookingWorkflow({
-        eventId: payload.eventId,
-        providerId: payload.providerId,
-        salesforceLeadId: payload.userInfo.salesforceLeadId,
-        clinicalFocus: payload.clinicalFocus,
-        patientTimezone: payload.patientTimezone,
-      }).catch((error: unknown) => {
-        console.error('[bookAppointmentAction] Post-booking workflow failed:', error);
-      });
-    }).catch((error: unknown) => {
-      console.error('[bookAppointmentAction] Failed to load workflow module:', error);
+    // Trigger post-booking workflow
+    // Executes asynchronously and doesn't block the response
+    await postBookingWorkflow({
+      eventId: payload.eventId,
+      providerId: payload.providerId,
+      salesforceLeadId: payload.userInfo.salesforceLeadId,
+      clinicalFocus: payload.clinicalFocus,
+      patientTimezone: payload.patientTimezone,
     });
 
     return { ...parsed, _timing: timing };
