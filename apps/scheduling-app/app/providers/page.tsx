@@ -1,13 +1,18 @@
+import type { Metadata } from 'next';
 import { ProvidersPage } from './ProvidersPage';
+
+export const metadata: Metadata = {
+  title: 'Find a provider | SOL Mental Health',
+  description:
+    'Browse licensed SOL providers and pick the appointment that works best for you with SOL Mental Health.'
+};
 
 export default function ProvidersRoute() {
   return (
-    <main className='min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8'>
+    <main className='min-h-[calc(100vh-3.5rem)] bg-slate-50 px-4 py-6 sm:px-6 lg:px-8'>
       <div className='mx-auto max-w-4xl'>
         <ProvidersPage />
       </div>
     </main>
   );
 }
-
-

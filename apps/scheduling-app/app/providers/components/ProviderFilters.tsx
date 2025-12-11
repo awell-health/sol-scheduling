@@ -29,7 +29,7 @@ import {
   ProviderSearchFilters,
   TimeOfTheDay
 } from '../_lib/types';
-import { clearSolPreferenceStorage } from '../_lib/preferences';
+import { clearPreferencesStorage } from '../_lib/onboarding';
 
 type ProviderFiltersProps = {
   values: ProviderSearchFilters;
@@ -893,12 +893,11 @@ export function ProviderFilters({
                       >
                         <SelectTrigger>
                           <SelectValue
-                            placeholder='All states'
-                            aria-label='All states'
+                            placeholder='Select a state'
+                            aria-label='Select a state'
                           />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value={CLEAR_VALUE}>All states</SelectItem>
                           {stateOptions.map((option) => (
                             <SelectItem
                               key={option.value}
@@ -1144,7 +1143,7 @@ export function ProviderFilters({
 
                   updateFilters(cleared);
                   onSubmit(cleared);
-                  clearSolPreferenceStorage();
+                  clearPreferencesStorage();
                 }}
                 className='text-slate-500 hover:text-slate-700'
               >

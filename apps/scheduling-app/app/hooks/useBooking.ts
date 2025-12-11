@@ -25,8 +25,7 @@ export const useBooking = ({ baseUrl, patientName, salesforceLeadId }: UseBookin
               eventId: slot.eventId,
               providerId: slot.providerId,
               userInfo: {
-                userName: patientName,
-                ...(salesforceLeadId ? { salesforceLeadId } : {}),
+                userName: patientName
               },
               locationType: slot.confirmedLocation,
             },

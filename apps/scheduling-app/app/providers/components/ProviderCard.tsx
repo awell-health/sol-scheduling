@@ -1,18 +1,18 @@
- 'use client';
+'use client';
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import clsx from 'clsx';
 import { format } from 'date-fns';
-import { useState } from 'react';
 import { ProviderSummary } from '../_lib/types';
 import { ProviderBio } from './ProviderBio';
 import { MapPinIcon, VideoCameraIcon } from './icons/ProviderIcons';
+import { Button } from '../../../components/ui/button';
 
 type ProviderCardProps = {
   provider: ProviderSummary;
   onSelect: (providerId: string) => void;
   disabled?: boolean;
+  returnUrl?: string;
 };
 
 const PLACEHOLDER_AVATAR = '/images/avatar.svg';
@@ -20,10 +20,10 @@ const PLACEHOLDER_AVATAR = '/images/avatar.svg';
 export function ProviderCard({
   provider,
   onSelect,
-  disabled = false
+  disabled = false,
+  returnUrl
 }: ProviderCardProps) {
   const router = useRouter();
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const providerName =
     provider.firstName && provider.lastName
       ? `${provider.firstName} ${provider.lastName}`
@@ -61,10 +61,13 @@ export function ProviderCard({
 
   const handleSelectSlot = (slot: (typeof events)[number]) => {
     if (disabled) return;
-    setSelectedEventId(slot.eventId);
-    router.push(
-      `/providers/${provider.id}?eventId=${encodeURIComponent(slot.eventId)}`
-    );
+    const params = new URLSearchParams({
+      eventId: slot.eventId
+    });
+    if (returnUrl) {
+      params.set('returnUrl', returnUrl);
+    }
+    router.push(`/providers/${provider.id}?${params.toString()}`);
   };
 
   const handleSeeFullAvailability = () => {
@@ -137,60 +140,48 @@ export function ProviderCard({
             {/* Mobile: one row of two times, second row CTA */}
             <div className='mt-2 grid grid-cols-2 gap-2 md:hidden'>
               {mobileSlots.map((slot) => {
-              const isSelected = selectedEventId === slot.eventId;
-              const { inPerson, virtual } = slotModes(slot);
+                const { inPerson, virtual } = slotModes(slot);
 
-              return (
-                <button
-                  key={slot.eventId}
-                  type='button'
-                  onClick={() => handleSelectSlot(slot)}
-                  disabled={disabled}
-                  className={clsx(
-                    'rounded-md px-1.5 py-2 text-xs font-medium transition border',
-                    disabled
-                      ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
-                      : isSelected
-                        ? 'border-primary bg-primary text-primary-foreground shadow-card'
-                        : 'border-slate-200 bg-white text-slate-800 hover:bg-slate-50'
-                  )}
-                >
-                  <span className='flex items-center justify-center gap-1'>
-                    <span className='flex items-center justify-center gap-0'>
-                      {inPerson && (
-                        <MapPinIcon className='h-3 w-3 text-secondary-foreground' />
-                      )}
-                      {virtual && (
-                        <VideoCameraIcon className='h-3 w-3 text-secondary-foreground' />
-                      )}
+                return (
+                  <Button
+                    key={slot.eventId}
+                    variant='outline'
+                    size='sm'
+                    onClick={() => handleSelectSlot(slot)}
+                    disabled={disabled}
+                    flashOnClick
+                    className='px-1.5 py-2 text-xs'
+                  >
+                    <span className='flex items-center justify-center gap-1'>
+                      <span className='flex items-center justify-center gap-0'>
+                        {inPerson && (
+                          <MapPinIcon className='h-3 w-3 text-secondary-foreground' />
+                        )}
+                        {virtual && (
+                          <VideoCameraIcon className='h-3 w-3 text-secondary-foreground' />
+                        )}
+                      </span>
+                      <span className='tracking-tight'>{slotLabel(slot)}</span>
                     </span>
-                    <span className='tracking-tight'>{slotLabel(slot)}</span>
-                  </span>
-                </button>
-              );
+                  </Button>
+                );
               })}
             </div>
 
             {/* Desktop: up to 3 columns x 2 rows of times, CTA below */}
             <div className='mt-2 hidden grid-cols-3 gap-2 md:grid'>
               {desktopSlots.map((slot) => {
-                const isSelected = selectedEventId === slot.eventId;
                 const { inPerson, virtual } = slotModes(slot);
 
                 return (
-                  <button
+                  <Button
                     key={slot.eventId}
-                    type='button'
+                    variant='outline'
+                    size='sm'
                     onClick={() => handleSelectSlot(slot)}
                     disabled={disabled}
-                    className={clsx(
-                      'rounded-md px-3 py-2 text-xs font-semibold transition border',
-                      disabled
-                        ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
-                        : isSelected
-                          ? 'border-primary bg-primary text-primary-foreground shadow-card'
-                          : 'border-slate-200 bg-white text-slate-800 hover:bg-secondary/20'
-                    )}
+                    flashOnClick
+                    className='px-3 py-2 text-xs'
                   >
                     <span className='flex items-center justify-center gap-1'>
                       {inPerson && (
@@ -201,24 +192,21 @@ export function ProviderCard({
                       )}
                       <span>{slotLabel(slot)}</span>
                     </span>
-                  </button>
+                  </Button>
                 );
               })}
             </div>
 
-            <button
-              type='button'
+            <Button
+              variant='secondary'
+              size='sm'
               onClick={handleSeeFullAvailability}
               disabled={disabled}
-              className={clsx(
-                'mt-2 w-full rounded-md px-3 py-2 text-xs font-semibold transition border',
-                disabled
-                  ? 'cursor-not-allowed border-slate-200 bg-slate-300 text-white'
-                  : 'border-secondary bg-secondary text-secondary-foreground shadow-card hover:bg-secondary/80'
-              )}
+              flashOnClick
+              className='w-full text-xs'
             >
               See full availability
-            </button>
+            </Button>
           </>
         )}
       </div>

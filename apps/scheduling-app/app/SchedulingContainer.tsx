@@ -10,13 +10,18 @@ import {
   useCompleteActivity
 } from './hooks';
 import '@awell-health/sol-scheduling/style.css';
+import { redirect } from 'next/navigation';
 
 
 
 export const SchedulingContainer = () => {
   // Configuration - these would normally come from environment or props
-  const baseUrl = process.env.NEXT_PUBLIC_SOL_API_URL || 'https://api.example.com';
-  const patientName = 'Demo Patient';
+  const baseUrl = process.env.NEXT_PUBLIC_SOL_API_URL;
+  if (!baseUrl) {
+    // redirect to error page
+    redirect('/error');
+  }
+  const patientName = 'JB Test';
   const salesforceLeadId = undefined; // Optional
 
   // Default provider preferences - with some defaults for testing

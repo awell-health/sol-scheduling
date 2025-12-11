@@ -79,6 +79,7 @@ export enum API_METHODS {
   GET_PROVIDERS = 'GET_PROVIDERS',
   GET_AVAILABILITY = 'GET_AVAILABILITY',
   BOOK_EVENT = 'BOOK_EVENT',
+  GET_EVENT = 'GET_EVENT',
 }
 
 export const API_ROUTES: Record<API_METHODS, string> = {
@@ -86,6 +87,7 @@ export const API_ROUTES: Record<API_METHODS, string> = {
   [API_METHODS.GET_PROVIDERS]: '/api/v2/provider',
   [API_METHODS.GET_AVAILABILITY]: '/api/event/list',
   [API_METHODS.BOOK_EVENT]: '/api/event/book',
+  [API_METHODS.GET_EVENT]: '/api/event',
 };
 
 // Simple access token management for the standalone app
