@@ -25,7 +25,7 @@ import {
   getProviderAction
 } from '../actions';
 import { usePostHog } from 'posthog-js/react';
-import { useOnboarding } from '../_lib/onboarding';
+import { useOnboarding, isSupportedState } from '../_lib/onboarding';
 import { getAnyStoredLeadId } from '../_lib/salesforce';
 import { ProviderBio } from '../components/ProviderBio';
 import { MapPinIcon, VideoCameraIcon } from '../components/icons/ProviderIcons';
@@ -207,15 +207,39 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     }
   }, [isInitialized, isOnboardingComplete, pathname, router]);
 
-  // Pre-fill phone and insurance from onboarding preferences
+  // Redirect to /not-available if state is not supported
+  useEffect(() => {
+    if (isInitialized && isOnboardingComplete && preferences.state) {
+      if (!isSupportedState(preferences.state)) {
+        router.replace(`/not-available?state=${preferences.state}`);
+      }
+    }
+  }, [isInitialized, isOnboardingComplete, preferences.state, router]);
+
+  // Determine if we're ready to show content (not redirecting)
+  const isRedirecting =
+    !isInitialized ||
+    !isOnboardingComplete ||
+    (preferences.state && !isSupportedState(preferences.state));
+
+  // Pre-fill phone, insurance, and consent from onboarding preferences
   useEffect(() => {
     if (preferences.phone) {
       setValue('phone', preferences.phone);
     }
     if (preferences.insurance) {
       setValue('insuranceCarrier', preferences.insurance);
+      setInsuranceQuery(preferences.insurance);
     }
-  }, [preferences.phone, preferences.insurance, setValue]);
+    if (preferences.consent === true) {
+      setValue('consent', true);
+    }
+  }, [preferences.phone, preferences.insurance, preferences.consent, setValue]);
+
+  // Determine which form fields to show (hide already-answered questions)
+  const showPhoneField = !preferences.phone;
+  const showInsuranceField = !preferences.insurance;
+  const showConsentField = preferences.consent !== true;
 
   const getLocalDayKey = (date: Date) => {
     const year = date.getFullYear();
@@ -666,7 +690,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       : provider?.firstName || provider?.lastName || 'Provider';
 
   // Show loading state until context is initialized or during redirect
-  if (!isInitialized || !isOnboardingComplete) {
+  if (isRedirecting) {
     return (
       <div className='flex flex-col gap-6'>
         <div className='flex min-h-[60vh] items-center justify-center'>
@@ -935,106 +959,110 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
           </div>
 
           <form onSubmit={handleSubmit(handleSubmitBooking)} className='space-y-4'>
-            <div className='space-y-1'>
-              <Label htmlFor='phone'>Mobile number</Label>
-              <Controller
-                name='phone'
-                control={form.control}
-                render={({ field }) => (
-                  <PhoneInput
-                    id='phone'
-                    value={(field.value as E164Number) || undefined}
-                    onChange={(value) => field.onChange(value ?? '')}
-                    onBlur={field.onBlur}
-                    className={
-                      errors.phone
-                        ? 'border-red-500 focus-visible:ring-red-500/20'
-                        : undefined
-                    }
-                    usOnly
-                  />
-                )}
-              />
-              <p className='text-xs text-slate-500'>
-                We'll use this number to send updates about your appointment. U.S. numbers
-                only.
-              </p>
-              {errors.phone && (
-                <p className='text-xs font-medium text-red-600'>
-                  {errors.phone.message}
+            {showPhoneField && (
+              <div className='space-y-1'>
+                <Label htmlFor='phone'>Mobile number</Label>
+                <Controller
+                  name='phone'
+                  control={form.control}
+                  render={({ field }) => (
+                    <PhoneInput
+                      id='phone'
+                      value={(field.value as E164Number) || undefined}
+                      onChange={(value) => field.onChange(value ?? '')}
+                      onBlur={field.onBlur}
+                      className={
+                        errors.phone
+                          ? 'border-red-500 focus-visible:ring-red-500/20'
+                          : undefined
+                      }
+                      usOnly
+                    />
+                  )}
+                />
+                <p className='text-xs text-slate-500'>
+                  We'll use this number to send updates about your appointment. U.S. numbers
+                  only.
                 </p>
-              )}
-            </div>
+                {errors.phone && (
+                  <p className='text-xs font-medium text-red-600'>
+                    {errors.phone.message}
+                  </p>
+                )}
+              </div>
+            )}
 
-            <div className='space-y-1'>
-              <Label htmlFor='insurance'>Insurance</Label>
-              <Controller
-                name='insuranceCarrier'
-                control={form.control}
-                render={({ field }) => {
-                  const filteredOptions = INSURANCE_OPTIONS.filter((option) =>
-                    option.label.toLowerCase().includes(insuranceQuery.toLowerCase())
-                  );
+            {showInsuranceField && (
+              <div className='space-y-1'>
+                <Label htmlFor='insurance'>Insurance</Label>
+                <Controller
+                  name='insuranceCarrier'
+                  control={form.control}
+                  render={({ field }) => {
+                    const filteredOptions = INSURANCE_OPTIONS.filter((option) =>
+                      option.label.toLowerCase().includes(insuranceQuery.toLowerCase())
+                    );
 
-                  return (
-                    <div className='relative'>
-                      <Input
-                        id='insurance'
-                        value={insuranceQuery || field.value || ''}
-                        onChange={(event) => {
-                          const next = event.target.value;
-                          setInsuranceQuery(next);
-                          setIsInsuranceDropdownOpen(true);
+                    return (
+                      <div className='relative'>
+                        <Input
+                          id='insurance'
+                          value={insuranceQuery || field.value || ''}
+                          onChange={(event) => {
+                            const next = event.target.value;
+                            setInsuranceQuery(next);
+                            setIsInsuranceDropdownOpen(true);
 
-                          const exactMatch = INSURANCE_OPTIONS.find(
-                            (option) =>
-                              option.label.toLowerCase() === next.toLowerCase()
-                          );
+                            const exactMatch = INSURANCE_OPTIONS.find(
+                              (option) =>
+                                option.label.toLowerCase() === next.toLowerCase()
+                            );
 
-                          if (exactMatch) {
-                            field.onChange(exactMatch.value);
-                          } else if (next === '') {
-                            field.onChange(undefined);
-                          }
-                        }}
-                        onFocus={() => setIsInsuranceDropdownOpen(true)}
-                        onBlur={() => {
-                          // Slight delay to allow option click handlers to run
-                          setTimeout(() => setIsInsuranceDropdownOpen(false), 100);
-                        }}
-                        placeholder='Start typing to search your insurance'
-                        autoComplete='off'
-                      />
-                      {isInsuranceDropdownOpen && filteredOptions.length > 0 && (
-                        <ul className='absolute z-20 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-slate-200 bg-white py-1 text-sm shadow-card'>
-                          {filteredOptions.map((option) => (
-                            <li
-                              key={option.value}
-                              className='cursor-pointer px-3 py-1.5 hover:bg-slate-50'
-                              onMouseDown={(event) => {
-                                // Prevent input blur before onClick runs
-                                event.preventDefault();
-                              }}
-                              onClick={() => {
-                                field.onChange(option.value);
-                                setInsuranceQuery(option.label);
-                                setIsInsuranceDropdownOpen(false);
-                              }}
-                            >
-                              {option.label}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  );
-                }}
-              />
-              <p className='text-xs text-slate-500'>
-                Please confirm your coverage. If you&apos;re not sure, you can
-                leave this blank.
-              </p>
-            </div>
+                            if (exactMatch) {
+                              field.onChange(exactMatch.value);
+                            } else if (next === '') {
+                              field.onChange(undefined);
+                            }
+                          }}
+                          onFocus={() => setIsInsuranceDropdownOpen(true)}
+                          onBlur={() => {
+                            // Slight delay to allow option click handlers to run
+                            setTimeout(() => setIsInsuranceDropdownOpen(false), 100);
+                          }}
+                          placeholder='Start typing to search your insurance'
+                          autoComplete='off'
+                        />
+                        {isInsuranceDropdownOpen && filteredOptions.length > 0 && (
+                          <ul className='absolute z-20 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-slate-200 bg-white py-1 text-sm shadow-card'>
+                            {filteredOptions.map((option) => (
+                              <li
+                                key={option.value}
+                                className='cursor-pointer px-3 py-1.5 hover:bg-slate-50'
+                                onMouseDown={(event) => {
+                                  // Prevent input blur before onClick runs
+                                  event.preventDefault();
+                                }}
+                                onClick={() => {
+                                  field.onChange(option.value);
+                                  setInsuranceQuery(option.label);
+                                  setIsInsuranceDropdownOpen(false);
+                                }}
+                              >
+                                {option.label}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    );
+                  }}
+                />
+                <p className='text-xs text-slate-500'>
+                  Please confirm your coverage. If you&apos;re not sure, you can
+                  leave this blank.
+                </p>
+              </div>
+            )}
 
             {(() => {
               const modes = slotModes(selectedSlot);
@@ -1109,29 +1137,31 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
               return null;
             })()}
 
-            <div className='space-y-1'>
-              <label className='flex items-start gap-2 text-xs text-slate-700'>
-                <input
-                  type='checkbox'
-                  checked={consent}
-                  onChange={(event) =>
-                    setValue('consent', event.target.checked, {
-                      shouldValidate: true
-                    })
-                  }
-                  className='mt-0.5 h-4 w-4 rounded border-slate-300 accent-primary'
-                />
-                <span>
-                  I consent to receiving calls or text messages at this number about this
-                  appointment (not for marketing messages).
-                </span>
-              </label>
-              {errors.consent && (
-                <p className='text-xs font-medium text-red-600'>
-                  {errors.consent.message}
-                </p>
-              )}
-            </div>
+            {showConsentField && (
+              <div className='space-y-1'>
+                <label className='flex items-start gap-2 text-xs text-slate-700'>
+                  <input
+                    type='checkbox'
+                    checked={consent}
+                    onChange={(event) =>
+                      setValue('consent', event.target.checked, {
+                        shouldValidate: true
+                      })
+                    }
+                    className='mt-0.5 h-4 w-4 rounded border-slate-300 accent-primary'
+                  />
+                  <span>
+                    I consent to receiving calls or text messages at this number about this
+                    appointment (not for marketing messages).
+                  </span>
+                </label>
+                {errors.consent && (
+                  <p className='text-xs font-medium text-red-600'>
+                    {errors.consent.message}
+                  </p>
+                )}
+              </div>
+            )}
 
             <button
               type='submit'

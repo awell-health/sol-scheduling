@@ -1,51 +1,85 @@
-# SOL Scheduling Monorepo
+# SOL Scheduling
 
-Scheduling system with npm package (`@awell-health/sol-scheduling`) and standalone Next.js application.
+Patient booking application for SOL Mental Health, built by Awell.
 
-## Installation & Development
+## Purpose
 
-```bash
-# Install package
-npm install @awell-health/sol-scheduling        # stable
-npm install @awell-health/sol-scheduling@beta   # beta
+This application is the entry point for patients seeking mental health services at SOL. It captures patient preferences, matches them with appropriate providers, and facilitates appointment booking. After booking, it hands off to Awell care flows for intake and ongoing engagement.
 
-# Development
-git clone https://github.com/awell-health/sol-scheduling.git
-pnpm install
-pnpm dev              # all packages
-pnpm dev:app          # just Next.js app
+### User Journey
+
+1. **Onboarding** — State, service type (therapy/psychiatry), phone number, insurance
+2. **Provider Selection** — Browse and filter matched providers
+3. **Time Selection** — Select available appointment slot
+4. **Confirmation** — Review booking and begin intake flow
+
+### System Integration
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    BOOKING APPLICATION                       │
+│  Onboarding → Provider Selection → Booking → Confirmation   │
+└────────────┬──────────────────────────────────┬─────────────┘
+             │                                  │
+             │ Creates/Updates Lead             │ User clicks "Begin Intake"
+             ▼                                  ▼
+┌────────────────────────┐          ┌────────────────────────┐
+│      SALESFORCE        │          │     AWELL CARE FLOWS   │
+│  - Lead created on     │──────────│  - Re-engagement flow  │
+│    phone number entry  │ Webhook  │    (recover drop-offs) │
+│  - Lead updated on     │──────────│  - Intake flow         │
+│    booking completion  │ Stops    │    (qualify + prepare) │
+└────────────────────────┘          └────────────────────────┘
 ```
 
-## Environment Variables
+**Lead Lifecycle:**
+- Lead created when phone number is entered (fire-and-forget)
+- Lead updated with insurance during onboarding
+- Lead updated with booking details on confirmation
+- Salesforce events trigger/stop Awell re-engagement flow
 
-Copy `apps/scheduling-app/.env.example` to `apps/scheduling-app/.env.local` and configure SOL API credentials.
+### Analytics (PostHog)
+
+- User identification linked to Salesforce Lead ID
+- Event tracking: `lead_created`, `appointment_booked`, `waitlist_signup`
+- API timing metrics for performance monitoring
+- Feature flags control onboarding question configuration
+
+## Quick Start
+
+```bash
+pnpm install
+cp apps/scheduling-app/.env.example apps/scheduling-app/.env.local
+# Configure SOL_API_KEY, SALESFORCE_*, POSTHOG_* credentials
+pnpm dev:app
+```
+
+## Architecture
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for technical details including:
+- Complete swimlane diagram of user flow and API calls
+- External API integrations (SOL, Salesforce, PostHog)
+- Data storage patterns
+- Workflow implementation
 
 ## Deployment
 
-- **App**: [sol-scheduling.vercel.app](https://sol-scheduling.vercel.app) (auto-deploy on main)
-- **Package**: [npm](https://www.npmjs.com/package/@awell-health/sol-scheduling) (auto-publish on main)
+- **App**: [sol-scheduling.vercel.app](https://sol-scheduling.vercel.app) — auto-deploys on merge to `main`
+- **Package**: [@awell-health/sol-scheduling](https://www.npmjs.com/package/@awell-health/sol-scheduling) — reusable scheduling components
 
-## Changesets & Releases
+## Monorepo Structure
 
-```bash
-# Add changeset for package changes
-pnpm changeset
-
-# Beta releases - add [beta] to commit message
-git commit -m "feat: new feature [beta]"
-
-# Manual beta control
-pnpm changeset pre enter beta    # enter beta mode
-pnpm changeset pre exit          # exit beta mode (or use GitHub workflow)
+```
+apps/scheduling-app/    # Next.js booking application (this project)
+packages/scheduler/     # Reusable React scheduling components (npm package)
 ```
 
-**Release Process**: Push to `main` → auto version/publish. Beta commits create beta releases, normal commits create stable releases.
+## Ownership
 
-## GitHub Workflows
-
-- **Auto**: Build/test on PRs, publish on main merge
-- **Manual**: "Exit Beta Mode" workflow to exit beta releases
-
----
-
-**Links**: [Live App](https://sol-scheduling.vercel.app) • [npm Package](https://www.npmjs.com/package/@awell-health/sol-scheduling)
+| Area | Notes |
+|------|-------|
+| Booking Application | Next.js app, Vercel hosting |
+| Salesforce Integration | Lead create/update actions |
+| Re-engagement Flow | Awell care flow — recovers drop-offs via automated outreach |
+| Intake Flow | Awell care flow — qualifies patients, prepares for appointment |
+| Analytics | PostHog — user tracking, feature flags, API metrics |

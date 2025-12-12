@@ -57,6 +57,13 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     [setPreferences]
   );
 
+  const handleConsentChange = useCallback(
+    (value: boolean) => {
+      setPreferences({ consent: value });
+    },
+    [setPreferences]
+  );
+
   const handlePhoneContinue = useCallback(() => {
     advanceStep();
   }, [advanceStep]);
@@ -170,6 +177,8 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             onContinue={handlePhoneContinue}
             state={preferences.state}
             service={preferences.service}
+            consent={preferences.consent}
+            onConsentChange={handleConsentChange}
           />
         )}
 

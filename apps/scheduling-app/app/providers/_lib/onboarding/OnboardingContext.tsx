@@ -69,7 +69,8 @@ export function OnboardingProvider({
     state: null,
     service: null,
     phone: null,
-    insurance: null
+    insurance: null,
+    consent: null
   });
   const [returnUrl, setReturnUrl] = useState<string | null>(
     initialReturnUrl ?? null
@@ -126,6 +127,7 @@ export function OnboardingProvider({
       service: initialPreferences?.service ?? stored.service,
       phone: initialPreferences?.phone ?? stored.phone,
       insurance: initialPreferences?.insurance ?? stored.insurance,
+      consent: initialPreferences?.consent ?? stored.consent,
     };
     
     // Persist any URL params to localStorage
@@ -172,7 +174,8 @@ export function OnboardingProvider({
       state: null,
       service: null,
       phone: null,
-      insurance: null
+      insurance: null,
+      consent: null
     });
     setCurrentStepIndex(0);
   }, []);
@@ -197,21 +200,15 @@ export function OnboardingProvider({
     setCurrentStepIndex(index);
   }, [config.questions.length]);
 
-  // Check if all required questions have been answered AND validated
+  // Check if onboarding is complete
+  // Only true when currentStepIndex is null (user clicked Continue on last step OR loaded with all data)
   const isOnboardingComplete = useMemo(() => {
-    // If currentStepIndex is null, we've completed all steps
-    if (currentStepIndex === null) {
-      return config.required.every((step) => isPreferenceValid(step, preferences[step]));
-    }
-    
-    // Must be on or past the last step
-    if (currentStepIndex < config.questions.length - 1) {
+    if (currentStepIndex !== null) {
       return false;
     }
-    
-    // On the last step - check if all required are answered
+    // Verify all required fields are still valid
     return config.required.every((step) => isPreferenceValid(step, preferences[step]));
-  }, [preferences, config.required, currentStepIndex, config.questions.length, isPreferenceValid]);
+  }, [preferences, config.required, currentStepIndex, isPreferenceValid]);
 
   const value = useMemo<OnboardingContextValue>(
     () => ({
