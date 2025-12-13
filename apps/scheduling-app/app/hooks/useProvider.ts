@@ -1,32 +1,38 @@
 import { useCallback } from 'react';
+import { usePostHog } from 'posthog-js/react';
 import type { GetProviderResponseType } from '../../../../packages/scheduler/dist/index.d.ts';
+import { getProviderAction } from '../providers/actions';
 
-interface UseProviderConfig {
-  baseUrl: string;
-}
+export const useProvider = () => {
+  const posthog = usePostHog();
 
-export const useProvider = ({ baseUrl }: UseProviderConfig) => {
   const fetchProvider = useCallback(
     async (providerId: string): Promise<GetProviderResponseType> => {
+      const frontendStart = performance.now();
       try {
-        const response = await fetch(`/api/sol/providers/${providerId}`, {
-          headers: {
-            'x-sol-api-url': baseUrl,
-          },
+        const response = await getProviderAction(providerId);
+        const frontendMs = Math.round(performance.now() - frontendStart);
+
+        // Capture API timing in PostHog
+        posthog?.capture('api_call_provider', {
+          provider_id: providerId,
+          frontend_rt_ms: frontendMs,
+          sol_api_rt_ms: response._timing?.solApiMs,
         });
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch provider ${providerId}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        return data;
+        return response;
       } catch (error) {
+        const frontendMs = Math.round(performance.now() - frontendStart);
+        posthog?.capture('api_call_provider_error', {
+          provider_id: providerId,
+          frontend_rt_ms: frontendMs,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
         console.error('Error fetching provider:', error);
         throw error;
       }
     },
-    [baseUrl]
+    [posthog]
   );
 
   return { fetchProvider };

@@ -1,9 +1,4 @@
-import { IncomingHttpHeaders } from 'http';
 import { z } from 'zod';
-
-const HeadersSchema = z.object({
-  'x-sol-api-url': z.string().nonempty('x-sol-api-url header is required'),
-});
 
 const EnvSchema = z.object({
   SOL_AUTH_URL: z.string().nonempty('SOL_AUTH_URL env variable is missing'),
@@ -12,13 +7,14 @@ const EnvSchema = z.object({
     .string()
     .nonempty('SOL_CLIENT_SECRET env variable is missing'),
   SOL_RESOURCE: z.string().nonempty('SOL_RESOURCE env variable is missing'),
+  SOL_API_URL: z.string().nonempty('SOL_API_URL env variable is missing'),
 });
 
-export const SettingsSchema = HeadersSchema.merge(EnvSchema);
+export const SettingsSchema = EnvSchema;
 
 export type SolEnvSettings = z.infer<typeof SettingsSchema>;
 
-type GetSolEnvSettings = ({ headers }: { headers: IncomingHttpHeaders }) => {
+type GetSolEnvSettingsResult = {
   authUrl: string;
   clientId: string;
   clientSecret: string;
@@ -26,27 +22,7 @@ type GetSolEnvSettings = ({ headers }: { headers: IncomingHttpHeaders }) => {
   baseUrl: string;
 };
 
-export const getSolEnvSettings: GetSolEnvSettings = ({ headers }) => {
-  const parsedHeaders = HeadersSchema.safeParse(headers);
-
-  if (!parsedHeaders.success) {
-    const errorMessages = parsedHeaders.error.errors
-      .map((e) => e.message)
-      .join(', ');
-    console.error('Header validation failed:', {
-      headers: Object.keys(headers),
-      errors: parsedHeaders.error.errors,
-    });
-    throw new Error(`Header validation failed: ${errorMessages}`);
-  }
-
-  console.log('Environment variables check:', {
-    SOL_AUTH_URL: process.env.SOL_AUTH_URL ? '✓ Set' : '✗ Missing',
-    SOL_CLIENT_ID: process.env.SOL_CLIENT_ID ? '✓ Set' : '✗ Missing',
-    SOL_CLIENT_SECRET: process.env.SOL_CLIENT_SECRET ? '✓ Set' : '✗ Missing',
-    SOL_RESOURCE: process.env.SOL_RESOURCE ? '✓ Set' : '✗ Missing',
-  });
-
+export const getSolEnvSettings = (): GetSolEnvSettingsResult => {
   const parsedEnv = EnvSchema.safeParse(process.env);
 
   if (!parsedEnv.success) {
@@ -56,10 +32,11 @@ export const getSolEnvSettings: GetSolEnvSettings = ({ headers }) => {
     console.error('Environment variable validation failed:', {
       errors: parsedEnv.error.errors,
       env: {
-        SOL_AUTH_URL: process.env.SOL_AUTH_URL,
-        SOL_CLIENT_ID: process.env.SOL_CLIENT_ID,
-        SOL_CLIENT_SECRET: process.env.SOL_CLIENT_SECRET ? '[REDACTED]' : undefined,
-        SOL_RESOURCE: process.env.SOL_RESOURCE,
+        SOL_AUTH_URL: process.env.SOL_AUTH_URL ? '✓ Set' : '✗ Missing',
+        SOL_CLIENT_ID: process.env.SOL_CLIENT_ID ? '✓ Set' : '✗ Missing',
+        SOL_CLIENT_SECRET: process.env.SOL_CLIENT_SECRET ? '✓ Set' : '✗ Missing',
+        SOL_RESOURCE: process.env.SOL_RESOURCE ? '✓ Set' : '✗ Missing',
+        SOL_API_URL: process.env.SOL_API_URL ? '✓ Set' : '✗ Missing',
       }
     });
     throw new Error(`Environment variable validation failed: ${errorMessages}`);
@@ -70,7 +47,7 @@ export const getSolEnvSettings: GetSolEnvSettings = ({ headers }) => {
     clientId: parsedEnv.data.SOL_CLIENT_ID,
     clientSecret: parsedEnv.data.SOL_CLIENT_SECRET,
     resource: parsedEnv.data.SOL_RESOURCE,
-    baseUrl: parsedHeaders.data['x-sol-api-url'],
+    baseUrl: parsedEnv.data.SOL_API_URL,
   };
 };
 

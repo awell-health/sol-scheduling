@@ -1,3 +1,4 @@
 .next
 .turbo
 .env.local
+*.local.*

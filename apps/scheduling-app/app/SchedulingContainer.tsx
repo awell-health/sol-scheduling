@@ -10,17 +10,8 @@ import {
   useCompleteActivity
 } from './hooks';
 import '@awell-health/sol-scheduling/style.css';
-import { redirect } from 'next/navigation';
-
-
 
 export const SchedulingContainer = () => {
-  // Configuration - these would normally come from environment or props
-  const baseUrl = process.env.NEXT_PUBLIC_SOL_API_URL;
-  if (!baseUrl) {
-    // redirect to error page
-    redirect('/error');
-  }
   const patientName = 'JB Test';
   const salesforceLeadId = undefined; // Optional
 
@@ -38,11 +29,11 @@ export const SchedulingContainer = () => {
     },
   });
 
-  // Use individual hooks for each API operation
-  const { fetchProvider } = useProvider({ baseUrl });
-  const { fetchProviders } = useProviders({ baseUrl });
-  const { fetchAvailability } = useAvailability({ baseUrl });
-  const { onBooking } = useBooking({ baseUrl, patientName, salesforceLeadId });
+  // Use individual hooks for each API operation (server actions handle SOL_API_URL internally)
+  const { fetchProvider } = useProvider();
+  const { fetchProviders } = useProviders();
+  const { fetchAvailability } = useAvailability();
+  const { onBooking } = useBooking({ patientName, salesforceLeadId });
   const { onCompleteActivity } = useCompleteActivity();
 
   return (

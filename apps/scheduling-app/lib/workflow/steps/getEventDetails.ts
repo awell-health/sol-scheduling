@@ -1,4 +1,3 @@
-import { IncomingHttpHeaders } from 'http';
 import { omit } from 'lodash';
 import {
   API_METHODS,
@@ -6,11 +5,6 @@ import {
   getAccessToken,
   getSolEnvSettings
 } from '../../sol-utils';
-
-const DEFAULT_SOL_BASE_URL =
-  process.env.NEXT_PUBLIC_SOL_API_URL ||
-  process.env.SOL_FALLBACK_API_URL ||
-  '';
 
 /**
  * Input for getEventDetails step
@@ -77,18 +71,7 @@ export async function getEventDetailsStep(
 ): Promise<EventDetails> {
   "use step";
 
-  // Get settings - for workflow context we need to handle headers differently
-  const baseUrl = DEFAULT_SOL_BASE_URL;
-  
-  if (!baseUrl) {
-    throw new Error('Unable to resolve SOL base URL (missing NEXT_PUBLIC_SOL_API_URL)');
-  }
-
-  const incomingHeaders: IncomingHttpHeaders = {
-    'x-sol-api-url': baseUrl
-  };
-
-  const settings = getSolEnvSettings({ headers: incomingHeaders });
+  const settings = getSolEnvSettings();
   const accessToken = await getAccessToken(omit(settings, 'baseUrl'));
   
   // Build URL with query params

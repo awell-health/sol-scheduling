@@ -1,7 +1,5 @@
 'use server';
 
-import { headers } from 'next/headers';
-import { IncomingHttpHeaders } from 'http';
 import { isEmpty, isNil, omit } from 'lodash';
 import {
   API_METHODS,
@@ -30,35 +28,6 @@ export type ApiTiming = {
   solApiMs: number;
 };
 
-const DEFAULT_SOL_BASE_URL =
-  process.env.NEXT_PUBLIC_SOL_API_URL ||
-  process.env.SOL_FALLBACK_API_URL ||
-  '';
-
-if (!DEFAULT_SOL_BASE_URL) {
-  console.warn(
-    'Missing NEXT_PUBLIC_SOL_API_URL or SOL_FALLBACK_API_URL. SOL requests will fail without a base URL.'
-  );
-}
-
-async function getSettings() {
-  const requestHeaders = await headers();
-  const overrideBaseUrl = requestHeaders.get('x-sol-api-url');
-  const baseUrl = overrideBaseUrl ?? DEFAULT_SOL_BASE_URL;
-
-  if (!baseUrl) {
-    throw new Error(
-      'Unable to resolve SOL base URL (missing NEXT_PUBLIC_SOL_API_URL)'
-    );
-  }
-
-  const incomingHeaders: IncomingHttpHeaders = {
-    'x-sol-api-url': baseUrl
-  };
-
-  return getSolEnvSettings({ headers: incomingHeaders });
-}
-
 type SolFetchResult<T> = {
   data: T;
   timing: ApiTiming;
@@ -73,7 +42,7 @@ async function solFetch<T>({
   body?: Record<string, unknown>;
   urlQuery?: URLSearchParams;
 }): Promise<SolFetchResult<T>> {
-  const settings = await getSettings();
+  const settings = getSolEnvSettings();
   const accessToken = await getAccessToken(omit(settings, 'baseUrl'));
   const url = new URL(`${settings.baseUrl}${API_ROUTES[method]}`);
 

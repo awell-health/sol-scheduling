@@ -10,9 +10,7 @@
         "SOL_CLIENT_ID",
         "SOL_CLIENT_SECRET",
         "SOL_RESOURCE",
-        "SOL_PROVIDERS_ENDPOINT",
-        "SOL_AVAILABILITY_ENDPOINT",
-        "SOL_BOOKING_ENDPOINT"
+        "SOL_API_URL"
       ]
     },
     "dev": {
