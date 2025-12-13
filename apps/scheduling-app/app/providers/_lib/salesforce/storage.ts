@@ -1,9 +1,13 @@
+import type { SalesforceLeadData } from './actions';
+
 const LEAD_STORAGE_KEY = '_slc';
 
 interface StoredLead {
   leadId: string;
   phone: string;
   createdAt: string;
+  /** Full lead data from Salesforce (when fetched via slc param) */
+  leadData?: SalesforceLeadData;
 }
 
 /**
@@ -68,5 +72,39 @@ export function getAnyStoredLeadId(): string | null {
 export function clearStoredLeadId(): void {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(LEAD_STORAGE_KEY);
+}
+
+/**
+ * Store lead data fetched from Salesforce (via slc param).
+ * Stores the full lead data for later reference.
+ */
+export function storeLeadFromSalesforce(leadData: SalesforceLeadData): void {
+  if (typeof window === 'undefined') return;
+  
+  const data: StoredLead = {
+    leadId: leadData.id,
+    phone: leadData.phone?.replace(/\D/g, '') ?? '',
+    createdAt: new Date().toISOString(),
+    leadData,
+  };
+  
+  localStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(data));
+}
+
+/**
+ * Get the full stored lead data (if available)
+ */
+export function getStoredLeadData(): SalesforceLeadData | null {
+  if (typeof window === 'undefined') return null;
+  
+  try {
+    const raw = localStorage.getItem(LEAD_STORAGE_KEY);
+    if (!raw) return null;
+    
+    const data: StoredLead = JSON.parse(raw);
+    return data.leadData ?? null;
+  } catch {
+    return null;
+  }
 }
 

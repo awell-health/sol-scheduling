@@ -1,8 +1,10 @@
 export {
+  getLeadAction,
   createLeadAction,
   updateLeadAction,
   updateLeadBookingAction,
   captureBookingEventAction,
+  type SalesforceLeadData,
   type CreateLeadInput,
   type UpdateLeadInput,
   type UpdateLeadBookingInput,
@@ -10,7 +12,9 @@ export {
 
 export {
   storeLeadId,
+  storeLeadFromSalesforce,
   getStoredLeadId,
+  getStoredLeadData,
   getAnyStoredLeadId,
   clearStoredLeadId,
 } from './storage';

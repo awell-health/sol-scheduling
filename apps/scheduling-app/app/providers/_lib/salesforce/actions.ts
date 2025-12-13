@@ -3,6 +3,70 @@
 import { getSalesforceClient } from '../../../../lib/salesforce';
 import PostHogClient from '../../../../posthog';
 
+/**
+ * Lead data returned from Salesforce when fetching by ID.
+ * Fields mapped to onboarding preferences.
+ */
+export interface SalesforceLeadData {
+  id: string;
+  phone: string | null;
+  state: string | null;
+  insurance: string | null;
+  service: string | null;
+  consent: boolean | null;
+}
+
+/**
+ * Fetch a Salesforce lead by ID and return mapped fields.
+ * Used when `slc` param is present in URL.
+ */
+export async function getLeadAction(
+  leadId: string
+): Promise<{ success: boolean; lead?: SalesforceLeadData; error?: string }> {
+  try {
+    if (!leadId || leadId.trim().length === 0) {
+      return { success: false, error: 'Lead ID is required' };
+    }
+
+    const client = getSalesforceClient();
+    console.log('[getLeadAction] Fetching lead:', leadId);
+
+    const rawLead = await client.getLead(leadId);
+    console.log('[getLeadAction] Raw lead data:', rawLead);
+
+    // Map Salesforce fields to our schema
+    const lead: SalesforceLeadData = {
+      id: leadId,
+      phone: typeof rawLead.Phone === 'string' ? rawLead.Phone : null,
+      state: typeof rawLead.Market__c === 'string' ? rawLead.Market__c : null,
+      insurance: typeof rawLead.Insurance_Company_Name__c === 'string' ? rawLead.Insurance_Company_Name__c : null,
+      // Service_Type__c - not yet created in Salesforce, but ready for it
+      service: typeof rawLead.Service_Type__c === 'string' ? rawLead.Service_Type__c : null,
+      consent: typeof rawLead.Contact_Consent__c === 'boolean' ? rawLead.Contact_Consent__c : null,
+    };
+
+    console.log('[getLeadAction] Lead data:', {
+      id: lead.id,
+      hasPhone: !!lead.phone,
+      state: lead.state,
+      insurance: lead.insurance,
+      service: lead.service,
+      consent: lead.consent,
+    });
+
+    return { success: true, lead };
+  } catch (error) {
+    console.error('[getLeadAction] Failed to fetch Salesforce lead:', {
+      error,
+      leadId,
+    });
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
+
 export interface CreateLeadInput {
   phone: string;
   state?: string | null;
