@@ -63,7 +63,7 @@ async function solFetch<T>({
   }
 
   const startTime = performance.now();
-  console.log('[solFetch] Fetching URL:', url.toString(), 'with init', JSON.stringify(init));
+  console.log('[solFetch] Fetching URL:', url.toString(), 'with body', init.body);
   const response = await fetch(url, init);
   const solApiMs = Math.round(performance.now() - startTime);
 
