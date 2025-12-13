@@ -9,6 +9,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+      {/* <script async src="//s.ksrndkehqnwntyxlhgto.com/*****.js"></script> */}
+      </head>
       <body>
         <PostHogProvider>
           {children}

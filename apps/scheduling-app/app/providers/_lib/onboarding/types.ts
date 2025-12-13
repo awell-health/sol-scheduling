@@ -10,6 +10,8 @@ export type OnboardingPreferences = {
   phone: string | null;
   /** Insurance carrier value */
   insurance: string | null;
+  /** Consent to receive calls/texts about appointments */
+  consent: boolean | null;
 };
 
 /**

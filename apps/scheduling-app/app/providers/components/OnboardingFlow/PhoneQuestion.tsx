@@ -21,6 +21,10 @@ type PhoneQuestionProps = {
   /** Pre-collected onboarding data to include in lead */
   state?: string | null;
   service?: string | null;
+  /** Consent checkbox state */
+  consent?: boolean | null;
+  /** Handler for consent changes */
+  onConsentChange?: (value: boolean) => void;
 };
 
 export function PhoneQuestion({
@@ -29,11 +33,13 @@ export function PhoneQuestion({
   onContinue,
   state,
   service,
+  consent,
+  onConsentChange,
 }: PhoneQuestionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Validate as US phone number (value is already E.164 from the input)
-  const isValid = useMemo(() => {
+  const isPhoneValid = useMemo(() => {
     if (!value) return false;
     try {
       return isValidPhoneNumber(value, 'US');
@@ -41,6 +47,9 @@ export function PhoneQuestion({
       return false;
     }
   }, [value]);
+
+  // Both phone and consent are required
+  const isValid = isPhoneValid && consent === true;
 
   const handleChange = (newValue: E164Number | undefined) => {
     // react-phone-number-input returns E.164 format directly (e.g., "+16175551234")
@@ -113,12 +122,25 @@ export function PhoneQuestion({
           <p className="text-xs text-slate-500">
             U.S. phone numbers only. Standard message and data rates may apply.
           </p>
-          {value && !isValid && (
+          {value && !isPhoneValid && (
             <p className="text-xs font-medium text-red-600">
               Please enter a valid 10-digit U.S. phone number.
             </p>
           )}
         </div>
+
+        <label className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 cursor-pointer hover:bg-slate-100 transition">
+          <input
+            type="checkbox"
+            checked={consent === true}
+            onChange={(e) => onConsentChange?.(e.target.checked)}
+            className="mt-0.5 h-5 w-5 rounded border-slate-300 accent-primary flex-shrink-0"
+          />
+          <span className="text-sm text-slate-700 leading-snug">
+            I consent to receiving calls or text messages at this number about my
+            appointment (not for marketing purposes).
+          </span>
+        </label>
 
         <Button
           type="button"

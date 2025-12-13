@@ -16,6 +16,7 @@ interface StoredOnboardingData {
   service?: string;
   phone?: string;
   insurance?: string;
+  consent?: boolean;
   updatedAt?: string;
 }
 
@@ -56,14 +57,15 @@ export function readPreferencesFromStorage(): OnboardingPreferences {
   const data = readStoredData();
   
   if (!data) {
-    return { state: null, service: null, phone: null, insurance: null };
+    return { state: null, service: null, phone: null, insurance: null, consent: null };
   }
 
   return {
     state: data.state ?? null,
     service: data.service ?? null,
     phone: data.phone ?? null,
-    insurance: data.insurance ?? null
+    insurance: data.insurance ?? null,
+    consent: data.consent ?? null
   };
 }
 
@@ -82,6 +84,7 @@ export function writePreferencesToStorage(
   // Merge preferences
   const updated: StoredOnboardingData = { ...existing };
   
+  // Handle string preferences
   for (const key of ['state', 'service', 'phone', 'insurance'] as const) {
     if (key in prefs) {
       const value = prefs[key];
@@ -90,6 +93,15 @@ export function writePreferencesToStorage(
       } else {
         updated[key] = value;
       }
+    }
+  }
+  
+  // Handle consent (boolean)
+  if ('consent' in prefs) {
+    if (prefs.consent === null || prefs.consent === undefined) {
+      delete updated.consent;
+    } else {
+      updated.consent = prefs.consent;
     }
   }
   

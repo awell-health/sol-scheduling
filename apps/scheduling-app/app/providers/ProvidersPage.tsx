@@ -12,7 +12,8 @@ import {
 } from './_lib/types';
 import {
   useOnboarding,
-  useBuildUrlWithReturn
+  useBuildUrlWithReturn,
+  isSupportedState
 } from './_lib/onboarding';
 import { ProviderFilters } from './components/ProviderFilters';
 import { ProviderCard } from './components/ProviderCard';
@@ -56,6 +57,15 @@ export function ProvidersPage() {
       router.replace(`/onboarding?target=${encodeURIComponent(pathname)}`);
     }
   }, [isInitialized, isOnboardingComplete, pathname, router]);
+
+  // Redirect to /not-available if state is not supported
+  useEffect(() => {
+    if (isInitialized && isOnboardingComplete && preferences.state) {
+      if (!isSupportedState(preferences.state)) {
+        router.replace(`/not-available?state=${preferences.state}`);
+      }
+    }
+  }, [isInitialized, isOnboardingComplete, preferences.state, router]);
 
   // Sync onboarding preferences to filter state when context changes
   useEffect(() => {
@@ -185,8 +195,16 @@ export function ProvidersPage() {
     setActiveFilters((previous) => ({ ...previous }));
   };
 
-  // Show loading state until context is initialized or during redirect
-  if (!isInitialized || !isOnboardingComplete) {
+  // Determine if we're ready to show content
+  // - Not initialized yet → loading
+  // - Onboarding not complete → redirecting to /onboarding
+  // - State not supported → redirecting to /not-available
+  const isRedirecting =
+    !isInitialized ||
+    !isOnboardingComplete ||
+    (preferences.state && !isSupportedState(preferences.state));
+
+  if (isRedirecting) {
     return (
       <div className='flex flex-col gap-2'>
         <header className='space-y-1'>
