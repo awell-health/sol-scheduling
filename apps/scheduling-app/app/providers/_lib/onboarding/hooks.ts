@@ -1,88 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useOnboarding } from './OnboardingContext';
 import { OnboardingStep, type OnboardingPreferences } from './types';
-
-/**
- * Hook to consume onboarding-related search params from the URL,
- * write them to the context, and then clean the URL (keeping returnUrl).
- *
- * Supported params: state, service, phone, insurance, returnUrl
- */
-export function useOnboardingSearchParams() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const { setPreferences, setReturnUrl, isInitialized } = useOnboarding();
-  const hasConsumed = useRef(false);
-
-  useEffect(() => {
-    // Only run once after context is initialized
-    if (!isInitialized || hasConsumed.current) return;
-
-    const state = searchParams.get('state');
-    const service = searchParams.get('service');
-    const phone = searchParams.get('phone');
-    const insurance = searchParams.get('insurance');
-    const returnUrlParam = searchParams.get('returnUrl');
-
-    const updates: Partial<OnboardingPreferences> = {};
-    let hasUpdates = false;
-
-    if (state) {
-      updates.state = state;
-      hasUpdates = true;
-    }
-    if (service) {
-      updates.service = service;
-      hasUpdates = true;
-    }
-    if (phone) {
-      updates.phone = phone;
-      hasUpdates = true;
-    }
-    if (insurance) {
-      updates.insurance = insurance;
-      hasUpdates = true;
-    }
-
-    if (hasUpdates) {
-      setPreferences(updates);
-    }
-
-    if (returnUrlParam) {
-      setReturnUrl(returnUrlParam);
-    }
-
-    // Build clean URL (only keep returnUrl if present)
-    const paramsToStrip = ['state', 'service', 'phone', 'insurance'];
-    const hasParamsToStrip = paramsToStrip.some((p) => searchParams.has(p));
-
-    if (hasParamsToStrip) {
-      const newParams = new URLSearchParams();
-      if (returnUrlParam) {
-        newParams.set('returnUrl', returnUrlParam);
-      }
-      const newUrl = newParams.toString()
-        ? `${pathname}?${newParams.toString()}`
-        : pathname;
-
-      // Replace URL without triggering navigation/re-render
-      router.replace(newUrl, { scroll: false });
-    }
-
-    hasConsumed.current = true;
-  }, [
-    searchParams,
-    setPreferences,
-    setReturnUrl,
-    router,
-    pathname,
-    isInitialized
-  ]);
-}
 
 /**
  * Lifecycle hook for onboarding events.

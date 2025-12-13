@@ -1,16 +1,13 @@
 import { useCallback } from 'react';
 import { usePostHog } from 'posthog-js/react';
-import type {
-  GetProvidersInputType,
-  GetProvidersResponseType
-} from '../../../../packages/scheduler/dist/index.d.ts';
 import { getProvidersAction } from '../providers/actions';
+import type { ProviderSearchFilters } from '../providers/_lib/types';
 
 export const useProviders = () => {
   const posthog = usePostHog();
 
   const fetchProviders = useCallback(
-    async (prefs: GetProvidersInputType): Promise<GetProvidersResponseType> => {
+    async (prefs: ProviderSearchFilters | Record<string, unknown>) => {
       const frontendStart = performance.now();
       try {
         const response = await getProvidersAction(prefs);

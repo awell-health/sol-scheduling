@@ -29,7 +29,6 @@ export {
 // Context & Hooks
 export { OnboardingProvider, useOnboarding } from './OnboardingContext';
 export {
-  useOnboardingSearchParams,
   useOnboardingLifecycle,
   useBuildUrlWithReturn
 } from './hooks';

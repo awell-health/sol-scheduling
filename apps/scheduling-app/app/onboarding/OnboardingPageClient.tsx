@@ -4,11 +4,9 @@ import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { OnboardingProvider, useOnboarding } from '../providers/_lib/onboarding';
 import { OnboardingFlow } from '../providers/components/OnboardingFlow';
-import type { OnboardingPreferences } from '../providers/_lib/onboarding/types';
 
 type OnboardingPageClientProps = {
   target: string;
-  initialPreferences: Partial<OnboardingPreferences>;
 };
 
 function OnboardingContent({ target }: { target: string }) {
@@ -51,17 +49,9 @@ function OnboardingContent({ target }: { target: string }) {
   return <OnboardingFlow onComplete={handleComplete} />;
 }
 
-export function OnboardingPageClient({
-  target,
-  initialPreferences
-}: OnboardingPageClientProps) {
-  // Filter out null values from initialPreferences
-  const cleanedPreferences = Object.fromEntries(
-    Object.entries(initialPreferences).filter(([, v]) => v !== null)
-  ) as Partial<OnboardingPreferences>;
-
+export function OnboardingPageClient({ target }: OnboardingPageClientProps) {
   return (
-    <OnboardingProvider initialPreferences={cleanedPreferences}>
+    <OnboardingProvider>
       <OnboardingContent target={target} />
     </OnboardingProvider>
   );

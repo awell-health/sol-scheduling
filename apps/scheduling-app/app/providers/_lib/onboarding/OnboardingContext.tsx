@@ -56,14 +56,11 @@ type OnboardingProviderProps = {
   children: ReactNode;
   /** Optional initial return URL (from server-side searchParams) */
   initialReturnUrl?: string;
-  /** Optional initial preferences (from URL params) - merged with localStorage */
-  initialPreferences?: Partial<OnboardingPreferences>;
 };
 
 export function OnboardingProvider({
   children,
-  initialReturnUrl,
-  initialPreferences
+  initialReturnUrl
 }: OnboardingProviderProps) {
   const [preferences, setPreferencesState] = useState<OnboardingPreferences>({
     state: null,
@@ -117,30 +114,16 @@ export function OnboardingProvider({
     return true;
   }, []);
 
-  // Initialize from localStorage on mount, merging with URL params
+  // Initialize from localStorage on mount
   useEffect(() => {
     const stored = readPreferencesFromStorage();
     
-    // Merge: URL params take precedence over localStorage
-    const merged: OnboardingPreferences = {
-      state: initialPreferences?.state ?? stored.state,
-      service: initialPreferences?.service ?? stored.service,
-      phone: initialPreferences?.phone ?? stored.phone,
-      insurance: initialPreferences?.insurance ?? stored.insurance,
-      consent: initialPreferences?.consent ?? stored.consent,
-    };
-    
-    // Persist any URL params to localStorage
-    if (initialPreferences) {
-      writePreferencesToStorage(initialPreferences);
-    }
-    
-    setPreferencesState(merged);
+    setPreferencesState(stored);
     
     // Check if all required questions are already answered
     // If so, mark onboarding as complete by setting currentStepIndex to null
     const allRequiredAnswered = config.required.every((step) => 
-      isPreferenceValid(step, merged[step])
+      isPreferenceValid(step, stored[step])
     );
     
     if (allRequiredAnswered) {
@@ -149,7 +132,7 @@ export function OnboardingProvider({
     } else {
       // Find the first unanswered required question
       const firstUnansweredIndex = config.questions.findIndex((step) => 
-        config.required.includes(step) && !isPreferenceValid(step, merged[step])
+        config.required.includes(step) && !isPreferenceValid(step, stored[step])
       );
       setCurrentStepIndex(firstUnansweredIndex >= 0 ? firstUnansweredIndex : 0);
     }
