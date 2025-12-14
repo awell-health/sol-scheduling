@@ -129,8 +129,8 @@ export async function createLeadAction(
     const leadData = {
       // Required fields matching other booking systems
       RecordTypeId: '0125w000000BRDxAAO',
-      FirstName: 'No',
-      LastName: 'Name Yet',
+      FirstName: 'TEST first',
+      LastName: 'TEST last',
       LeadSource: 'Website - Online Booking',
       Status: 'New',
       Inquiry_Date__c: new Date().toISOString(),
@@ -334,4 +334,3 @@ export async function captureBookingEventAction(input: {
     });
   }
 }
-

@@ -26,7 +26,7 @@ import {
 } from '../actions';
 import { usePostHog } from 'posthog-js/react';
 import { useOnboarding, isSupportedState } from '../_lib/onboarding';
-import { getAnyStoredLeadId } from '../_lib/salesforce';
+import { getAnyStoredLeadId, captureBookingEventAction } from '../_lib/salesforce';
 import { ProviderBio } from '../components/ProviderBio';
 import { MapPinIcon, VideoCameraIcon } from '../components/icons/ProviderIcons';
 import { Calendar } from '../../../components/ui/calendar';
@@ -569,6 +569,19 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
         sol_api_rt_ms: bookingResult._timing?.solApiMs,
         location_type: chosenLocation,
       });
+
+      // Capture appointment_booked event server-side (fire-and-forget)
+      if (leadId && posthog) {
+        captureBookingEventAction({
+          posthogDistinctId: posthog.get_distinct_id(),
+          leadId,
+          providerId: selectedSlot.providerId,
+          appointmentTime: new Date(selectedSlot.slotstart).toISOString(),
+          locationType: chosenLocation,
+        }).catch((err) => {
+          console.error('Failed to capture booking event:', err);
+        });
+      }
 
       setBookingState({
         status: 'success',
