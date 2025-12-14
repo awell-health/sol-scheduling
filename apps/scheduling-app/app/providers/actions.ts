@@ -20,6 +20,7 @@ import {
   ProvidersResponse,
   ProviderSearchFilters
 } from './_lib/types';
+import { start } from 'workflow/api';
 import { postBookingWorkflow } from '../../lib/workflow';
 
 /** Timing metadata returned from API actions */
@@ -224,15 +225,16 @@ export async function bookAppointmentAction(payload: {
 
     const parsed = BookAppointmentResponseSchema.parse(data);
 
-    // Trigger post-booking workflow
-    // Executes asynchronously and doesn't block the response
-    await postBookingWorkflow({
+    // Trigger post-booking workflow (fire-and-forget)
+    // Uses start() to enqueue the workflow - it executes asynchronously
+    // @see https://useworkflow.dev/docs/foundations/starting-workflows
+    await start(postBookingWorkflow, [{
       eventId: payload.eventId,
       providerId: payload.providerId,
       salesforceLeadId: payload.userInfo.salesforceLeadId,
       clinicalFocus: payload.clinicalFocus,
       patientTimezone: payload.patientTimezone,
-    });
+    }]);
 
     return { ...parsed, _timing: timing };
   } catch (error) {
