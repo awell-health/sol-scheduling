@@ -228,13 +228,15 @@ export async function bookAppointmentAction(payload: {
     // Trigger post-booking workflow (fire-and-forget)
     // Uses start() to enqueue the workflow - it executes asynchronously
     // @see https://useworkflow.dev/docs/foundations/starting-workflows
-    await start(postBookingWorkflow, [{
+    const run = await start(postBookingWorkflow, [{
       eventId: payload.eventId,
       providerId: payload.providerId,
       salesforceLeadId: payload.userInfo.salesforceLeadId,
       clinicalFocus: payload.clinicalFocus,
       patientTimezone: payload.patientTimezone,
     }]);
+
+    console.log('[bookAppointmentAction] Workflow started:', run);
 
     return { ...parsed, _timing: timing };
   } catch (error) {
