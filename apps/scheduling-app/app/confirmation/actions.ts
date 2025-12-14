@@ -43,7 +43,7 @@ function getAwellClient() {
 export async function startIntakeFormAction(input: StartIntakeFormInput): Promise<never> {
   const { eventId, eventDetails, salesforceLeadId } = input;
   
-  console.log('Starting intake form', { eventId, eventDetails, salesforceLeadId });
+  console.log('[startIntakeFormAction] Starting intake form', { eventId, eventDetails, salesforceLeadId });
   
   const awell = getAwellClient();
   
@@ -61,6 +61,7 @@ export async function startIntakeFormAction(input: StartIntakeFormInput): Promis
       session_url: true,
     },
   });
+  console.log('[startIntakeFormAction] Awell response:', response);
 
   const sessionUrl = response.startHostedPathwaySession?.session_url;
 
