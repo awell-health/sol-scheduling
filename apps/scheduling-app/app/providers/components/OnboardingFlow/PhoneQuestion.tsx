@@ -13,6 +13,7 @@ import {
   storeLeadId,
   getStoredLeadId,
 } from '../../_lib/salesforce';
+import { FIELD_REGISTRY, FieldId } from '../../../../lib/fields';
 
 type PhoneQuestionProps = {
   value: string | null;
@@ -98,14 +99,17 @@ export function PhoneQuestion({
     }
   };
 
+  const phoneField = FIELD_REGISTRY[FieldId.PHONE];
+  const consentField = FIELD_REGISTRY[FieldId.CONSENT];
+
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6 px-1 md:px-0">
       <div>
         <h2 className="text-2xl font-semibold text-primary md:text-3xl">
-          What is your phone number?
+          {phoneField.conversationalQuestion ?? phoneField.label}
         </h2>
         <p className="mt-2 text-sm text-slate-700 md:mt-3 md:text-lg">
-          We'll use this to send appointment reminders and updates.
+          {phoneField.conversationalDescription ?? phoneField.description}
         </p>
       </div>
 
@@ -137,8 +141,7 @@ export function PhoneQuestion({
             className="mt-0.5 h-5 w-5 rounded border-slate-300 accent-primary flex-shrink-0"
           />
           <span className="text-sm text-slate-700 leading-snug">
-            I consent to receiving calls or text messages at this number about my
-            appointment (not for marketing purposes).
+            {consentField.label}
           </span>
         </label>
 

@@ -9,7 +9,7 @@ import {
   SelectValue
 } from '../../../../components/ui/select';
 import { Button } from '../../../../components/ui/button';
-import { ALL_US_STATES } from '../../_lib/onboarding/config';
+import { ALL_US_STATES, FIELD_REGISTRY, FieldId } from '../../../../lib/fields';
 
 type StateQuestionProps = {
   value: string | null;
@@ -85,15 +85,16 @@ export function StateQuestion({ value, onChange, onContinue }: StateQuestionProp
 
   const canContinue = value !== null && value !== '';
 
+  const stateField = FIELD_REGISTRY[FieldId.STATE];
+
   return (
     <div className='mx-auto w-full max-w-2xl space-y-6 px-1 md:px-0'>
       <div>
         <h2 className='text-2xl font-semibold text-primary md:text-3xl'>
-          In what state are you located?
+          {stateField.conversationalQuestion ?? stateField.label}
         </h2>
         <p className='mt-2 text-sm text-slate-700 md:mt-3 md:text-lg'>
-          We'll use this to show you providers who are licensed to practice in
-          your state.
+          {stateField.conversationalDescription ?? stateField.description}
         </p>
       </div>
 

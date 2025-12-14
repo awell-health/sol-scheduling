@@ -3,8 +3,8 @@
 import { useState, useMemo } from 'react';
 import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
-import { INSURANCE_OPTIONS } from '../../_lib/onboarding/config';
 import { updateLeadAction, getAnyStoredLeadId } from '../../_lib/salesforce';
+import { INSURANCE_OPTIONS, FIELD_REGISTRY, FieldId } from '../../../../lib/fields';
 
 type InsuranceQuestionProps = {
   value: string | null;
@@ -57,15 +57,16 @@ export function InsuranceQuestion({ value, onChange, onContinue }: InsuranceQues
     setIsDropdownOpen(false);
   };
 
+  const insuranceField = FIELD_REGISTRY[FieldId.INSURANCE];
+
   return (
     <div className='mx-auto w-full max-w-2xl space-y-6 px-1 md:px-0'>
       <div>
         <h2 className='text-2xl font-semibold text-primary md:text-3xl'>
-          What insurance do you have?
+          {insuranceField.conversationalQuestion ?? insuranceField.label}
         </h2>
         <p className='mt-2 text-sm text-slate-700 md:mt-3 md:text-lg'>
-          This helps us show you providers who accept your insurance. You can
-          update this later if needed.
+          {insuranceField.conversationalDescription ?? insuranceField.description}
         </p>
       </div>
 

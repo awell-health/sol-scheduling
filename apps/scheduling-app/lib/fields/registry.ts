@@ -133,6 +133,11 @@ export const STATE_OPTIONS: FieldOption[] = [
 ];
 
 /**
+ * Alias for backward compatibility with existing components.
+ */
+export const ALL_US_STATES = STATE_OPTIONS.map(opt => ({ code: opt.value, name: opt.label }));
+
+/**
  * States that SOL currently services.
  */
 export const SUPPORTED_STATE_CODES = [
@@ -155,9 +160,12 @@ export function isSupportedState(code: string): code is SupportedStateCode {
 export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
   [FieldId.STATE]: {
     id: FieldId.STATE,
-    label: 'What state are you in?',
+    label: 'State',
     description: 'We need this to match you with licensed providers.',
     placeholder: 'Select your state',
+    conversationalQuestion: 'In what state are you located?',
+    conversationalDescription:
+      "We'll use this to show you providers who are licensed to practice in your state.",
     inputType: 'state-select',
     validation: z.string().min(2, 'Please select your state'),
     salesforce: {
@@ -172,8 +180,11 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
 
   [FieldId.SERVICE]: {
     id: FieldId.SERVICE,
-    label: 'What type of care are you looking for?',
+    label: 'Service type',
     placeholder: 'Select service type',
+    conversationalQuestion: 'What type of help are you seeking?',
+    conversationalDescription:
+      'Choose the type of care that fits best right now. You can always change this later.',
     inputType: 'select',
     validation: z.string().min(1, 'Please select a service type'),
     salesforce: {
@@ -192,6 +203,9 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
     description:
       "We'll use this number to send updates about your appointment. U.S. numbers only.",
     placeholder: '(555) 555-5555',
+    conversationalQuestion: 'What is your phone number?',
+    conversationalDescription:
+      "We'll use this to send appointment reminders and updates.",
     inputType: 'phone',
     validation: z.string().min(10, 'Please enter a valid phone number'),
     salesforce: {
@@ -208,7 +222,10 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
     label: 'Insurance',
     description:
       "Please confirm your coverage. If you're not sure, you can leave this blank.",
-    placeholder: 'Start typing to search your insurance',
+    placeholder: 'Search insurance carriers…',
+    conversationalQuestion: 'What insurance do you have?',
+    conversationalDescription:
+      'This helps us show you providers who accept your insurance. You can update this later if needed.',
     inputType: 'autocomplete',
     validation: z.string().optional(),
     salesforce: {

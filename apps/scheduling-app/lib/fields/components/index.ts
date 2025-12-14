@@ -5,4 +5,5 @@ export { AutocompleteField } from './AutocompleteField';
 export { CheckboxField } from './CheckboxField';
 export { StateSelectField } from './StateSelectField';
 export { DynamicField } from './DynamicField';
+export { BookingFormFields, type BookingFormFieldsProps } from './BookingFormFields';
 

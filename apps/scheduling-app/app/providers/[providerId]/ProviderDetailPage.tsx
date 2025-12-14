@@ -42,37 +42,15 @@ import { PhoneInput } from '../../../components/ui/phone-input';
 import { Label } from '../../../components/ui/label';
 import { Button } from '../../../components/ui/button';
 import Link from 'next/link';
+import {
+  FieldId,
+  FIELD_REGISTRY,
+  INSURANCE_OPTIONS,
+  useBookingFormFields,
+} from '../../../lib/fields';
 
 const PATIENT_NAME = 'Demo Patient';
 const PLACEHOLDER_AVATAR = '/images/avatar.svg';
-
-const INSURANCE_OPTIONS = [
-  { value: 'Aetna', label: 'Aetna' },
-  { value: 'Allegiance', label: 'Allegiance' },
-  { value: 'BCBS - Anthem', label: 'BCBS - Anthem' },
-  { value: 'BCBS - Empire', label: 'BCBS - Empire' },
-  { value: 'BCBS - Carefirst', label: 'BCBS - Carefirst' },
-  { value: 'BCBS - TX', label: 'BCBS - TX' },
-  { value: 'Cigna', label: 'Cigna' },
-  { value: 'Elevance / Carelon', label: 'Elevance / Carelon' },
-  { value: 'EmblemHealth', label: 'EmblemHealth' },
-  { value: 'First Health', label: 'First Health' },
-  { value: 'Healthfirst', label: 'Healthfirst' },
-  { value: 'Kaiser', label: 'Kaiser' },
-  { value: 'Magnacare', label: 'Magnacare' },
-  { value: 'Medicaid', label: 'Medicaid' },
-  { value: 'Medicare', label: 'Medicare' },
-  { value: 'Multiplan / Claritev', label: 'Multiplan / Claritev' },
-  { value: 'Northwell Direct', label: 'Northwell Direct' },
-  { value: 'Optum', label: 'Optum' },
-  { value: 'Oscar', label: 'Oscar' },
-  { value: 'Oxford', label: 'Oxford' },
-  { value: 'Tricare', label: 'Tricare' },
-  { value: 'UMR', label: 'UMR' },
-  { value: 'UnitedHealthcare', label: 'UnitedHealthcare' },
-  { value: '1199', label: '1199' },
-  { value: 'Other', label: 'Other' }
-];
 
 type BookingState =
   | { status: 'idle' }
@@ -100,9 +78,11 @@ const BookingFormSchema = z.object({
     .refine((val) => val === true, {
       message:
         'You must consent to receiving calls or text messages about this appointment.'
-    })
-      ,
-  insuranceCarrier: z.string().optional()
+    }),
+  insuranceCarrier: z.string().optional(),
+  // Name fields (shown when name_at_booking feature flag is enabled)
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
 });
 
 type BookingFormValues = z.infer<typeof BookingFormSchema>;
@@ -187,7 +167,9 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       phone: '',
       visitMode: undefined,
       consent: false,
-      insuranceCarrier: undefined
+      insuranceCarrier: undefined,
+      firstName: '',
+      lastName: '',
     }
   });
   const {
@@ -222,6 +204,15 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     !isOnboardingComplete ||
     (preferences.state && !isSupportedState(preferences.state));
 
+  // Use field registry to determine which booking fields to show
+  const { shouldShowField } = useBookingFormFields({
+    answeredValues: {
+      [FieldId.PHONE]: preferences.phone,
+      [FieldId.INSURANCE]: preferences.insurance,
+      [FieldId.CONSENT]: preferences.consent,
+    },
+  });
+
   // Pre-fill phone, insurance, and consent from onboarding preferences
   useEffect(() => {
     if (preferences.phone) {
@@ -236,10 +227,13 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     }
   }, [preferences.phone, preferences.insurance, preferences.consent, setValue]);
 
-  // Determine which form fields to show (hide already-answered questions)
-  const showPhoneField = !preferences.phone;
-  const showInsuranceField = !preferences.insurance;
-  const showConsentField = preferences.consent !== true;
+  // Determine which form fields to show (from field registry)
+  const showPhoneField = shouldShowField(FieldId.PHONE);
+  const showInsuranceField = shouldShowField(FieldId.INSURANCE);
+  const showConsentField = shouldShowField(FieldId.CONSENT);
+  // Future: firstName/lastName will automatically show when name_at_booking flag is enabled
+  const showFirstNameField = shouldShowField(FieldId.FIRST_NAME);
+  const showLastNameField = shouldShowField(FieldId.LAST_NAME);
 
   const getLocalDayKey = (date: Date) => {
     const year = date.getFullYear();
@@ -545,15 +539,22 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const leadId = getAnyStoredLeadId();
       
+      // Build user name from form fields if provided, fallback to placeholder
+      const userName = (data.firstName && data.lastName)
+        ? `${data.firstName} ${data.lastName}`
+        : PATIENT_NAME;
+      
       const bookingResult = await bookAppointmentAction({
         eventId: selectedSlot.eventId,
         providerId: selectedSlot.providerId,
         userInfo: {
-          userName: PATIENT_NAME,
+          userName,
           ...(leadId ? { salesforceLeadId: leadId } : {}),
           ...(data.insuranceCarrier
             ? { insuranceCarrier: data.insuranceCarrier }
-            : {})
+            : {}),
+          ...(data.firstName ? { firstName: data.firstName } : {}),
+          ...(data.lastName ? { lastName: data.lastName } : {}),
         },
         locationType: chosenLocation,
         patientTimezone: browserTimezone,
@@ -959,6 +960,65 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
           </div>
 
           <form onSubmit={handleSubmit(handleSubmitBooking)} className='space-y-4'>
+            {/* Name fields (shown when name_at_booking feature flag is enabled) */}
+            {showFirstNameField && (
+              <div className='space-y-1'>
+                <Label htmlFor='firstName'>{FIELD_REGISTRY[FieldId.FIRST_NAME].label}</Label>
+                <Controller
+                  name='firstName'
+                  control={form.control}
+                  render={({ field }) => (
+                    <Input
+                      id='firstName'
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      placeholder={FIELD_REGISTRY[FieldId.FIRST_NAME].placeholder}
+                      className={
+                        errors.firstName
+                          ? 'border-red-500 focus-visible:ring-red-500/20'
+                          : undefined
+                      }
+                    />
+                  )}
+                />
+                {errors.firstName && (
+                  <p className='text-xs font-medium text-red-600'>
+                    {errors.firstName.message}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {showLastNameField && (
+              <div className='space-y-1'>
+                <Label htmlFor='lastName'>{FIELD_REGISTRY[FieldId.LAST_NAME].label}</Label>
+                <Controller
+                  name='lastName'
+                  control={form.control}
+                  render={({ field }) => (
+                    <Input
+                      id='lastName'
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      placeholder={FIELD_REGISTRY[FieldId.LAST_NAME].placeholder}
+                      className={
+                        errors.lastName
+                          ? 'border-red-500 focus-visible:ring-red-500/20'
+                          : undefined
+                      }
+                    />
+                  )}
+                />
+                {errors.lastName && (
+                  <p className='text-xs font-medium text-red-600'>
+                    {errors.lastName.message}
+                  </p>
+                )}
+              </div>
+            )}
+
             {showPhoneField && (
               <div className='space-y-1'>
                 <Label htmlFor='phone'>Mobile number</Label>

@@ -67,6 +67,12 @@ export interface FieldDefinition {
   /** Placeholder text for the input */
   placeholder?: string;
   
+  /** Question text for conversational flows (e.g., "What is your phone number?") */
+  conversationalQuestion?: string;
+  
+  /** Description for conversational flows (more detailed than standard description) */
+  conversationalDescription?: string;
+  
   /** Input type (determines component) */
   inputType: FieldInputType;
   

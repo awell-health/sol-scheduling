@@ -1,7 +1,7 @@
 'use client';
 
-import { SERVICE_OPTIONS } from '../../_lib/onboarding/config';
 import { Button } from '../../../../components/ui/button';
+import { SERVICE_OPTIONS_WITH_DESCRIPTIONS, FIELD_REGISTRY, FieldId } from '../../../../lib/fields';
 
 type ServiceQuestionProps = {
   value: string | null;
@@ -14,23 +14,22 @@ export function ServiceQuestion({
   onChange,
   onContinue
 }: ServiceQuestionProps) {
-
+  const serviceField = FIELD_REGISTRY[FieldId.SERVICE];
   const canContinue = value !== null && value !== '';
 
   return (
     <div className='mx-auto w-full max-w-2xl space-y-4 px-1 md:space-y-6 md:px-0'>
       <div>
         <h2 className='text-2xl font-semibold text-primary md:text-3xl'>
-          What type of help are you seeking?
+          {serviceField.conversationalQuestion ?? serviceField.label}
         </h2>
         <p className='mt-2 text-sm text-slate-700 md:mt-3 md:text-lg'>
-          Choose the type of care that fits best right now. You can always
-          change this later.
+          {serviceField.conversationalDescription ?? serviceField.description}
         </p>
       </div>
 
       <div className='grid gap-3 md:gap-4'>
-        {SERVICE_OPTIONS.map((option) => (
+        {SERVICE_OPTIONS_WITH_DESCRIPTIONS.map((option) => (
           <label
             key={option.value}
             className={`flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 shadow-sm transition hover:border-primary/60 hover:bg-slate-50 md:gap-4 md:px-5 md:py-4 md:text-base ${
