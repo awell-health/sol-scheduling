@@ -36,6 +36,14 @@ function getAwellClient() {
   });
 }
 
+function getSalesforceIdentifierSystem() {
+  const salesforceIdentifierSystem = process.env.SALESFORCE_IDENTIFIER_SYSTEM;
+  if (!salesforceIdentifierSystem) {
+    throw new Error('SALESFORCE_IDENTIFIER_SYSTEM environment variable is not set');
+  }
+  return salesforceIdentifierSystem;
+}
+
 /**
  * Start the intake form flow via Awell API.
  * Starts a care flow and creates a hosted pages session, then redirects to the hosted pages URL.
@@ -53,7 +61,7 @@ export async function startIntakeFormAction(input: StartIntakeFormInput): Promis
         input: {
           pathway_definition_id: INTAKE_CAREFLOW_DEFINITION_ID,
           ...(salesforceLeadId && { patient_identifier: {
-            system: 'https://test-salesforce-url.com',
+            system: getSalesforceIdentifierSystem(),
             value: salesforceLeadId,
           } }),
         },
