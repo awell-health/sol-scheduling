@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { startIntakeFormAction, type EventDetails } from './actions';
-import { getAnyStoredLeadId, clearStoredLeadId } from '../providers/_lib/salesforce';
+import { getAnyStoredLeadId } from '../providers/_lib/salesforce';
 
 type BeginIntakeButtonProps = {
   eventId: string;
@@ -16,9 +16,6 @@ export function BeginIntakeButton({ eventId, eventDetails }: BeginIntakeButtonPr
     setIsLoading(true);
     
     const salesforceLeadId = getAnyStoredLeadId();
-    
-    // Clear the lead ID now that we're starting intake
-    clearStoredLeadId();
     
     await startIntakeFormAction({
       eventId,
