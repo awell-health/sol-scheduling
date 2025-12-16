@@ -25,7 +25,7 @@ import {
   getProviderAction
 } from '../actions';
 import { usePostHog } from 'posthog-js/react';
-import { useOnboarding, isSupportedState } from '../_lib/onboarding';
+import { useOnboarding, isSupportedState, getBorderingTargetState } from '../_lib/onboarding';
 import { getAnyStoredLeadId, captureBookingEventAction } from '../_lib/salesforce';
 import { ProviderBio } from '../components/ProviderBio';
 import { MapPinIcon, VideoCameraIcon } from '../components/icons/ProviderIcons';
@@ -189,11 +189,16 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     }
   }, [isInitialized, isOnboardingComplete, pathname, router]);
 
-  // Redirect to /not-available if state is not supported
+  // Redirect to /not-available or /onboarding/bordering if state is not supported
   useEffect(() => {
     if (isInitialized && isOnboardingComplete && preferences.state) {
       if (!isSupportedState(preferences.state)) {
-        router.replace(`/not-available?state=${preferences.state}`);
+        const borderTarget = getBorderingTargetState(preferences.state);
+        if (borderTarget) {
+          router.replace(`/onboarding/bordering?state=${preferences.state}`);
+        } else {
+          router.replace(`/not-available?state=${preferences.state}`);
+        }
       }
     }
   }, [isInitialized, isOnboardingComplete, preferences.state, router]);

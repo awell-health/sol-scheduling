@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
+import { OnboardingLayoutClient } from './OnboardingLayoutClient';
 
 export const metadata: Metadata = {
   title: 'Get Started | SOL Mental Health',
@@ -17,7 +18,7 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
           </p>
         </div>
       </header>
-      {children}
+      <OnboardingLayoutClient>{children}</OnboardingLayoutClient>
     </>
   );
 }

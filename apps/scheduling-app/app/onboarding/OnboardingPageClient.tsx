@@ -2,14 +2,14 @@
 
 import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { OnboardingProvider, useOnboarding } from '../providers/_lib/onboarding';
+import { useOnboarding } from '../providers/_lib/onboarding';
 import { OnboardingFlow } from '../providers/components/OnboardingFlow';
 
 type OnboardingPageClientProps = {
   target: string;
 };
 
-function OnboardingContent({ target }: { target: string }) {
+export function OnboardingPageClient({ target }: OnboardingPageClientProps) {
   const router = useRouter();
   const { isOnboardingComplete, isInitialized } = useOnboarding();
 
@@ -47,13 +47,5 @@ function OnboardingContent({ target }: { target: string }) {
   }
 
   return <OnboardingFlow onComplete={handleComplete} />;
-}
-
-export function OnboardingPageClient({ target }: OnboardingPageClientProps) {
-  return (
-    <OnboardingProvider>
-      <OnboardingContent target={target} />
-    </OnboardingProvider>
-  );
 }
 

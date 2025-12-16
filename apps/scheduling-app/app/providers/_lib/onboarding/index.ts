@@ -14,6 +14,8 @@ export {
   ALL_US_STATES,
   SUPPORTED_STATE_CODES,
   isSupportedState,
+  BORDERING_STATE_MAP,
+  getBorderingTargetState,
   type SupportedStateCode
 } from './config';
 

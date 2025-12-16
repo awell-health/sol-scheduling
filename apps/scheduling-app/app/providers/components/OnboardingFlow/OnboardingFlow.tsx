@@ -4,7 +4,7 @@ import { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useOnboarding } from '../../_lib/onboarding/OnboardingContext';
 import { OnboardingStep } from '../../_lib/onboarding/types';
-import { isSupportedState } from '../../_lib/onboarding/config';
+import { isSupportedState, getBorderingTargetState } from '../../_lib/onboarding/config';
 import { StateQuestion } from './StateQuestion';
 import { ServiceQuestion } from './ServiceQuestion';
 import { PhoneQuestion } from './PhoneQuestion';
@@ -84,9 +84,15 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     if (isOnboardingComplete) {
       const { state } = preferences;
       
-      // Redirect to /not-available if state is not supported
+      // Check if state is not supported
       if (state && !isSupportedState(state)) {
-        router.push(`/not-available?state=${state}`);
+        // Check if it's a bordering state that can be redirected
+        const borderTarget = getBorderingTargetState(state);
+        if (borderTarget) {
+          router.push(`/onboarding/bordering?state=${state}`);
+        } else {
+          router.push(`/not-available?state=${state}`);
+        }
         return;
       }
 

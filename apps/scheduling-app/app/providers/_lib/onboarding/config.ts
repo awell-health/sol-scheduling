@@ -142,11 +142,9 @@ export const ALL_US_STATES = [
 export const SUPPORTED_STATE_CODES = [
   'AZ',
   'CO',
-  'CT',
   'FL',
   'IL',
   'MD',
-  'NJ',
   'NY',
   'TX',
   'VA'
@@ -156,5 +154,22 @@ export type SupportedStateCode = (typeof SUPPORTED_STATE_CODES)[number];
 
 export function isSupportedState(code: string): code is SupportedStateCode {
   return SUPPORTED_STATE_CODES.includes(code as SupportedStateCode);
+}
+
+/**
+ * States that border a supported state and can be redirected there.
+ * Maps unsupported state code -> supported state code to redirect to.
+ */
+export const BORDERING_STATE_MAP: Record<string, SupportedStateCode> = {
+  'NJ': 'NY',
+  'CT': 'NY',
+} as const;
+
+/**
+ * Check if a state is a bordering state that can be redirected.
+ * Returns the target supported state code if it is, null otherwise.
+ */
+export function getBorderingTargetState(code: string): SupportedStateCode | null {
+  return BORDERING_STATE_MAP[code] ?? null;
 }
 

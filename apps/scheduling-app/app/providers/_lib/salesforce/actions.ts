@@ -102,6 +102,8 @@ export interface UpdateLeadInput {
   leadId: string;
   /** Insurance carrier name */
   insurance?: string;
+  /** State code (e.g., 'NY', 'CA') */
+  state?: string;
 }
 
 /**
@@ -315,7 +317,7 @@ export async function createLeadAction(
 }
 
 /**
- * Update an existing Salesforce lead with insurance info
+ * Update an existing Salesforce lead with insurance or state info
  */
 export async function updateLeadAction(
   input: UpdateLeadInput
@@ -328,6 +330,11 @@ export async function updateLeadAction(
     if (input.insurance) {
       const insuranceWriteField = getSalesforceWriteField(FieldId.INSURANCE);
       updateData[insuranceWriteField] = input.insurance;
+    }
+    
+    if (input.state) {
+      const stateWriteField = getSalesforceWriteField(FieldId.STATE);
+      updateData[stateWriteField] = input.state;
     }
     
     if (Object.keys(updateData).length > 0) {
@@ -347,6 +354,7 @@ export async function updateLeadAction(
       params: {
         leadId: input.leadId,
         hasInsurance: !!input.insurance,
+        hasState: !!input.state,
       },
     });
     return {
