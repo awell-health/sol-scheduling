@@ -29,7 +29,7 @@ export function BeginIntakeButton({ eventId, eventDetails }: BeginIntakeButtonPr
       type='button'
       onClick={handleClick}
       disabled={isLoading}
-      className='inline-flex h-11 items-center justify-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:opacity-50'
+      className='inline-flex h-11 w-full items-center justify-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:opacity-50 sm:w-auto'
     >
       {isLoading ? 'Starting…' : 'Complete your booking'}
     </button>

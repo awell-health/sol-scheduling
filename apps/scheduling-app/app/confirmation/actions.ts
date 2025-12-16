@@ -13,7 +13,6 @@ export type EventDetails = {
   duration?: string;
   locationType?: string;
   facility?: string;
-  state?: string;
 };
 
 export type StartIntakeFormInput = {

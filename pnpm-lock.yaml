@@ -28,8 +28,8 @@ importers:
   apps/scheduling-app:
     dependencies:
       '@awell-health/awell-sdk':
-        specifier: ^0.1.26
-        version: 0.1.26(enquirer@2.4.1)
+        specifier: ^0.1.27
+        version: 0.1.27(enquirer@2.4.1)
       '@awell-health/sol-scheduling':
         specifier: workspace:*
         version: link:../../packages/scheduler
@@ -390,8 +390,8 @@ packages:
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
 
-  '@awell-health/awell-sdk@0.1.26':
-    resolution: {integrity: sha512-l0So4RF/+Rr1gJ3zwUIo1hrS7bUgqYy8ZNQPGTJbYFxyNckJxAgdNLO/eOmzKeKtR+OSBobpoYQWfkk/X+8jfQ==}
+  '@awell-health/awell-sdk@0.1.27':
+    resolution: {integrity: sha512-EMyJ0gF7f4VWY2bkf8MDq4c2/b/5mDGjz3DrPWavBwn308INE4si39lws2aV3ZfF8pmtCmUaCxeahA6ujG3viw==}
 
   '@awell-health/design-system@0.12.62':
     resolution: {integrity: sha512-YGEG4Zji4JJkbY82sEszdCzRn8daO+7f+R8SzdT+7UbOBJxTW1oMGsU273A4myoTRYJ2QbRp0Wd8lp0O9NRdag==}
@@ -8253,7 +8253,7 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
 
-  '@awell-health/awell-sdk@0.1.26(enquirer@2.4.1)':
+  '@awell-health/awell-sdk@0.1.27(enquirer@2.4.1)':
     dependencies:
       '@genql/cli': 6.3.3(enquirer@2.4.1)
       '@medplum/fhirtypes': 3.3.0

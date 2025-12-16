@@ -19,8 +19,6 @@ type ConfirmationPageProps = {
     duration?: string;
     locationType?: string;
     facility?: string;
-    state?: string;
-    returnUrl?: string;
   }>;
 };
 
@@ -37,7 +35,6 @@ export default async function AppointmentConfirmationPage({
     providerImage,
     duration,
     facility,
-    state,
     locationType
   } = await searchParams;
 
@@ -50,7 +47,6 @@ export default async function AppointmentConfirmationPage({
     duration,
     locationType,
     facility,
-    state,
   };
 
   const formattedDateTime = startsAt
@@ -65,19 +61,15 @@ export default async function AppointmentConfirmationPage({
 
   const fullLocation = [
     locationLabel,
-    facility ? `· ${facility}` : null,
-    state ? `· ${state}` : null
+    facility ? `· ${facility}` : null
   ]
     .filter(Boolean)
     .join(' ');
 
   return (
-    <main className='min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8'>
+    <main className='min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8'>
       <div className='mx-auto flex min-h-[70vh] max-w-3xl flex-col gap-6'>
         <header className='space-y-1'>
-          <p className='text-sm font-semibold uppercase tracking-wide text-secondary-foreground'>
-            SOL Mental Health
-          </p>
           <h1 className='text-3xl font-bold text-primary'>
             Your appointment is selected
           </h1>

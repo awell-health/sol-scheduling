@@ -4,6 +4,8 @@ import { getSalesforceClient } from '../../../../lib/salesforce';
 import PostHogClient from '../../../../posthog';
 import { mapServiceToSalesforce, mapSalesforceToService, mapConsentToSalesforce } from './transformers';
 import { FieldId, getSalesforceReadField, getSalesforceWriteField } from '../../../../lib/fields';
+import { start } from 'workflow/api';
+import { reengagementCareflowWorkflow } from '../../../../lib/workflow';
 
 /**
  * Lead data returned from Salesforce when fetching by ID.
@@ -180,37 +182,35 @@ export async function createLeadAction(
   const stateWriteField = getSalesforceWriteField(FieldId.STATE);
   const insuranceWriteField = getSalesforceWriteField(FieldId.INSURANCE);
 
+  console.log('[createLeadAction] Creating lead with data:', {
+    phone: input.phone,
+    state: input.state,
+    service: input.service,
+    insurance: input.insurance,
+    consent: input.consent,
+    posthogDistinctId: input.posthogDistinctId,
+    utmSource: input.utmSource,
+    utmMedium: input.utmMedium,
+    utmCampaign: input.utmCampaign,
+  });
+
+  // --- Step 1: Get or create lead ID ---
+  let leadId: string;
+  let isNewLead = false;
+
   try {
-    console.log('[createLeadAction] Creating lead with data:', {
-      phone: input.phone,
-      state: input.state,
-      service: input.service,
-      insurance: input.insurance,
-      consent: input.consent,
-      posthogDistinctId: input.posthogDistinctId,
-      utmSource: input.utmSource,
-      utmMedium: input.utmMedium,
-      utmCampaign: input.utmCampaign,
-    });
-    
     const leadData = {
-      // Required fields matching other booking systems (Salesforce-specific, not in registry)
       RecordTypeId: '0125w000000BRDxAAO',
       FirstName: 'TEST first',
       LastName: 'TEST last',
       LeadSource: 'Website - Online Booking',
       Status: 'New',
       Inquiry_Date__c: new Date().toISOString(),
-      // Phone is required by LeadCreateData type - must use literal property name
       Phone: input.phone,
-      // Optional user-facing fields from registry
       ...(input.state && { [stateWriteField]: input.state }),
       ...(input.insurance && { [insuranceWriteField]: input.insurance }),
-      // Service type boolean fields (compound mapping via transformer)
       ...serviceFields,
-      // Contact consent fields (compound mapping via transformer)
       ...consentFields,
-      // UTM tracking (not in registry - marketing-specific)
       ...(input.utmSource && { UTM_Source__c: input.utmSource }),
       ...(input.utmMedium && { UTM_Medium__c: input.utmMedium }),
       ...(input.utmCampaign && { UTM_Campaign__c: input.utmCampaign }),
@@ -219,101 +219,89 @@ export async function createLeadAction(
     const result = await client.createLead(leadData);
 
     if (!result.success) {
-      throw new Error(`[createLeadAction] Failed to create lead: ${JSON.stringify(result.errors)}`);
+      throw new Error(`Failed to create lead: ${JSON.stringify(result.errors)}`);
     }
 
-    // Link to PostHog if we have a distinct ID
-    if (input.posthogDistinctId) {
-      const posthog = PostHogClient();
-      posthog.identify({
-        distinctId: input.posthogDistinctId,
-        properties: {
-          salesforce_lead_id: result.id,
-        },
-      });
-      posthog.capture({
-        distinctId: input.posthogDistinctId,
-        event: 'lead_created',
-        properties: {
-          salesforce_lead_id: result.id,
-        },
-      });
-      await posthog.flush();
-    }
-
-    return { success: true, leadId: result.id };
+    leadId = result.id;
+    isNewLead = true;
   } catch (error) {
     // Check if this is a duplicate detection error
     const errorMessage = error instanceof Error ? error.message : '';
     const duplicateLeadId = extractDuplicateLeadId(errorMessage);
 
-    if (duplicateLeadId) {
-      console.log('[createLeadAction] Duplicate detected, updating existing lead:', duplicateLeadId);
-
-      try {
-        // Build update data with all the fields we would have created with
-        const updateData: Record<string, unknown> = {
-          // Update optional fields from registry
-          ...(input.state && { [stateWriteField]: input.state }),
-          ...(input.insurance && { [insuranceWriteField]: input.insurance }),
-          // Service type boolean fields
-          ...serviceFields,
-          // Contact consent fields (timestamp only set if not already set - handled by transformer)
-          ...consentFields,
-          // UTM tracking
-          ...(input.utmSource && { UTM_Source__c: input.utmSource }),
-          ...(input.utmMedium && { UTM_Medium__c: input.utmMedium }),
-          ...(input.utmCampaign && { UTM_Campaign__c: input.utmCampaign }),
-        };
-
-        await client.updateLead(duplicateLeadId, updateData);
-
-        // Link to PostHog if we have a distinct ID
-        if (input.posthogDistinctId) {
-          const posthog = PostHogClient();
-          posthog.identify({
-            distinctId: input.posthogDistinctId,
-            properties: {
-              salesforce_lead_id: duplicateLeadId,
-            },
-          });
-          posthog.capture({
-            distinctId: input.posthogDistinctId,
-            event: 'lead_updated_from_duplicate',
-            properties: {
-              salesforce_lead_id: duplicateLeadId,
-            },
-          });
-          await posthog.flush();
-        }
-
-        return { success: true, leadId: duplicateLeadId };
-      } catch (updateError) {
-        console.error('[createLeadAction] Failed to update duplicate lead:', {
-          error: updateError,
-          leadId: duplicateLeadId,
-        });
-        // Still return success with the lead ID since we found it
-        return { success: true, leadId: duplicateLeadId };
-      }
+    if (!duplicateLeadId) {
+      // Not a duplicate error - actual failure
+      console.error('[createLeadAction] Failed to create Salesforce lead:', {
+        error,
+        params: {
+          phone: input.phone ? `***${input.phone.slice(-4)}` : undefined,
+          state: input.state,
+          service: input.service,
+          consent: input.consent,
+          hasPosthogId: !!input.posthogDistinctId,
+        },
+      });
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
 
-    console.error('[createLeadAction] Failed to create Salesforce lead:', {
-      error,
-      // Log params but mask phone for privacy
-      params: {
-        phone: input.phone ? `***${input.phone.slice(-4)}` : undefined,
-        state: input.state,
-        service: input.service,
-        consent: input.consent,
-        hasPosthogId: !!input.posthogDistinctId,
-      },
-    });
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    // Duplicate detected - update existing lead
+    console.log('[createLeadAction] Duplicate detected, updating existing lead:', duplicateLeadId);
+    leadId = duplicateLeadId;
+
+    try {
+      const updateData: Record<string, unknown> = {
+        Status: 'New', // Reset status so returning users get re-engaged
+        ...(input.state && { [stateWriteField]: input.state }),
+        ...(input.insurance && { [insuranceWriteField]: input.insurance }),
+        ...serviceFields,
+        ...consentFields,
+        ...(input.utmSource && { UTM_Source__c: input.utmSource }),
+        ...(input.utmMedium && { UTM_Medium__c: input.utmMedium }),
+        ...(input.utmCampaign && { UTM_Campaign__c: input.utmCampaign }),
+      };
+      await client.updateLead(duplicateLeadId, updateData);
+    } catch (updateError) {
+      // Log but don't fail - we still have the lead ID
+      console.error('[createLeadAction] Failed to update duplicate lead:', {
+        error: updateError,
+        leadId: duplicateLeadId,
+      });
+    }
   }
+
+  // --- Step 2: Link to PostHog ---
+  if (input.posthogDistinctId) {
+    const posthog = PostHogClient();
+    posthog.identify({
+      distinctId: input.posthogDistinctId,
+      properties: { salesforce_lead_id: leadId },
+    });
+    posthog.capture({
+      distinctId: input.posthogDistinctId,
+      event: isNewLead ? 'lead_created' : 'lead_updated_from_duplicate',
+      properties: { salesforce_lead_id: leadId },
+    });
+    await posthog.flush();
+  }
+
+  console.log('[createLeadAction] Lead ID:', leadId);
+
+  // --- Step 3: Start re-engagement careflow workflow (durable) ---
+  try {
+    const run = await start(reengagementCareflowWorkflow, [{
+      salesforceLeadId: leadId,
+      phone: input.phone,
+      state: input.state ?? undefined,
+    }]);
+    console.log('[createLeadAction] Re-engagement workflow started:', { leadId, isNewLead, runId: run.runId });
+  } catch (err) {
+    console.error('[createLeadAction] Failed to start re-engagement workflow:', err);
+  }
+
+  return { success: true, leadId };
 }
 
 /**
