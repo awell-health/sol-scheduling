@@ -99,32 +99,6 @@ export interface FieldDefinition {
 }
 
 /**
- * Props passed to field components.
- */
-export interface FieldComponentProps {
-  /** Field definition */
-  definition: FieldDefinition;
-  
-  /** Current value */
-  value: string | boolean | null;
-  
-  /** Change handler */
-  onChange: (value: string | boolean | null) => void;
-  
-  /** Blur handler */
-  onBlur?: () => void;
-  
-  /** Error message (if validation failed) */
-  error?: string;
-  
-  /** Whether field is disabled */
-  disabled?: boolean;
-  
-  /** Auto-focus this field */
-  autoFocus?: boolean;
-}
-
-/**
  * Collected field values (used for form state).
  */
 export type FieldValues = Partial<Record<FieldId, string | boolean | null>>;
