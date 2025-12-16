@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isValidPhoneNumber } from '../../components/ui/phone-input';
 import { FieldId, type FieldDefinition, type FieldOption } from './types';
 
 // =============================================================================
@@ -209,7 +210,19 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
     conversationalDescription:
       "We'll use this to send appointment reminders and updates.",
     inputType: 'phone',
-    validation: z.string().min(10, 'Please enter a valid phone number'),
+    validation: z
+      .string()
+      .nonempty('Mobile number is required')
+      .refine(
+        (value) => {
+          try {
+            return isValidPhoneNumber(value, 'US');
+          } catch {
+            return false;
+          }
+        },
+        { message: 'Please enter a valid U.S. phone number.' }
+      ),
     salesforce: {
       read: 'Phone',
       write: 'Phone',
@@ -323,4 +336,81 @@ export function getSalesforceFieldMap(): Record<string, { read: string; write: s
   }
   return map;
 }
+
+/**
+ * Build a Zod schema from a list of field IDs.
+ * Useful for creating form validation schemas from the registry.
+ */
+export function buildSchemaFromFields(fieldIds: FieldId[]): z.ZodObject<Record<string, z.ZodTypeAny>> {
+  const shape: Record<string, z.ZodTypeAny> = {};
+  for (const id of fieldIds) {
+    const field = FIELD_REGISTRY[id];
+    if (field) {
+      shape[id] = field.validation;
+    }
+  }
+  return z.object(shape);
+}
+
+/**
+ * Build a Zod schema for booking form fields.
+ * Includes all fields in the 'booking' context plus visitMode.
+ */
+export function buildBookingFormSchema() {
+  const bookingFields = getFieldsForContext('booking');
+  const shape: Record<string, z.ZodTypeAny> = {};
+  
+  for (const field of bookingFields) {
+    shape[field.id] = field.validation;
+  }
+  
+  // visitMode is slot-dependent, not in registry
+  shape.visitMode = z.enum(['In-Person', 'Telehealth']).optional();
+  
+  return z.object(shape);
+}
+
+/**
+ * Get the Salesforce read field name for a field ID.
+ * Returns the raw field name(s) from the registry.
+ */
+export function getSalesforceReadField(fieldId: FieldId): string {
+  return FIELD_REGISTRY[fieldId].salesforce.read;
+}
+
+/**
+ * Get the Salesforce write field name for a field ID.
+ * Returns the raw field name(s) from the registry.
+ */
+export function getSalesforceWriteField(fieldId: FieldId): string {
+  return FIELD_REGISTRY[fieldId].salesforce.write;
+}
+
+/**
+ * Get the localStorage key for a field ID.
+ * Returns null if the field is not stored in localStorage.
+ */
+export function getStorageKey(fieldId: FieldId): string | null {
+  return FIELD_REGISTRY[fieldId].storageKey;
+}
+
+/**
+ * Get all field IDs that should be stored in localStorage.
+ * Useful for iterating over storable preferences.
+ */
+export function getStorableFieldIds(): FieldId[] {
+  return Object.values(FIELD_REGISTRY)
+    .filter((field) => field.storageKey !== null)
+    .map((field) => field.id);
+}
+
+/**
+ * Storage keys for onboarding preferences.
+ * Derived from the registry - this is the single source of truth.
+ */
+export const ONBOARDING_STORAGE_KEYS = Object.fromEntries(
+  Object.values(FIELD_REGISTRY)
+    .filter((field) => field.storageKey !== null)
+    .map((field) => [field.id, field.storageKey])
+) as Record<FieldId, string>;
 

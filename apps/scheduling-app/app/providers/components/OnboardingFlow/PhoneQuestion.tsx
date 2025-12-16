@@ -75,6 +75,7 @@ export function PhoneQuestion({
         phone: e164Phone,
         state: state ?? undefined,
         service: service ?? undefined,
+        consent: consent ?? undefined,
         posthogDistinctId: posthog.get_distinct_id(),
       })
         .then((result) => {

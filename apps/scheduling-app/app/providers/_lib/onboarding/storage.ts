@@ -1,4 +1,5 @@
 import type { OnboardingPreferences } from './types';
+import { FieldId, ONBOARDING_STORAGE_KEYS } from '../../../../lib/fields';
 
 /**
  * Single localStorage key for all onboarding data.
@@ -8,15 +9,21 @@ export const STORAGE_KEYS = {
   ONBOARDING: 'sol.onboarding'
 } as const;
 
+// Storage keys from the field registry - single source of truth
+const KEYS = {
+  state: ONBOARDING_STORAGE_KEYS[FieldId.STATE],
+  service: ONBOARDING_STORAGE_KEYS[FieldId.SERVICE],
+  phone: ONBOARDING_STORAGE_KEYS[FieldId.PHONE],
+  insurance: ONBOARDING_STORAGE_KEYS[FieldId.INSURANCE],
+  consent: ONBOARDING_STORAGE_KEYS[FieldId.CONSENT],
+} as const;
+
 /**
- * Shape of the stored onboarding data
+ * Shape of the stored onboarding data.
+ * Keys derived from the field registry.
  */
 interface StoredOnboardingData {
-  state?: string;
-  service?: string;
-  phone?: string;
-  insurance?: string;
-  consent?: boolean;
+  [key: string]: string | boolean | undefined;
   updatedAt?: string;
 }
 
@@ -52,6 +59,7 @@ function readStoredData(): StoredOnboardingData | null {
 
 /**
  * Read all onboarding preferences from localStorage.
+ * Uses storage keys from the field registry.
  */
 export function readPreferencesFromStorage(): OnboardingPreferences {
   const data = readStoredData();
@@ -61,17 +69,18 @@ export function readPreferencesFromStorage(): OnboardingPreferences {
   }
 
   return {
-    state: data.state ?? null,
-    service: data.service ?? null,
-    phone: data.phone ?? null,
-    insurance: data.insurance ?? null,
-    consent: data.consent ?? null
+    state: (data[KEYS.state] as string) ?? null,
+    service: (data[KEYS.service] as string) ?? null,
+    phone: (data[KEYS.phone] as string) ?? null,
+    insurance: (data[KEYS.insurance] as string) ?? null,
+    consent: (data[KEYS.consent] as boolean) ?? null
   };
 }
 
 /**
  * Write onboarding preferences to localStorage.
  * Merges with existing data; null/empty values remove that key.
+ * Uses storage keys from the field registry.
  */
 export function writePreferencesToStorage(
   prefs: Partial<OnboardingPreferences>
@@ -84,24 +93,31 @@ export function writePreferencesToStorage(
   // Merge preferences
   const updated: StoredOnboardingData = { ...existing };
   
-  // Handle string preferences
-  for (const key of ['state', 'service', 'phone', 'insurance'] as const) {
-    if (key in prefs) {
-      const value = prefs[key];
+  // Handle string preferences using registry keys
+  const stringFields: Array<{ pref: keyof OnboardingPreferences; key: string }> = [
+    { pref: 'state', key: KEYS.state },
+    { pref: 'service', key: KEYS.service },
+    { pref: 'phone', key: KEYS.phone },
+    { pref: 'insurance', key: KEYS.insurance },
+  ];
+  
+  for (const { pref, key } of stringFields) {
+    if (pref in prefs) {
+      const value = prefs[pref];
       if (value === null || value === undefined || value === '') {
         delete updated[key];
       } else {
-        updated[key] = value;
+        updated[key] = value as string;
       }
     }
   }
   
-  // Handle consent (boolean)
+  // Handle consent (boolean) using registry key
   if ('consent' in prefs) {
     if (prefs.consent === null || prefs.consent === undefined) {
-      delete updated.consent;
+      delete updated[KEYS.consent];
     } else {
-      updated.consent = prefs.consent;
+      updated[KEYS.consent] = prefs.consent;
     }
   }
   
@@ -122,9 +138,10 @@ export function clearPreferencesStorage(): void {
 
 /**
  * Get the stored phone number (useful for pre-filling forms)
+ * Uses storage key from the field registry.
  */
 export function getStoredPhone(): string | null {
   const data = readStoredData();
-  return data?.phone ?? null;
+  return (data?.[KEYS.phone] as string) ?? null;
 }
 

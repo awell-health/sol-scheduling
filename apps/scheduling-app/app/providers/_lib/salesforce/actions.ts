@@ -3,6 +3,7 @@
 import { getSalesforceClient } from '../../../../lib/salesforce';
 import PostHogClient from '../../../../posthog';
 import { mapServiceToSalesforce, mapSalesforceToService, mapConsentToSalesforce } from './transformers';
+import { FieldId, getSalesforceReadField, getSalesforceWriteField } from '../../../../lib/fields';
 
 /**
  * Lead data returned from Salesforce when fetching by ID.
@@ -38,19 +39,26 @@ export async function getLeadAction(
     const rawLead = await client.getLead(leadId);
     console.log('[getLeadAction] Raw lead data:', rawLead);
 
+    // Get Salesforce field names from registry
+    const phoneField = getSalesforceReadField(FieldId.PHONE);
+    const stateField = getSalesforceReadField(FieldId.STATE);
+    const insuranceField = getSalesforceReadField(FieldId.INSURANCE);
+    const consentField = getSalesforceReadField(FieldId.CONSENT);
+    // SERVICE maps to two boolean fields - handled by transformer
+    
     // Extract boolean fields for service type
     const medication = typeof rawLead.Medication__c === 'boolean' ? rawLead.Medication__c : null;
     const therapy = typeof rawLead.Therapy__c === 'boolean' ? rawLead.Therapy__c : null;
 
-    // Map Salesforce fields to our schema
+    // Map Salesforce fields to our schema using registry field names
     const lead: SalesforceLeadData = {
       id: leadId,
-      phone: typeof rawLead.Phone === 'string' ? rawLead.Phone : null,
-      state: typeof rawLead.Market__c === 'string' ? rawLead.Market__c : null,
-      insurance: typeof rawLead.Insurance_Company_Name__c === 'string' ? rawLead.Insurance_Company_Name__c : null,
-      // Derive service type from Medication__c and Therapy__c boolean fields
+      phone: typeof rawLead[phoneField] === 'string' ? rawLead[phoneField] : null,
+      state: typeof rawLead[stateField] === 'string' ? rawLead[stateField] : null,
+      insurance: typeof rawLead[insuranceField] === 'string' ? rawLead[insuranceField] : null,
+      // Derive service type from Medication__c and Therapy__c boolean fields (compound mapping)
       service: mapSalesforceToService(medication, therapy),
-      consent: typeof rawLead.Contact_Consent__c === 'boolean' ? rawLead.Contact_Consent__c : null,
+      consent: typeof rawLead[consentField] === 'boolean' ? rawLead[consentField] : null,
       consentTimestamp: typeof rawLead.Contact_Consent_Timestamp__c === 'string' ? rawLead.Contact_Consent_Timestamp__c : null,
     };
 
@@ -119,14 +127,58 @@ export interface UpdateLeadBookingInput {
 }
 
 /**
+ * Extract duplicate lead ID from a Salesforce DUPLICATES_DETECTED error.
+ * Returns the lead ID if found, null otherwise.
+ */
+function extractDuplicateLeadId(errorMessage: string): string | null {
+  try {
+    // Error format: "Salesforce API error: 400 [JSON array]"
+    const jsonMatch = errorMessage.match(/\[[\s\S]*\]$/);
+    if (!jsonMatch) return null;
+
+    const errors = JSON.parse(jsonMatch[0]) as Array<{
+      errorCode?: string;
+      duplicateResult?: {
+        matchResults?: Array<{
+          matchRecords?: Array<{
+            record?: { Id?: string };
+          }>;
+        }>;
+      };
+    }>;
+
+    const duplicateError = errors.find((e) => e.errorCode === 'DUPLICATES_DETECTED');
+    if (!duplicateError?.duplicateResult?.matchResults?.[0]?.matchRecords?.[0]?.record?.Id) {
+      return null;
+    }
+
+    return duplicateError.duplicateResult.matchResults[0].matchRecords[0].record.Id;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Create a new Salesforce lead when phone number is captured.
  * Uses the same field mapping as the Website - Online Booking source.
+ * If a duplicate is detected, updates the existing lead instead.
  */
 export async function createLeadAction(
   input: CreateLeadInput
 ): Promise<{ success: boolean; leadId?: string; error?: string }> {
+  const client = getSalesforceClient();
+
+  // Transform service type to Salesforce boolean fields
+  const serviceFields = input.service ? mapServiceToSalesforce(input.service) : {};
+  
+  // Transform consent to include timestamp (only on first consent)
+  const consentFields = input.consent !== undefined ? mapConsentToSalesforce(input.consent) : {};
+
+  // Get Salesforce field names from registry for optional fields
+  const stateWriteField = getSalesforceWriteField(FieldId.STATE);
+  const insuranceWriteField = getSalesforceWriteField(FieldId.INSURANCE);
+
   try {
-    const client = getSalesforceClient();
     console.log('[createLeadAction] Creating lead with data:', {
       phone: input.phone,
       state: input.state,
@@ -138,30 +190,25 @@ export async function createLeadAction(
       utmMedium: input.utmMedium,
       utmCampaign: input.utmCampaign,
     });
-
-    // Transform service type to Salesforce boolean fields
-    const serviceFields = input.service ? mapServiceToSalesforce(input.service) : {};
     
-    // Transform consent to include timestamp (only on first consent)
-    const consentFields = input.consent !== undefined ? mapConsentToSalesforce(input.consent) : {};
-
     const leadData = {
-      // Required fields matching other booking systems
+      // Required fields matching other booking systems (Salesforce-specific, not in registry)
       RecordTypeId: '0125w000000BRDxAAO',
       FirstName: 'TEST first',
       LastName: 'TEST last',
       LeadSource: 'Website - Online Booking',
       Status: 'New',
       Inquiry_Date__c: new Date().toISOString(),
+      // Phone is required by LeadCreateData type - must use literal property name
       Phone: input.phone,
-      // Optional fields
-      ...(input.state && { Market__c: input.state }),
-      ...(input.insurance && { Insurance_Company_Name__c: input.insurance }),
-      // Service type boolean fields
+      // Optional user-facing fields from registry
+      ...(input.state && { [stateWriteField]: input.state }),
+      ...(input.insurance && { [insuranceWriteField]: input.insurance }),
+      // Service type boolean fields (compound mapping via transformer)
       ...serviceFields,
-      // Contact consent fields (with timestamp)
+      // Contact consent fields (compound mapping via transformer)
       ...consentFields,
-      // UTM tracking
+      // UTM tracking (not in registry - marketing-specific)
       ...(input.utmSource && { UTM_Source__c: input.utmSource }),
       ...(input.utmMedium && { UTM_Medium__c: input.utmMedium }),
       ...(input.utmCampaign && { UTM_Campaign__c: input.utmCampaign }),
@@ -194,6 +241,61 @@ export async function createLeadAction(
 
     return { success: true, leadId: result.id };
   } catch (error) {
+    // Check if this is a duplicate detection error
+    const errorMessage = error instanceof Error ? error.message : '';
+    const duplicateLeadId = extractDuplicateLeadId(errorMessage);
+
+    if (duplicateLeadId) {
+      console.log('[createLeadAction] Duplicate detected, updating existing lead:', duplicateLeadId);
+
+      try {
+        // Build update data with all the fields we would have created with
+        const updateData: Record<string, unknown> = {
+          // Update optional fields from registry
+          ...(input.state && { [stateWriteField]: input.state }),
+          ...(input.insurance && { [insuranceWriteField]: input.insurance }),
+          // Service type boolean fields
+          ...serviceFields,
+          // Contact consent fields (timestamp only set if not already set - handled by transformer)
+          ...consentFields,
+          // UTM tracking
+          ...(input.utmSource && { UTM_Source__c: input.utmSource }),
+          ...(input.utmMedium && { UTM_Medium__c: input.utmMedium }),
+          ...(input.utmCampaign && { UTM_Campaign__c: input.utmCampaign }),
+        };
+
+        await client.updateLead(duplicateLeadId, updateData);
+
+        // Link to PostHog if we have a distinct ID
+        if (input.posthogDistinctId) {
+          const posthog = PostHogClient();
+          posthog.identify({
+            distinctId: input.posthogDistinctId,
+            properties: {
+              salesforce_lead_id: duplicateLeadId,
+            },
+          });
+          posthog.capture({
+            distinctId: input.posthogDistinctId,
+            event: 'lead_updated_from_duplicate',
+            properties: {
+              salesforce_lead_id: duplicateLeadId,
+            },
+          });
+          await posthog.flush();
+        }
+
+        return { success: true, leadId: duplicateLeadId };
+      } catch (updateError) {
+        console.error('[createLeadAction] Failed to update duplicate lead:', {
+          error: updateError,
+          leadId: duplicateLeadId,
+        });
+        // Still return success with the lead ID since we found it
+        return { success: true, leadId: duplicateLeadId };
+      }
+    }
+
     console.error('[createLeadAction] Failed to create Salesforce lead:', {
       error,
       // Log params but mask phone for privacy
@@ -222,13 +324,20 @@ export async function updateLeadAction(
     const client = getSalesforceClient();
 
     const updateData: Record<string, unknown> = {};
-
+    
     if (input.insurance) {
-      updateData.Insurance_Company_Name__c = input.insurance;
+      const insuranceWriteField = getSalesforceWriteField(FieldId.INSURANCE);
+      updateData[insuranceWriteField] = input.insurance;
     }
-
+    
     if (Object.keys(updateData).length > 0) {
+      console.log('[updateLeadAction] Updating lead with data:', {
+        leadId: input.leadId,
+        updateData
+      });
       await client.updateLead(input.leadId, updateData);
+    } else {
+      console.log('[updateLeadAction] No data to update for lead:', { leadId: input.leadId });
     }
 
     return { success: true };

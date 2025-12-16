@@ -124,7 +124,7 @@ export function InsuranceQuestion({ value, onChange, onContinue }: InsuranceQues
             // Fire-and-forget: Update the lead with insurance info
             const leadId = getAnyStoredLeadId();
             if (leadId && value) {
-              updateLeadAction({ leadId, insurance: value }).catch((error) => {
+              void updateLeadAction({ leadId, insurance: value }).catch((error) => {
                 console.error('Failed to update lead insurance:', error);
               });
             }

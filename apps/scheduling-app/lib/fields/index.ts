@@ -23,6 +23,13 @@ export {
   getField,
   getFieldsForContext,
   getSalesforceFieldMap,
+  buildSchemaFromFields,
+  buildBookingFormSchema,
+  getSalesforceReadField,
+  getSalesforceWriteField,
+  getStorageKey,
+  getStorableFieldIds,
+  ONBOARDING_STORAGE_KEYS,
   type SupportedStateCode,
 } from './registry';
 
