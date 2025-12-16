@@ -35,7 +35,7 @@ export const Scheduler: FC<SchedulerProps> = ({
   const {
     title = 'Schedule an appointment with',
     selectSlot = 'Select a time slot',
-    button = 'Book appointment'
+    button = 'Select Time'
   } = text || {};
 
   const { allowSchedulingInThePast = false } = opts || {};

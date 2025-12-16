@@ -256,10 +256,10 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
   [FieldId.CONSENT]: {
     id: FieldId.CONSENT,
     label:
-      'I consent to receiving calls or text messages at this number about this appointment (not for marketing messages).',
+      'I consent to receiving calls or text messages at this number about scheduling details (not for marketing messages).',
     inputType: 'checkbox',
     validation: z.boolean().refine((val) => val === true, {
-      message: 'You must consent to receiving calls or text messages about this appointment.',
+      message: 'You must consent to receiving calls or text messages about scheduling details.',
     }),
     // NOTE: Write also includes Contact_Consent_Timestamp__c (ISO 8601 UTC, set on first consent only)
     // Transformation is handled in transformers.ts: mapConsentToSalesforce

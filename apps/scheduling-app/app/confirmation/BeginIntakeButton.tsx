@@ -31,7 +31,7 @@ export function BeginIntakeButton({ eventId, eventDetails }: BeginIntakeButtonPr
       disabled={isLoading}
       className='inline-flex h-11 items-center justify-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:opacity-50'
     >
-      {isLoading ? 'Starting…' : 'Begin intake form'}
+      {isLoading ? 'Starting…' : 'Complete your booking'}
     </button>
   );
 }

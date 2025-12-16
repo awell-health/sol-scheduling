@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import type { Metadata } from 'next';
 import { format } from 'date-fns';
 import { BeginIntakeButton } from './BeginIntakeButton';
@@ -39,8 +38,7 @@ export default async function AppointmentConfirmationPage({
     duration,
     facility,
     state,
-    locationType,
-    returnUrl
+    locationType
   } = await searchParams;
 
   // Build event details object for intake form
@@ -81,7 +79,7 @@ export default async function AppointmentConfirmationPage({
             SOL Mental Health
           </p>
           <h1 className='text-3xl font-bold text-primary'>
-            Your appointment is booked
+            Your appointment is selected
           </h1>
           <p className='max-w-xl text-sm text-slate-600'>
             We&apos;ve received your request and will send a confirmation with any
@@ -143,16 +141,9 @@ export default async function AppointmentConfirmationPage({
                 eventDetails={eventDetails}
               />
             )}
-            <Link
-              href={returnUrl ?? '/providers'}
-              className='inline-flex h-11 items-center justify-center rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50'
-            >
-              Back to providers
-            </Link>
           </div>
           <p className='text-xs text-slate-500'>
-            You&apos;ll receive a confirmation shortly with details on how to join
-            or where to go for your visit.
+            We will ask you to fill in a few additional details to complete your booking.
           </p>
         </div>
       </div>

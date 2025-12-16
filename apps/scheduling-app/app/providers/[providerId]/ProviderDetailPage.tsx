@@ -77,7 +77,7 @@ const BookingFormSchema = z.object({
     .boolean()
     .refine((val) => val === true, {
       message:
-        'You must consent to receiving calls or text messages about this appointment.'
+        'You must consent to receiving calls or text messages about scheduling details.'
     }),
   insuranceCarrier: z.string().optional(),
   // Name fields (shown when name_at_booking feature flag is enabled)
