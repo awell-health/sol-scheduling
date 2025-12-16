@@ -187,9 +187,11 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
       'Choose the type of care that fits best right now. You can always change this later.',
     inputType: 'select',
     validation: z.string().min(1, 'Please select a service type'),
+    // NOTE: This field maps to TWO Salesforce boolean fields (Medication__c, Therapy__c)
+    // Transformation is handled in transformers.ts: mapServiceToSalesforce / mapSalesforceToService
     salesforce: {
-      read: 'Service_Type__c',
-      write: 'Service_Type__c',
+      read: 'Medication__c,Therapy__c',
+      write: 'Medication__c,Therapy__c',
     },
     storageKey: 'service',
     contexts: ['onboarding'],
@@ -246,9 +248,11 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
     validation: z.boolean().refine((val) => val === true, {
       message: 'You must consent to receiving calls or text messages about this appointment.',
     }),
+    // NOTE: Write also includes Contact_Consent_Timestamp__c (ISO 8601 UTC, set on first consent only)
+    // Transformation is handled in transformers.ts: mapConsentToSalesforce
     salesforce: {
       read: 'Contact_Consent__c',
-      write: 'Contact_Consent__c',
+      write: 'Contact_Consent__c,Contact_Consent_Timestamp__c',
     },
     storageKey: 'consent',
     contexts: ['onboarding', 'booking'],

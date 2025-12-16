@@ -2,6 +2,7 @@
 
 import { getSalesforceClient } from '../../../../lib/salesforce';
 import PostHogClient from '../../../../posthog';
+import { mapServiceToSalesforce, mapSalesforceToService, mapConsentToSalesforce } from './transformers';
 
 /**
  * Lead data returned from Salesforce when fetching by ID.
@@ -12,8 +13,11 @@ export interface SalesforceLeadData {
   phone: string | null;
   state: string | null;
   insurance: string | null;
+  /** Derived from Medication__c/Therapy__c */
   service: string | null;
   consent: boolean | null;
+  /** ISO 8601 UTC timestamp of when consent was first given */
+  consentTimestamp: string | null;
 }
 
 /**
@@ -34,15 +38,20 @@ export async function getLeadAction(
     const rawLead = await client.getLead(leadId);
     console.log('[getLeadAction] Raw lead data:', rawLead);
 
+    // Extract boolean fields for service type
+    const medication = typeof rawLead.Medication__c === 'boolean' ? rawLead.Medication__c : null;
+    const therapy = typeof rawLead.Therapy__c === 'boolean' ? rawLead.Therapy__c : null;
+
     // Map Salesforce fields to our schema
     const lead: SalesforceLeadData = {
       id: leadId,
       phone: typeof rawLead.Phone === 'string' ? rawLead.Phone : null,
       state: typeof rawLead.Market__c === 'string' ? rawLead.Market__c : null,
       insurance: typeof rawLead.Insurance_Company_Name__c === 'string' ? rawLead.Insurance_Company_Name__c : null,
-      // Service_Type__c - not yet created in Salesforce, but ready for it
-      service: typeof rawLead.Service_Type__c === 'string' ? rawLead.Service_Type__c : null,
+      // Derive service type from Medication__c and Therapy__c boolean fields
+      service: mapSalesforceToService(medication, therapy),
       consent: typeof rawLead.Contact_Consent__c === 'boolean' ? rawLead.Contact_Consent__c : null,
+      consentTimestamp: typeof rawLead.Contact_Consent_Timestamp__c === 'string' ? rawLead.Contact_Consent_Timestamp__c : null,
     };
 
     console.log('[getLeadAction] Lead data:', {
@@ -52,6 +61,7 @@ export async function getLeadAction(
       insurance: lead.insurance,
       service: lead.service,
       consent: lead.consent,
+      consentTimestamp: lead.consentTimestamp,
     });
 
     return { success: true, lead };
@@ -72,6 +82,8 @@ export interface CreateLeadInput {
   state?: string | null;
   service?: string | null;
   insurance?: string | null;
+  /** Contact consent for calls/texts about appointments */
+  consent?: boolean;
   posthogDistinctId?: string;
   utmSource?: string | null;
   utmMedium?: string | null;
@@ -120,11 +132,18 @@ export async function createLeadAction(
       state: input.state,
       service: input.service,
       insurance: input.insurance,
+      consent: input.consent,
       posthogDistinctId: input.posthogDistinctId,
       utmSource: input.utmSource,
       utmMedium: input.utmMedium,
       utmCampaign: input.utmCampaign,
     });
+
+    // Transform service type to Salesforce boolean fields
+    const serviceFields = input.service ? mapServiceToSalesforce(input.service) : {};
+    
+    // Transform consent to include timestamp (only on first consent)
+    const consentFields = input.consent !== undefined ? mapConsentToSalesforce(input.consent) : {};
 
     const leadData = {
       // Required fields matching other booking systems
@@ -138,6 +157,10 @@ export async function createLeadAction(
       // Optional fields
       ...(input.state && { Market__c: input.state }),
       ...(input.insurance && { Insurance_Company_Name__c: input.insurance }),
+      // Service type boolean fields
+      ...serviceFields,
+      // Contact consent fields (with timestamp)
+      ...consentFields,
       // UTM tracking
       ...(input.utmSource && { UTM_Source__c: input.utmSource }),
       ...(input.utmMedium && { UTM_Medium__c: input.utmMedium }),
@@ -178,6 +201,7 @@ export async function createLeadAction(
         phone: input.phone ? `***${input.phone.slice(-4)}` : undefined,
         state: input.state,
         service: input.service,
+        consent: input.consent,
         hasPosthogId: !!input.posthogDistinctId,
       },
     });

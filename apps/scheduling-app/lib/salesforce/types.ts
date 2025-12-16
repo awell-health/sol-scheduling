@@ -52,6 +52,12 @@ export interface LeadUpdateData {
   UTM_Source__c?: string;
   UTM_Medium__c?: string;
   UTM_Campaign__c?: string;
+  // Service type boolean fields
+  Medication__c?: boolean;
+  Therapy__c?: boolean;
+  // Contact consent fields
+  Contact_Consent__c?: boolean;
+  Contact_Consent_Timestamp__c?: string;
   // Allow any custom field
   [key: string]: unknown;
 }
