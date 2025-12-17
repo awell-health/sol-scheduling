@@ -42,14 +42,10 @@ export async function writeProgressStep(progress: Omit<BookingProgress, 'timesta
     timestamp: new Date().toISOString(),
   };
 
-  try {
-    await writer.write(update);
-    console.log('[writeProgressStep] Progress written:', update);
-  } catch (error) {
-    console.error('[writeProgressStep] Failed to write progress:', error);
-  } finally {
-    writer.releaseLock();
-  }
+  await writer.write(update);
+  writer.releaseLock();
+
+  console.log('[writeProgressStep] Progress written:', update);
 }
 
 /**

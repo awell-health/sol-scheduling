@@ -48,12 +48,13 @@ export interface BookingWorkflowResult {
  * 3. Write "appointment_booked" to stream
  * 4. Fetch event/provider details for confirmation page
  * 5. Start intake careflow (get careflowId, patientId)
- * 6. Halt any active re-engagement care flows
- * 7. Write "careflow_started" to stream
- * 8. Start hosted activity session (get sessionUrl)
- * 9. Write "session_ready" to stream
- * 10. Update Salesforce lead with booking details
- * 11. Close stream
+ * 6. Write "careflow_started" to stream
+ * 7. In parallel:
+ *    - Start hosted activity session (get sessionUrl)
+ *    - Halt any active re-engagement care flows
+ *    - Update Salesforce lead with booking details
+ * 8. Write "session_ready" to stream
+ * 9. Close stream
  * 
  * The result contains all data needed for the confirmation page,
  * which only needs the confirmationId (runId) to fetch this data.
@@ -119,7 +120,14 @@ export async function bookingWorkflow(
       })} ${input.patientTimezone}`
     : undefined;
 
-  // Steps 6-9: Start hosted activity session, halt re-engagement careflows, and update Salesforce lead
+  // Step 6: Signal careflow started
+  await writeProgressStep({
+    type: 'careflow_started',
+    message: 'Ensuring your intake forms are ready...',
+    data: { careflowId, patientId },
+  });
+
+  // Step 7: In parallel - session, halt re-engagement, update Salesforce, write progress
   const [{ sessionUrl }, ..._] = await Promise.all([
     startHostedActivitySessionStep({
       careflowId,
@@ -139,21 +147,16 @@ export async function bookingWorkflow(
       localizedTimeWithTimezone,
       facility: eventDetails.facility,
     }),
-    writeProgressStep({
-      type: 'careflow_started',
-      message: 'Ensuring your intake forms are ready...',
-      data: { careflowId, patientId },
-    }),
   ]);
 
-  // Step 10: Signal session ready (workflow complete from user perspective)
+  // Step 8: Signal session ready (workflow complete from user perspective)
   await writeProgressStep({
     type: 'session_ready',
     message: 'Done! Redirecting...',
     data: { sessionUrl, confirmationId },
   });
 
-  // Step 11: Close the stream
+  // Step 9: Close the stream
   await closeProgressStreamStep();
 
   console.log('[bookingWorkflow] Completed:', {
