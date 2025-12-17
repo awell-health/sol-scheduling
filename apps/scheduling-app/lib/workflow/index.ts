@@ -40,6 +40,12 @@ export {
 } from './steps/startReengagementCareflow';
 
 export {
+  haltReengagementCareflowsStep,
+  type HaltReengagementCareflowsInput,
+  type HaltReengagementCareflowsResult,
+} from './steps/haltReengagementCareflows';
+
+export {
   bookAppointmentStep,
   type BookAppointmentStepInput,
   type BookAppointmentStepResult,
