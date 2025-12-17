@@ -35,3 +35,18 @@ export {
   useBuildUrlWithReturn
 } from './hooks';
 
+// UTM Tracking
+export {
+  UtmParam,
+  UTM_PARAM_KEYS,
+  UtmPersonProperty,
+  type UtmParams,
+  extractUtmParams,
+  hasUtmParams,
+  buildUrlWithUtm,
+  readUtmFromStorage,
+  writeUtmToStorage,
+  useUtmCapture,
+  useBuildUrlWithUtm,
+} from '../utm';
+

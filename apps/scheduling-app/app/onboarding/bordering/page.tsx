@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { BorderingPageClient } from './BorderingPageClient';
 import { redirect } from 'next/navigation';
 
@@ -26,7 +27,9 @@ export default async function BorderingPage({
   return (
     <main className='min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8'>
       <div className='mx-auto flex min-h-[60vh] max-w-2xl flex-col justify-center'>
-        <BorderingPageClient originalState={state} />
+        <Suspense fallback={<div className='text-sm text-slate-500'>Loading...</div>}>
+          <BorderingPageClient originalState={state} />
+        </Suspense>
       </div>
     </main>
   );

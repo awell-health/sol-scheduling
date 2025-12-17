@@ -29,3 +29,6 @@ stats.html
 
 .turbo/
 **/.turbo/
+
+# TypeScript incremental build cache
+*.tsbuildinfo

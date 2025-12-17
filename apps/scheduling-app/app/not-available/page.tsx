@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { NotAvailableForm } from './NotAvailableForm';
 
 type NotAvailablePageProps = {
@@ -41,7 +42,9 @@ export default async function NotAvailablePage({
           out when we&apos;re available in your area.
         </p>
 
-        <NotAvailableForm state={state ?? null} />
+        <Suspense fallback={<div className="mt-6 text-sm text-slate-500">Loading...</div>}>
+          <NotAvailableForm state={state ?? null} />
+        </Suspense>
       </div>
     </main>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useOnboarding } from '../providers/_lib/onboarding';
+import { useOnboarding, useBuildUrlWithUtm } from '../providers/_lib/onboarding';
 import { OnboardingFlow } from '../providers/components/OnboardingFlow';
 
 type OnboardingPageClientProps = {
@@ -12,12 +12,15 @@ type OnboardingPageClientProps = {
 export function OnboardingPageClient({ target }: OnboardingPageClientProps) {
   const router = useRouter();
   const { isOnboardingComplete, isInitialized } = useOnboarding();
+  const buildUrlWithUtm = useBuildUrlWithUtm();
 
   // Redirect to target when onboarding is complete (for supported states)
   // Note: OnboardingFlow handles redirect to /not-available for unsupported states
   const handleComplete = useCallback(() => {
-    router.replace(target);
-  }, [target, router]);
+    // Preserve UTM params when redirecting to target
+    const url = buildUrlWithUtm(target);
+    router.replace(url);
+  }, [target, router, buildUrlWithUtm]);
 
   // Auto-redirect if already complete on mount (all values pre-filled)
   useEffect(() => {

@@ -26,7 +26,7 @@ import {
 import { useBookingWorkflow } from '../../hooks';
 import { BookingProgressModal } from './BookingProgressModal';
 import { usePostHog } from 'posthog-js/react';
-import { useOnboarding, isSupportedState, getBorderingTargetState } from '../_lib/onboarding';
+import { useOnboarding, useBuildUrlWithUtm, isSupportedState, getBorderingTargetState } from '../_lib/onboarding';
 import { ProviderBio } from '../components/ProviderBio';
 import { MapPinIcon, VideoCameraIcon } from '../components/icons/ProviderIcons';
 import { Calendar } from '../../../components/ui/calendar';
@@ -137,6 +137,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
   const pathname = usePathname();
   const posthog = usePostHog();
   const { preferences, isOnboardingComplete, isInitialized } = useOnboarding();
+  const buildUrlWithUtm = useBuildUrlWithUtm();
   const [provider, setProvider] = useState<ProviderSummary | null>(null);
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [providerError, setProviderError] = useState<string | null>(null);
@@ -176,12 +177,13 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
   const visitMode = watch('visitMode');
   const consent = watch('consent');
 
-  // Redirect to onboarding if not complete
+  // Redirect to onboarding if not complete (preserving UTM params)
   useEffect(() => {
     if (isInitialized && !isOnboardingComplete) {
-      router.replace(`/onboarding?target=${encodeURIComponent(pathname)}`);
+      const url = buildUrlWithUtm('/onboarding', { target: pathname });
+      router.replace(url);
     }
-  }, [isInitialized, isOnboardingComplete, pathname, router]);
+  }, [isInitialized, isOnboardingComplete, pathname, router, buildUrlWithUtm]);
 
   // Redirect to /not-available or /onboarding/bordering if state is not supported
   useEffect(() => {
@@ -189,13 +191,15 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       if (!isSupportedState(preferences.state)) {
         const borderTarget = getBorderingTargetState(preferences.state);
         if (borderTarget) {
-          router.replace(`/onboarding/bordering?state=${preferences.state}`);
+          const url = buildUrlWithUtm('/onboarding/bordering', { state: preferences.state });
+          router.replace(url);
         } else {
-          router.replace(`/not-available?state=${preferences.state}`);
+          const url = buildUrlWithUtm('/not-available', { state: preferences.state });
+          router.replace(url);
         }
       }
     }
-  }, [isInitialized, isOnboardingComplete, preferences.state, router]);
+  }, [isInitialized, isOnboardingComplete, preferences.state, router, buildUrlWithUtm]);
 
   // Determine if we're ready to show content (not redirecting)
   const isRedirecting =

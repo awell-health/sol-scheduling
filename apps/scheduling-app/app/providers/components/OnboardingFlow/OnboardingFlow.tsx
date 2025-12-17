@@ -3,6 +3,7 @@
 import { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useOnboarding } from '../../_lib/onboarding/OnboardingContext';
+import { useBuildUrlWithUtm } from '../../_lib/onboarding';
 import { OnboardingStep } from '../../_lib/onboarding/types';
 import { isSupportedState, getBorderingTargetState } from '../../_lib/onboarding/config';
 import { StateQuestion } from './StateQuestion';
@@ -26,6 +27,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     advanceStep,
     goToPreviousStep
   } = useOnboarding();
+  const buildUrlWithUtm = useBuildUrlWithUtm();
 
   // Handlers for each question
   const handleStateChange = useCallback(
@@ -89,9 +91,11 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         // Check if it's a bordering state that can be redirected
         const borderTarget = getBorderingTargetState(state);
         if (borderTarget) {
-          router.push(`/onboarding/bordering?state=${state}`);
+          const url = buildUrlWithUtm('/onboarding/bordering', { state });
+          router.push(url);
         } else {
-          router.push(`/not-available?state=${state}`);
+          const url = buildUrlWithUtm('/not-available', { state });
+          router.push(url);
         }
         return;
       }
@@ -99,7 +103,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       // Otherwise, notify parent that onboarding is complete
       onComplete?.();
     }
-  }, [isOnboardingComplete, preferences, router, onComplete]);
+  }, [isOnboardingComplete, preferences, router, onComplete, buildUrlWithUtm]);
 
   // If onboarding is complete, don't render anything
   if (currentStepIndex === null || isOnboardingComplete) {

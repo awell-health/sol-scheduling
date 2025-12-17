@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { OnboardingPageClient } from './OnboardingPageClient';
 
 type OnboardingPageProps = {
@@ -15,7 +16,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
   return (
     <main className='min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8'>
       <div className='mx-auto max-w-4xl'>
-        <OnboardingPageClient target={target} />
+        <Suspense fallback={<div className='text-sm text-slate-500'>Loading...</div>}>
+          <OnboardingPageClient target={target} />
+        </Suspense>
       </div>
     </main>
   );

@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { Suspense, useState, useCallback } from 'react';
-import { OnboardingProvider } from './_lib/onboarding';
+import { OnboardingProvider, useUtmCapture } from './_lib/onboarding';
 import { SlcParamConsumer } from './SlcParamConsumer';
 import type { OnboardingPreferences } from './_lib/onboarding/types';
 
@@ -25,6 +25,15 @@ function SlcLoadingFallback() {
   );
 }
 
+/**
+ * Component that captures UTM params and sets them on PostHog person.
+ * Wrapped in Suspense because it uses useSearchParams internally.
+ */
+function UtmCaptureConsumer() {
+  useUtmCapture();
+  return null;
+}
+
 export function OnboardingProviderWrapper({
   children
 }: OnboardingProviderWrapperProps) {
@@ -38,6 +47,11 @@ export function OnboardingProviderWrapper({
 
   return (
     <>
+      {/* Capture UTM params from URL and store on PostHog person */}
+      <Suspense fallback={null}>
+        <UtmCaptureConsumer />
+      </Suspense>
+
       {/* Check for slc param and fetch lead data before rendering provider */}
       <Suspense fallback={<SlcLoadingFallback />}>
         <SlcParamConsumer onLeadLoaded={handleLeadLoaded} />

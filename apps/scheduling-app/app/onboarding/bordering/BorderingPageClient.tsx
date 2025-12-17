@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../../../components/ui/button';
-import { clearPreferencesStorage, useOnboarding } from '../../providers/_lib/onboarding';
+import { clearPreferencesStorage, useOnboarding, useBuildUrlWithUtm } from '../../providers/_lib/onboarding';
 import { updateLeadAction, getAnyStoredLeadId } from '../../providers/_lib/salesforce';
 import { ALL_US_STATES, getBorderingTargetState } from '../../providers/_lib/onboarding/config';
 
@@ -15,6 +15,7 @@ type BorderingPageClientProps = {
 export function BorderingPageClient({ originalState }: BorderingPageClientProps) {
   const router = useRouter();
   const { setPreferences } = useOnboarding();
+  const buildUrlWithUtm = useBuildUrlWithUtm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Look up the target state from the original state
@@ -39,8 +40,13 @@ export function BorderingPageClient({ originalState }: BorderingPageClientProps)
       });
     }
 
-    // Navigate to providers page
-    router.push('/providers');
+    // Navigate to providers page (preserving UTM params)
+    router.push(buildUrlWithUtm('/providers'));
+  };
+
+  const handleStartOver = () => {
+    clearPreferencesStorage();
+    router.push(buildUrlWithUtm('/providers'));
   };
 
   return (
@@ -59,7 +65,7 @@ export function BorderingPageClient({ originalState }: BorderingPageClientProps)
       <div className='flex justify-end gap-2'>
         <Button
           type='button'
-          onClick={() => {clearPreferencesStorage(); router.push('/providers');}}
+          onClick={handleStartOver}
           variant='outline'
           size='lg'
         >
