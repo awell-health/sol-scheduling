@@ -2,6 +2,7 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 import { format } from 'date-fns';
 import { BeginIntakeButton } from './BeginIntakeButton';
+import { getConfirmationDataAction } from '../actions';
 
 export const metadata: Metadata = {
   title: 'Appointment confirmed | SOL Mental Health',
@@ -10,58 +11,50 @@ export const metadata: Metadata = {
 };
 
 type ConfirmationPageProps = {
-  searchParams: Promise<{
-    eventId?: string;
-    providerId?: string;
-    providerName?: string;
-    providerImage?: string;
-    startsAt?: string;
-    duration?: string;
-    locationType?: string;
-    facility?: string;
+  params: Promise<{
+    /** Confirmation ID (workflow run ID) */
+    id: string;
   }>;
 };
 
 const PLACEHOLDER_AVATAR = '/images/avatar.svg';
 
 export default async function AppointmentConfirmationPage({
-  searchParams
+  params
 }: ConfirmationPageProps) {
-  const {
-    eventId,
-    providerId,
-    startsAt,
-    providerName,
-    providerImage,
-    duration,
-    facility,
-    locationType
-  } = await searchParams;
+  const { id: confirmationId } = await params;
 
-  // Build event details object for intake form
-  const eventDetails = {
-    eventId,
-    providerId,
-    providerName,
-    startsAt,
-    duration,
-    locationType,
-    facility,
-  };
+  // Fetch all confirmation data from the workflow result
+  const confirmationData = await getConfirmationDataAction(confirmationId);
 
-  const formattedDateTime = startsAt
-    ? format(new Date(startsAt), "EEEE, MMMM d 'at' h:mm a")
+  if (!confirmationData) {
+    return (
+      <main className='min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8'>
+        <div className='mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center gap-4'>
+          <h1 className='text-2xl font-bold text-slate-900'>Confirmation not found</h1>
+          <p className='text-sm text-slate-600'>
+            Your booking may still be processing. Please wait a moment and refresh, or contact support if this persists.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  const { eventDetails, sessionUrl } = confirmationData;
+
+  const formattedDateTime = eventDetails.startsAt
+    ? format(new Date(eventDetails.startsAt), "EEEE, MMMM d 'at' h:mm a")
     : null;
 
   let locationLabel = 'Location to be confirmed';
-  if (locationType === 'In-Person' || locationType === 'Telehealth') {
+  if (eventDetails.locationType === 'In-Person' || eventDetails.locationType === 'Telehealth') {
     locationLabel =
-      locationType === 'In-Person' ? 'In-person visit' : 'Virtual video visit';
+      eventDetails.locationType === 'In-Person' ? 'In-person visit' : 'Virtual video visit';
   }
 
   const fullLocation = [
     locationLabel,
-    facility ? `· ${facility}` : null
+    eventDetails.facility ? `· ${eventDetails.facility}` : null
   ]
     .filter(Boolean)
     .join(' ');
@@ -83,8 +76,8 @@ export default async function AppointmentConfirmationPage({
           <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6'>
             <div className='relative h-20 w-20 flex-none overflow-hidden rounded-full bg-slate-100 sm:h-24 sm:w-24'>
               <Image
-                src={providerImage ?? PLACEHOLDER_AVATAR}
-                alt={providerName ?? 'Your provider'}
+                src={eventDetails.providerImage ?? PLACEHOLDER_AVATAR}
+                alt={eventDetails.providerName ?? 'Your provider'}
                 sizes='96px'
                 fill
                 unoptimized
@@ -97,7 +90,7 @@ export default async function AppointmentConfirmationPage({
                   Provider
                 </p>
                 <p className='text-lg font-semibold text-slate-900'>
-                  {providerName}
+                  {eventDetails.providerName}
                 </p>
               </div>
 
@@ -108,8 +101,8 @@ export default async function AppointmentConfirmationPage({
                   </p>
                   <p className='mt-0.5'>
                     {formattedDateTime ?? 'To be confirmed'}
-                    {duration
-                      ? ` · ${duration} minute appointment`
+                    {eventDetails.duration
+                      ? ` · ${eventDetails.duration} minute appointment`
                       : null}
                   </p>
                 </div>
@@ -127,12 +120,7 @@ export default async function AppointmentConfirmationPage({
 
         <div className='space-y-4'>
           <div className='flex flex-wrap items-center gap-3'>
-            {eventId && (
-              <BeginIntakeButton
-                eventId={eventId}
-                eventDetails={eventDetails}
-              />
-            )}
+            <BeginIntakeButton sessionUrl={sessionUrl} />
           </div>
           <p className='text-xs text-slate-500'>
             We will ask you to fill in a few additional details to complete your booking.
@@ -142,5 +130,4 @@ export default async function AppointmentConfirmationPage({
     </main>
   );
 }
-
 
