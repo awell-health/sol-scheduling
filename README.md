@@ -8,35 +8,88 @@ This application is the entry point for patients seeking mental health services 
 
 ### User Journey
 
-1. **Onboarding** — State, service type (therapy/psychiatry), phone number, insurance
-2. **Provider Selection** — Browse and filter matched providers
-3. **Time Selection** — Select available appointment slot
-4. **Confirmation** — Review booking and begin intake flow
+```mermaid
+flowchart TD
+    subgraph Onboarding["1️⃣ ONBOARDING"]
+        A[Select State] --> B{Bordering State?}
+        B -->|NJ or CT| C["Offer NY Services"]
+        C -->|Yes, show me| D[Continue]
+        B -->|Supported State| D
+        D --> E[Select Service Type]
+        E --> F[Enter Phone Number]
+        F --> G[Enter Insurance]
+        
+        F -.->|Creates| SF1[(Salesforce Lead)]
+        G -.->|Updates| SF1
+    end
 
-### System Integration
+    subgraph Selection["2️⃣ PROVIDER SELECTION"]
+        H[Browse Providers] --> I[View Provider Details]
+        I --> J[Select a Time Slot]
+    end
 
+    subgraph Confirmation["3️⃣ CONFIRMATION"]
+        K["Your appointment is selected"]
+        K --> L[/"Complete your booking"/]
+    end
+
+    subgraph Behind["4️⃣ BEHIND THE SCENES"]
+        M[Book Appointment] --> N[Start Intake Care Flow]
+        N --> O[Stop Re-engagement Care Flow]
+        O --> P[Update Salesforce & Healthie]
+    end
+
+    subgraph Patient["5️⃣ PATIENT RECEIVES"]
+        Q[📧 Intake Forms]
+        R[📅 Calendar Confirmation]
+        S[✅ Ready for Session]
+    end
+
+    G --> H
+    J --> K
+    L --> M
+    P --> Q
+    Q --> R
+    R --> S
+
+    style N fill:#4ade80,stroke:#16a34a,color:#000
+    style O fill:#f87171,stroke:#dc2626,color:#000
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    BOOKING APPLICATION                       │
-│  Onboarding → Provider Selection → Booking → Confirmation   │
-└────────────┬──────────────────────────────────┬─────────────┘
-             │                                  │
-             │ Creates/Updates Lead             │ User clicks "Begin Intake"
-             ▼                                  ▼
-┌────────────────────────┐          ┌────────────────────────┐
-│      SALESFORCE        │          │     AWELL CARE FLOWS   │
-│  - Lead created on     │──────────│  - Re-engagement flow  │
-│    phone number entry  │ Webhook  │    (recover drop-offs) │
-│  - Lead updated on     │──────────│  - Intake flow         │
-│    booking completion  │ Stops    │    (qualify + prepare) │
-└────────────────────────┘          └────────────────────────┘
+
+### Care Flows
+
+```mermaid
+flowchart LR
+    subgraph Trigger["Patient Books Appointment"]
+        A[Complete Booking]
+    end
+
+    subgraph CareFlows["Care Flows"]
+        B[🟢 START<br/>Intake Care Flow]
+        C[🔴 STOP<br/>Re-engagement Care Flow]
+    end
+
+    A --> B
+    A --> C
+
+    B -.-> D[Intake forms sent to patient]
+    C -.-> E[No more 'come back' reminders]
+
+    style B fill:#4ade80,stroke:#16a34a,color:#000
+    style C fill:#f87171,stroke:#dc2626,color:#000
 ```
+
+| Care Flow | When Started | Purpose |
+|-----------|--------------|---------|
+| **Intake Care Flow** | Patient clicks "Complete your booking" | Sends intake forms, consent docs, and pre-appointment info |
+| **Re-engagement Care Flow** | External trigger (Salesforce) | Reminds inactive patients to book. **Automatically stopped** when they book |
+
+### Salesforce Integration
 
 **Lead Lifecycle:**
 - Lead created when phone number is entered (fire-and-forget)
 - Lead updated with insurance during onboarding
 - Lead updated with booking details on confirmation
-- Salesforce events trigger/stop Awell re-engagement flow
 
 ### Analytics (PostHog)
 
@@ -80,6 +133,6 @@ packages/scheduler/     # Reusable React scheduling components (npm package)
 |------|-------|
 | Booking Application | Next.js app, Vercel hosting |
 | Salesforce Integration | Lead create/update actions |
-| Re-engagement Flow | Awell care flow — recovers drop-offs via automated outreach |
-| Intake Flow | Awell care flow — qualifies patients, prepares for appointment |
+| Re-engagement Care Flow | Awell — recovers drop-offs via automated outreach; **stopped on booking** |
+| Intake Care Flow | Awell — started on booking; qualifies patients, prepares for appointment |
 | Analytics | PostHog — user tracking, feature flags, API metrics |

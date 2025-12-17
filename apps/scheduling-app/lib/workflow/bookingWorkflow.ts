@@ -109,34 +109,6 @@ export async function bookingWorkflow(
     confirmationId,
   });
 
-  // Step 6: Halt any active re-engagement care flows
-  // We have the patientId now, so we can stop any pending outreach
-  await haltReengagementCareflowsStep({
-    patientId,
-    confirmationId,
-  });
-
-  // Step 7: Signal careflow started
-  await writeProgressStep({
-    type: 'careflow_started',
-    message: 'Ensuring your intake forms are ready...',
-    data: { careflowId, patientId },
-  });
-
-  // Step 8: Start hosted activity session
-  const { sessionUrl } = await startHostedActivitySessionStep({
-    careflowId,
-    patientId,
-  });
-
-  // Step 9: Signal session ready (workflow complete from user perspective)
-  await writeProgressStep({
-    type: 'session_ready',
-    message: 'Done! Redirecting...',
-    data: { sessionUrl, confirmationId },
-  });
-
-  // Step 10: Update Salesforce lead with booking details (background, user won't wait)
   // Format localized time with timezone for Salesforce
   const localizedTimeWithTimezone = input.patientTimezone && eventDetails.startsAt
     ? `${new Date(eventDetails.startsAt).toLocaleTimeString('en-US', { 
@@ -147,15 +119,38 @@ export async function bookingWorkflow(
       })} ${input.patientTimezone}`
     : undefined;
 
-  await updateLeadStep({
-    leadId: input.salesforceLeadId,
-    clinicalFocus: input.clinicalFocus,
-    eventType: input.locationType,
-    providerFirstName: eventDetails.providerFirstName,
-    providerLastName: eventDetails.providerLastName,
-    slotStartUtc: eventDetails.startsAt,
-    localizedTimeWithTimezone,
-    facility: eventDetails.facility,
+  // Steps 6-9: Start hosted activity session, halt re-engagement careflows, and update Salesforce lead
+  const [{ sessionUrl }, ..._] = await Promise.all([
+    startHostedActivitySessionStep({
+      careflowId,
+      patientId,
+    }),
+    haltReengagementCareflowsStep({
+      patientId,
+      confirmationId,
+    }),
+    updateLeadStep({
+      leadId: input.salesforceLeadId,
+      clinicalFocus: input.clinicalFocus,
+      eventType: input.locationType,
+      providerFirstName: eventDetails.providerFirstName,
+      providerLastName: eventDetails.providerLastName,
+      slotStartUtc: eventDetails.startsAt,
+      localizedTimeWithTimezone,
+      facility: eventDetails.facility,
+    }),
+    await writeProgressStep({
+      type: 'careflow_started',
+      message: 'Ensuring your intake forms are ready...',
+      data: { careflowId, patientId },
+    }),
+  ]);
+
+  // Step 10: Signal session ready (workflow complete from user perspective)
+  await writeProgressStep({
+    type: 'session_ready',
+    message: 'Done! Redirecting...',
+    data: { sessionUrl, confirmationId },
   });
 
   // Step 11: Close the stream
