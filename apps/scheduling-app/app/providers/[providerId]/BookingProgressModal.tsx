@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo } from 'react';
 import { CheckCircle2, Loader2, Circle, AlertCircle, RefreshCw, X } from 'lucide-react';
-import type { BookingProgressType } from '../../../lib/workflow';
+import type { BookingProgressType } from '@/lib/workflow';
 import clsx from 'clsx';
 
 type StepStatus = 'pending' | 'active' | 'complete' | 'error';

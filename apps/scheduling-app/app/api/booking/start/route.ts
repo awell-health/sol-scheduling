@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { start, getRun } from 'workflow/api';
-import { bookingWorkflow, type BookingWorkflowInput, type BookingWorkflowResult } from '../../../../lib/workflow/bookingWorkflow';
+import { bookingWorkflow, type BookingWorkflowInput, type BookingWorkflowResult } from '@/lib/workflow/bookingWorkflow';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';

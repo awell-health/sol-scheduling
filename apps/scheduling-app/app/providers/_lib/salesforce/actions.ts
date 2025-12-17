@@ -1,11 +1,11 @@
 'use server';
 
-import { getSalesforceClient } from '../../../../lib/salesforce';
+import { getSalesforceClient } from '@/lib/salesforce';
 import PostHogClient from '../../../../posthog';
 import { mapServiceToSalesforce, mapSalesforceToService, mapConsentToSalesforce } from './transformers';
-import { FieldId, getSalesforceReadField, getSalesforceWriteField } from '../../../../lib/fields';
+import { FieldId, getSalesforceReadField, getSalesforceWriteField } from '@/lib/fields';
 import { start } from 'workflow/api';
-import { reengagementCareflowWorkflow } from '../../../../lib/workflow';
+import { reengagementCareflowWorkflow } from '@/lib/workflow';
 
 /**
  * Lead data returned from Salesforce when fetching by ID.

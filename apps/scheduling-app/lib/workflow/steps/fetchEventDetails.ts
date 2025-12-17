@@ -13,6 +13,8 @@ export interface EventDetails {
   eventId: string;
   providerId: string;
   providerName: string;
+  providerFirstName?: string;
+  providerLastName?: string;
   providerImage?: string;
   startsAt: string;
   duration: string;
@@ -103,10 +105,13 @@ export async function fetchEventDetailsStep(
   const eventData = eventResponse.data;
 
   // Use provider data for name/image, fallback to event data
-  const providerName = providerData?.firstName && providerData?.lastName
-    ? `${providerData.firstName} ${providerData.lastName}`
+  const providerFirstName = providerData?.firstName ?? eventData.provider?.firstName ?? undefined;
+  const providerLastName = providerData?.lastName ?? eventData.provider?.lastName ?? undefined;
+  
+  const providerName = providerFirstName && providerLastName
+    ? `${providerFirstName} ${providerLastName}`
     : eventData.provider?.name
-      ?? [eventData.provider?.firstName, eventData.provider?.lastName].filter(Boolean).join(' ')
+      ?? [providerFirstName, providerLastName].filter(Boolean).join(' ')
       ?? 'Provider';
 
   const providerImage = providerData?.image ?? eventData.provider?.image ?? undefined;
@@ -115,6 +120,8 @@ export async function fetchEventDetailsStep(
     eventId: eventData.eventId ?? input.eventId,
     providerId: eventData.providerId ?? eventData.provider?.id ?? input.providerId,
     providerName,
+    providerFirstName,
+    providerLastName,
     providerImage,
     startsAt: eventData.slotstart,
     duration: String(eventData.duration ?? 60),

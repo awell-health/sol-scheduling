@@ -6,14 +6,14 @@ import {
   PhoneInput,
   isValidPhoneNumber,
   type E164Number,
-} from '../../../../components/ui/phone-input';
-import { Button } from '../../../../components/ui/button';
+} from '@/components/ui/phone-input';
+import { Button } from '@/components/ui/button';
 import {
   createLeadAction,
   storeLeadId,
   getStoredLeadId,
 } from '../../_lib/salesforce';
-import { FIELD_REGISTRY, FieldId } from '../../../../lib/fields';
+import { FIELD_REGISTRY, FieldId } from '@/lib/fields';
 
 type PhoneQuestionProps = {
   value: string | null;

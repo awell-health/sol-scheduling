@@ -7,9 +7,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '../../../../components/ui/select';
-import { Button } from '../../../../components/ui/button';
-import { ALL_US_STATES, FIELD_REGISTRY, FieldId } from '../../../../lib/fields';
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { ALL_US_STATES, FIELD_REGISTRY, FieldId } from '@/lib/fields';
 
 type StateQuestionProps = {
   value: string | null;

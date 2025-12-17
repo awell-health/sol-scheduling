@@ -128,12 +128,25 @@ export async function bookingWorkflow(
   });
 
   // Step 9: Update Salesforce lead with booking details (background, user won't wait)
+  // Format localized time with timezone for Salesforce
+  const localizedTimeWithTimezone = input.patientTimezone && eventDetails.startsAt
+    ? `${new Date(eventDetails.startsAt).toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true,
+        timeZone: input.patientTimezone,
+      })} ${input.patientTimezone}`
+    : undefined;
+
   await updateLeadStep({
-    eventId: input.eventId,
-    providerId: input.providerId,
-    salesforceLeadId: input.salesforceLeadId,
-    patientTimezone: input.patientTimezone,
+    leadId: input.salesforceLeadId,
     clinicalFocus: input.clinicalFocus,
+    eventType: input.locationType,
+    providerFirstName: eventDetails.providerFirstName,
+    providerLastName: eventDetails.providerLastName,
+    slotStartUtc: eventDetails.startsAt,
+    localizedTimeWithTimezone,
+    facility: eventDetails.facility,
   });
 
   // Step 10: Close the stream

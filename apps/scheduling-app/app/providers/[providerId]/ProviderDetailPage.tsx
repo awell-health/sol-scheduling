@@ -47,7 +47,7 @@ import {
   FIELD_REGISTRY,
   INSURANCE_OPTIONS,
   useBookingFormFields,
-} from '../../../lib/fields';
+} from '@/lib/fields';
 
 const PATIENT_NAME = 'Demo Patient';
 const PLACEHOLDER_AVATAR = '/images/avatar.svg';
