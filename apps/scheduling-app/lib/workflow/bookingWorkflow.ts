@@ -139,7 +139,7 @@ export async function bookingWorkflow(
       localizedTimeWithTimezone,
       facility: eventDetails.facility,
     }),
-    await writeProgressStep({
+    writeProgressStep({
       type: 'careflow_started',
       message: 'Ensuring your intake forms are ready...',
       data: { careflowId, patientId },
