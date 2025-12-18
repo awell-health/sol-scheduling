@@ -100,7 +100,7 @@ export function StateQuestion({ value, onChange, onContinue }: StateQuestionProp
 
       <div className='space-y-4'>
         <Select value={value ?? ''} onValueChange={onChange}>
-          <SelectTrigger className='h-14 w-full text-base'>
+          <SelectTrigger className='h-14 w-full text-base' data-phi='true' data-attr-redact='true'>
             <SelectValue placeholder='Select your state' />
           </SelectTrigger>
           <SelectContent className='max-h-[300px]'>

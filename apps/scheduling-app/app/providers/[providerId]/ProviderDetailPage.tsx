@@ -906,6 +906,9 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                   render={({ field }) => (
                     <Input
                       id='firstName'
+                      autoComplete='given-name'
+                      data-phi='true'
+                      data-attr-redact='true'
                       value={field.value ?? ''}
                       onChange={field.onChange}
                       onBlur={field.onBlur}
@@ -935,6 +938,9 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                   render={({ field }) => (
                     <Input
                       id='lastName'
+                      autoComplete='family-name'
+                      data-phi='true'
+                      data-attr-redact='true'
                       value={field.value ?? ''}
                       onChange={field.onChange}
                       onBlur={field.onBlur}
@@ -964,6 +970,8 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                   render={({ field }) => (
                     <PhoneInput
                       id='phone'
+                      data-phi='true'
+                      data-attr-redact='true'
                       value={(field.value as E164Number) || undefined}
                       onChange={(value) => field.onChange(value ?? '')}
                       onBlur={field.onBlur}

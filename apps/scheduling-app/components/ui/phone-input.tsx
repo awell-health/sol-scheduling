@@ -39,7 +39,7 @@ type PhoneInputProps = Omit<
  * while displaying a user-friendly masked input.
  */
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
-  ({ className, onChange, usOnly = true, defaultCountry = 'US', ...props }, ref) => {
+  ({ className, onChange, usOnly = true, defaultCountry = 'US', 'data-phi': dataPhi, 'data-attr-redact': dataAttrRedact, ...props }, ref) => {
     // Create a ref holder for the input that we can pass to react-phone-number-input
     const inputRef = React.useRef<HTMLInputElement>(null);
     
@@ -51,7 +51,9 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       <PhoneInputComponent
         className={cn('sol-phone-input flex', className)}
         countrySelectComponent={() => null}
-        inputComponent={PhoneInputField}
+        inputComponent={(inputProps: React.ComponentProps<'input'>) => (
+          <PhoneInputField {...inputProps} data-phi={dataPhi} data-attr-redact={dataAttrRedact} />
+        )}
         defaultCountry={defaultCountry}
         countries={usOnly ? ['US'] : undefined}
         international={false}
@@ -66,13 +68,15 @@ PhoneInput.displayName = 'PhoneInput';
 const PhoneInputField = React.forwardRef<
   HTMLInputElement,
   React.ComponentProps<'input'>
->(({ className, ...props }, ref) => (
+>(({ className, 'data-phi': dataPhi, 'data-attr-redact': dataAttrRedact, ...props }, ref) => (
   <Input
     ref={ref}
     type="tel"
     inputMode="tel"
     autoComplete="tel"
     data-slot="phone-input"
+    data-phi={dataPhi}
+    data-attr-redact={dataAttrRedact}
     className={cn('w-full', className)}
     {...props}
   />
