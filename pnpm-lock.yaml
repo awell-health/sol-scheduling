@@ -30,9 +30,6 @@ importers:
       '@awell-health/awell-sdk':
         specifier: ^0.1.27
         version: 0.1.27(enquirer@2.4.1)
-      '@awell-health/sol-scheduling':
-        specifier: workspace:*
-        version: link:../../packages/scheduler
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.64.0(react@18.3.1))
