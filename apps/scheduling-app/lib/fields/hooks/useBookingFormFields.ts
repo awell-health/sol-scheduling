@@ -2,7 +2,6 @@
 
 import { useMemo } from 'react';
 import { z } from 'zod';
-import { useFeatureFlagEnabled } from 'posthog-js/react';
 import { FieldId, type FieldDefinition, type FieldValues } from '../types';
 import { getFieldsForContext } from '../registry';
 
@@ -29,16 +28,12 @@ export interface UseBookingFormFieldsReturn {
  * Hook to determine which fields to show in the booking form.
  * Considers:
  * - Fields configured for 'booking' context
- * - Feature flag gating
  * - Already-answered preferences (to skip them)
  */
 export function useBookingFormFields(
   options: UseBookingFormFieldsOptions = {}
 ): UseBookingFormFieldsReturn {
   const { answeredValues = {} } = options;
-  
-  // Check feature flags for each field that has one
-  const nameAtBookingEnabled = useFeatureFlagEnabled('name_at_booking');
   
   // Build the list of fields to show
   const { fields, validationSchema, defaultValues, shouldShowField } = useMemo(() => {
@@ -50,15 +45,6 @@ export function useBookingFormFields(
     const visibility: Record<string, boolean> = {};
     
     for (const field of bookingFields) {
-      // Check feature flag gating
-      if (field.featureFlag) {
-        if (field.featureFlag === 'name_at_booking' && !nameAtBookingEnabled) {
-          visibility[field.id] = false;
-          continue;
-        }
-        // Add more feature flag checks here as needed
-      }
-      
       // Check if already answered
       const existingValue = answeredValues[field.id];
       const hasValue = existingValue !== null && existingValue !== undefined && existingValue !== '';
@@ -94,7 +80,7 @@ export function useBookingFormFields(
       defaultValues: defaults,
       shouldShowField: (fieldId: FieldId) => visibility[fieldId] ?? false,
     };
-  }, [answeredValues, nameAtBookingEnabled]);
+  }, [answeredValues]);
   
   return {
     fields,

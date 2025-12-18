@@ -32,6 +32,8 @@ type PhoneInputProps = Omit<
    * @default true
    */
   usOnly?: boolean;
+  'data-phi'?: boolean;
+  'data-attr-redact'?: boolean;
 };
 
 /**
@@ -67,7 +69,7 @@ PhoneInput.displayName = 'PhoneInput';
 
 const PhoneInputField = React.forwardRef<
   HTMLInputElement,
-  React.ComponentProps<'input'>
+  React.ComponentProps<'input'> & { 'data-phi'?: boolean; 'data-attr-redact'?: boolean }
 >(({ className, 'data-phi': dataPhi, 'data-attr-redact': dataAttrRedact, ...props }, ref) => (
   <Input
     ref={ref}
@@ -75,8 +77,8 @@ const PhoneInputField = React.forwardRef<
     inputMode="tel"
     autoComplete="tel"
     data-slot="phone-input"
-    data-phi={dataPhi}
-    data-attr-redact={dataAttrRedact}
+    {...(dataPhi ? { 'data-phi': 'true' } : {})}
+    {...(dataAttrRedact ? { 'data-attr-redact': 'true' } : {})}
     className={cn('w-full', className)}
     {...props}
   />

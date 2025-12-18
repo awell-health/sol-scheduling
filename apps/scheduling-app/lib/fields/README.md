@@ -60,15 +60,15 @@ if (shouldShowField(FieldId.INSURANCE)) {
 
 ## Fields
 
-| FieldId | Contexts | Salesforce | Feature Flag |
-|---------|----------|------------|--------------|
-| `STATE` | onboarding | `Market__c` | - |
-| `SERVICE` | onboarding | `Medication__c,Therapy__c` | - |
-| `PHONE` | onboarding, booking | `Phone` | - |
-| `INSURANCE` | onboarding, booking | `Insurance_Company_Name__c` | - |
-| `CONSENT` | onboarding, booking | `Contact_Consent__c` | - |
-| `FIRST_NAME` | booking | `FirstName` | `name_at_booking` |
-| `LAST_NAME` | booking | `LastName` | `name_at_booking` |
+| FieldId | Contexts | Salesforce |
+|---------|----------|------------|
+| `STATE` | onboarding | `Market__c` |
+| `SERVICE` | onboarding | `Medication__c,Therapy__c` |
+| `PHONE` | onboarding, booking | `Phone` |
+| `INSURANCE` | onboarding, booking | `Insurance_Company_Name__c` |
+| `CONSENT` | onboarding, booking | `Contact_Consent__c` |
+| `FIRST_NAME` | booking | `FirstName` |
+| `LAST_NAME` | booking | `LastName` |
 
 ## Archived Code
 

@@ -12,7 +12,7 @@ export enum FieldId {
   INSURANCE = 'insurance',
   CONSENT = 'consent',
   
-  // Booking fields (feature-flagged)
+  // Booking fields
   FIRST_NAME = 'firstName',
   LAST_NAME = 'lastName',
 }

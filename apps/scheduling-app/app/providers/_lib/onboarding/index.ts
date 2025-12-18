@@ -8,7 +8,6 @@ export {
 
 // Config
 export {
-  OnboardingFeatureFlags,
   INSURANCE_OPTIONS,
   SERVICE_OPTIONS,
   ALL_US_STATES,

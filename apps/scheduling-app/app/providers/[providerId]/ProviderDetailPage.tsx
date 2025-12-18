@@ -233,7 +233,6 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
   const showPhoneField = shouldShowField(FieldId.PHONE);
   const showInsuranceField = shouldShowField(FieldId.INSURANCE);
   const showConsentField = shouldShowField(FieldId.CONSENT);
-  // Future: firstName/lastName will automatically show when name_at_booking flag is enabled
   const showFirstNameField = shouldShowField(FieldId.FIRST_NAME);
   const showLastNameField = shouldShowField(FieldId.LAST_NAME);
 
@@ -896,7 +895,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
           </div>
 
           <form onSubmit={handleSubmit(handleSubmitBooking)} className='space-y-4'>
-            {/* Name fields (shown when name_at_booking feature flag is enabled) */}
+            {/* Name fields */}
             {showFirstNameField && (
               <div className='space-y-1'>
                 <Label htmlFor='firstName'>{FIELD_REGISTRY[FieldId.FIRST_NAME].label}</Label>
@@ -970,8 +969,8 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                   render={({ field }) => (
                     <PhoneInput
                       id='phone'
-                      data-phi='true'
-                      data-attr-redact='true'
+                      data-phi
+                      data-attr-redact
                       value={(field.value as E164Number) || undefined}
                       onChange={(value) => field.onChange(value ?? '')}
                       onBlur={field.onBlur}

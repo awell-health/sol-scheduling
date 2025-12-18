@@ -11,8 +11,7 @@ _: **1. ONBOARDING FLOW** (/onboarding → /providers)
 
 User -> App: Visit /providers
 App -> localStorage: Read preferences (sol.scheduling)
-App -> PostHog: Get feature flag payload (onboarding_questions_config)
-note: Determines which questions to show and which are required
+note: All onboarding questions are mandatory
 
 _: State Question
 User -> App: Select state (or use location)
@@ -117,9 +116,7 @@ The app uses a workflow pattern for post-booking operations:
 
 ### Feature Flags (PostHog)
 
-| Flag | Purpose |
-|------|---------|
-| `onboarding_questions_config` | Controls which onboarding questions are shown and which are required |
+No feature flags are currently used. All onboarding questions are mandatory.
 
 ## File Structure
 
