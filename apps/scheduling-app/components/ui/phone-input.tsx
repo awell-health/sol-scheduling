@@ -48,14 +48,23 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
     // Forward the ref
     React.useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
+    // Memoize the input component to prevent remounting on each render
+    const InputComponent = React.useMemo(
+      () => (inputProps: React.ComponentProps<'input'>) => (
+        <PhoneInputField {...inputProps} data-phi={dataPhi} data-attr-redact={dataAttrRedact} />
+      ),
+      [dataPhi, dataAttrRedact]
+    );
+
+    // Memoize the country selector component (always null for US-only mode)
+    const CountrySelectComponent = React.useMemo(() => () => null, []);
+
     // US-only mode: no country selector, cleaner UI
     return (
       <PhoneInputComponent
         className={cn('sol-phone-input flex', className)}
-        countrySelectComponent={() => null}
-        inputComponent={(inputProps: React.ComponentProps<'input'>) => (
-          <PhoneInputField {...inputProps} data-phi={dataPhi} data-attr-redact={dataAttrRedact} />
-        )}
+        countrySelectComponent={CountrySelectComponent}
+        inputComponent={InputComponent}
         defaultCountry={defaultCountry}
         countries={usOnly ? ['US'] : undefined}
         international={false}
