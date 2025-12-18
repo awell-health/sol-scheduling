@@ -82,7 +82,7 @@ export async function upsertAwellPatientStep(
   const awell = getAwellClient();
 
   // Build the patient profile data
-  const profile: Record<string, unknown> = {
+  const profile: { first_name: string; last_name: string } & Record<string, unknown> = {
     first_name: input.firstName,
     last_name: input.lastName,
   };
@@ -110,11 +110,13 @@ export async function upsertAwellPatientStep(
           profile,
         },
       },
-      patient_id: true,
+      patient: {
+        id: true
+      }
     },
   });
 
-  const patientId = response.upsertPatient?.patient_id;
+  const patientId = response.upsertPatient?.patient?.id;
 
   if (!patientId) {
     console.error('[upsertAwellPatientStep] Failed to upsert patient:', {
