@@ -3,13 +3,13 @@ import { AwellSdk, type Environment } from '@awell-health/awell-sdk';
 const INTAKE_CAREFLOW_DEFINITION_ID = process.env.INTAKE_CAREFLOW_DEFINITION_ID;
 
 /** Data point definition ID for eventId baseline info */
-const EVENT_ID_DATA_POINT_DEFINITION_ID = 'TFZDB1ls7D3P';
+const EVENT_ID_DATA_POINT_DEFINITION_ID = process.env.INTAKE_CAREFLOW_DPD_BOOKED_EVENT_ID || 'TFZDB1ls7D3P';
 
 /** Data point definition ID for providerId baseline info */
-const PROVIDER_ID_DATA_POINT_DEFINITION_ID = 'jArwfvoTRlFJ';
+const PROVIDER_ID_DATA_POINT_DEFINITION_ID = process.env.INTAKE_CAREFLOW_DPD_PROVIDER_ID || 'jArwfvoTRlFJ';
 
 /** Data point definition ID for confirmationId (workflow runId) baseline info */
-const CONFIRMATION_ID_DATA_POINT_DEFINITION_ID = 'ORVnKhrsQ0hT';
+const CONFIRMATION_ID_DATA_POINT_DEFINITION_ID = process.env.INTAKE_CAREFLOW_DPD_BOOKING_CONFIRMATION_ID || 'ORVnKhrsQ0hT';
 
 /**
  * Input for startIntakeCareflow step

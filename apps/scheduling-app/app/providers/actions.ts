@@ -266,6 +266,14 @@ export async function startBookingWorkflowAction(payload: {
   userName: string;
   salesforceLeadId: string;
   locationType: string;
+  /** Patient's first name (required) */
+  firstName: string;
+  /** Patient's last name (required) */
+  lastName: string;
+  /** Patient's phone number */
+  phone?: string;
+  /** Patient's state code (e.g., "CA", "NY") */
+  state?: string;
   /** Patient's browser timezone (e.g., "America/Denver") */
   patientTimezone?: string;
   /** Clinical focus / service selected during onboarding */
@@ -286,6 +294,10 @@ export async function startBookingWorkflowAction(payload: {
     userName: payload.userName,
     salesforceLeadId: payload.salesforceLeadId,
     locationType: payload.locationType,
+    firstName: payload.firstName,
+    lastName: payload.lastName,
+    phone: payload.phone,
+    state: payload.state,
     patientTimezone: payload.patientTimezone,
     clinicalFocus: payload.clinicalFocus,
   }]);

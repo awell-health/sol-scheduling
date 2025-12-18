@@ -52,9 +52,9 @@ export function BookingProgressModal({
     ];
 
     const labels: Record<BookingProgressType | 'done', string> = {
-      booking_started: 'Confirming the date/time of your appointment...',
-      appointment_booked: 'Coordinating with your provider...',
-      careflow_started: 'Ensuring your intake forms are ready...',
+      booking_started: 'Reserving the date/time of your appointment...',
+      appointment_booked: 'Creating an account with our team...',
+      careflow_started: 'Loading a few intake questions...',
       session_ready: 'Done! Redirecting...',
       done: 'Done! Redirecting...',
       error: 'Error',

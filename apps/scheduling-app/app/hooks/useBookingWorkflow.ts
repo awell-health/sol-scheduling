@@ -23,6 +23,14 @@ export interface StartBookingParams {
   userName: string;
   locationType: string;
   slotStartTime: string;
+  /** Patient's first name (required) */
+  firstName: string;
+  /** Patient's last name (required) */
+  lastName: string;
+  /** Patient's phone number */
+  phone?: string;
+  /** Patient's state code (e.g., "CA", "NY") */
+  state?: string;
   patientTimezone?: string;
   clinicalFocus?: string;
 }
@@ -128,6 +136,10 @@ export function useBookingWorkflow(
           userName: params.userName,
           salesforceLeadId: leadId,
           locationType: params.locationType,
+          firstName: params.firstName,
+          lastName: params.lastName,
+          phone: params.phone,
+          state: params.state,
           patientTimezone: params.patientTimezone,
           clinicalFocus: params.clinicalFocus,
         }),

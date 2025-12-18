@@ -15,6 +15,10 @@ type BeginIntakeButtonProps = {
 export function BeginIntakeButton({ sessionUrl }: BeginIntakeButtonProps) {
   const [isRedirecting, setIsRedirecting] = useState(false);
 
+  // TODO: Call the Awell API to check the status of the intake flow:
+  // - if there are any other active patient activities, then the button should be enabled
+  // - if there are no other active patient activities, then the button should be disabled
+
   const handleClick = () => {
     setIsRedirecting(true);
     window.location.href = sessionUrl;

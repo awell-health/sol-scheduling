@@ -6,6 +6,7 @@ import { startHostedActivitySessionStep } from './steps/startHostedActivitySessi
 import { writeProgressStep, closeProgressStreamStep } from './steps/writeProgress';
 import { updateLeadStep } from './steps/updateLead';
 import { haltReengagementCareflowsStep } from './steps/haltReengagementCareflows';
+import { upsertAwellPatientStep } from './steps/upsertAwellPatient';
 
 /**
  * Input for the booking workflow
@@ -16,6 +17,14 @@ export interface BookingWorkflowInput {
   userName: string;
   salesforceLeadId: string;
   locationType: string;
+  /** Patient's first name (required) */
+  firstName: string;
+  /** Patient's last name (required) */
+  lastName: string;
+  /** Patient's phone number */
+  phone?: string;
+  /** Patient's state code (e.g., "CA", "NY") */
+  state?: string;
   /** Patient's browser timezone */
   patientTimezone?: string;
   /** Clinical focus / service */
@@ -37,6 +46,8 @@ export interface BookingWorkflowResult {
   patientId: string;
   /** Session URL for intake forms */
   sessionUrl: string;
+  /** Salesforce lead ID */
+  salesforceLeadId: string;
 }
 
 /**
@@ -47,14 +58,15 @@ export interface BookingWorkflowResult {
  * 2. Book appointment via SOL API
  * 3. Write "appointment_booked" to stream
  * 4. Fetch event/provider details for confirmation page
- * 5. Start intake careflow (get careflowId, patientId)
- * 6. Write "careflow_started" to stream
- * 7. In parallel:
+ * 5. Upsert patient in Awell (creates or updates patient profile with first/last name, phone, state)
+ * 6. Start intake careflow (get careflowId, patientId)
+ * 7. Write "careflow_started" to stream
+ * 8. In parallel:
  *    - Start hosted activity session (get sessionUrl)
  *    - Halt any active re-engagement care flows
  *    - Update Salesforce lead with booking details
- * 8. Write "session_ready" to stream
- * 9. Close stream
+ * 9. Write "session_ready" to stream
+ * 10. Close stream
  * 
  * The result contains all data needed for the confirmation page,
  * which only needs the confirmationId (runId) to fetch this data.
@@ -102,7 +114,16 @@ export async function bookingWorkflow(
     providerId: input.providerId,
   });
 
-  // Step 5: Start intake careflow (with confirmationId for return link)
+  // Step 5: Upsert patient in Awell (creates or updates patient profile)
+  await upsertAwellPatientStep({
+    salesforceLeadId: input.salesforceLeadId,
+    firstName: input.firstName,
+    lastName: input.lastName,
+    phone: input.phone,
+    state: input.state,
+  });
+
+  // Step 6: Start intake careflow (with confirmationId for return link)
   const { careflowId, patientId } = await startIntakeCareflowStep({
     salesforceLeadId: input.salesforceLeadId,
     eventId: input.eventId,
@@ -120,14 +141,14 @@ export async function bookingWorkflow(
       })} ${input.patientTimezone}`
     : undefined;
 
-  // Step 6: Signal careflow started
+  // Step 7: Signal careflow started
   await writeProgressStep({
     type: 'careflow_started',
     message: 'Ensuring your intake forms are ready...',
     data: { careflowId, patientId },
   });
 
-  // Step 7: In parallel - session, halt re-engagement, update Salesforce, write progress
+  // Step 8: In parallel - session, halt re-engagement, update Salesforce, write progress
   const [{ sessionUrl }, ..._] = await Promise.all([
     startHostedActivitySessionStep({
       careflowId,
@@ -139,6 +160,8 @@ export async function bookingWorkflow(
     }),
     updateLeadStep({
       leadId: input.salesforceLeadId,
+      firstName: input.firstName,
+      lastName: input.lastName,
       clinicalFocus: input.clinicalFocus,
       eventType: input.locationType,
       providerFirstName: eventDetails.providerFirstName,
@@ -149,14 +172,14 @@ export async function bookingWorkflow(
     }),
   ]);
 
-  // Step 8: Signal session ready (workflow complete from user perspective)
+  // Step 9: Signal session ready (workflow complete from user perspective)
   await writeProgressStep({
     type: 'session_ready',
     message: 'Done! Redirecting...',
     data: { sessionUrl, confirmationId },
   });
 
-  // Step 9: Close the stream
+  // Step 10: Close the stream
   await closeProgressStreamStep();
 
   console.log('[bookingWorkflow] Completed:', {
@@ -168,6 +191,7 @@ export async function bookingWorkflow(
 
   return {
     confirmationId,
+    salesforceLeadId: input.salesforceLeadId,
     eventDetails,
     careflowId,
     patientId,

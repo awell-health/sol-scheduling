@@ -49,7 +49,6 @@ import {
   useBookingFormFields,
 } from '@/lib/fields';
 
-const PATIENT_NAME = 'Demo Patient';
 const PLACEHOLDER_AVATAR = '/images/avatar.svg';
 
 // BookingState is now managed by useBookingWorkflow hook
@@ -76,9 +75,9 @@ const BookingFormSchema = z.object({
         'You must consent to receiving calls or text messages about scheduling details.'
     }),
   insuranceCarrier: z.string().optional(),
-  // Name fields (shown when name_at_booking feature flag is enabled)
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
+  // Name fields (required)
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
 });
 
 type BookingFormValues = z.infer<typeof BookingFormSchema>;
@@ -538,10 +537,8 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
 
     const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     
-    // Build user name from form fields if provided, fallback to placeholder
-    const userName = (data.firstName && data.lastName)
-      ? `${data.firstName} ${data.lastName}`
-      : PATIENT_NAME;
+    // Build user name from form fields
+    const userName = `${data.firstName} ${data.lastName}`;
 
     await bookingWorkflow.startBooking({
       eventId: selectedSlot.eventId,
@@ -549,6 +546,10 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       userName,
       locationType: chosenLocation,
       slotStartTime: new Date(selectedSlot.slotstart).toISOString(),
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone,
+      state: preferences.state ?? undefined,
       patientTimezone: browserTimezone,
       clinicalFocus: preferences.service ?? undefined,
     });
