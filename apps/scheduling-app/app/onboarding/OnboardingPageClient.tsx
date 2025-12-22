@@ -1,18 +1,33 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useOnboarding, useBuildUrlWithUtm } from '../providers/_lib/onboarding';
-import { OnboardingFlow } from '../providers/components/OnboardingFlow';
+import { OnboardingFlow, type OnboardingEntryPoint } from '../providers/components/OnboardingFlow';
 
 type OnboardingPageClientProps = {
   target: string;
 };
 
+/**
+ * Derive entry point type from target URL for analytics.
+ * - "provider_list" for /providers
+ * - "provider_detail" for /providers/{id}
+ */
+function getEntryPoint(target: string): OnboardingEntryPoint {
+  // Match /providers/{id} pattern (with optional query params)
+  if (/^\/providers\/[^/?]+/.test(target)) return 'provider_detail';
+  // Match /providers (with or without trailing slash/query)
+  if (/^\/providers\/?(\?|$)/.test(target)) return 'provider_list';
+  return 'unknown';
+}
+
 export function OnboardingPageClient({ target }: OnboardingPageClientProps) {
   const router = useRouter();
   const { isOnboardingComplete, isInitialized } = useOnboarding();
   const buildUrlWithUtm = useBuildUrlWithUtm();
+  
+  const entryPoint = useMemo(() => getEntryPoint(target), [target]);
 
   // Redirect to target when onboarding is complete (for supported states)
   // Note: OnboardingFlow handles redirect to /not-available for unsupported states
@@ -49,6 +64,6 @@ export function OnboardingPageClient({ target }: OnboardingPageClientProps) {
     );
   }
 
-  return <OnboardingFlow onComplete={handleComplete} />;
+  return <OnboardingFlow onComplete={handleComplete} entryPoint={entryPoint} />;
 }
 

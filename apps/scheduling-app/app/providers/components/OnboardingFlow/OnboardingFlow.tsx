@@ -12,12 +12,16 @@ import { ServiceQuestion } from './ServiceQuestion';
 import { PhoneQuestion } from './PhoneQuestion';
 import { InsuranceQuestion } from './InsuranceQuestion';
 
+export type OnboardingEntryPoint = 'provider_list' | 'provider_detail' | 'unknown';
+
 type OnboardingFlowProps = {
   /** Called when all required questions are answered */
   onComplete?: () => void;
+  /** Entry point type for analytics tracking */
+  entryPoint?: OnboardingEntryPoint;
 };
 
-export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
+export function OnboardingFlow({ onComplete, entryPoint = 'unknown' }: OnboardingFlowProps) {
   const router = useRouter();
   const posthog = usePostHog();
   const hasTrackedStartRef = useRef(false);
@@ -38,9 +42,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       hasTrackedStartRef.current = true;
       posthog?.capture('onboarding_started', {
         total_steps: config.questions.length,
+        entry_point: entryPoint,
       });
     }
-  }, [currentStepIndex, config.questions.length, posthog]);
+  }, [currentStepIndex, config.questions.length, posthog, entryPoint]);
 
   // Helper to track step completion
   const trackStepCompleted = useCallback(
@@ -59,10 +64,11 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       if (isLastStep) {
         posthog?.capture('onboarding_completed', {
           total_steps: config.questions.length,
+          entry_point: entryPoint,
         });
       }
     },
-    [config.questions, posthog]
+    [config.questions, posthog, entryPoint]
   );
 
   // Handlers for each question
