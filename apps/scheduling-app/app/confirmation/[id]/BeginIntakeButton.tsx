@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { usePostHog } from 'posthog-js/react';
 
 type BeginIntakeButtonProps = {
   /** Session URL for the intake forms - comes from the workflow result */
@@ -13,6 +14,7 @@ type BeginIntakeButtonProps = {
  * we already have the sessionUrl and can redirect directly.
  */
 export function BeginIntakeButton({ sessionUrl }: BeginIntakeButtonProps) {
+  const posthog = usePostHog();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   // TODO: Call the Awell API to check the status of the intake flow:
@@ -21,6 +23,10 @@ export function BeginIntakeButton({ sessionUrl }: BeginIntakeButtonProps) {
 
   const handleClick = () => {
     setIsRedirecting(true);
+    
+    // Capture begin_intake event before redirecting
+    posthog?.capture('begin_intake');
+    
     window.location.href = sessionUrl;
   };
 
