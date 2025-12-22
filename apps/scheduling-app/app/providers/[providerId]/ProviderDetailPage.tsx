@@ -450,13 +450,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       } else {
         setValue('visitMode', undefined, { shouldValidate: true });
       }
-
-      requestAnimationFrame(() => {
-        bookingFormRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      });
+      // Scroll is handled by the useEffect that watches selectedSlot
     }
 
     hasInitializedFromUrl.current = true;
@@ -516,14 +510,18 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     } else {
       setValue('visitMode', undefined, { shouldValidate: true });
     }
+  };
 
-    requestAnimationFrame(() => {
-      bookingFormRef.current?.scrollIntoView({
+  // Scroll to form when a slot is selected
+  // useEffect runs after DOM is committed, so the form element is guaranteed to exist
+  useEffect(() => {
+    if (selectedSlot && bookingFormRef.current) {
+      bookingFormRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
-    });
-  };
+    }
+  }, [selectedSlot?.eventId]);
 
   const handleSubmitBooking = async (data: BookingFormValues) => {
     if (!selectedSlot) return;
