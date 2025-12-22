@@ -3,7 +3,6 @@ export {
   createLeadAction,
   updateLeadAction,
   updateLeadBookingAction,
-  captureBookingEventAction,
   type SalesforceLeadData,
   type CreateLeadInput,
   type UpdateLeadInput,

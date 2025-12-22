@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { getAnyStoredLeadId, captureBookingEventAction } from '../providers/_lib/salesforce';
+import { getAnyStoredLeadId } from '../providers/_lib/salesforce';
 import type { PostHog } from 'posthog-js';
 import type { BookingProgress, BookingProgressType } from '../../lib/workflow';
 
@@ -175,17 +175,6 @@ export function useBookingWorkflow(
         location_type: params.locationType,
       });
 
-      // Capture appointment_booked event server-side (fire-and-forget)
-      captureBookingEventAction({
-        posthogDistinctId: posthog?.get_distinct_id() ?? '',
-        leadId,
-        providerId: params.providerId,
-        appointmentTime: params.slotStartTime,
-        locationType: params.locationType,
-      }).catch((err) => {
-        console.error('Failed to capture booking event:', err);
-      });
-
       // Read the streaming response
       const reader = response.body?.getReader();
       if (!reader) {
@@ -226,7 +215,7 @@ export function useBookingWorkflow(
                 });
               }
 
-              // When session is ready, wait 1 second then redirect
+              // When session is ready, redirect to confirmation page
               if (progress.type === 'session_ready') {
                 const redirectConfirmationId = progress.data?.confirmationId || confirmationId;
                 

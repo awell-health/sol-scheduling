@@ -429,37 +429,3 @@ export async function updateLeadBookingAction(
   }
 }
 
-/**
- * Capture booking completion event in PostHog
- */
-export async function captureBookingEventAction(input: {
-  posthogDistinctId: string;
-  leadId: string;
-  providerId: string;
-  appointmentTime: string;
-  locationType: string;
-}): Promise<void> {
-  try {
-    const posthog = PostHogClient();
-    posthog.capture({
-      distinctId: input.posthogDistinctId,
-      event: 'appointment_booked',
-      properties: {
-        salesforce_lead_id: input.leadId,
-        provider_id: input.providerId,
-        appointment_time: input.appointmentTime,
-        location_type: input.locationType,
-      },
-    });
-    await posthog.flush();
-  } catch (error) {
-    console.error('[captureBookingEventAction] Failed to capture booking event:', {
-      error,
-      params: {
-        leadId: input.leadId,
-        providerId: input.providerId,
-        locationType: input.locationType,
-      },
-    });
-  }
-}
