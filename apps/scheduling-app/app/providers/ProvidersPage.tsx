@@ -13,7 +13,9 @@ import {
 import {
   useOnboarding,
   useBuildUrlWithReturn,
-  isSupportedState
+  useBuildUrlWithUtm,
+  isSupportedState,
+  getBorderingTargetState
 } from './_lib/onboarding';
 import { ProviderFilters } from './components/ProviderFilters';
 import { ProviderCard } from './components/ProviderCard';
@@ -42,6 +44,7 @@ export function ProvidersPage() {
     returnUrl
   } = useOnboarding();
   const buildUrlWithReturn = useBuildUrlWithReturn();
+  const buildUrlWithUtm = useBuildUrlWithUtm();
 
   const [pendingFilters, setPendingFilters] =
     useState<ProviderSearchFilters>(DEFAULT_FILTERS);
@@ -51,21 +54,29 @@ export function ProvidersPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Redirect to onboarding if not complete
+  // Redirect to onboarding if not complete (preserving UTM params)
   useEffect(() => {
     if (isInitialized && !isOnboardingComplete) {
-      router.replace(`/onboarding?target=${encodeURIComponent(pathname)}`);
+      const url = buildUrlWithUtm('/onboarding', { target: pathname });
+      router.replace(url);
     }
-  }, [isInitialized, isOnboardingComplete, pathname, router]);
+  }, [isInitialized, isOnboardingComplete, pathname, router, buildUrlWithUtm]);
 
-  // Redirect to /not-available if state is not supported
+  // Redirect to /not-available or /onboarding/bordering if state is not supported
   useEffect(() => {
     if (isInitialized && isOnboardingComplete && preferences.state) {
       if (!isSupportedState(preferences.state)) {
-        router.replace(`/not-available?state=${preferences.state}`);
+        const borderTarget = getBorderingTargetState(preferences.state);
+        if (borderTarget) {
+          const url = buildUrlWithUtm('/onboarding/bordering', { state: preferences.state });
+          router.replace(url);
+        } else {
+          const url = buildUrlWithUtm('/not-available', { state: preferences.state });
+          router.replace(url);
+        }
       }
     }
-  }, [isInitialized, isOnboardingComplete, preferences.state, router]);
+  }, [isInitialized, isOnboardingComplete, preferences.state, router, buildUrlWithUtm]);
 
   // Sync onboarding preferences to filter state when context changes
   useEffect(() => {

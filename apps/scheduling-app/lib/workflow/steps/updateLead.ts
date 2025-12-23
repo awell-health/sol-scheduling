@@ -5,6 +5,10 @@ import { getSalesforceClient } from '../../salesforce';
  */
 export interface UpdateLeadInput {
   leadId: string;
+  /** Patient's first name */
+  firstName?: string;
+  /** Patient's last name */
+  lastName?: string;
   /** Clinical focus / visit reason (e.g., 'ADHD', 'Anxiety') */
   clinicalFocus?: string;
   /** Event type (e.g., 'In-Person', 'Telehealth') */
@@ -45,6 +49,16 @@ export async function updateLeadStep(
       RecordTypeId: '0125w000000BRDxAAO',
       Status: 'Appt Selected',
     };
+
+    // FirstName = Patient's first name
+    if (input.firstName) {
+      updateData.FirstName = input.firstName;
+    }
+
+    // LastName = Patient's last name
+    if (input.lastName) {
+      updateData.LastName = input.lastName;
+    }
 
     // Visit_Reason__c = Clinical focus (e.g., 'ADHD', 'Anxiety')
     if (input.clinicalFocus) {

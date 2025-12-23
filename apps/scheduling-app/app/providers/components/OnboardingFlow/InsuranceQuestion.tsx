@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Input } from '../../../../components/ui/input';
-import { Button } from '../../../../components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { updateLeadAction, getAnyStoredLeadId } from '../../_lib/salesforce';
-import { INSURANCE_OPTIONS, FIELD_REGISTRY, FieldId } from '../../../../lib/fields';
+import { INSURANCE_OPTIONS, FIELD_REGISTRY, FieldId } from '@/lib/fields';
 
 type InsuranceQuestionProps = {
   value: string | null;

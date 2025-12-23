@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '../../../../components/ui/button';
-import { SERVICE_OPTIONS_WITH_DESCRIPTIONS, FIELD_REGISTRY, FieldId } from '../../../../lib/fields';
+import { Button } from '@/components/ui/button';
+import { SERVICE_OPTIONS_WITH_DESCRIPTIONS, FIELD_REGISTRY, FieldId } from '@/lib/fields';
 
 type ServiceQuestionProps = {
   value: string | null;

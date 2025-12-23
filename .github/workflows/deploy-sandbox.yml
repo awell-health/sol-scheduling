@@ -1,0 +1,16 @@
+name: Deploy Sandbox to Vercel
+
+on:
+  push:
+    branches:
+      - sandbox
+
+jobs:
+  deploy:
+    name: Trigger Vercel Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Vercel
+        run: |
+          curl -X POST "${{ secrets.VERCEL_SANDBOX_DEPLOY_HOOK }}"
+

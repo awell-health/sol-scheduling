@@ -8,12 +8,13 @@ export {
 
 // Config
 export {
-  OnboardingFeatureFlags,
   INSURANCE_OPTIONS,
   SERVICE_OPTIONS,
   ALL_US_STATES,
   SUPPORTED_STATE_CODES,
   isSupportedState,
+  BORDERING_STATE_MAP,
+  getBorderingTargetState,
   type SupportedStateCode
 } from './config';
 
@@ -32,4 +33,19 @@ export {
   useOnboardingLifecycle,
   useBuildUrlWithReturn
 } from './hooks';
+
+// UTM Tracking
+export {
+  UtmParam,
+  UTM_PARAM_KEYS,
+  UtmPersonProperty,
+  type UtmParams,
+  extractUtmParams,
+  hasUtmParams,
+  buildUrlWithUtm,
+  readUtmFromStorage,
+  writeUtmToStorage,
+  useUtmCapture,
+  useBuildUrlWithUtm,
+} from '../utm';
 

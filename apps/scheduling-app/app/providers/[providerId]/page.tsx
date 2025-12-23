@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { ProviderDetailPage } from './ProviderDetailPage';
 
 export const metadata: Metadata = {
@@ -18,7 +19,9 @@ export default async function ProviderDetailRoute({
   return (
     <main className='min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8'>
       <div className='mx-auto max-w-3xl'>
-        <ProviderDetailPage providerId={providerId} />
+        <Suspense fallback={<div className='text-sm text-slate-500'>Loading...</div>}>
+          <ProviderDetailPage providerId={providerId} />
+        </Suspense>
       </div>
     </main>
   );

@@ -21,7 +21,7 @@ import {
   ProviderSearchFilters
 } from './_lib/types';
 import { start } from 'workflow/api';
-import { postBookingWorkflow } from '../../lib/workflow';
+import { postBookingWorkflow, bookingWorkflow } from '../../lib/workflow';
 
 /** Timing metadata returned from API actions */
 export type ApiTiming = {
@@ -252,6 +252,59 @@ export async function bookAppointmentAction(payload: {
     });
     throw error;
   }
+}
+
+/**
+ * Start the booking workflow with streaming progress updates.
+ * Returns the runId for the client to subscribe to via SSE.
+ * 
+ * @returns { runId: string } - Use this to subscribe at /api/workflow/:runId/stream
+ */
+export async function startBookingWorkflowAction(payload: {
+  eventId: string;
+  providerId: string;
+  userName: string;
+  salesforceLeadId: string;
+  locationType: string;
+  /** Patient's first name (required) */
+  firstName: string;
+  /** Patient's last name (required) */
+  lastName: string;
+  /** Patient's phone number */
+  phone?: string;
+  /** Patient's state code (e.g., "CA", "NY") */
+  state?: string;
+  /** Patient's browser timezone (e.g., "America/Denver") */
+  patientTimezone?: string;
+  /** Clinical focus / service selected during onboarding */
+  clinicalFocus?: string;
+}): Promise<{ runId: string }> {
+  console.log('[startBookingWorkflowAction] Starting booking workflow:', {
+    eventId: payload.eventId,
+    providerId: payload.providerId,
+    locationType: payload.locationType,
+    hasSalesforceLeadId: !!payload.salesforceLeadId,
+    patientTimezone: payload.patientTimezone,
+    clinicalFocus: payload.clinicalFocus,
+  });
+
+  const run = await start(bookingWorkflow, [{
+    eventId: payload.eventId,
+    providerId: payload.providerId,
+    userName: payload.userName,
+    salesforceLeadId: payload.salesforceLeadId,
+    locationType: payload.locationType,
+    firstName: payload.firstName,
+    lastName: payload.lastName,
+    phone: payload.phone,
+    state: payload.state,
+    patientTimezone: payload.patientTimezone,
+    clinicalFocus: payload.clinicalFocus,
+  }]);
+
+  console.log('[startBookingWorkflowAction] Workflow started:', run);
+
+  return { runId: run.runId };
 }
 
 

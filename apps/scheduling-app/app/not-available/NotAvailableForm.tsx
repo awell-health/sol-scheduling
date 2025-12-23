@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePostHog } from 'posthog-js/react';
-import { readPreferencesFromStorage, clearPreferencesStorage } from '../providers/_lib/onboarding';
+import { readPreferencesFromStorage, clearPreferencesStorage, useBuildUrlWithUtm } from '../providers/_lib/onboarding';
 import { PhoneInput, type E164Number } from '../../components/ui/phone-input';
 
 type NotAvailableFormProps = {
@@ -13,6 +13,7 @@ type NotAvailableFormProps = {
 export function NotAvailableForm({ state }: NotAvailableFormProps) {
   const router = useRouter();
   const posthog = usePostHog();
+  const buildUrlWithUtm = useBuildUrlWithUtm();
   const [phone, setPhone] = useState<E164Number | undefined>(undefined);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -38,7 +39,7 @@ export function NotAvailableForm({ state }: NotAvailableFormProps) {
 
   const handleStartOver = () => {
     clearPreferencesStorage();
-    router.push('/providers');
+    router.push(buildUrlWithUtm('/providers'));
   };
 
   if (isSubmitted) {

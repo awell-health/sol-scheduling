@@ -1,22 +1,30 @@
 'use client';
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { usePostHog } from 'posthog-js/react';
 import { useOnboarding } from '../../_lib/onboarding/OnboardingContext';
+import { useBuildUrlWithUtm } from '../../_lib/onboarding';
 import { OnboardingStep } from '../../_lib/onboarding/types';
-import { isSupportedState } from '../../_lib/onboarding/config';
+import { isSupportedState, getBorderingTargetState } from '../../_lib/onboarding/config';
 import { StateQuestion } from './StateQuestion';
 import { ServiceQuestion } from './ServiceQuestion';
 import { PhoneQuestion } from './PhoneQuestion';
 import { InsuranceQuestion } from './InsuranceQuestion';
 
+export type OnboardingEntryPoint = 'provider_list' | 'provider_detail' | 'unknown';
+
 type OnboardingFlowProps = {
   /** Called when all required questions are answered */
   onComplete?: () => void;
+  /** Entry point type for analytics tracking */
+  entryPoint?: OnboardingEntryPoint;
 };
 
-export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
+export function OnboardingFlow({ onComplete, entryPoint = 'unknown' }: OnboardingFlowProps) {
   const router = useRouter();
+  const posthog = usePostHog();
+  const hasTrackedStartRef = useRef(false);
   const {
     preferences,
     setPreferences,
@@ -26,6 +34,42 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     advanceStep,
     goToPreviousStep
   } = useOnboarding();
+  const buildUrlWithUtm = useBuildUrlWithUtm();
+
+  // Track onboarding started (only once per session)
+  useEffect(() => {
+    if (!hasTrackedStartRef.current && currentStepIndex !== null) {
+      hasTrackedStartRef.current = true;
+      posthog?.capture('onboarding_started', {
+        total_steps: config.questions.length,
+        entry_point: entryPoint,
+      });
+    }
+  }, [currentStepIndex, config.questions.length, posthog, entryPoint]);
+
+  // Helper to track step completion
+  const trackStepCompleted = useCallback(
+    (step: OnboardingStep, skipped = false) => {
+      const stepIndex = config.questions.indexOf(step);
+      const isLastStep = stepIndex === config.questions.length - 1;
+      
+      posthog?.capture('onboarding_step_completed', {
+        step,
+        step_number: stepIndex + 1,
+        total_steps: config.questions.length,
+        skipped,
+      });
+      
+      // If this is the last step, also track onboarding completed
+      if (isLastStep) {
+        posthog?.capture('onboarding_completed', {
+          total_steps: config.questions.length,
+          entry_point: entryPoint,
+        });
+      }
+    },
+    [config.questions, posthog, entryPoint]
+  );
 
   // Handlers for each question
   const handleStateChange = useCallback(
@@ -36,8 +80,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   );
 
   const handleStateContinue = useCallback(() => {
+    trackStepCompleted(OnboardingStep.STATE);
     advanceStep();
-  }, [advanceStep]);
+  }, [advanceStep, trackStepCompleted]);
 
   const handleServiceChange = useCallback(
     (value: string) => {
@@ -47,8 +92,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   );
 
   const handleServiceContinue = useCallback(() => {
+    trackStepCompleted(OnboardingStep.SERVICE);
     advanceStep();
-  }, [advanceStep]);
+  }, [advanceStep, trackStepCompleted]);
 
   const handlePhoneChange = useCallback(
     (value: string) => {
@@ -65,8 +111,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   );
 
   const handlePhoneContinue = useCallback(() => {
+    trackStepCompleted(OnboardingStep.PHONE);
     advanceStep();
-  }, [advanceStep]);
+  }, [advanceStep, trackStepCompleted]);
 
   const handleInsuranceChange = useCallback(
     (value: string) => {
@@ -76,24 +123,33 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   );
 
   const handleInsuranceContinue = useCallback(() => {
+    trackStepCompleted(OnboardingStep.INSURANCE);
     advanceStep();
-  }, [advanceStep]);
+  }, [advanceStep, trackStepCompleted]);
 
   // Check for non-supported state when onboarding is complete
   useEffect(() => {
     if (isOnboardingComplete) {
       const { state } = preferences;
       
-      // Redirect to /not-available if state is not supported
+      // Check if state is not supported
       if (state && !isSupportedState(state)) {
-        router.push(`/not-available?state=${state}`);
+        // Check if it's a bordering state that can be redirected
+        const borderTarget = getBorderingTargetState(state);
+        if (borderTarget) {
+          const url = buildUrlWithUtm('/onboarding/bordering', { state });
+          router.push(url);
+        } else {
+          const url = buildUrlWithUtm('/not-available', { state });
+          router.push(url);
+        }
         return;
       }
 
       // Otherwise, notify parent that onboarding is complete
       onComplete?.();
     }
-  }, [isOnboardingComplete, preferences, router, onComplete]);
+  }, [isOnboardingComplete, preferences, router, onComplete, buildUrlWithUtm]);
 
   // If onboarding is complete, don't render anything
   if (currentStepIndex === null || isOnboardingComplete) {
@@ -196,7 +252,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         <div className='mt-6 text-center'>
           <button
             type='button'
-            onClick={advanceStep}
+            onClick={() => {
+              trackStepCompleted(currentStep, true);
+              advanceStep();
+            }}
             className='text-sm text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline'
           >
             Skip this step

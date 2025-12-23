@@ -284,7 +284,6 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
     },
     storageKey: 'firstName',
     contexts: ['booking'],
-    featureFlag: 'name_at_booking',
     required: true,
   },
 
@@ -300,7 +299,6 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
     },
     storageKey: 'lastName',
     contexts: ['booking'],
-    featureFlag: 'name_at_booking',
     required: true,
   },
 };

@@ -1,5 +1,5 @@
 import type { OnboardingPreferences } from './types';
-import { FieldId, ONBOARDING_STORAGE_KEYS } from '../../../../lib/fields';
+import { FieldId, ONBOARDING_STORAGE_KEYS } from '@/lib/fields';
 
 /**
  * Single localStorage key for all onboarding data.

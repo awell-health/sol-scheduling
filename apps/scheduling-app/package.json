@@ -9,8 +9,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@awell-health/awell-sdk": "^0.1.26",
-    "@awell-health/sol-scheduling": "workspace:*",
+    "@awell-health/awell-sdk": "^0.1.27",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",

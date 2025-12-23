@@ -1,12 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { format } from 'date-fns';
 import { ProviderSummary } from '../_lib/types';
 import { ProviderBio } from './ProviderBio';
 import { MapPinIcon, VideoCameraIcon } from './icons/ProviderIcons';
 import { Button } from '../../../components/ui/button';
+import { UTM_PARAM_KEYS } from '../_lib/utm';
 
 type ProviderCardProps = {
   provider: ProviderSummary;
@@ -24,6 +25,7 @@ export function ProviderCard({
   returnUrl
 }: ProviderCardProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const providerName =
     provider.firstName && provider.lastName
       ? `${provider.firstName} ${provider.lastName}`
@@ -66,6 +68,13 @@ export function ProviderCard({
     });
     if (returnUrl) {
       params.set('returnUrl', returnUrl);
+    }
+    // Preserve UTM params when navigating to provider detail
+    for (const key of UTM_PARAM_KEYS) {
+      const value = searchParams.get(key);
+      if (value) {
+        params.set(key, value);
+      }
     }
     router.push(`/providers/${provider.id}?${params.toString()}`);
   };

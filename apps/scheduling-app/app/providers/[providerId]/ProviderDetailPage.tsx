@@ -20,13 +20,13 @@ import {
   ProviderSummary
 } from '../_lib/types';
 import {
-  bookAppointmentAction,
   getAvailabilityAction,
-  getProviderAction
+  getProviderAction,
 } from '../actions';
+import { useBookingWorkflow } from '../../hooks';
+import { BookingProgressModal } from './BookingProgressModal';
 import { usePostHog } from 'posthog-js/react';
-import { useOnboarding, isSupportedState } from '../_lib/onboarding';
-import { getAnyStoredLeadId, captureBookingEventAction } from '../_lib/salesforce';
+import { useOnboarding, useBuildUrlWithUtm, isSupportedState, getBorderingTargetState } from '../_lib/onboarding';
 import { ProviderBio } from '../components/ProviderBio';
 import { MapPinIcon, VideoCameraIcon } from '../components/icons/ProviderIcons';
 import { Calendar } from '../../../components/ui/calendar';
@@ -47,16 +47,11 @@ import {
   FIELD_REGISTRY,
   INSURANCE_OPTIONS,
   useBookingFormFields,
-} from '../../../lib/fields';
+} from '@/lib/fields';
 
-const PATIENT_NAME = 'Demo Patient';
 const PLACEHOLDER_AVATAR = '/images/avatar.svg';
 
-type BookingState =
-  | { status: 'idle' }
-  | { status: 'booking'; eventId: string }
-  | { status: 'success'; message: string }
-  | { status: 'error'; message: string };
+// BookingState is now managed by useBookingWorkflow hook
 
 const BookingFormSchema = z.object({
   // Phone is stored in E.164 format (e.g., "+16175551234")
@@ -80,9 +75,9 @@ const BookingFormSchema = z.object({
         'You must consent to receiving calls or text messages about scheduling details.'
     }),
   insuranceCarrier: z.string().optional(),
-  // Name fields (shown when name_at_booking feature flag is enabled)
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
+  // Name fields (required)
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
 });
 
 type BookingFormValues = z.infer<typeof BookingFormSchema>;
@@ -140,7 +135,8 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const posthog = usePostHog();
-  const { preferences, returnUrl, isOnboardingComplete, isInitialized } = useOnboarding();
+  const { preferences, isOnboardingComplete, isInitialized } = useOnboarding();
+  const buildUrlWithUtm = useBuildUrlWithUtm();
   const [provider, setProvider] = useState<ProviderSummary | null>(null);
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [providerError, setProviderError] = useState<string | null>(null);
@@ -149,9 +145,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
   );
   const [providerLoading, setProviderLoading] = useState(true);
   const [availabilityLoading, setAvailabilityLoading] = useState(true);
-  const [bookingState, setBookingState] = useState<BookingState>({
-    status: 'idle'
-  });
+  const bookingWorkflow = useBookingWorkflow({ posthog });
   const [showStickyHeader, setShowStickyHeader] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const [locationFilter, setLocationFilter] = useState<string>('all');
@@ -182,21 +176,29 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
   const visitMode = watch('visitMode');
   const consent = watch('consent');
 
-  // Redirect to onboarding if not complete
+  // Redirect to onboarding if not complete (preserving UTM params)
   useEffect(() => {
     if (isInitialized && !isOnboardingComplete) {
-      router.replace(`/onboarding?target=${encodeURIComponent(pathname)}`);
+      const url = buildUrlWithUtm('/onboarding', { target: pathname });
+      router.replace(url);
     }
-  }, [isInitialized, isOnboardingComplete, pathname, router]);
+  }, [isInitialized, isOnboardingComplete, pathname, router, buildUrlWithUtm]);
 
-  // Redirect to /not-available if state is not supported
+  // Redirect to /not-available or /onboarding/bordering if state is not supported
   useEffect(() => {
     if (isInitialized && isOnboardingComplete && preferences.state) {
       if (!isSupportedState(preferences.state)) {
-        router.replace(`/not-available?state=${preferences.state}`);
+        const borderTarget = getBorderingTargetState(preferences.state);
+        if (borderTarget) {
+          const url = buildUrlWithUtm('/onboarding/bordering', { state: preferences.state });
+          router.replace(url);
+        } else {
+          const url = buildUrlWithUtm('/not-available', { state: preferences.state });
+          router.replace(url);
+        }
       }
     }
-  }, [isInitialized, isOnboardingComplete, preferences.state, router]);
+  }, [isInitialized, isOnboardingComplete, preferences.state, router, buildUrlWithUtm]);
 
   // Determine if we're ready to show content (not redirecting)
   const isRedirecting =
@@ -231,7 +233,6 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
   const showPhoneField = shouldShowField(FieldId.PHONE);
   const showInsuranceField = shouldShowField(FieldId.INSURANCE);
   const showConsentField = shouldShowField(FieldId.CONSENT);
-  // Future: firstName/lastName will automatically show when name_at_booking flag is enabled
   const showFirstNameField = shouldShowField(FieldId.FIRST_NAME);
   const showLastNameField = shouldShowField(FieldId.LAST_NAME);
 
@@ -449,13 +450,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       } else {
         setValue('visitMode', undefined, { shouldValidate: true });
       }
-
-      requestAnimationFrame(() => {
-        bookingFormRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      });
+      // Scroll is handled by the useEffect that watches selectedSlot
     }
 
     hasInitializedFromUrl.current = true;
@@ -503,7 +498,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
 
   const handleSelectSlot = (slot: AvailabilitySlot) => {
     setSelectedSlot(slot);
-    setBookingState({ status: 'idle' });
+    bookingWorkflow.reset();
 
     const modes = slotModes(slot);
     if (modes.inPerson && modes.virtual) {
@@ -515,14 +510,18 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     } else {
       setValue('visitMode', undefined, { shouldValidate: true });
     }
+  };
 
-    requestAnimationFrame(() => {
-      bookingFormRef.current?.scrollIntoView({
+  // Scroll to form when a slot is selected
+  // useEffect runs after DOM is committed, so the form element is guaranteed to exist
+  useEffect(() => {
+    if (selectedSlot && bookingFormRef.current) {
+      bookingFormRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
-    });
-  };
+    }
+  }, [selectedSlot?.eventId]);
 
   const handleSubmitBooking = async (data: BookingFormValues) => {
     if (!selectedSlot) return;
@@ -533,99 +532,24 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       selectedSlot.eventType ??
       'Virtual';
 
-    setBookingState({ status: 'booking', eventId: selectedSlot.eventId });
-    const frontendStart = performance.now();
-    try {
-      const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const leadId = getAnyStoredLeadId();
-      
-      // Build user name from form fields if provided, fallback to placeholder
-      const userName = (data.firstName && data.lastName)
-        ? `${data.firstName} ${data.lastName}`
-        : PATIENT_NAME;
-      
-      const bookingResult = await bookAppointmentAction({
-        eventId: selectedSlot.eventId,
-        providerId: selectedSlot.providerId,
-        userInfo: {
-          userName,
-          ...(leadId ? { salesforceLeadId: leadId } : {}),
-          ...(data.insuranceCarrier
-            ? { insuranceCarrier: data.insuranceCarrier }
-            : {}),
-          ...(data.firstName ? { firstName: data.firstName } : {}),
-          ...(data.lastName ? { lastName: data.lastName } : {}),
-        },
-        locationType: chosenLocation,
-        patientTimezone: browserTimezone,
-        clinicalFocus: preferences.service ?? undefined,
-      });
-      const frontendMs = Math.round(performance.now() - frontendStart);
+    const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    // Build user name from form fields
+    const userName = `${data.firstName} ${data.lastName}`;
 
-      // Capture booking timing
-      posthog?.capture('api_call_booking', {
-        provider_id: selectedSlot.providerId,
-        frontend_rt_ms: frontendMs,
-        sol_api_rt_ms: bookingResult._timing?.solApiMs,
-        location_type: chosenLocation,
-      });
-
-      // Capture appointment_booked event server-side (fire-and-forget)
-      if (leadId && posthog) {
-        captureBookingEventAction({
-          posthogDistinctId: posthog.get_distinct_id(),
-          leadId,
-          providerId: selectedSlot.providerId,
-          appointmentTime: new Date(selectedSlot.slotstart).toISOString(),
-          locationType: chosenLocation,
-        }).catch((err) => {
-          console.error('Failed to capture booking event:', err);
-        });
-      }
-
-      setBookingState({
-        status: 'success',
-        message: 'Appointment requested successfully. We will confirm shortly.'
-      });
-
-      // NOTE: Lead update is now handled by the postBookingWorkflow
-      // which is triggered inside bookAppointmentAction.
-
-      // NOTE: We intentionally do NOT clear preferences here.
-      // Clearing them breaks the flow because the user would be redirected
-      // back to onboarding when navigating to /providers after booking.
-      // Preferences should persist so the user can book additional appointments.
-
-      const providerNameForParams =
-        provider?.firstName && provider?.lastName
-          ? `${provider.firstName} ${provider.lastName}`
-          : provider?.firstName || provider?.lastName || 'Provider';
-
-      const params = new URLSearchParams({
-        eventId: selectedSlot.eventId,
-        providerId: selectedSlot.providerId,
-        providerName: providerNameForParams,
-        providerImage: provider?.image ?? '',
-        startsAt: selectedSlot.slotstart.toString(),
-        duration: String(selectedSlot.duration),
-        locationType: String(chosenLocation),
-        facility: selectedSlot.facility ?? '',
-        state: provider?.location?.state ?? ''
-      });
-
-      if (returnUrl) {
-        params.set('returnUrl', returnUrl);
-      }
-
-      router.push(`/confirmation?${params.toString()}`);
-    } catch (err) {
-      console.error('Failed to book appointment', err);
-      setBookingState({
-        status: 'error',
-        message:
-          err instanceof Error ? err.message : 'Unable to complete booking'
-      });
-    }
+    await bookingWorkflow.startBooking({
+      eventId: selectedSlot.eventId,
+      providerId: selectedSlot.providerId,
+      userName,
+      locationType: chosenLocation,
+      slotStartTime: new Date(selectedSlot.slotstart).toISOString(),
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone,
+      state: preferences.state ?? undefined,
+      patientTimezone: browserTimezone,
+      clinicalFocus: preferences.service ?? undefined,
+    });
   };
 
   const needsLocationChoice = useMemo(() => {
@@ -638,9 +562,9 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     if (!selectedSlot) return false;
     if (!isValid) return false;
     if (needsLocationChoice && !visitMode) return false;
-    if (bookingState.status === 'booking' || isSubmitting) return false;
+    if (bookingWorkflow.state.status === 'starting' || bookingWorkflow.state.status === 'booking' || bookingWorkflow.state.status === 'redirecting' || isSubmitting) return false;
     return true;
-  }, [selectedSlot, isValid, needsLocationChoice, visitMode, bookingState.status, isSubmitting]);
+  }, [selectedSlot, isValid, needsLocationChoice, visitMode, bookingWorkflow.state.status, isSubmitting]);
 
   const renderSlot = (slot: AvailabilitySlot) => {
     const startsAt = new Date(slot.slotstart);
@@ -934,11 +858,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
         )}
       </section>
 
-      {bookingState.status === 'success' && (
-        <div className='rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900'>
-          {bookingState.message}
-        </div>
-      )}
+      {/* Success state is now handled by the modal + redirect */}
 
       {selectedSlot && (
         <section
@@ -962,7 +882,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                   onClick={() => {
                     setSelectedSlot(null);
                     reset();
-                    setBookingState({ status: 'idle' });
+                    bookingWorkflow.reset();
                   }}
                   className='text-xs font-semibold text-primary hover:underline'
                 >
@@ -973,7 +893,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
           </div>
 
           <form onSubmit={handleSubmit(handleSubmitBooking)} className='space-y-4'>
-            {/* Name fields (shown when name_at_booking feature flag is enabled) */}
+            {/* Name fields */}
             {showFirstNameField && (
               <div className='space-y-1'>
                 <Label htmlFor='firstName'>{FIELD_REGISTRY[FieldId.FIRST_NAME].label}</Label>
@@ -983,6 +903,9 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                   render={({ field }) => (
                     <Input
                       id='firstName'
+                      autoComplete='given-name'
+                      data-phi='true'
+                      data-attr-redact='true'
                       value={field.value ?? ''}
                       onChange={field.onChange}
                       onBlur={field.onBlur}
@@ -1012,6 +935,9 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                   render={({ field }) => (
                     <Input
                       id='lastName'
+                      autoComplete='family-name'
+                      data-phi='true'
+                      data-attr-redact='true'
                       value={field.value ?? ''}
                       onChange={field.onChange}
                       onBlur={field.onBlur}
@@ -1041,6 +967,8 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                   render={({ field }) => (
                     <PhoneInput
                       id='phone'
+                      data-phi
+                      data-attr-redact
                       value={(field.value as E164Number) || undefined}
                       onChange={(value) => field.onChange(value ?? '')}
                       onBlur={field.onBlur}
@@ -1241,17 +1169,30 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
               className='mt-2 inline-flex w-full items-center justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground shadow-card hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
               disabled={!canSubmitBooking}
             >
-              {bookingState.status === 'booking' ? 'Booking…' : 'Book appointment'}
+              {bookingWorkflow.state.status === 'starting' 
+                ? 'Starting...'
+                : bookingWorkflow.state.status === 'booking' || bookingWorkflow.state.status === 'redirecting'
+                  ? 'Booking...'
+                  : 'Book appointment'}
             </button>
 
-            {bookingState.status === 'error' && (
+            {bookingWorkflow.state.status === 'error' && !bookingWorkflow.isModalOpen && (
               <div className='mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800'>
-                {bookingState.message}
+                {bookingWorkflow.state.message}
               </div>
             )}
           </form>
         </section>
       )}
+
+      {/* Booking progress modal */}
+      <BookingProgressModal
+        isOpen={bookingWorkflow.isModalOpen}
+        currentStep={bookingWorkflow.currentStep}
+        error={bookingWorkflow.error}
+        onRetry={bookingWorkflow.retry}
+        onDismiss={bookingWorkflow.reset}
+      />
     </div>
   );
 }

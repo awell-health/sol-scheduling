@@ -9,14 +9,12 @@ import {
   useState,
   type ReactNode
 } from 'react';
-import { useFeatureFlagPayload } from 'posthog-js/react';
 import {
   DEFAULT_ONBOARDING_CONFIG,
   OnboardingStep,
   type OnboardingConfig,
   type OnboardingPreferences
 } from './types';
-import { OnboardingFeatureFlags } from './config';
 import {
   readPreferencesFromStorage,
   writePreferencesToStorage,
@@ -75,33 +73,10 @@ export function OnboardingProvider({
   const [isInitialized, setIsInitialized] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState<number | null>(0);
 
-  // Get config from PostHog feature flag
-  const flagPayload = useFeatureFlagPayload(
-    OnboardingFeatureFlags.ONBOARDING_QUESTIONS_CONFIG
-  );
-
+  // Always use the default config (all questions mandatory)
   const config = useMemo<OnboardingConfig>(() => {
-    if (!flagPayload || typeof flagPayload !== 'object') {
-      return DEFAULT_ONBOARDING_CONFIG;
-    }
-
-    const payload = flagPayload as Record<string, unknown>;
-
-    // Validate and parse the payload
-    const questions = Array.isArray(payload.questions)
-      ? (payload.questions.filter((q) =>
-          Object.values(OnboardingStep).includes(q as OnboardingStep)
-        ) as OnboardingStep[])
-      : DEFAULT_ONBOARDING_CONFIG.questions;
-
-    const required = Array.isArray(payload.required)
-      ? (payload.required.filter((q) =>
-          Object.values(OnboardingStep).includes(q as OnboardingStep)
-        ) as OnboardingStep[])
-      : DEFAULT_ONBOARDING_CONFIG.required;
-
-    return { questions, required };
-  }, [flagPayload]);
+    return DEFAULT_ONBOARDING_CONFIG;
+  }, []);
 
   // Helper to check if a preference value is valid
   const isPreferenceValid = useCallback((step: OnboardingStep, value: string | null): boolean => {
