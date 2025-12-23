@@ -101,62 +101,37 @@ export async function bookingWorkflow(
     locationType: input.locationType,
   });
 
-  // Step 3: Signal appointment booked
+  // Step 3: Fetch event/provider details for confirmation page
+  const eventDetails = await fetchEventDetailsStep({
+    eventId: input.eventId,
+    providerId: input.providerId,
+  });
+
+  // Step 4: Signal appointment booked
   await writeProgressStep({
     type: 'appointment_booked',
     message: 'Coordinating with your provider...',
     data: { eventId: bookingResult.eventId },
   });
 
-  // Step 4: Fetch event/provider details for confirmation page
-  const eventDetails = await fetchEventDetailsStep({
-    eventId: input.eventId,
-    providerId: input.providerId,
-  });
-
-  // Step 5: Upsert patient in Awell (creates or updates patient profile)
-  await upsertAwellPatientStep({
-    salesforceLeadId: input.salesforceLeadId,
-    firstName: input.firstName,
-    lastName: input.lastName,
-    phone: input.phone,
-    state: input.state,
-  });
-
-  // Step 6: Start intake careflow (with confirmationId for return link)
-  const { careflowId, patientId } = await startIntakeCareflowStep({
-    salesforceLeadId: input.salesforceLeadId,
-    eventId: input.eventId,
-    providerId: input.providerId,
-    confirmationId,
-  });
-
   // Format localized time with timezone for Salesforce
   const localizedTimeWithTimezone = input.patientTimezone && eventDetails.startsAt
-    ? `${new Date(eventDetails.startsAt).toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit',
-        hour12: true,
-        timeZone: input.patientTimezone,
-      })} ${input.patientTimezone}`
-    : undefined;
+  ? `${new Date(eventDetails.startsAt).toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true,
+      timeZone: input.patientTimezone,
+    })} ${input.patientTimezone}`
+  : undefined;
 
-  // Step 7: Signal careflow started
-  await writeProgressStep({
-    type: 'careflow_started',
-    message: 'Ensuring your intake forms are ready...',
-    data: { careflowId, patientId },
-  });
-
-  // Step 8: In parallel - session, halt re-engagement, update Salesforce, write progress
-  const [{ sessionUrl }, ..._] = await Promise.all([
-    startHostedActivitySessionStep({
-      careflowId,
-      patientId,
-    }),
-    haltReengagementCareflowsStep({
-      patientId,
-      confirmationId,
+  // Step 5: Upsert patient in Awell and update Salesforce lead
+  await Promise.all([
+    upsertAwellPatientStep({
+      salesforceLeadId: input.salesforceLeadId,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      phone: input.phone,
+      state: input.state,
     }),
     updateLeadStep({
       leadId: input.salesforceLeadId,
@@ -169,6 +144,33 @@ export async function bookingWorkflow(
       slotStartUtc: eventDetails.startsAt,
       localizedTimeWithTimezone,
       facility: eventDetails.facility,
+    }),
+  ]);
+
+  // Step 6: Start intake careflow (with confirmationId for return link)
+  const { careflowId, patientId } = await startIntakeCareflowStep({
+    salesforceLeadId: input.salesforceLeadId,
+    eventId: input.eventId,
+    providerId: input.providerId,
+    confirmationId,
+  });
+
+  // Step 7: Signal careflow started
+  await writeProgressStep({
+    type: 'careflow_started',
+    message: 'Ensuring your intake forms are ready...',
+    data: { careflowId, patientId },
+  });
+
+  // Step 8: In parallel - session, halt re-engagement
+  const [{ sessionUrl }, ..._] = await Promise.all([
+    startHostedActivitySessionStep({
+      careflowId,
+      patientId,
+    }),
+    haltReengagementCareflowsStep({
+      patientId,
+      confirmationId,
     }),
   ]);
 
