@@ -56,12 +56,12 @@ const enumOptions = (record: Record<string, string>) =>
     value
   }));
 
-const stateOptions = Object.entries(LocationStateToNameMapping).map(
-  ([state, label]) => ({
+const stateOptions = Object.entries(LocationStateToNameMapping)
+  .filter(([state]) => state !== 'TX') // Remove Texas from dropdown
+  .map(([state, label]) => ({
     label,
     value: state as LocationState
-  })
-);
+  }));
 
 const serviceOptions = Object.values(Modality).map((value) => ({
   label: value,
@@ -925,7 +925,7 @@ export function ProviderFilters({
                         disabled={!selectedState}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder={selectedState ? 'All facilities' : 'Select a state'} />
+                          <SelectValue placeholder={selectedState ? 'All facilities' : 'Select a facility'} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value={CLEAR_VALUE}>

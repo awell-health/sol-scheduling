@@ -204,11 +204,11 @@ export const FIELD_REGISTRY: Record<FieldId, FieldDefinition> = {
     id: FieldId.PHONE,
     label: 'Mobile number',
     description:
-      "We'll use this number to send updates about your appointment. U.S. numbers only.",
+      "We'll use your phone number to confirm your appointment and send updates and reminders.",
     placeholder: '(555) 555-5555',
     conversationalQuestion: 'What is your phone number?',
     conversationalDescription:
-      "We'll use this to send appointment reminders and updates.",
+      "We'll use your phone number to confirm your appointment and send updates and reminders.",
     inputType: 'phone',
     validation: z
       .string()

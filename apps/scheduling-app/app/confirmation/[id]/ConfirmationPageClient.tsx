@@ -129,12 +129,12 @@ export function ConfirmationPageClient({ confirmationId }: ConfirmationPageClien
           </section>
 
           <div className='space-y-4'>
+            <p className='text-xs text-slate-500'>
+              We will ask you to fill in a few additional details to complete your booking. Please click below.
+            </p>
             <div className='flex flex-wrap items-center gap-3'>
               <BeginIntakeButton sessionUrl={sessionUrl} />
             </div>
-            <p className='text-xs text-slate-500'>
-              We will ask you to fill in a few additional details to complete your booking.
-            </p>
           </div>
         </div>
       </main>

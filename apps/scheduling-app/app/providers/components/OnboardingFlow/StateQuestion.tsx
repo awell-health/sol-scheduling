@@ -67,12 +67,19 @@ export function StateQuestion({ value, onChange, onContinue }: StateQuestionProp
     const stateCode = await getStateFromGeolocation();
 
     if (stateCode) {
-      // Check if it's a valid US state
-      const isValid = ALL_US_STATES.some((s) => s.code === stateCode);
-      if (isValid) {
-        onChange(stateCode);
+      // Don't auto-fill if Texas is detected
+      if (stateCode === 'TX') {
+        setLocationError(
+          'Texas is not available. Please select your state manually.'
+        );
       } else {
-        setLocationError("We couldn't detect a valid US state.");
+        // Check if it's a valid US state
+        const isValid = ALL_US_STATES.some((s) => s.code === stateCode);
+        if (isValid) {
+          onChange(stateCode);
+        } else {
+          setLocationError("We couldn't detect a valid US state.");
+        }
       }
     } else {
       setLocationError(
@@ -104,7 +111,7 @@ export function StateQuestion({ value, onChange, onContinue }: StateQuestionProp
             <SelectValue placeholder='Select your state' />
           </SelectTrigger>
           <SelectContent className='max-h-[300px]'>
-            {ALL_US_STATES.map((state) => (
+            {ALL_US_STATES.filter((state) => state.code !== 'TX').map((state) => (
               <SelectItem key={state.code} value={state.code}>
                 {state.name}
               </SelectItem>

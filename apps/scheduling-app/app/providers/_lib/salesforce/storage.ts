@@ -1,6 +1,7 @@
 import type { SalesforceLeadData } from './actions';
 
 const LEAD_STORAGE_KEY = '_slc';
+const LEAD_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
 
 interface StoredLead {
   leadId: string;
@@ -8,6 +9,34 @@ interface StoredLead {
   createdAt: string;
   /** Full lead data from Salesforce (when fetched via slc param) */
   leadData?: SalesforceLeadData;
+}
+
+/**
+ * Check if stored lead data has expired (older than 1 hour).
+ * Returns the stored data if valid, null if expired or missing.
+ */
+function getStoredLeadIfValid(): StoredLead | null {
+  if (typeof window === 'undefined') return null;
+  
+  try {
+    const raw = localStorage.getItem(LEAD_STORAGE_KEY);
+    if (!raw) return null;
+    
+    const data: StoredLead = JSON.parse(raw);
+    const createdAt = new Date(data.createdAt);
+    const now = new Date();
+    const ageMs = now.getTime() - createdAt.getTime();
+    
+    // Check if expired (older than 1 hour)
+    if (ageMs > LEAD_EXPIRY_MS) {
+      localStorage.removeItem(LEAD_STORAGE_KEY);
+      return null;
+    }
+    
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -26,9 +55,48 @@ export function storeLeadId(leadId: string, phone: string): void {
 }
 
 /**
- * Get the stored lead ID if it matches the given phone
+ * Get the stored lead ID if it matches the given phone.
+ * Automatically clears if expired (older than 1 hour).
+ * 
+ * @returns Object with leadId and wasExpired flag, or null if not found/expired
  */
-export function getStoredLeadId(phone: string): string | null {
+export function getStoredLeadId(phone: string): { leadId: string; wasExpired: boolean } | null {
+  if (typeof window === 'undefined') return null;
+  
+  const data = getStoredLeadIfValid();
+  if (!data) return null;
+  
+  const normalizedPhone = phone.replace(/\D/g, '');
+  
+  // Only return if phone matches (same person)
+  if (data.phone === normalizedPhone) {
+    return { leadId: data.leadId, wasExpired: false };
+  }
+  
+  return null;
+}
+
+/**
+ * Get any stored lead ID regardless of phone.
+ * Automatically clears if expired (older than 1 hour).
+ * 
+ * @returns Object with leadId and wasExpired flag, or null if not found/expired
+ */
+export function getAnyStoredLeadId(): { leadId: string; wasExpired: boolean } | null {
+  if (typeof window === 'undefined') return null;
+  
+  const data = getStoredLeadIfValid();
+  if (!data) return null;
+  
+  return { leadId: data.leadId, wasExpired: false };
+}
+
+/**
+ * Clear the stored lead ID.
+ * 
+ * @returns The lead ID that was cleared, or null if none existed
+ */
+export function clearStoredLeadId(): string | null {
   if (typeof window === 'undefined') return null;
   
   try {
@@ -36,42 +104,13 @@ export function getStoredLeadId(phone: string): string | null {
     if (!raw) return null;
     
     const data: StoredLead = JSON.parse(raw);
-    const normalizedPhone = phone.replace(/\D/g, '');
-    
-    // Only return if phone matches (same person)
-    if (data.phone === normalizedPhone) {
-      return data.leadId;
-    }
-    
-    return null;
+    const leadId = data.leadId;
+    localStorage.removeItem(LEAD_STORAGE_KEY);
+    return leadId;
   } catch {
+    localStorage.removeItem(LEAD_STORAGE_KEY);
     return null;
   }
-}
-
-/**
- * Get any stored lead ID regardless of phone
- */
-export function getAnyStoredLeadId(): string | null {
-  if (typeof window === 'undefined') return null;
-  
-  try {
-    const raw = localStorage.getItem(LEAD_STORAGE_KEY);
-    if (!raw) return null;
-    
-    const data: StoredLead = JSON.parse(raw);
-    return data.leadId;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Clear the stored lead ID
- */
-export function clearStoredLeadId(): void {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem(LEAD_STORAGE_KEY);
 }
 
 /**
@@ -92,19 +131,13 @@ export function storeLeadFromSalesforce(leadData: SalesforceLeadData): void {
 }
 
 /**
- * Get the full stored lead data (if available)
+ * Get the full stored lead data (if available).
+ * Automatically clears if expired (older than 1 hour).
  */
 export function getStoredLeadData(): SalesforceLeadData | null {
   if (typeof window === 'undefined') return null;
   
-  try {
-    const raw = localStorage.getItem(LEAD_STORAGE_KEY);
-    if (!raw) return null;
-    
-    const data: StoredLead = JSON.parse(raw);
-    return data.leadData ?? null;
-  } catch {
-    return null;
-  }
+  const data = getStoredLeadIfValid();
+  return data?.leadData ?? null;
 }
 

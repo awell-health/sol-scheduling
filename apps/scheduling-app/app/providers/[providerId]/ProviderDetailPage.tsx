@@ -411,6 +411,14 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     return new Date(filteredSlots[0].slotstart);
   }, [filteredSlots]);
 
+  // Calculate the default month to show in calendar (month of first available appointment)
+  const defaultMonth = useMemo(() => {
+    if (filteredSlots.length === 0) return startOfToday();
+    const firstSlotDate = new Date(filteredSlots[0].slotstart);
+    // Return the first day of the month containing the first available slot
+    return new Date(firstSlotDate.getFullYear(), firstSlotDate.getMonth(), 1);
+  }, [filteredSlots]);
+
   useEffect(() => {
     setSelectedDate(defaultSelectedDate);
   }, [defaultSelectedDate?.getTime()]);
@@ -828,6 +836,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
               selected={selectedDate}
               onSelect={setSelectedDate}
               fromMonth={startOfToday()}
+              defaultMonth={defaultMonth}
               disabled={(date: Date) => date < startOfToday()}
               modifiers={{ hasSlots: daysWithSlots }}
               modifiersClassNames={{
@@ -982,8 +991,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                   )}
                 />
                 <p className='text-xs text-slate-500'>
-                  We'll use this number to send updates about your appointment. U.S. numbers
-                  only.
+                  We'll use your phone number to confirm your appointment and send updates and reminders.
                 </p>
                 {errors.phone && (
                   <p className='text-xs font-medium text-red-600'>
@@ -1173,7 +1181,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
                 ? 'Starting...'
                 : bookingWorkflow.state.status === 'booking' || bookingWorkflow.state.status === 'redirecting'
                   ? 'Booking...'
-                  : 'Book appointment'}
+                  : 'Continue'}
             </button>
 
             {bookingWorkflow.state.status === 'error' && !bookingWorkflow.isModalOpen && (

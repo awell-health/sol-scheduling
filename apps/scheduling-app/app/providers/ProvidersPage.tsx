@@ -26,6 +26,37 @@ const DEFAULT_FILTERS: ProviderSearchFilters = {
   age: '35'
 };
 
+/**
+ * Configurable messages shown above the provider list based on active filters.
+ * Each entry maps a filter condition to a message and optional styling.
+ */
+type FilterMessageConfig = {
+  /** Condition to check against active filters */
+  condition: (filters: ProviderSearchFilters) => boolean;
+  /** Message to display */
+  message: string;
+  /** Optional: 'info' (default), 'warning', 'success' */
+  variant?: 'info' | 'warning' | 'success';
+};
+
+const FILTER_MESSAGES: FilterMessageConfig[] = [
+  {
+    condition: (filters) => filters.therapeuticModality === Modality.Both,
+    message:
+      "You've selected 'Both' service types, so we are showing you therapists who can also write medication prescriptions. If you are not looking for medication, please select 'Therapy' instead.",
+    variant: 'info',
+  },
+];
+
+/**
+ * Returns the first matching filter message, or null if none match.
+ */
+function getFilterMessage(
+  filters: ProviderSearchFilters
+): FilterMessageConfig | null {
+  return FILTER_MESSAGES.find((config) => config.condition(filters)) ?? null;
+}
+
 const LOCATION_STATE_CODES = Object.keys(
   LocationStateToNameMapping
 ) as LocationState[];
@@ -186,6 +217,11 @@ export function ProvidersPage() {
     }`;
   }, [loading, providers.length]);
 
+  const filterMessage = useMemo(
+    () => getFilterMessage(activeFilters),
+    [activeFilters]
+  );
+
   const handleSelectProvider = (providerId: string) => {
     const url = buildUrlWithReturn(`/providers/${providerId}`);
     router.push(url);
@@ -274,6 +310,19 @@ export function ProvidersPage() {
 
           {!error && (
             <section className='space-y-4 pb-16 md:pb-0'>
+              {filterMessage && (
+                <div
+                  className={`rounded-lg border px-4 py-3 text-sm ${
+                    filterMessage.variant === 'warning'
+                      ? 'border-amber-200 bg-amber-50 text-amber-800'
+                      : filterMessage.variant === 'success'
+                        ? 'border-green-200 bg-green-50 text-green-800'
+                        : 'border-sky-200 bg-sky-50 text-sky-800'
+                  }`}
+                >
+                  {filterMessage.message}
+                </div>
+              )}
               <div className='flex items-center justify-between'>
                 <h2 className='text-base font-semibold text-primary'>
                   {listHeading}

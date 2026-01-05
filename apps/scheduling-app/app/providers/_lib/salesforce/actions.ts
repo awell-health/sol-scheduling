@@ -2,7 +2,7 @@
 
 import { getSalesforceClient } from '@/lib/salesforce';
 import PostHogClient from '../../../../posthog';
-import { mapServiceToSalesforce, mapSalesforceToService, mapConsentToSalesforce } from './transformers';
+import { mapServiceToSalesforce, mapSalesforceToService, mapConsentToSalesforce, formatPhoneForSalesforce, normalizePhoneFromSalesforce } from './transformers';
 import { FieldId, getSalesforceReadField, getSalesforceWriteField } from '@/lib/fields';
 import { start } from 'workflow/api';
 import { reengagementCareflowWorkflow } from '@/lib/workflow';
@@ -53,9 +53,13 @@ export async function getLeadAction(
     const therapy = typeof rawLead.Therapy__c === 'boolean' ? rawLead.Therapy__c : null;
 
     // Map Salesforce fields to our schema using registry field names
+    // Normalize phone from Salesforce (handles both E.164 and formatted) to E.164 for internal storage
+    const rawPhone = typeof rawLead[phoneField] === 'string' ? rawLead[phoneField] : null;
+    const normalizedPhone = normalizePhoneFromSalesforce(rawPhone);
+    
     const lead: SalesforceLeadData = {
       id: leadId,
-      phone: typeof rawLead[phoneField] === 'string' ? rawLead[phoneField] : null,
+      phone: normalizedPhone,
       state: typeof rawLead[stateField] === 'string' ? rawLead[stateField] : null,
       insurance: typeof rawLead[insuranceField] === 'string' ? rawLead[insuranceField] : null,
       // Derive service type from Medication__c and Therapy__c boolean fields (compound mapping)
@@ -199,6 +203,10 @@ export async function createLeadAction(
   let isNewLead = false;
 
   try {
+    // Format phone number for Salesforce (E.164 → (xxx) xxx-xxxx)
+    // If formatting fails, fall back to original phone (shouldn't happen for valid E.164)
+    const formattedPhone = formatPhoneForSalesforce(input.phone) ?? input.phone;
+    
     const leadData = {
       RecordTypeId: '0125w000000BRDxAAO',
       FirstName: 'TEST first',
@@ -206,7 +214,7 @@ export async function createLeadAction(
       LeadSource: 'Website - Online Booking',
       Status: 'New',
       Inquiry_Date__c: new Date().toISOString(),
-      Phone: input.phone,
+      Phone: formattedPhone,
       ...(input.state && { [stateWriteField]: input.state }),
       ...(input.insurance && { [insuranceWriteField]: input.insurance }),
       ...serviceFields,

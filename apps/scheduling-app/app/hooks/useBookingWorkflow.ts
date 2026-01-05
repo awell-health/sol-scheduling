@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { getAnyStoredLeadId } from '../providers/_lib/salesforce';
+import { getAnyStoredLeadId, clearStoredLeadId } from '../providers/_lib/salesforce';
 import type { PostHog } from 'posthog-js';
 import type { BookingProgress, BookingProgressType } from '../../lib/workflow';
 
@@ -106,13 +106,22 @@ export function useBookingWorkflow(
   const startBooking = useCallback(async (params: StartBookingParams) => {
     // Store params for retry
     lastParamsRef.current = params;
-    const leadId = getAnyStoredLeadId();
+    const leadResult = getAnyStoredLeadId();
 
-    if (!leadId) {
+    if (!leadResult) {
       setError('Unable to book - missing lead information. Please refresh and try again.');
       setState({ status: 'error', message: 'Missing lead information' });
       return;
     }
+
+    // Track if lead was expired
+    if (leadResult.wasExpired) {
+      posthog?.capture('slc_expired', {
+        previous_lead_id: leadResult.leadId,
+      });
+    }
+
+    const leadId = leadResult.leadId;
 
     setState({ status: 'starting', eventId: params.eventId });
     setCurrentStep(null);
@@ -221,6 +230,15 @@ export function useBookingWorkflow(
                 
                 console.log('[useBookingWorkflow] Session ready, redirecting in 1s...');
                 setCurrentStep('done');
+                
+                // Clear stored lead ID on successful booking
+                const clearedLeadId = clearStoredLeadId();
+                if (clearedLeadId) {
+                  posthog?.capture('slc_cleared_on_booking', {
+                    lead_id: clearedLeadId,
+                    confirmation_id: redirectConfirmationId,
+                  });
+                }
                 
                 // Wait 1 second to show "Done! Redirecting..." state
                 await new Promise((resolve) => setTimeout(resolve, 1000));

@@ -33,9 +33,14 @@ export function BorderingPageClient({ originalState }: BorderingPageClientProps)
     setPreferences({ state: targetState });
 
     // Fire-and-forget: Update Salesforce lead with new state
-    const leadId = getAnyStoredLeadId();
-    if (leadId) {
-      updateLeadAction({ leadId, state: targetState }).catch((error) => {
+    const leadResult = getAnyStoredLeadId();
+    if (leadResult) {
+      // Track if lead was expired
+      if (leadResult.wasExpired) {
+        // Note: PostHog not available in this component, but expiry is already handled
+        console.log('[BorderingPageClient] Lead expired, cleared from storage');
+      }
+      updateLeadAction({ leadId: leadResult.leadId, state: targetState }).catch((error) => {
         console.error('Failed to update lead state:', error);
       });
     }
