@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { getAnyStoredLeadId, clearStoredLeadId } from '../providers/_lib/salesforce';
+import { useBuildUrlWithUtm } from '../providers/_lib/utm';
 import type { PostHog } from 'posthog-js';
 import type { BookingProgress, BookingProgressType } from '../../lib/workflow';
 
@@ -97,6 +98,9 @@ export function useBookingWorkflow(
 ): UseBookingWorkflowResult {
   const { posthog } = options;
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const buildUrlWithUtm = useBuildUrlWithUtm();
   const [state, setState] = useState<BookingWorkflowState>({ status: 'idle' });
   const [currentStep, setCurrentStep] = useState<BookingProgressType | 'done' | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -106,11 +110,38 @@ export function useBookingWorkflow(
   const startBooking = useCallback(async (params: StartBookingParams) => {
     // Store params for retry
     lastParamsRef.current = params;
-    const leadResult = getAnyStoredLeadId();
+    let leadResult = getAnyStoredLeadId();
 
+    // Fallback: Check for slc URL parameter if localStorage is unavailable
     if (!leadResult) {
-      setError('Unable to book - missing lead information. Please refresh and try again.');
-      setState({ status: 'error', message: 'Missing lead information' });
+      const slcParam = searchParams.get('slc');
+      if (slcParam) {
+        console.log('[useBookingWorkflow] Using slc param from URL as fallback (localStorage unavailable?)');
+        leadResult = { leadId: slcParam, wasExpired: false };
+        
+        posthog?.capture('booking_used_slc_param_fallback', {
+          provider_id: params.providerId,
+          reason: 'localStorage_unavailable_or_missing',
+        });
+      }
+    }
+
+    // If still no lead exists, redirect to onboarding to ensure lead is created
+    if (!leadResult) {
+      console.log('[useBookingWorkflow] No lead found, redirecting to onboarding...');
+      
+      // Build onboarding URL with current page as target (preserving UTM params)
+      const currentUrl = pathname || `/providers/${params.providerId}`;
+      const onboardingUrl = buildUrlWithUtm('/onboarding', { target: currentUrl });
+      
+      // Capture analytics
+      posthog?.capture('booking_redirected_to_onboarding', {
+        provider_id: params.providerId,
+        reason: 'missing_lead_id',
+      });
+      
+      // Redirect to onboarding
+      router.push(onboardingUrl);
       return;
     }
 
@@ -287,7 +318,7 @@ export function useBookingWorkflow(
       setError(message);
       setState({ status: 'error', message });
     }
-  }, [posthog, router, state.status]);
+  }, [posthog, router, state.status, pathname, searchParams, buildUrlWithUtm]);
 
   const reset = useCallback(() => {
     if (abortControllerRef.current) {

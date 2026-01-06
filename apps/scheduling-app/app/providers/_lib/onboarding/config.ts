@@ -73,7 +73,7 @@ export const SERVICE_OPTIONS = [
   },
   {
     value: 'Not Sure',
-    label: 'Not sure',
+    label: 'Not Sure',
     description: 'Help deciding what type of care is right for you.'
   }
 ] as const;
@@ -142,6 +142,7 @@ export const ALL_US_STATES = [
 export const SUPPORTED_STATE_CODES = [
   'AZ',
   'CO',
+  'DC',
   'FL',
   'IL',
   'MD',

@@ -32,10 +32,10 @@ export enum Language {
 }
 
 export enum Modality {
-  Psychiatric = 'Psychiatric',
+  Psychiatric = 'Psychiatry (Medication)',
   Therapy = 'Therapy',
   Both = 'Both',
-  NotSure = 'Not sure'
+  NotSure = 'Not Sure'
 }
 
 export enum ClinicalFocus {

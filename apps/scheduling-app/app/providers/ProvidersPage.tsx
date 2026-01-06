@@ -15,7 +15,8 @@ import {
   useBuildUrlWithReturn,
   useBuildUrlWithUtm,
   isSupportedState,
-  getBorderingTargetState
+  getBorderingTargetState,
+  writePreferencesToStorage
 } from './_lib/onboarding';
 import { ProviderFilters } from './components/ProviderFilters';
 import { ProviderCard } from './components/ProviderCard';
@@ -43,7 +44,7 @@ const FILTER_MESSAGES: FilterMessageConfig[] = [
   {
     condition: (filters) => filters.therapeuticModality === Modality.Both,
     message:
-      "You've selected 'Both' service types, so we are showing you therapists who can also write medication prescriptions. If you are not looking for medication, please select 'Therapy' instead.",
+      "You've selected 'Both' service types. We recommend booking with psychiatry first, so we are showing those clinicians below. If you would like to start with therapy, please filter to 'Therapy' instead. Our team will ultimately help you schedule with both services either way.",
     variant: 'info',
   },
 ];
@@ -141,6 +142,38 @@ export function ProvidersPage() {
     setPendingFilters(nextFilters);
     setActiveFilters(nextFilters);
   }, [preferences, isInitialized]);
+
+  // Sync filter changes back to onboarding preferences (for state and service)
+  // This allows filter changes to persist across page refreshes
+  useEffect(() => {
+    if (!isInitialized || !isOnboardingComplete) return;
+
+    const updates: Partial<{ state: string | null; service: string | null }> = {};
+
+    // Update state if filter state changed from preferences
+    const filterState = pendingFilters.location?.state;
+    if (filterState !== preferences.state) {
+      updates.state = filterState ?? null;
+    }
+
+    // Update service if therapeuticModality changed from preferences
+    const filterService = pendingFilters.therapeuticModality;
+    if (filterService !== preferences.service) {
+      updates.service = filterService ?? null;
+    }
+
+    // Only write if there are actual changes (avoid unnecessary writes)
+    if (Object.keys(updates).length > 0) {
+      writePreferencesToStorage(updates);
+    }
+  }, [
+    pendingFilters.location?.state,
+    pendingFilters.therapeuticModality,
+    isInitialized,
+    isOnboardingComplete,
+    preferences.state,
+    preferences.service
+  ]);
 
   // Fetch providers when onboarding is complete and filters are set
   useEffect(() => {

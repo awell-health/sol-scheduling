@@ -12,11 +12,26 @@ interface StoredLead {
 }
 
 /**
+ * Check if localStorage is available (handles private browsing, disabled storage, etc.).
+ */
+function isLocalStorageAvailable(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const testKey = '__sol_slc_test__';
+    window.localStorage.setItem(testKey, '1');
+    window.localStorage.removeItem(testKey);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Check if stored lead data has expired (older than 1 hour).
  * Returns the stored data if valid, null if expired or missing.
  */
 function getStoredLeadIfValid(): StoredLead | null {
-  if (typeof window === 'undefined') return null;
+  if (!isLocalStorageAvailable()) return null;
   
   try {
     const raw = localStorage.getItem(LEAD_STORAGE_KEY);
@@ -40,18 +55,26 @@ function getStoredLeadIfValid(): StoredLead | null {
 }
 
 /**
- * Store the Salesforce lead ID in localStorage
+ * Store the Salesforce lead ID in localStorage.
+ * Silently fails if localStorage is unavailable (e.g., disabled in browser).
  */
 export function storeLeadId(leadId: string, phone: string): void {
-  if (typeof window === 'undefined') return;
+  if (!isLocalStorageAvailable()) {
+    console.warn('[Salesforce Storage] localStorage unavailable, cannot store lead ID');
+    return;
+  }
   
-  const data: StoredLead = {
-    leadId,
-    phone: phone.replace(/\D/g, ''), // Store normalized phone
-    createdAt: new Date().toISOString(),
-  };
-  
-  localStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(data));
+  try {
+    const data: StoredLead = {
+      leadId,
+      phone: phone.replace(/\D/g, ''), // Store normalized phone
+      createdAt: new Date().toISOString(),
+    };
+    
+    localStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(data));
+  } catch (error) {
+    console.error('[Salesforce Storage] Failed to store lead ID:', error);
+  }
 }
 
 /**
@@ -116,18 +139,26 @@ export function clearStoredLeadId(): string | null {
 /**
  * Store lead data fetched from Salesforce (via slc param).
  * Stores the full lead data for later reference.
+ * Silently fails if localStorage is unavailable.
  */
 export function storeLeadFromSalesforce(leadData: SalesforceLeadData): void {
-  if (typeof window === 'undefined') return;
+  if (!isLocalStorageAvailable()) {
+    console.warn('[Salesforce Storage] localStorage unavailable, cannot store lead data');
+    return;
+  }
   
-  const data: StoredLead = {
-    leadId: leadData.id,
-    phone: leadData.phone?.replace(/\D/g, '') ?? '',
-    createdAt: new Date().toISOString(),
-    leadData,
-  };
-  
-  localStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(data));
+  try {
+    const data: StoredLead = {
+      leadId: leadData.id,
+      phone: leadData.phone?.replace(/\D/g, '') ?? '',
+      createdAt: new Date().toISOString(),
+      leadData,
+    };
+    
+    localStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(data));
+  } catch (error) {
+    console.error('[Salesforce Storage] Failed to store lead data:', error);
+  }
 }
 
 /**

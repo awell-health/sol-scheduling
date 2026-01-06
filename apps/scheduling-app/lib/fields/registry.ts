@@ -42,10 +42,10 @@ export const INSURANCE_OPTIONS: FieldOption[] = [
  * Service type options.
  */
 export const SERVICE_OPTIONS: FieldOption[] = [
-  { value: 'Psychiatric', label: 'Medication' },
+  { value: 'Psychiatric', label: 'Psychiatry (Medication)' },
   { value: 'Therapy', label: 'Therapy' },
   { value: 'Both', label: 'Both' },
-  { value: 'Not Sure', label: 'Not sure' },
+  { value: 'Not Sure', label: 'Not Sure' },
 ];
 
 /**
@@ -54,25 +54,25 @@ export const SERVICE_OPTIONS: FieldOption[] = [
 export const SERVICE_OPTIONS_WITH_DESCRIPTIONS = [
   {
     value: 'Psychiatric',
-    label: 'Medication',
+    label: 'Psychiatry (Medication)',
     description:
-      'Meet with a medical provider to talk through your situation and evaluate different medication options.',
+      'Evaluate mental health treatment options, including medication',
   },
   {
     value: 'Therapy',
     label: 'Therapy',
     description:
-      'Meet with a therapist to talk through your issues and build personal support.',
+      'Improve emotional wellbeing, learn coping skills, and get judgement-free support',
   },
   {
     value: 'Both',
     label: 'Both',
-    description: 'A combination of medication and talk therapy.',
+    description: 'A combination of Psychiatry and Therapy',
   },
   {
     value: 'Not Sure',
-    label: 'Not sure',
-    description: 'Help deciding what type of care is right for you.',
+    label: 'Not Sure',
+    description: "Get help deciding what's right for you",
   },
 ];
 

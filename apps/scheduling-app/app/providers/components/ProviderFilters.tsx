@@ -30,6 +30,7 @@ import {
   TimeOfTheDay
 } from '../_lib/types';
 import { clearPreferencesStorage } from '../_lib/onboarding';
+import { SERVICE_OPTIONS } from '../../../lib/fields/registry';
 
 type ProviderFiltersProps = {
   values: ProviderSearchFilters;
@@ -62,10 +63,14 @@ const stateOptions = Object.entries(LocationStateToNameMapping)
     value: state as LocationState
   }));
 
-const serviceOptions = Object.values(Modality).map((value) => ({
-  label: value,
-  value
-}));
+// Map Modality enum values to SERVICE_OPTIONS labels
+const serviceOptions = Object.values(Modality).map((enumValue) => {
+  const option = SERVICE_OPTIONS.find((opt) => opt.value === enumValue);
+  return {
+    label: option?.label ?? enumValue, // Fallback to enum value if not found
+    value: enumValue as Modality // Keep original enum value for API
+  };
+});
 
 const deliveryOptions = Object.values(DeliveryMethod).map((value) => ({
   label: value,
