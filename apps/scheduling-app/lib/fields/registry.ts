@@ -142,7 +142,7 @@ export const ALL_US_STATES = STATE_OPTIONS.map(opt => ({ code: opt.value, name: 
  * States that SOL currently services.
  */
 export const SUPPORTED_STATE_CODES = [
-  'AZ', 'CO', 'CT', 'FL', 'IL', 'MD', 'NJ', 'NY', 'TX', 'VA',
+  'AZ', 'CO', 'CT', 'FL', 'IL', 'MD', 'NJ', 'NY', 'VA',
 ] as const;
 
 export type SupportedStateCode = (typeof SUPPORTED_STATE_CODES)[number];

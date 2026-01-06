@@ -16,8 +16,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         // Remove or mask PHI (Protected Health Information) fields
         // Fields marked with data-phi="true" should not be captured
         const phiFields = ['firstName', 'lastName', 'phone', 'state', 'email', 'address'];
-        
-        if (event.properties) {
+        if (event?.properties) {
           for (const key of Object.keys(event.properties)) {
             // Check if this is a PHI field
             if (phiFields.some(field => key.toLowerCase().includes(field.toLowerCase()))) {
