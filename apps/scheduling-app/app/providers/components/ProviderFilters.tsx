@@ -57,7 +57,6 @@ const enumOptions = (record: Record<string, string>) =>
   }));
 
 const stateOptions = Object.entries(LocationStateToNameMapping)
-  .filter(([state]) => state !== 'TX') // Remove Texas from dropdown
   .map(([state, label]) => ({
     label,
     value: state as LocationState
