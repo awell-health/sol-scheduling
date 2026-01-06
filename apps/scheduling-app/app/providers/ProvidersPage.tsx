@@ -1,92 +1,51 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { usePostHog } from 'posthog-js/react';
-import {
-  LocationState,
-  LocationStateToNameMapping,
-  Modality,
-  ProviderSearchFilters,
-  ProviderSummary
-} from './_lib/types';
 import {
   useOnboarding,
   useBuildUrlWithReturn,
   useBuildUrlWithUtm,
   isSupportedState,
   getBorderingTargetState,
-  writePreferencesToStorage
 } from './_lib/onboarding';
 import { ProviderFilters } from './components/ProviderFilters';
 import { ProviderCard } from './components/ProviderCard';
 import { ProvidersEmptyState } from './components/ProvidersEmptyState';
-import { getProvidersAction } from './actions';
-
-const DEFAULT_FILTERS: ProviderSearchFilters = {
-  age: '35'
-};
-
-/**
- * Configurable messages shown above the provider list based on active filters.
- * Each entry maps a filter condition to a message and optional styling.
- */
-type FilterMessageConfig = {
-  /** Condition to check against active filters */
-  condition: (filters: ProviderSearchFilters) => boolean;
-  /** Message to display */
-  message: string;
-  /** Optional: 'info' (default), 'warning', 'success' */
-  variant?: 'info' | 'warning' | 'success';
-};
-
-const FILTER_MESSAGES: FilterMessageConfig[] = [
-  {
-    condition: (filters) => filters.therapeuticModality === Modality.Both,
-    message:
-      "You've selected 'Both' service types. We recommend booking with psychiatry first, so we are showing those clinicians below. If you would like to start with therapy, please filter to 'Therapy' instead. Our team will ultimately help you schedule with both services either way.",
-    variant: 'info',
-  },
-];
-
-/**
- * Returns the first matching filter message, or null if none match.
- */
-function getFilterMessage(
-  filters: ProviderSearchFilters
-): FilterMessageConfig | null {
-  return FILTER_MESSAGES.find((config) => config.condition(filters)) ?? null;
-}
-
-const LOCATION_STATE_CODES = Object.keys(
-  LocationStateToNameMapping
-) as LocationState[];
-
-const isLocationState = (code: string): code is LocationState =>
-  LOCATION_STATE_CODES.includes(code as LocationState);
+import { useProviders } from './hooks';
 
 export function ProvidersPage() {
   const router = useRouter();
   const pathname = usePathname();
-  const posthog = usePostHog();
   const {
     preferences,
     isOnboardingComplete,
     isInitialized,
-    returnUrl
+    returnUrl,
   } = useOnboarding();
   const buildUrlWithReturn = useBuildUrlWithReturn();
   const buildUrlWithUtm = useBuildUrlWithUtm();
 
-  const [pendingFilters, setPendingFilters] =
-    useState<ProviderSearchFilters>(DEFAULT_FILTERS);
-  const [activeFilters, setActiveFilters] =
-    useState<ProviderSearchFilters>(DEFAULT_FILTERS);
-  const [providers, setProviders] = useState<ProviderSummary[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Provider search state and data fetching
+  const {
+    pendingFilters,
+    setPendingFilters,
+    providers,
+    loading,
+    error,
+    handleFiltersSubmit,
+    handleResetFilters,
+    handleRetry,
+    listHeading,
+    filterMessage,
+    missingRequiredFilters,
+  } = useProviders({
+    preferences,
+    isInitialized,
+    isOnboardingComplete,
+  });
 
-  // Redirect to onboarding if not complete (preserving UTM params)
+  // Redirect to onboarding if not complete
   useEffect(() => {
     if (isInitialized && !isOnboardingComplete) {
       const url = buildUrlWithUtm('/onboarding', { target: pathname });
@@ -100,185 +59,27 @@ export function ProvidersPage() {
       if (!isSupportedState(preferences.state)) {
         const borderTarget = getBorderingTargetState(preferences.state);
         if (borderTarget) {
-          const url = buildUrlWithUtm('/onboarding/bordering', { state: preferences.state });
+          const url = buildUrlWithUtm('/onboarding/bordering', {
+            state: preferences.state,
+          });
           router.replace(url);
         } else {
-          const url = buildUrlWithUtm('/not-available', { state: preferences.state });
+          const url = buildUrlWithUtm('/not-available', {
+            state: preferences.state,
+          });
           router.replace(url);
         }
       }
     }
   }, [isInitialized, isOnboardingComplete, preferences.state, router, buildUrlWithUtm]);
 
-  // Sync onboarding preferences to filter state when context changes
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    const { state, service, insurance: _insurance } = preferences;
-
-    // Map service string to Modality enum
-    let modality: Modality | undefined;
-    if (service) {
-      const modalityValues = Object.values(Modality);
-      if (modalityValues.includes(service as Modality)) {
-        modality = service as Modality;
-      }
-    }
-
-    // Build location filter if state is valid
-    let location: ProviderSearchFilters['location'] | undefined;
-    if (state && isLocationState(state)) {
-      location = { state: state as LocationState } as ProviderSearchFilters['location'];
-    }
-
-    const nextFilters: ProviderSearchFilters = {
-      ...DEFAULT_FILTERS,
-      ...(modality ? { therapeuticModality: modality } : {}),
-      ...(location ? { location } : {}),
-      // Insurance can be used for filtering in the future
-      // For now, we just keep it in preferences
-    };
-
-    setPendingFilters(nextFilters);
-    setActiveFilters(nextFilters);
-  }, [preferences, isInitialized]);
-
-  // Sync filter changes back to onboarding preferences (for state and service)
-  // This allows filter changes to persist across page refreshes
-  useEffect(() => {
-    if (!isInitialized || !isOnboardingComplete) return;
-
-    const updates: Partial<{ state: string | null; service: string | null }> = {};
-
-    // Update state if filter state changed from preferences
-    const filterState = pendingFilters.location?.state;
-    if (filterState !== preferences.state) {
-      updates.state = filterState ?? null;
-    }
-
-    // Update service if therapeuticModality changed from preferences
-    const filterService = pendingFilters.therapeuticModality;
-    if (filterService !== preferences.service) {
-      updates.service = filterService ?? null;
-    }
-
-    // Only write if there are actual changes (avoid unnecessary writes)
-    if (Object.keys(updates).length > 0) {
-      writePreferencesToStorage(updates);
-    }
-  }, [
-    pendingFilters.location?.state,
-    pendingFilters.therapeuticModality,
-    isInitialized,
-    isOnboardingComplete,
-    preferences.state,
-    preferences.service
-  ]);
-
-  // Fetch providers when onboarding is complete and filters are set
-  useEffect(() => {
-    if (!isOnboardingComplete) {
-      setProviders([]);
-      setLoading(false);
-      return;
-    }
-
-    if (
-      !activeFilters.therapeuticModality ||
-      !activeFilters.location?.state ||
-      !isLocationState(activeFilters.location.state)
-    ) {
-      setProviders([]);
-      setLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadProviders() {
-      const frontendStart = performance.now();
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await getProvidersAction(activeFilters);
-        const frontendMs = Math.round(performance.now() - frontendStart);
-        
-        if (!cancelled) {
-          setProviders(response.data ?? []);
-          
-          // Capture API timing in PostHog
-          posthog?.capture('api_call_providers', {
-            frontend_rt_ms: frontendMs,
-            sol_api_rt_ms: response._timing?.solApiMs,
-            provider_count: response._meta?.providerCount,
-            filters: response._meta?.filters,
-          });
-        }
-      } catch (err) {
-        if (!cancelled) {
-          console.error('Failed to load providers', err);
-          setError(
-            err instanceof Error ? err.message : 'Unable to load providers'
-          );
-          
-          // Capture error timing
-          const frontendMs = Math.round(performance.now() - frontendStart);
-          posthog?.capture('api_call_providers_error', {
-            frontend_rt_ms: frontendMs,
-            error: err instanceof Error ? err.message : 'Unknown error',
-            filters: activeFilters,
-          });
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadProviders();
-    return () => {
-      cancelled = true;
-    };
-  }, [activeFilters, isOnboardingComplete]);
-
-  const listHeading = useMemo(() => {
-    if (loading) return 'Searching for providers…';
-    if (providers.length === 0) return 'No providers found';
-    return `Showing ${providers.length} provider${
-      providers.length === 1 ? '' : 's'
-    }`;
-  }, [loading, providers.length]);
-
-  const filterMessage = useMemo(
-    () => getFilterMessage(activeFilters),
-    [activeFilters]
-  );
-
+  // Navigation handler
   const handleSelectProvider = (providerId: string) => {
     const url = buildUrlWithReturn(`/providers/${providerId}`);
     router.push(url);
   };
 
-  const handleFiltersSubmit = (nextValues?: ProviderSearchFilters) => {
-    const filtersToApply = nextValues ?? pendingFilters;
-    setActiveFilters(filtersToApply);
-  };
-
-  const handleResetFilters = () => {
-    setPendingFilters(DEFAULT_FILTERS);
-    setActiveFilters(DEFAULT_FILTERS);
-  };
-
-  const handleRetry = () => {
-    setError(null);
-    setActiveFilters((previous) => ({ ...previous }));
-  };
-
-  // Determine if we're ready to show content
-  // - Not initialized yet → loading
-  // - Onboarding not complete → redirecting to /onboarding
-  // - State not supported → redirecting to /not-available
+  // Determine if we're redirecting
   const isRedirecting =
     !isInitialized ||
     !isOnboardingComplete ||
@@ -315,7 +116,6 @@ export function ProvidersPage() {
         </p>
       </header>
 
-      {/* Show provider list when onboarding is complete */}
       {isOnboardingComplete && (
         <>
           <ProviderFilters
@@ -338,6 +138,20 @@ export function ProvidersPage() {
               >
                 Try again
               </button>
+            </div>
+          )}
+
+          {missingRequiredFilters.length > 0 && (
+            <div className='mt-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800'>
+              <p>
+                Please select{' '}
+                {missingRequiredFilters.length === 1
+                  ? missingRequiredFilters[0]
+                  : missingRequiredFilters.length === 2
+                    ? `${missingRequiredFilters[0]} and ${missingRequiredFilters[1]}`
+                    : `${missingRequiredFilters.slice(0, -1).join(', ')}, and ${missingRequiredFilters[missingRequiredFilters.length - 1]}`}{' '}
+                to search for providers.
+              </p>
             </div>
           )}
 
