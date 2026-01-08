@@ -17,7 +17,7 @@ export type ServiceType = 'Psychiatric' | 'Therapy' | 'Both' | 'Not Sure';
  * - "Psychiatric" (Medication in UI) → Medication__c = true
  * - "Therapy" → Therapy__c = true
  * - "Both" → both = true
- * - "Not Sure" → both = true
+ * - "Not Sure" → neither (both = false)
  */
 export function mapServiceToSalesforce(service: string | null | undefined): {
   Medication__c: boolean;
@@ -29,8 +29,8 @@ export function mapServiceToSalesforce(service: string | null | undefined): {
     case 'Therapy':
       return { Medication__c: false, Therapy__c: true };
     case 'Both':
-    case 'Not Sure':
       return { Medication__c: true, Therapy__c: true };
+    case 'Not Sure':
     default:
       return { Medication__c: false, Therapy__c: false };
   }

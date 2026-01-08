@@ -27,8 +27,10 @@ export interface BookingWorkflowInput {
   state?: string;
   /** Patient's browser timezone */
   patientTimezone?: string;
-  /** Clinical focus / service */
+  /** Clinical focus / visit reason (e.g., 'ADHD', 'Anxiety') */
   clinicalFocus?: string;
+  /** Service type / therapeutic modality (e.g., 'Psychiatric', 'Therapy', 'Both', 'Not Sure') */
+  service?: string;
 }
 
 /**
@@ -138,6 +140,7 @@ export async function bookingWorkflow(
       firstName: input.firstName,
       lastName: input.lastName,
       clinicalFocus: input.clinicalFocus,
+      service: input.service,
       eventType: input.locationType,
       providerFirstName: eventDetails.providerFirstName,
       providerLastName: eventDetails.providerLastName,

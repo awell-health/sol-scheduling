@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { usePostHog } from 'posthog-js/react';
 import Link from 'next/link';
 import {
@@ -32,9 +32,13 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const posthog = usePostHog();
   const { preferences, isOnboardingComplete, isInitialized } = useOnboarding();
   const buildUrlWithUtm = useBuildUrlWithUtm();
+
+  // Get clinical focus from URL params (passed from providers list page)
+  const clinicalFocusFromUrl = searchParams.get('clinicalFocus') ?? undefined;
 
   // Data fetching hooks
   const {
@@ -129,7 +133,8 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       phone: data.phone,
       state: preferences.state ?? undefined,
       patientTimezone: browserTimezone,
-      clinicalFocus: preferences.service ?? undefined,
+      clinicalFocus: clinicalFocusFromUrl,
+      service: preferences.service ?? undefined,
     });
   };
 

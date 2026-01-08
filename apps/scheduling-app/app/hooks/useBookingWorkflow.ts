@@ -33,7 +33,10 @@ export interface StartBookingParams {
   /** Patient's state code (e.g., "CA", "NY") */
   state?: string;
   patientTimezone?: string;
+  /** Clinical focus / visit reason (e.g., 'ADHD', 'Anxiety') */
   clinicalFocus?: string;
+  /** Service type / therapeutic modality (e.g., 'Psychiatric', 'Therapy', 'Both', 'Not Sure') */
+  service?: string;
 }
 
 interface UseBookingWorkflowOptions {
@@ -182,6 +185,7 @@ export function useBookingWorkflow(
           state: params.state,
           patientTimezone: params.patientTimezone,
           clinicalFocus: params.clinicalFocus,
+          service: params.service,
         }),
         signal: abortControllerRef.current.signal,
       });

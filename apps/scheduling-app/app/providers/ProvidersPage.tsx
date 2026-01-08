@@ -29,6 +29,7 @@ export function ProvidersPage() {
   // Provider search state and data fetching
   const {
     pendingFilters,
+    activeFilters,
     setPendingFilters,
     providers,
     loading,
@@ -75,7 +76,13 @@ export function ProvidersPage() {
 
   // Navigation handler
   const handleSelectProvider = (providerId: string) => {
-    const url = buildUrlWithReturn(`/providers/${providerId}`);
+    // Pass clinical focus filter via URL params if selected
+    const clinicalFocus = activeFilters.clinicalFocus?.[0];
+    const baseUrl = `/providers/${providerId}`;
+    const urlWithParams = clinicalFocus 
+      ? `${baseUrl}?clinicalFocus=${encodeURIComponent(clinicalFocus)}`
+      : baseUrl;
+    const url = buildUrlWithReturn(urlWithParams);
     router.push(url);
   };
 
