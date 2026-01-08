@@ -54,19 +54,6 @@ export function ConfirmationPageClient({ confirmationId }: ConfirmationPageClien
     ? format(new Date(eventDetails.startsAt), "EEEE, MMMM d 'at' h:mm a")
     : null;
 
-  let locationLabel = 'Location to be confirmed';
-  if (eventDetails.locationType === 'In-Person' || eventDetails.locationType === 'Telehealth') {
-    locationLabel =
-      eventDetails.locationType === 'In-Person' ? 'In-person visit' : 'Virtual video visit';
-  }
-
-  const fullLocation = [
-    locationLabel,
-    eventDetails.facility ? `· ${eventDetails.facility}` : null
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
     <>
       <ScrollToTop />
@@ -117,12 +104,12 @@ export function ConfirmationPageClient({ confirmationId }: ConfirmationPageClien
                     </p>
                   </div>
 
-                  <div>
+                  {/* <div>
                     <p className='text-xs font-semibold uppercase tracking-wide text-slate-500'>
                       Location
                     </p>
                     <p className='mt-0.5'>{fullLocation}</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

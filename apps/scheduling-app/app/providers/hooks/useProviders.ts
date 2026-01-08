@@ -27,6 +27,42 @@ const isLocationState = (code: string): code is LocationState =>
   LOCATION_STATE_CODES.includes(code as LocationState);
 
 /**
+ * Map onboarding service value to Modality enum.
+ * Onboarding stores values like 'Psychiatric', but Modality enum uses 'Psychiatry (Medication)'.
+ */
+function mapServiceToModality(service: string | null): Modality | undefined {
+  if (!service) return undefined;
+  
+  // Map onboarding service values to Modality enum values
+  const serviceToModality: Record<string, Modality> = {
+    'Psychiatric': Modality.Psychiatric,
+    'Therapy': Modality.Therapy,
+    'Both': Modality.Both,
+    'Not Sure': Modality.NotSure,
+  };
+  
+  return serviceToModality[service];
+}
+
+/**
+ * Map Modality enum value back to onboarding service string.
+ * Used when syncing filter changes back to storage.
+ */
+function mapModalityToService(modality: Modality | undefined): string | null {
+  if (!modality) return null;
+  
+  // Map Modality enum values back to onboarding service strings
+  const modalityToService: Record<Modality, string> = {
+    [Modality.Psychiatric]: 'Psychiatric',
+    [Modality.Therapy]: 'Therapy',
+    [Modality.Both]: 'Both',
+    [Modality.NotSure]: 'Not Sure',
+  };
+  
+  return modalityToService[modality] ?? null;
+}
+
+/**
  * Filter message configuration.
  */
 export type FilterMessageConfig = {
@@ -109,13 +145,7 @@ export function useProviders({
     const { state, service } = preferences;
 
     // Map service string to Modality enum
-    let modality: Modality | undefined;
-    if (service) {
-      const modalityValues = Object.values(Modality);
-      if (modalityValues.includes(service as Modality)) {
-        modality = service as Modality;
-      }
-    }
+    const modality = mapServiceToModality(service);
 
     // Build location filter if state is valid
     let location: ProviderSearchFilters['location'] | undefined;
@@ -144,9 +174,13 @@ export function useProviders({
       updates.state = filterState ?? null;
     }
 
-    const filterService = pendingFilters.therapeuticModality;
-    if (filterService !== preferences.service) {
-      updates.service = filterService ?? null;
+    // Only sync service if therapeuticModality is actually set (not undefined)
+    // This prevents clearing the service when filters haven't been initialized yet
+    if (pendingFilters.therapeuticModality !== undefined) {
+      const filterService = mapModalityToService(pendingFilters.therapeuticModality);
+      if (filterService !== preferences.service) {
+        updates.service = filterService;
+      }
     }
 
     if (Object.keys(updates).length > 0) {

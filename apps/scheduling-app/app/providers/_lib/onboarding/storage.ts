@@ -107,7 +107,13 @@ export function writePreferencesToStorage(
       if (value === null || value === undefined || value === '') {
         delete updated[key];
       } else {
-        updated[key] = value as string;
+        // Ensure we're writing a valid string value
+        const stringValue = String(value).trim();
+        if (stringValue) {
+          updated[key] = stringValue;
+        } else {
+          delete updated[key];
+        }
       }
     }
   }
