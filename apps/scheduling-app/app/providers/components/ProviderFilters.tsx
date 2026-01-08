@@ -1,22 +1,21 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import clsx from 'clsx';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '../../../components/ui/select';
 import {
   Drawer,
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
   DrawerTrigger,
-  DrawerTitle
+  DrawerTitle,
 } from '../../../components/ui/drawer';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../components/ui/select';
 import {
   ClinicalFocus,
   DeliveryMethod,
@@ -27,9 +26,11 @@ import {
   LocationStateToNameMapping,
   Modality,
   ProviderSearchFilters,
-  TimeOfTheDay
+  TimeOfTheDay,
 } from '../_lib/types';
 import { clearPreferencesStorage } from '../_lib/onboarding';
+import { SERVICE_OPTIONS } from '../../../lib/fields/registry';
+import { FilterPill, ActiveFilterTag, type FilterOption } from './filters';
 
 type ProviderFiltersProps = {
   values: ProviderSearchFilters;
@@ -50,52 +51,50 @@ type DesktopFilterKey =
 
 const CLEAR_VALUE = '__all';
 
-const enumOptions = (record: Record<string, string>) =>
+// Helper to create options from enum
+const enumOptions = <T extends string>(
+  record: Record<string, T>
+): FilterOption<T>[] =>
   Object.values(record).map((value) => ({
     label: value,
-    value
+    value,
   }));
 
-const stateOptions = Object.entries(LocationStateToNameMapping).map(
-  ([state, label]) => ({
-    label,
-    value: state as LocationState
-  })
+// State options
+const stateOptions: FilterOption<LocationState>[] = Object.entries(
+  LocationStateToNameMapping
+).map(([state, label]) => ({
+  label,
+  value: state as LocationState,
+}));
+
+// Service options mapped from SERVICE_OPTIONS registry
+const serviceOptions: FilterOption<Modality>[] = Object.values(Modality).map(
+  (enumValue) => {
+    const option = SERVICE_OPTIONS.find((opt) => opt.value === enumValue);
+    return {
+      label: option?.label ?? enumValue,
+      value: enumValue as Modality,
+    };
+  }
 );
 
-const serviceOptions = Object.values(Modality).map((value) => ({
-  label: value,
-  value
-}));
-
-const deliveryOptions = Object.values(DeliveryMethod).map((value) => ({
-  label: value,
-  value
-}));
-
-const timeOfDayOptions = Object.values(TimeOfTheDay).map((value) => ({
-  label: value,
-  value
-}));
-
-const genderOptions = [
+// Other filter options
+const deliveryOptions = enumOptions(DeliveryMethod);
+const timeOfDayOptions = enumOptions(TimeOfTheDay);
+const genderOptions: FilterOption<Gender>[] = [
   { label: 'Male', value: Gender.Male },
   { label: 'Female', value: Gender.Female },
-  { label: 'Non-binary/non-conforming', value: Gender.NonBinaryOrNonConforming }
+  { label: 'Non-binary/non-conforming', value: Gender.NonBinaryOrNonConforming },
 ];
-
 const languageOptions = enumOptions(Language);
-
 const clinicalFocusOptions = enumOptions(ClinicalFocus);
-
-const basePillClasses =
-  'inline-flex items-center gap-1 rounded-full border px-4 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20';
 
 export function ProviderFilters({
   values,
   onChange,
   onSubmit,
-  isSubmitting
+  isSubmitting,
 }: ProviderFiltersProps) {
   const [activeDesktopFilter, setActiveDesktopFilter] =
     useState<DesktopFilterKey | null>(null);
@@ -103,56 +102,62 @@ export function ProviderFilters({
 
   const selectedState = values.location?.state;
 
+  // Facility options based on selected state
   const facilityOptions = useMemo(() => {
-    if (!selectedState) {
-      return [];
-    }
-
+    if (!selectedState) return [];
     const prefix = `${selectedState} - `;
-
     return Object.values(LocationFacility)
       .filter((facility) => facility.startsWith(prefix))
       .map((facility) => ({
         label: facility.replace(prefix, ''),
-        value: facility
+        value: facility,
       }));
   }, [selectedState]);
 
-  const updateFilters = (next: ProviderSearchFilters) => {
-    onChange(next);
+  // Escape key handler
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActiveDesktopFilter(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Creates an onApply handler for a filter that updates state and submits
+  const createApplyHandler = <T,>(
+    buildNextValues: (val: T | undefined) => ProviderSearchFilters
+  ) => {
+    return (val: T | undefined) => {
+      const next = buildNextValues(val);
+      onChange(next);
+      onSubmit(next);
+      setActiveDesktopFilter(null);
+    };
   };
 
-  const handleLocationChange = (updates: {
-    state?: string;
-    facility?: string;
-  }) => {
+  // For mobile drawer - updates pending state only (not submitted until Apply)
+  const handleLocationChange = (updates: { state?: string; facility?: string }) => {
     const nextLocation = {
       ...(values.location ?? {}),
-      ...updates
+      ...updates,
     };
-
-    updateFilters({
+    onChange({
       ...values,
       location:
         !nextLocation.state && !nextLocation.facility
           ? undefined
-          : (nextLocation as ProviderSearchFilters['location'])
+          : (nextLocation as ProviderSearchFilters['location']),
     });
   };
 
-  const toggleClinicalFocus = (value: string) => {
-    const current = values.clinicalFocus ?? [];
-    const exists = current.includes(value);
-    const next = exists
-      ? current.filter((item: string) => item !== value)
-      : [...current, value];
-
-    updateFilters({
-      ...values,
-      clinicalFocus: next.length > 0 ? next : undefined
-    });
+  const handleMobileApply = () => {
+    onSubmit();
+    setIsMobileDrawerOpen(false);
   };
 
+  // Count active filters for mobile badge
   const activeFiltersCount = useMemo(() => {
     let count = 0;
     if (values.location?.state) count += 1;
@@ -166,675 +171,255 @@ export function ProviderFilters({
     return count;
   }, [values]);
 
-  const getSingleSelectLabel = <T extends string>(
-    options: { value: T; label: string }[],
-    value: T | undefined,
-    fallback: string
-  ) => {
-    if (!value) return fallback;
-    const match = options.find((option) => option.value === value);
-    return match?.label ?? fallback;
-  };
+  // Build list of active filters for desktop tags
+  const activeFilters = useMemo(() => {
+    const filters: { key: string; label: string; value: string; onClear: () => void }[] = [];
 
-  const clinicalFocusLabel = useMemo(() => {
-    const selected = values.clinicalFocus ?? [];
-    if (selected.length === 0) return 'Clinical focus';
-    if (selected.length === 1) {
-      const match = clinicalFocusOptions.find(
-        (option) => option.value === selected[0]
-      );
-      return match?.label ?? 'Clinical focus';
-    }
-    return `Clinical focus · ${selected.length}`;
-  }, [values.clinicalFocus]);
-
-  const pillClasses = (key: DesktopFilterKey, isActive: boolean) =>
-    clsx(
-      basePillClasses,
-      activeDesktopFilter === key
-        ? 'border-primary bg-primary text-primary-foreground shadow-card'
-        : isActive
-          ? 'border-secondary bg-secondary text-secondary-foreground'
-          : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
-    );
-
-  const handleDesktopApply = () => {
-    onSubmit();
-    setActiveDesktopFilter(null);
-  };
-
-  const handleDesktopClear = (key: DesktopFilterKey) => {
-    if (key === 'state') {
-      const next = {
-        ...values,
-        location: undefined
-      };
-      updateFilters(next);
-      onSubmit(next);
-      setActiveDesktopFilter(null);
-      return;
+    if (values.location?.state) {
+      const stateLabel = stateOptions.find((o) => o.value === values.location?.state)?.label ?? values.location.state;
+      filters.push({
+        key: 'state',
+        label: 'State',
+        value: stateLabel,
+        onClear: () => createApplyHandler(() => ({ ...values, location: undefined }))(undefined),
+      });
     }
 
-    if (key === 'facility') {
-      const next = {
-        ...values,
-        location: values.location
-          ? ({
-              ...values.location,
-              facility: undefined
-            } as unknown as ProviderSearchFilters['location'])
-          : undefined
-      };
-      updateFilters(next);
-      onSubmit(next);
-      setActiveDesktopFilter(null);
-      return;
+    if (values.location?.facility) {
+      const facilityLabel = facilityOptions.find((o) => o.value === values.location?.facility)?.label ?? values.location.facility;
+      filters.push({
+        key: 'facility',
+        label: 'Facility',
+        value: facilityLabel,
+        onClear: () => createApplyHandler(() => ({
+          ...values,
+          location: values.location?.state
+            ? ({ state: values.location.state, facility: undefined } as unknown as ProviderSearchFilters['location'])
+            : undefined,
+        }))(undefined),
+      });
     }
 
-    if (key === 'service') {
-      const next = {
-        ...values,
-        therapeuticModality: undefined
-      };
-      updateFilters(next);
-      onSubmit(next);
-      setActiveDesktopFilter(null);
-      return;
+    if (values.therapeuticModality) {
+      const serviceLabel = serviceOptions.find((o) => o.value === values.therapeuticModality)?.label ?? values.therapeuticModality;
+      filters.push({
+        key: 'service',
+        label: 'Service',
+        value: serviceLabel,
+        onClear: () => createApplyHandler(() => ({ ...values, therapeuticModality: undefined }))(undefined),
+      });
     }
 
-    if (key === 'delivery') {
-      const next = {
-        ...values,
-        deliveryMethod: undefined
-      };
-      updateFilters(next);
-      onSubmit(next);
-      setActiveDesktopFilter(null);
-      return;
+    if (values.deliveryMethod) {
+      filters.push({
+        key: 'delivery',
+        label: 'Delivery',
+        value: values.deliveryMethod,
+        onClear: () => createApplyHandler(() => ({ ...values, deliveryMethod: undefined }))(undefined),
+      });
     }
 
-    if (key === 'timeOfDay') {
-      const next = {
-        ...values,
-        timeOfTheDay: undefined
-      };
-      updateFilters(next);
-      onSubmit(next);
-      setActiveDesktopFilter(null);
-      return;
+    if (values.timeOfTheDay) {
+      filters.push({
+        key: 'timeOfDay',
+        label: 'Time of Day',
+        value: values.timeOfTheDay,
+        onClear: () => createApplyHandler(() => ({ ...values, timeOfTheDay: undefined }))(undefined),
+      });
     }
 
-    if (key === 'gender') {
-      const next = {
-        ...values,
-        gender: undefined
-      };
-      updateFilters(next);
-      onSubmit(next);
-      setActiveDesktopFilter(null);
-      return;
+    if (values.gender) {
+      const genderLabel = genderOptions.find((o) => o.value === values.gender)?.label ?? values.gender;
+      filters.push({
+        key: 'gender',
+        label: 'Gender',
+        value: genderLabel,
+        onClear: () => createApplyHandler(() => ({ ...values, gender: undefined }))(undefined),
+      });
     }
 
-    if (key === 'language') {
-      const next = {
-        ...values,
-        language: undefined
-      };
-      updateFilters(next);
-      onSubmit(next);
-      setActiveDesktopFilter(null);
-      return;
+    if (values.language) {
+      filters.push({
+        key: 'language',
+        label: 'Language',
+        value: values.language,
+        onClear: () => createApplyHandler(() => ({ ...values, language: undefined }))(undefined),
+      });
     }
 
-    if (key === 'clinicalFocus') {
-      const next = {
-        ...values,
-        clinicalFocus: undefined
-      };
-      updateFilters(next);
-      onSubmit(next);
-      setActiveDesktopFilter(null);
+    if (values.clinicalFocus && values.clinicalFocus.length > 0) {
+      const focusLabel = values.clinicalFocus.length === 1
+        ? values.clinicalFocus[0]
+        : `${values.clinicalFocus.length} selected`;
+      filters.push({
+        key: 'clinicalFocus',
+        label: 'Clinical Focus',
+        value: focusLabel,
+        onClear: () => createApplyHandler(() => ({ ...values, clinicalFocus: undefined }))(undefined),
+      });
     }
-  };
 
-  const handleMobileApply = () => {
-    onSubmit();
-    setIsMobileDrawerOpen(false);
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setActiveDesktopFilter(null);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+    return filters;
+  }, [values, stateOptions, facilityOptions, serviceOptions, genderOptions, createApplyHandler]);
 
   return (
     <div className='mb-4'>
       {/* Desktop filter bar */}
       <div className='hidden md:block'>
-        <div className='flex flex-wrap gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm'>
+        <div className='flex justify-between rounded-2xl border border-slate-200 bg-white p-3 shadow-sm'>
           {/* State */}
-          <div className='relative'>
-            <button
-              type='button'
-              className={pillClasses('state', Boolean(values.location?.state))}
-              onClick={() =>
-                setActiveDesktopFilter((current) =>
-                  current === 'state' ? null : 'state'
-                )
-              }
-            >
-              {getSingleSelectLabel(
-                stateOptions,
-                values.location?.state as LocationState | undefined,
-                'State'
-              )}
-            </button>
-            {activeDesktopFilter === 'state' && (
-              <div className='absolute left-0 z-30 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-4 shadow-card'>
-                <div className='max-h-64 space-y-2 overflow-y-auto text-sm'>
-                  {stateOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className='flex items-center gap-2 text-slate-700'
-                    >
-                      <input
-                        type='radio'
-                        name='state'
-                        value={option.value}
-                        checked={values.location?.state === option.value}
-                        onChange={() =>
-                          handleLocationChange({
-                            state: option.value,
-                            facility: undefined
-                          })
-                        }
-                        className='h-4 w-4 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-                <div className='mt-4 flex items-center justify-between text-sm'>
-                  <button
-                    type='button'
-                    onClick={() => handleDesktopClear('state')}
-                    className='text-slate-500 hover:text-slate-700'
-                  >
-                    Clear
-                  </button>
-                  <button
-                    type='button'
-                    onClick={handleDesktopApply}
-                    disabled={isSubmitting}
-                    className='rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
-                  >
-                    {isSubmitting ? 'Applying…' : 'Apply'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <FilterPill
+            filterKey='state'
+            label='State'
+            options={stateOptions}
+            value={values.location?.state as LocationState | undefined}
+            onApply={createApplyHandler((val) => ({
+              ...values,
+              location: val
+                ? ({ state: val as LocationState, facility: undefined } as unknown as ProviderSearchFilters['location'])
+                : undefined,
+            }))}
+            isOpen={activeDesktopFilter === 'state'}
+            onToggle={() =>
+              setActiveDesktopFilter((c) => (c === 'state' ? null : 'state'))
+            }
+            onClose={() => setActiveDesktopFilter(null)}
+            isSubmitting={isSubmitting}
+          />
 
           {/* Facility */}
-          <div className='relative'>
-            <button
-              type='button'
-              onClick={() =>
-                setActiveDesktopFilter((current) =>
-                  current === 'facility' ? null : 'facility'
-                )
-              }
-              disabled={!selectedState}
-              className={clsx(
-                pillClasses('facility', Boolean(values.location?.facility)),
-                !selectedState &&
-                  'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 shadow-none hover:bg-slate-50'
-              )}
-            >
-              {values.location?.facility
-                ? getSingleSelectLabel(
-                    facilityOptions,
-                    values.location.facility,
-                    'Facility'
-                  )
-                : 'Facility'}
-            </button>
-            {activeDesktopFilter === 'facility' && (
-              <div className='absolute left-0 z-30 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-4 shadow-card'>
-                <div className='max-h-64 space-y-2 overflow-y-auto text-sm'>
-                  {facilityOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className='flex items-center gap-2 text-slate-700'
-                    >
-                      <input
-                        type='radio'
-                        name='facility'
-                        value={option.value}
-                        checked={values.location?.facility === option.value}
-                        onChange={() =>
-                          handleLocationChange({ facility: option.value })
-                        }
-                        className='h-4 w-4 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-                <div className='mt-4 flex items-center justify-between text-sm'>
-                  <button
-                    type='button'
-                    onClick={() => handleDesktopClear('facility')}
-                    className='text-slate-500 hover:text-slate-700'
-                  >
-                    Clear
-                  </button>
-                  <button
-                    type='button'
-                    onClick={handleDesktopApply}
-                    disabled={isSubmitting}
-                    className='rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
-                  >
-                    {isSubmitting ? 'Applying…' : 'Apply'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <FilterPill
+            filterKey='facility'
+            label='Facility'
+            options={facilityOptions}
+            value={values.location?.facility}
+            onApply={createApplyHandler((val) => ({
+              ...values,
+              location: values.location?.state
+                ? ({ state: values.location.state, facility: val as LocationFacility | undefined } as unknown as ProviderSearchFilters['location'])
+                : undefined,
+            }))}
+            isOpen={activeDesktopFilter === 'facility'}
+            onToggle={() =>
+              setActiveDesktopFilter((c) => (c === 'facility' ? null : 'facility'))
+            }
+            onClose={() => setActiveDesktopFilter(null)}
+            isSubmitting={isSubmitting}
+            disabled={!selectedState}
+          />
 
           {/* Service */}
-          <div className='relative'>
-            <button
-              type='button'
-              className={pillClasses(
-                'service',
-                Boolean(values.therapeuticModality)
-              )}
-              onClick={() =>
-                setActiveDesktopFilter((current) =>
-                  current === 'service' ? null : 'service'
-                )
-              }
-            >
-              {getSingleSelectLabel(
-                serviceOptions,
-                values.therapeuticModality ?? undefined,
-                'Service'
-              )}
-            </button>
-            {activeDesktopFilter === 'service' && (
-              <div className='absolute left-0 z-30 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-4 shadow-card'>
-                <div className='max-h-64 space-y-2 overflow-y-auto text-sm'>
-                  {serviceOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className='flex items-center gap-2 text-slate-700'
-                    >
-                      <input
-                        type='radio'
-                        name='service'
-                        value={option.value}
-                        checked={values.therapeuticModality === option.value}
-                        onChange={() =>
-                          updateFilters({
-                            ...values,
-                            therapeuticModality: option.value
-                          })
-                        }
-                        className='h-4 w-4 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-                <div className='mt-4 flex items-center justify-between text-sm'>
-                  <button
-                    type='button'
-                    onClick={() => handleDesktopClear('service')}
-                    className='text-slate-500 hover:text-slate-700'
-                  >
-                    Clear
-                  </button>
-                  <button
-                    type='button'
-                    onClick={handleDesktopApply}
-                    disabled={isSubmitting}
-                    className='rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
-                  >
-                    {isSubmitting ? 'Applying…' : 'Apply'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <FilterPill
+            filterKey='service'
+            label='Service'
+            options={serviceOptions}
+            value={values.therapeuticModality as Modality | undefined}
+            onApply={createApplyHandler((val) => ({ ...values, therapeuticModality: val as Modality | undefined }))}
+            isOpen={activeDesktopFilter === 'service'}
+            onToggle={() =>
+              setActiveDesktopFilter((c) => (c === 'service' ? null : 'service'))
+            }
+            onClose={() => setActiveDesktopFilter(null)}
+            isSubmitting={isSubmitting}
+          />
 
           {/* Delivery */}
-          <div className='relative'>
-            <button
-              type='button'
-              className={pillClasses(
-                'delivery',
-                Boolean(values.deliveryMethod)
-              )}
-              onClick={() =>
-                setActiveDesktopFilter((current) =>
-                  current === 'delivery' ? null : 'delivery'
-                )
-              }
-            >
-              {getSingleSelectLabel(
-                deliveryOptions,
-                values.deliveryMethod ?? undefined,
-                'Delivery'
-              )}
-            </button>
-            {activeDesktopFilter === 'delivery' && (
-              <div className='absolute left-0 z-30 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-4 shadow-card'>
-                <div className='max-h-64 space-y-2 overflow-y-auto text-sm'>
-                  {deliveryOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className='flex items-center gap-2 text-slate-700'
-                    >
-                      <input
-                        type='radio'
-                        name='delivery'
-                        value={option.value}
-                        checked={values.deliveryMethod === option.value}
-                        onChange={() =>
-                          updateFilters({
-                            ...values,
-                            deliveryMethod: option.value
-                          })
-                        }
-                        className='h-4 w-4 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-                <div className='mt-4 flex items-center justify-between text-sm'>
-                  <button
-                    type='button'
-                    onClick={() => handleDesktopClear('delivery')}
-                    className='text-slate-500 hover:text-slate-700'
-                  >
-                    Clear
-                  </button>
-                  <button
-                    type='button'
-                    onClick={handleDesktopApply}
-                    disabled={isSubmitting}
-                    className='rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
-                  >
-                    {isSubmitting ? 'Applying…' : 'Apply'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <FilterPill
+            filterKey='delivery'
+            label='Delivery'
+            options={deliveryOptions}
+            value={values.deliveryMethod as DeliveryMethod | undefined}
+            onApply={createApplyHandler((val) => ({ ...values, deliveryMethod: val as DeliveryMethod | undefined }))}
+            isOpen={activeDesktopFilter === 'delivery'}
+            onToggle={() =>
+              setActiveDesktopFilter((c) => (c === 'delivery' ? null : 'delivery'))
+            }
+            onClose={() => setActiveDesktopFilter(null)}
+            isSubmitting={isSubmitting}
+          />
 
-          {/* Time of day */}
-          <div className='relative'>
-            <button
-              type='button'
-              className={pillClasses(
-                'timeOfDay',
-                Boolean(values.timeOfTheDay)
-              )}
-              onClick={() =>
-                setActiveDesktopFilter((current) =>
-                  current === 'timeOfDay' ? null : 'timeOfDay'
-                )
-              }
-            >
-              {getSingleSelectLabel(
-                timeOfDayOptions,
-                values.timeOfTheDay ?? undefined,
-                'Time of day'
-              )}
-            </button>
-            {activeDesktopFilter === 'timeOfDay' && (
-              <div className='absolute right-0 z-30 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-4 shadow-card'>
-                <div className='max-h-64 space-y-2 overflow-y-auto text-sm'>
-                  {timeOfDayOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className='flex items-center gap-2 text-slate-700'
-                    >
-                      <input
-                        type='radio'
-                        name='timeOfDay'
-                        value={option.value}
-                        checked={values.timeOfTheDay === option.value}
-                        onChange={() =>
-                          updateFilters({
-                            ...values,
-                            timeOfTheDay: option.value
-                          })
-                        }
-                        className='h-4 w-4 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-                <div className='mt-4 flex items-center justify-between text-sm'>
-                  <button
-                    type='button'
-                    onClick={() => handleDesktopClear('timeOfDay')}
-                    className='text-slate-500 hover:text-slate-700'
-                  >
-                    Clear
-                  </button>
-                  <button
-                    type='button'
-                    onClick={handleDesktopApply}
-                    disabled={isSubmitting}
-                    className='rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
-                  >
-                    {isSubmitting ? 'Applying…' : 'Apply'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Time of Day */}
+          <FilterPill
+            filterKey='timeOfDay'
+            label='Time of Day'
+            options={timeOfDayOptions}
+            value={values.timeOfTheDay as TimeOfTheDay | undefined}
+            onApply={createApplyHandler((val) => ({ ...values, timeOfTheDay: val as TimeOfTheDay | undefined }))}
+            isOpen={activeDesktopFilter === 'timeOfDay'}
+            onToggle={() =>
+              setActiveDesktopFilter((c) => (c === 'timeOfDay' ? null : 'timeOfDay'))
+            }
+            onClose={() => setActiveDesktopFilter(null)}
+            isSubmitting={isSubmitting}
+          />
 
           {/* Gender */}
-          <div className='relative'>
-            <button
-              type='button'
-              className={pillClasses('gender', Boolean(values.gender))}
-              onClick={() =>
-                setActiveDesktopFilter((current) =>
-                  current === 'gender' ? null : 'gender'
-                )
-              }
-            >
-              {getSingleSelectLabel(
-                genderOptions,
-                values.gender ?? undefined,
-                'Gender'
-              )}
-            </button>
-            {activeDesktopFilter === 'gender' && (
-              <div className='absolute right-0 z-30 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-4 shadow-card'>
-                <div className='space-y-2 text-sm'>
-                  {genderOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className='flex items-center gap-2 text-slate-700'
-                    >
-                      <input
-                        type='radio'
-                        name='gender'
-                        value={option.value}
-                        checked={values.gender === option.value}
-                        onChange={() =>
-                          updateFilters({
-                            ...values,
-                            gender: option.value
-                          })
-                        }
-                        className='h-4 w-4 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-                <div className='mt-4 flex items-center justify-between text-sm'>
-                  <button
-                    type='button'
-                    onClick={() => handleDesktopClear('gender')}
-                    className='text-slate-500 hover:text-slate-700'
-                  >
-                    Clear
-                  </button>
-                  <button
-                    type='button'
-                    onClick={handleDesktopApply}
-                    disabled={isSubmitting}
-                    className='rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
-                  >
-                    {isSubmitting ? 'Applying…' : 'Apply'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <FilterPill
+            filterKey='gender'
+            label='Gender'
+            options={genderOptions}
+            value={values.gender as Gender | undefined}
+            onApply={createApplyHandler((val) => ({ ...values, gender: val as Gender | undefined }))}
+            isOpen={activeDesktopFilter === 'gender'}
+            onToggle={() =>
+              setActiveDesktopFilter((c) => (c === 'gender' ? null : 'gender'))
+            }
+            onClose={() => setActiveDesktopFilter(null)}
+            isSubmitting={isSubmitting}
+          />
 
-          {/* Clinical focus */}
-          <div className='relative'>
-            <button
-              type='button'
-              className={pillClasses(
-                'clinicalFocus',
-                Boolean(values.clinicalFocus && values.clinicalFocus.length > 0)
-              )}
-              onClick={() =>
-                setActiveDesktopFilter((current) =>
-                  current === 'clinicalFocus' ? null : 'clinicalFocus'
-                )
-              }
-            >
-              {clinicalFocusLabel}
-            </button>
-            {activeDesktopFilter === 'clinicalFocus' && (
-              <div className='absolute right-0 z-30 mt-2 w-80 rounded-2xl border border-slate-200 bg-white p-4 shadow-card'>
-                <div className='max-h-72 space-y-2 overflow-y-auto text-sm'>
-                  {clinicalFocusOptions.map((option) => {
-                    const checked =
-                      values.clinicalFocus?.includes(option.value) ?? false;
-                    return (
-                      <label
-                        key={option.value}
-                        className='flex items-center gap-2 text-slate-700'
-                      >
-                        <input
-                          type='checkbox'
-                          value={option.value}
-                          checked={checked}
-                          onChange={() => toggleClinicalFocus(option.value)}
-                            className='h-4 w-4 rounded border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                        />
-                        <span>{option.label}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-                <div className='mt-4 flex items-center justify-between text-sm'>
-                  <button
-                    type='button'
-                    onClick={() => handleDesktopClear('clinicalFocus')}
-                    className='text-slate-500 hover:text-slate-700'
-                  >
-                    Clear
-                  </button>
-                  <button
-                    type='button'
-                    onClick={handleDesktopApply}
-                    disabled={isSubmitting}
-                    className='rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
-                  >
-                    {isSubmitting ? 'Applying…' : 'Apply'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Clinical Focus */}
+          <FilterPill
+            filterKey='clinicalFocus'
+            label='Clinical Focus'
+            options={clinicalFocusOptions}
+            value={values.clinicalFocus?.[0] as ClinicalFocus | undefined}
+            onApply={createApplyHandler((val) => ({
+              ...values,
+              clinicalFocus: val ? [val as ClinicalFocus] : undefined,
+            }))}
+            isOpen={activeDesktopFilter === 'clinicalFocus'}
+            onToggle={() =>
+              setActiveDesktopFilter((c) =>
+                c === 'clinicalFocus' ? null : 'clinicalFocus'
+              )
+            }
+            onClose={() => setActiveDesktopFilter(null)}
+            isSubmitting={isSubmitting}
+          />
 
           {/* Language */}
-          <div className='relative'>
-            <button
-              type='button'
-              className={pillClasses('language', Boolean(values.language))}
-              onClick={() =>
-                setActiveDesktopFilter((current) =>
-                  current === 'language' ? null : 'language'
-                )
-              }
-            >
-              {getSingleSelectLabel(
-                languageOptions,
-                values.language ?? undefined,
-                'Language'
-              )}
-            </button>
-            {activeDesktopFilter === 'language' && (
-              <div className='absolute right-0 z-30 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-4 shadow-card'>
-                <div className='max-h-64 space-y-2 overflow-y-auto text-sm'>
-                  {languageOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className='flex items-center gap-2 text-slate-700'
-                    >
-                      <input
-                        type='radio'
-                        name='language'
-                        value={option.value}
-                        checked={values.language === option.value}
-                        onChange={() =>
-                          updateFilters({
-                            ...values,
-                            language: option.value
-                          })
-                        }
-                        className='h-4 w-4 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-                <div className='mt-4 flex items-center justify-between text-sm'>
-                  <button
-                    type='button'
-                    onClick={() => handleDesktopClear('language')}
-                    className='text-slate-500 hover:text-slate-700'
-                  >
-                    Clear
-                  </button>
-                  <button
-                    type='button'
-                    onClick={handleDesktopApply}
-                    disabled={isSubmitting}
-                    className='rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
-                  >
-                    {isSubmitting ? 'Applying…' : 'Apply'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <FilterPill
+            filterKey='language'
+            label='Language'
+            options={languageOptions}
+            value={values.language as Language | undefined}
+            onApply={createApplyHandler((val) => ({ ...values, language: val as Language | undefined }))}
+            isOpen={activeDesktopFilter === 'language'}
+            onToggle={() =>
+              setActiveDesktopFilter((c) => (c === 'language' ? null : 'language'))
+            }
+            onClose={() => setActiveDesktopFilter(null)}
+            isSubmitting={isSubmitting}
+          />
         </div>
+
+        {/* Active filter tags */}
+        {activeFilters.length > 0 && (
+          <div className='mt-3 flex flex-wrap gap-2'>
+            {activeFilters.map((filter) => (
+              <ActiveFilterTag
+                key={filter.key}
+                label={filter.label}
+                value={filter.value}
+                onClear={filter.onClear}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Mobile drawer-style filters (Vaul / shadcn Drawer) */}
+      {/* Mobile filter drawer */}
       <Drawer open={isMobileDrawerOpen} onOpenChange={setIsMobileDrawerOpen}>
         <div className='md:hidden'>
           {/* Closed state: filters button strip */}
@@ -844,9 +429,7 @@ export function ProviderFilters({
                 type='button'
                 className='flex w-full items-center justify-between rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-card'
               >
-                <span>
-                  Filters
-                </span>
+                <span>Filters</span>
                 {activeFiltersCount > 0 && (
                   <span className='rounded-full bg-primary-foreground/10 px-2 py-0.5 text-xs font-medium'>
                     {activeFiltersCount} active
@@ -869,263 +452,219 @@ export function ProviderFilters({
                 Close
               </button>
             </DrawerHeader>
-
             <div className='flex-1 overflow-y-auto px-4 py-3 space-y-4'>
-                  <div className='space-y-3'>
-                    <div className='space-y-1'>
-                      <p className='text-sm font-medium text-slate-600'>
-                        State
-                      </p>
-                      <Select
-                        value={values.location?.state ?? ''}
-                        onValueChange={(value) => {
-                          const nextState =
-                            value === CLEAR_VALUE ? undefined : value;
-                          handleLocationChange({
-                            state: nextState,
-                            facility:
-                              nextState &&
-                              values.location?.facility?.startsWith(nextState)
-                                ? values.location.facility
-                                : undefined
-                          });
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder='Select a state'
-                            aria-label='Select a state'
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {stateOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className='space-y-1'>
-                      <p className='text-sm font-medium text-slate-600'>
-                        Facility
-                      </p>
-                      <Select
-                        value={values.location?.facility ?? ''}
-                        onValueChange={(value) =>
-                          handleLocationChange({
-                            facility:
-                              value === CLEAR_VALUE ? undefined : value
-                          })
-                        }
-                        disabled={!selectedState}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={selectedState ? 'All facilities' : 'Select a state'} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={CLEAR_VALUE}>
-                            All facilities
-                          </SelectItem>
-                          {facilityOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className='space-y-1'>
-                      <p className='text-sm font-medium text-slate-600'>
-                        Service
-                      </p>
-                      <Select
-                        value={values.therapeuticModality ?? ''}
-                        onValueChange={(value) =>
-                          updateFilters({
-                            ...values,
-                            therapeuticModality: value
-                          })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder='Choose a service' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {serviceOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className='space-y-1'>
-                      <p className='text-sm font-medium text-slate-600'>
-                        Delivery
-                      </p>
-                      <Select
-                        value={values.deliveryMethod ?? ''}
-                        onValueChange={(value) =>
-                          updateFilters({
-                            ...values,
-                            deliveryMethod:
-                              value === CLEAR_VALUE ? undefined : value
-                          })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder='Any' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={CLEAR_VALUE}>Any</SelectItem>
-                          {deliveryOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className='space-y-1'>
-                      <p className='text-sm font-medium text-slate-600'>
-                        Time of day
-                      </p>
-                      <Select
-                        value={values.timeOfTheDay ?? ''}
-                        onValueChange={(value) =>
-                          updateFilters({
-                            ...values,
-                            timeOfTheDay:
-                              value === CLEAR_VALUE ? undefined : value
-                          })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder='Any' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={CLEAR_VALUE}>Any</SelectItem>
-                          {timeOfDayOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className='space-y-1'>
-                      <p className='text-sm font-medium text-slate-600'>
-                        Gender
-                      </p>
-                      <Select
-                        value={values.gender ?? ''}
-                        onValueChange={(value) =>
-                          updateFilters({
-                            ...values,
-                            gender: value === CLEAR_VALUE ? undefined : value
-                          })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder='Any' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={CLEAR_VALUE}>Any</SelectItem>
-                          {genderOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className='space-y-3'>
-                    <div className='space-y-1'>
-                      <p className='text-sm font-medium text-slate-600'>
-                        Clinical focus
-                      </p>
-                      <div className='max-h-40 space-y-2 overflow-y-auto rounded-lg border border-slate-200 bg-slate-25 px-3 py-2'>
-                        {clinicalFocusOptions.map((option) => {
-                          const checked =
-                            values.clinicalFocus?.includes(option.value) ??
-                            false;
-                          return (
-                            <label
-                              key={option.value}
-                              className='flex items-center gap-2 text-sm text-slate-700'
-                            >
-                              <input
-                                type='checkbox'
-                                value={option.value}
-                                checked={checked}
-                                onChange={() => toggleClinicalFocus(option.value)}
-                                className='h-4 w-4 rounded border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                              />
-                              <span>{option.label}</span>
-                            </label>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div className='space-y-1'>
-                      <p className='text-sm font-medium text-slate-600'>
-                        Language
-                      </p>
-                      <Select
-                        value={values.language ?? ''}
-                        onValueChange={(value) =>
-                          updateFilters({
-                            ...values,
-                            language: value === CLEAR_VALUE ? undefined : value
-                          })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder='Any' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={CLEAR_VALUE}>Any</SelectItem>
-                          {languageOptions.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
+              <div className='space-y-4'>
+                {/* State */}
+                <div className='space-y-1'>
+                  <p className='text-sm font-medium text-slate-600'>State</p>
+                  <Select
+                    value={values.location?.state ?? ''}
+                    onValueChange={(val) =>
+                      handleLocationChange({
+                        state: val === CLEAR_VALUE ? undefined : val,
+                        facility: undefined,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select a state' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {stateOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
+                {/* Facility */}
+                <div className='space-y-1'>
+                  <p className='text-sm font-medium text-slate-600'>Facility</p>
+                  <Select
+                    value={values.location?.facility ?? ''}
+                    onValueChange={(val) =>
+                      handleLocationChange({
+                        facility: val === CLEAR_VALUE ? undefined : val,
+                      })
+                    }
+                    disabled={!selectedState}
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={
+                          selectedState ? 'All facilities' : 'Select a facility'
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={CLEAR_VALUE}>All facilities</SelectItem>
+                      {facilityOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Service */}
+                <div className='space-y-1'>
+                  <p className='text-sm font-medium text-slate-600'>Service</p>
+                  <Select
+                    value={values.therapeuticModality ?? ''}
+                    onValueChange={(val) =>
+                      onChange({ ...values, therapeuticModality: val || undefined })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Choose a service' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {serviceOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Delivery */}
+                <div className='space-y-1'>
+                  <p className='text-sm font-medium text-slate-600'>Delivery</p>
+                  <Select
+                    value={values.deliveryMethod ?? ''}
+                    onValueChange={(val) =>
+                      onChange({
+                        ...values,
+                        deliveryMethod: val === CLEAR_VALUE ? undefined : val,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Any' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={CLEAR_VALUE}>Any</SelectItem>
+                      {deliveryOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Time of Day */}
+                <div className='space-y-1'>
+                  <p className='text-sm font-medium text-slate-600'>Time of day</p>
+                  <Select
+                    value={values.timeOfTheDay ?? ''}
+                    onValueChange={(val) =>
+                      onChange({
+                        ...values,
+                        timeOfTheDay: val === CLEAR_VALUE ? undefined : val,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Any' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={CLEAR_VALUE}>Any</SelectItem>
+                      {timeOfDayOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Gender */}
+                <div className='space-y-1'>
+                  <p className='text-sm font-medium text-slate-600'>Gender</p>
+                  <Select
+                    value={values.gender ?? ''}
+                    onValueChange={(val) =>
+                      onChange({
+                        ...values,
+                        gender: val === CLEAR_VALUE ? undefined : val,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Any' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={CLEAR_VALUE}>Any</SelectItem>
+                      {genderOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Clinical Focus */}
+                <div className='space-y-1'>
+                  <p className='text-sm font-medium text-slate-600'>
+                    Clinical Focus
+                  </p>
+                  <Select
+                    value={values.clinicalFocus?.[0] ?? ''}
+                    onValueChange={(val) =>
+                      onChange({
+                        ...values,
+                        clinicalFocus:
+                          val === CLEAR_VALUE ? undefined : val ? [val] : undefined,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Any' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={CLEAR_VALUE}>Any</SelectItem>
+                      {clinicalFocusOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Language */}
+                <div className='space-y-1'>
+                  <p className='text-sm font-medium text-slate-600'>Language</p>
+                  <Select
+                    value={values.language ?? ''}
+                    onValueChange={(val) =>
+                      onChange({
+                        ...values,
+                        language: val === CLEAR_VALUE ? undefined : val,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Any' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={CLEAR_VALUE}>Any</SelectItem>
+                      {languageOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
             <DrawerFooter className='text-sm'>
               <button
                 type='button'
@@ -1141,7 +680,7 @@ export function ProviderFilters({
                     language: undefined
                   } as ProviderSearchFilters;
 
-                  updateFilters(cleared);
+                  onChange(cleared);
                   onSubmit(cleared);
                   clearPreferencesStorage();
                 }}

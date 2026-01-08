@@ -3,6 +3,8 @@
  * Handles mapping between form values and Salesforce field structures.
  */
 
+import { parsePhoneNumberFromString, formatNumber } from 'libphonenumber-js';
+
 /**
  * Service type values used in the UI/form.
  */
@@ -15,7 +17,7 @@ export type ServiceType = 'Psychiatric' | 'Therapy' | 'Both' | 'Not Sure';
  * - "Psychiatric" (Medication in UI) → Medication__c = true
  * - "Therapy" → Therapy__c = true
  * - "Both" → both = true
- * - "Not Sure" → both = true
+ * - "Not Sure" → neither (both = false)
  */
 export function mapServiceToSalesforce(service: string | null | undefined): {
   Medication__c: boolean;
@@ -27,8 +29,8 @@ export function mapServiceToSalesforce(service: string | null | undefined): {
     case 'Therapy':
       return { Medication__c: false, Therapy__c: true };
     case 'Both':
-    case 'Not Sure':
       return { Medication__c: true, Therapy__c: true };
+    case 'Not Sure':
     default:
       return { Medication__c: false, Therapy__c: false };
   }
@@ -74,5 +76,67 @@ export function mapConsentToSalesforce(consent: boolean | null | undefined): {
   return {
     Contact_Consent__c: consent ?? false,
   };
+}
+
+/**
+ * Formats a phone number for writing to Salesforce.
+ * Converts E.164 format (e.g., "+19175551234") to US format (e.g., "(917) 555-1234").
+ * 
+ * @param phone - Phone number in E.164 format
+ * @returns Formatted phone number string, or null if invalid
+ */
+export function formatPhoneForSalesforce(phone: string | null | undefined): string | null {
+  if (!phone) return null;
+  
+  try {
+    const phoneNumber = parsePhoneNumberFromString(phone, 'US');
+    if (!phoneNumber || !phoneNumber.isValid()) {
+      return null;
+    }
+    
+    // Format as (xxx) xxx-xxxx for US numbers
+    return formatNumber(phoneNumber.number, 'NATIONAL');
+  } catch {
+    // If parsing fails, return null
+    return null;
+  }
+}
+
+/**
+ * Normalizes a phone number from Salesforce to E.164 format.
+ * Handles both E.164 format (e.g., "+19175551234") and formatted US numbers (e.g., "(917) 555-1234").
+ * 
+ * @param phone - Phone number from Salesforce (can be E.164 or formatted)
+ * @returns Phone number in E.164 format, or null if invalid
+ */
+export function normalizePhoneFromSalesforce(phone: string | null | undefined): string | null {
+  if (!phone) return null;
+  
+  try {
+    // Try parsing as-is (handles E.164 like "+19175551234")
+    const phoneNumber = parsePhoneNumberFromString(phone, 'US');
+    if (phoneNumber && phoneNumber.isValid()) {
+      return phoneNumber.number; // Returns E.164 format
+    }
+  } catch {
+    // Fall through to digit extraction
+  }
+  
+  // If parsing fails, try extracting digits and reconstructing
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 10 || digits.length === 11) {
+    try {
+      // If 10 digits, assume US and add +1
+      const e164 = digits.length === 10 ? `+1${digits}` : `+${digits}`;
+      const phoneNumber = parsePhoneNumberFromString(e164, 'US');
+      if (phoneNumber && phoneNumber.isValid()) {
+        return phoneNumber.number;
+      }
+    } catch (error) {
+      console.error(`[normalizePhoneFromSalesforce] Failed to normalize phone number '${phone}' from Salesforce:`, error);
+    }
+  }
+  
+  return null;
 }
 

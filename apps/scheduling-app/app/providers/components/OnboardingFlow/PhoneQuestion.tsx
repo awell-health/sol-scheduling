@@ -67,9 +67,16 @@ export function PhoneQuestion({
     const phoneDigits = value.replace(/\D/g, '');
 
     // Check if we already have a lead for this phone
-    const existingLeadId = getStoredLeadId(phoneDigits);
+    const existingLead = getStoredLeadId(phoneDigits);
 
-    if (!existingLeadId) {
+    // Track if lead was expired
+    if (existingLead?.wasExpired) {
+      posthog.capture('slc_expired', {
+        previous_lead_id: existingLead.leadId,
+      });
+    }
+
+    if (!existingLead) {
       // Fire-and-forget: Create lead in background
       createLeadAction({
         phone: e164Phone,

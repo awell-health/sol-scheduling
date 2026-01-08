@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { usePostHog } from 'posthog-js/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { updateLeadAction, getAnyStoredLeadId } from '../../_lib/salesforce';
@@ -13,6 +14,7 @@ type InsuranceQuestionProps = {
 };
 
 export function InsuranceQuestion({ value, onChange, onContinue }: InsuranceQuestionProps) {
+  const posthog = usePostHog();
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -122,9 +124,15 @@ export function InsuranceQuestion({ value, onChange, onContinue }: InsuranceQues
             setIsSubmitting(true);
 
             // Fire-and-forget: Update the lead with insurance info
-            const leadId = getAnyStoredLeadId();
-            if (leadId && value) {
-              void updateLeadAction({ leadId, insurance: value }).catch((error) => {
+            const leadResult = getAnyStoredLeadId();
+            if (leadResult && value) {
+              // Track if lead was expired
+              if (leadResult.wasExpired) {
+                posthog?.capture('slc_expired', {
+                  previous_lead_id: leadResult.leadId,
+                });
+              }
+              void updateLeadAction({ leadId: leadResult.leadId, insurance: value }).catch((error) => {
                 console.error('Failed to update lead insurance:', error);
               });
             }

@@ -1,182 +1,70 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import Image from 'next/image';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { format, startOfToday } from 'date-fns';
-import {
-  DayButton,
-  type DayButtonProps
-} from 'react-day-picker';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  isValidPhoneNumber,
-  type E164Number,
-} from '../../../components/ui/phone-input';
-import {
-  AvailabilitySlot,
-  ProviderSummary
-} from '../_lib/types';
-import {
-  getAvailabilityAction,
-  getProviderAction,
-} from '../actions';
-import { useBookingWorkflow } from '../../hooks';
-import { BookingProgressModal } from './BookingProgressModal';
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { usePostHog } from 'posthog-js/react';
-import { useOnboarding, useBuildUrlWithUtm, isSupportedState, getBorderingTargetState } from '../_lib/onboarding';
-import { ProviderBio } from '../components/ProviderBio';
-import { MapPinIcon, VideoCameraIcon } from '../components/icons/ProviderIcons';
-import { Calendar } from '../../../components/ui/calendar';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '../../../components/ui/select';
-import { Input } from '../../../components/ui/input';
-import { PhoneInput } from '../../../components/ui/phone-input';
-import { Label } from '../../../components/ui/label';
-import { Button } from '../../../components/ui/button';
 import Link from 'next/link';
 import {
-  FieldId,
-  FIELD_REGISTRY,
-  INSURANCE_OPTIONS,
-  useBookingFormFields,
-} from '@/lib/fields';
+  useOnboarding,
+  useBuildUrlWithUtm,
+  isSupportedState,
+  getBorderingTargetState,
+} from '../_lib/onboarding';
+import { useProvider, useAvailability } from './hooks';
+import {
+  ProviderHeader,
+  AvailabilityCalendar,
+  BookingForm,
+  getSlotModes,
+  type BookingFormValues,
+} from './components';
+import { BookingProgressModal } from './BookingProgressModal';
+import { useBookingWorkflow } from '../../hooks';
+import { AvailabilitySlot } from '../_lib/types';
+import { format } from 'date-fns';
 
-const PLACEHOLDER_AVATAR = '/images/avatar.svg';
-
-// BookingState is now managed by useBookingWorkflow hook
-
-const BookingFormSchema = z.object({
-  // Phone is stored in E.164 format (e.g., "+16175551234")
-  phone: z
-    .string()
-    .nonempty('Mobile number is required')
-    .refine((value) => {
-      try {
-        return isValidPhoneNumber(value, 'US');
-      } catch {
-        return false;
-      }
-    }, {
-      message: 'Please enter a valid U.S. phone number.'
-    }),
-  visitMode: z.enum(['In-Person', 'Telehealth']).optional(),
-  consent: z
-    .boolean()
-    .refine((val) => val === true, {
-      message:
-        'You must consent to receiving calls or text messages about scheduling details.'
-    }),
-  insuranceCarrier: z.string().optional(),
-  // Name fields (required)
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-});
-
-type BookingFormValues = z.infer<typeof BookingFormSchema>;
-
-  const SlotDayButton: React.FC<
-    DayButtonProps & { daySlotMap: Map<string, AvailabilitySlot[]> }
-  > = (props) => {
-  const getLocalDayKey = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-  
-  const { day, modifiers, daySlotMap, ...buttonProps } = props;
-  const date = day.date;
-  const key = getLocalDayKey(date);
-  const count = daySlotMap.get(key)?.length ?? 0;
-  const today = startOfToday();
-  const isFuture = date >= today;
-  const hasSlots = count > 0 && isFuture;
-
-  let secondaryLabel: string | null = null;
-  if (isFuture) {
-    secondaryLabel = count > 0 ? String(count) : '-';
-  }
-
-  return (
-    <DayButton {...buttonProps} day={day} modifiers={modifiers}>
-      <div className='flex h-9 w-9 flex-col items-center justify-center gap-0.5 rounded-md leading-none'>
-        <span>{date.getDate()}</span>
-        {secondaryLabel && (
-          <span
-            className={
-              hasSlots
-                ? 'text-[10px] font-semibold text-emerald-700'
-                : 'text-[10px] font-medium text-slate-400'
-            }
-          >
-            {secondaryLabel}
-          </span>
-        )}
-      </div>
-    </DayButton>
-  );
-};
-
-type ProviderDetailPageProps = {
+interface ProviderDetailPageProps {
   providerId: string;
-};
+}
 
 export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
-  providerId
+  providerId,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const posthog = usePostHog();
   const { preferences, isOnboardingComplete, isInitialized } = useOnboarding();
   const buildUrlWithUtm = useBuildUrlWithUtm();
-  const [provider, setProvider] = useState<ProviderSummary | null>(null);
-  const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
-  const [providerError, setProviderError] = useState<string | null>(null);
-  const [availabilityError, setAvailabilityError] = useState<string | null>(
-    null
-  );
-  const [providerLoading, setProviderLoading] = useState(true);
-  const [availabilityLoading, setAvailabilityLoading] = useState(true);
-  const bookingWorkflow = useBookingWorkflow({ posthog });
-  const [showStickyHeader, setShowStickyHeader] = useState(false);
-  const headerRef = useRef<HTMLDivElement | null>(null);
-  const [locationFilter, setLocationFilter] = useState<string>('all');
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(null);
-  const [insuranceQuery, setInsuranceQuery] = useState('');
-  const [isInsuranceDropdownOpen, setIsInsuranceDropdownOpen] = useState(false);
-  const bookingFormRef = useRef<HTMLDivElement | null>(null);
-  const form = useForm<BookingFormValues>({
-    resolver: zodResolver(BookingFormSchema),
-    mode: 'onChange',
-    defaultValues: {
-      phone: '',
-      visitMode: undefined,
-      consent: false,
-      insuranceCarrier: undefined,
-      firstName: '',
-      lastName: '',
-    }
-  });
-  const {
-    handleSubmit,
-    setValue,
-    watch,
-    reset,
-    formState: { errors, isValid, isSubmitting }
-  } = form;
-  const visitMode = watch('visitMode');
-  const consent = watch('consent');
 
-  // Redirect to onboarding if not complete (preserving UTM params)
+  // Get clinical focus from URL params (passed from providers list page)
+  const clinicalFocusFromUrl = searchParams.get('clinicalFocus') ?? undefined;
+
+  // Data fetching hooks
+  const {
+    provider,
+    loading: providerLoading,
+    error: providerError,
+  } = useProvider(providerId);
+
+  const {
+    slots,
+    loading: availabilityLoading,
+    error: availabilityError,
+    filteredSlots,
+    daySlotMap,
+    daysWithSlots,
+    locationOptions,
+    locationFilter,
+    setLocationFilter,
+    defaultMonth,
+  } = useAvailability(providerId);
+
+  // Booking state
+  const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(null);
+  const bookingWorkflow = useBookingWorkflow({ posthog });
+
+  // Redirect to onboarding if not complete
   useEffect(() => {
     if (isInitialized && !isOnboardingComplete) {
       const url = buildUrlWithUtm('/onboarding', { target: pathname });
@@ -190,339 +78,38 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       if (!isSupportedState(preferences.state)) {
         const borderTarget = getBorderingTargetState(preferences.state);
         if (borderTarget) {
-          const url = buildUrlWithUtm('/onboarding/bordering', { state: preferences.state });
+          const url = buildUrlWithUtm('/onboarding/bordering', {
+            state: preferences.state,
+          });
           router.replace(url);
         } else {
-          const url = buildUrlWithUtm('/not-available', { state: preferences.state });
+          const url = buildUrlWithUtm('/not-available', {
+            state: preferences.state,
+          });
           router.replace(url);
         }
       }
     }
   }, [isInitialized, isOnboardingComplete, preferences.state, router, buildUrlWithUtm]);
 
-  // Determine if we're ready to show content (not redirecting)
+  // Determine if we're redirecting
   const isRedirecting =
     !isInitialized ||
     !isOnboardingComplete ||
     (preferences.state && !isSupportedState(preferences.state));
 
-  // Use field registry to determine which booking fields to show
-  const { shouldShowField } = useBookingFormFields({
-    answeredValues: {
-      [FieldId.PHONE]: preferences.phone,
-      [FieldId.INSURANCE]: preferences.insurance,
-      [FieldId.CONSENT]: preferences.consent,
-    },
-  });
-
-  // Pre-fill phone, insurance, and consent from onboarding preferences
-  useEffect(() => {
-    if (preferences.phone) {
-      setValue('phone', preferences.phone);
-    }
-    if (preferences.insurance) {
-      setValue('insuranceCarrier', preferences.insurance);
-      setInsuranceQuery(preferences.insurance);
-    }
-    if (preferences.consent === true) {
-      setValue('consent', true);
-    }
-  }, [preferences.phone, preferences.insurance, preferences.consent, setValue]);
-
-  // Determine which form fields to show (from field registry)
-  const showPhoneField = shouldShowField(FieldId.PHONE);
-  const showInsuranceField = shouldShowField(FieldId.INSURANCE);
-  const showConsentField = shouldShowField(FieldId.CONSENT);
-  const showFirstNameField = shouldShowField(FieldId.FIRST_NAME);
-  const showLastNameField = shouldShowField(FieldId.LAST_NAME);
-
-  const getLocalDayKey = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadProvider() {
-      const frontendStart = performance.now();
-      try {
-        setProviderLoading(true);
-        setProviderError(null);
-        const response = await getProviderAction(providerId);
-        const frontendMs = Math.round(performance.now() - frontendStart);
-        
-        if (!cancelled) {
-          setProvider(response.data as ProviderSummary);
-          
-          posthog?.capture('api_call_provider', {
-            provider_id: providerId,
-            frontend_rt_ms: frontendMs,
-            sol_api_rt_ms: response._timing?.solApiMs,
-          });
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setProviderError(
-            err instanceof Error
-              ? err.message
-              : 'Unable to load provider details'
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setProviderLoading(false);
-        }
-      }
-    }
-
-    loadProvider();
-    return () => {
-      cancelled = true;
-    };
-  }, [providerId, posthog]);
-
-  useEffect(() => {
-    const headerEl = headerRef.current;
-    if (!headerEl) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowStickyHeader(!entry.isIntersecting);
-      },
-      {
-        threshold: 0.2
-      }
-    );
-
-    observer.observe(headerEl);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [providerLoading, provider]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadAvailability() {
-      const frontendStart = performance.now();
-      try {
-        setAvailabilityLoading(true);
-        setAvailabilityError(null);
-        const response = await getAvailabilityAction(providerId);
-        const frontendMs = Math.round(performance.now() - frontendStart);
-        
-        const providerSlots = response.data?.[providerId] ?? [];
-        const sortedSlots = providerSlots
-          .map((slot) => ({
-            ...slot,
-            slotstart: slot.slotstart
-          }))
-          .sort(
-            (first, second) =>
-              new Date(first.slotstart).getTime() -
-              new Date(second.slotstart).getTime()
-          );
-        if (!cancelled) {
-          setSlots(sortedSlots);
-          
-          posthog?.capture('api_call_availability', {
-            provider_id: providerId,
-            frontend_rt_ms: frontendMs,
-            sol_api_rt_ms: response._timing?.solApiMs,
-            slot_count: sortedSlots.length,
-          });
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setAvailabilityError(
-            err instanceof Error
-              ? err.message
-              : 'Unable to load availability'
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setAvailabilityLoading(false);
-        }
-      }
-    }
-
-    loadAvailability();
-    return () => {
-      cancelled = true;
-    };
-  }, [providerId, posthog]);
-
-  const upcomingSlots = useMemo(() => {
-    const now = Date.now();
-    return slots.filter(
-      (slot) => new Date(slot.slotstart).getTime() > now && slot.booked !== true
-    );
-  }, [slots]);
-
-  const locationOptions = useMemo(() => {
-    const modes = new Set<string>();
-    upcomingSlots.forEach((slot) => {
-      const mode = slot.location ?? slot.eventType;
-      if (mode) modes.add(mode);
-    });
-    return Array.from(modes);
-  }, [upcomingSlots]);
-
-  const filteredSlots = useMemo(() => {
-    if (locationFilter === 'all') return upcomingSlots;
-    return upcomingSlots.filter(
-      (slot) => (slot.location ?? slot.eventType) === locationFilter
-    );
-  }, [upcomingSlots, locationFilter]);
-
-  const daySlotMap = useMemo(() => {
-    const map = new Map<string, AvailabilitySlot[]>();
-
-    filteredSlots.forEach((slot) => {
-      const date = new Date(slot.slotstart);
-      const key = getLocalDayKey(date);
-      const existing = map.get(key);
-      if (existing) {
-        existing.push(slot);
-      } else {
-        map.set(key, [slot]);
-      }
-    });
-
-    return map;
-  }, [filteredSlots]);
-
-  const daysWithSlots = useMemo(
-    () =>
-      Array.from(daySlotMap.keys()).map((key) => {
-        const [year, month, day] = key.split('-').map(Number);
-        return new Date(year, month - 1, day);
-      }),
-    [daySlotMap]
-  );
-
-  const defaultSelectedDate = useMemo(() => {
-    if (filteredSlots.length === 0) return undefined;
-    return new Date(filteredSlots[0].slotstart);
-  }, [filteredSlots]);
-
-  useEffect(() => {
-    setSelectedDate(defaultSelectedDate);
-  }, [defaultSelectedDate?.getTime()]);
-
-  const slotsForSelectedDate = useMemo(() => {
-    if (!selectedDate) return [];
-    const key = getLocalDayKey(selectedDate);
-    return daySlotMap.get(key) ?? [];
-  }, [selectedDate, daySlotMap]);
-
-  const searchParams = useSearchParams();
-  const hasInitializedFromUrl = useRef(false);
-
-  useEffect(() => {
-    if (hasInitializedFromUrl.current) return;
-    if (availabilityLoading || slots.length === 0) return;
-
-    const eventIdFromUrl = searchParams.get('eventId');
-    if (!eventIdFromUrl) {
-      hasInitializedFromUrl.current = true;
-      return;
-    }
-
-    const matchingSlot = slots.find((slot) => slot.eventId === eventIdFromUrl);
-    if (matchingSlot) {
-      const matchDate = new Date(matchingSlot.slotstart);
-      setSelectedDate(matchDate);
-      setSelectedSlot(matchingSlot);
-
-      const modes = slotModes(matchingSlot);
-      if (modes.inPerson && modes.virtual) {
-        setValue('visitMode', undefined, { shouldValidate: true });
-      } else if (modes.inPerson) {
-        setValue('visitMode', 'In-Person', { shouldValidate: true });
-      } else if (modes.virtual) {
-        setValue('visitMode', 'Telehealth', { shouldValidate: true });
-      } else {
-        setValue('visitMode', undefined, { shouldValidate: true });
-      }
-      // Scroll is handled by the useEffect that watches selectedSlot
-    }
-
-    hasInitializedFromUrl.current = true;
-  }, [availabilityLoading, slots, searchParams, setSelectedDate]);
-
-  const slotModes = (slot: AvailabilitySlot) => {
-    const mode = slot.location ?? slot.eventType;
-    const isTelehealth = mode === 'Telehealth';
-    const isInPerson = mode === 'In-Person';
-
-    // Business rule: any in-person visit can also be virtual
-    return {
-      inPerson: isInPerson,
-      virtual: isTelehealth || isInPerson
-    };
-  };
-
-  const selectedSlotSummary = useMemo(() => {
-    if (!selectedSlot) return null;
-    const when = format(
-      new Date(selectedSlot.slotstart),
-      "EEE MMM d 'at' h:mm a"
-    );
-    const modes = slotModes(selectedSlot);
-    let modeText: string;
-    if (visitMode) {
-      modeText =
-        visitMode === 'In-Person' ? 'In-person' : 'Virtual video visit';
-    } else if (modes.inPerson && modes.virtual) {
-      modeText = 'In-person or virtual';
-    } else if (modes.inPerson) {
-      modeText = 'In-person';
-    } else if (modes.virtual) {
-      modeText = 'Virtual';
-    } else {
-      modeText = selectedSlot.eventType;
-    }
-
-    const meta = `${selectedSlot.duration} mins • ${modeText}`;
-
-    return { when, meta };
-  }, [selectedSlot, visitMode]);
-
-  
-
-  const handleSelectSlot = (slot: AvailabilitySlot) => {
+  // Handler for slot selection
+  const handleSlotSelect = (slot: AvailabilitySlot) => {
     setSelectedSlot(slot);
     bookingWorkflow.reset();
-
-    const modes = slotModes(slot);
-    if (modes.inPerson && modes.virtual) {
-      setValue('visitMode', undefined, { shouldValidate: true });
-    } else if (modes.inPerson) {
-      setValue('visitMode', 'In-Person', { shouldValidate: true });
-    } else if (modes.virtual) {
-      setValue('visitMode', 'Telehealth', { shouldValidate: true });
-    } else {
-      setValue('visitMode', undefined, { shouldValidate: true });
-    }
   };
 
-  // Scroll to form when a slot is selected
-  // useEffect runs after DOM is committed, so the form element is guaranteed to exist
-  useEffect(() => {
-    if (selectedSlot && bookingFormRef.current) {
-      bookingFormRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  }, [selectedSlot?.eventId]);
+  // Handler for clearing slot
+  const handleClearSlot = () => {
+    setSelectedSlot(null);
+  };
 
+  // Handler for booking submission
   const handleSubmitBooking = async (data: BookingFormValues) => {
     if (!selectedSlot) return;
 
@@ -533,8 +120,6 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       'Virtual';
 
     const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    
-    // Build user name from form fields
     const userName = `${data.firstName} ${data.lastName}`;
 
     await bookingWorkflow.startBooking({
@@ -548,86 +133,33 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       phone: data.phone,
       state: preferences.state ?? undefined,
       patientTimezone: browserTimezone,
-      clinicalFocus: preferences.service ?? undefined,
+      clinicalFocus: clinicalFocusFromUrl,
+      service: preferences.service ?? undefined,
     });
   };
 
-  const needsLocationChoice = useMemo(() => {
-    if (!selectedSlot) return false;
-    const modes = slotModes(selectedSlot);
-    return modes.inPerson && modes.virtual;
-  }, [selectedSlot]);
+  // Compute selected slot summary for header
+  const selectedSlotSummary = selectedSlot
+    ? {
+        when: format(new Date(selectedSlot.slotstart), "EEE MMM d 'at' h:mm a"),
+        meta: (() => {
+          const modes = getSlotModes(selectedSlot);
+          let modeText: string;
+          if (modes.inPerson && modes.virtual) {
+            modeText = 'In-person or virtual';
+          } else if (modes.inPerson) {
+            modeText = 'In-person';
+          } else if (modes.virtual) {
+            modeText = 'Virtual';
+          } else {
+            modeText = selectedSlot.eventType;
+          }
+          return `${selectedSlot.duration} mins • ${modeText}`;
+        })(),
+      }
+    : null;
 
-  const canSubmitBooking = useMemo(() => {
-    if (!selectedSlot) return false;
-    if (!isValid) return false;
-    if (needsLocationChoice && !visitMode) return false;
-    if (bookingWorkflow.state.status === 'starting' || bookingWorkflow.state.status === 'booking' || bookingWorkflow.state.status === 'redirecting' || isSubmitting) return false;
-    return true;
-  }, [selectedSlot, isValid, needsLocationChoice, visitMode, bookingWorkflow.state.status, isSubmitting]);
-
-  const renderSlot = (slot: AvailabilitySlot) => {
-    const startsAt = new Date(slot.slotstart);
-    const time = format(startsAt, 'h:mm a');
-    const { inPerson, virtual } = slotModes(slot);
-
-    const isSelected = selectedSlot?.eventId === slot.eventId;
-
-    return (
-      <li
-        key={slot.eventId}
-        className='flex flex-col justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'
-      >
-        <div>
-          <p className='text-base font-semibold text-slate-900'>{time}</p>
-          <div className='mt-1 flex items-center gap-2 text-sm text-slate-600'>
-            <span className='flex items-center gap-1'>
-              {inPerson && (
-                <MapPinIcon className='h-3 w-3 text-secondary-foreground' />
-              )}
-              {virtual && (
-                <VideoCameraIcon className='h-3 w-3 text-secondary-foreground' />
-              )}
-            </span>
-            <span>
-              {inPerson && virtual
-                ? 'In-person or virtual'
-                : inPerson
-                  ? 'In-person'
-                  : virtual
-                    ? 'Virtual'
-                    : slot.eventType}
-            </span>
-          </div>
-          <p className='mt-1 text-xs text-slate-500'>
-            {slot.duration} mins
-            {slot.facility ? ` • ${slot.facility}` : ''}
-          </p>
-          {slot.facility && (
-            <p className='mt-0.5 text-xs text-slate-500'>
-              Location: {slot.facility}
-            </p>
-          )}
-        </div>
-        <Button
-          variant={isSelected ? 'secondary' : 'outline'}
-          size='sm'
-          onClick={() => handleSelectSlot(slot)}
-          flashOnClick
-          className='mt-2'
-        >
-          {isSelected ? 'Selected' : 'Select'}
-        </Button>
-      </li>
-    );
-  };
-
-  const providerName =
-    provider?.firstName && provider?.lastName
-      ? `${provider.firstName} ${provider.lastName}`
-      : provider?.firstName || provider?.lastName || 'Provider';
-
-  // Show loading state until context is initialized or during redirect
+  // Loading state
   if (isRedirecting) {
     return (
       <div className='flex flex-col gap-6'>
@@ -640,60 +172,14 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
 
   return (
     <div className='flex flex-col gap-6'>
+      {/* Sticky + main header */}
       {provider && (
-        <div
-          className={`pointer-events-none fixed inset-x-0 top-0 z-30 flex justify-center transition-opacity duration-200 ${
-            showStickyHeader ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <div className='pointer-events-auto w-full border-b border-slate-200 bg-white/90 backdrop-blur-md'>
-            <div className='mx-auto flex max-w-3xl items-center gap-3 px-4 py-2 sm:px-6 lg:px-8'>
-              <Link
-                href='/providers'
-                className='flex h-8 w-8 items-center justify-center rounded-full bg-transparent text-slate-600 hover:text-slate-900'
-                aria-label='Back to providers'
-              > 
-                ←
-              </Link>
-              <div className='relative h-8 w-8 overflow-hidden rounded-full bg-slate-100'>
-                <Image
-                  src={provider.image || PLACEHOLDER_AVATAR}
-                  alt={providerName}
-                  sizes='32px'
-                  unoptimized
-                  fill
-                  placeholder='blur'
-                  blurDataURL='/images/avatar.svg'
-                  className='object-cover'
-                />
-              </div>
-              <div className='min-w-0 flex-1'>
-                <p className='truncate text-sm font-semibold text-slate-900'>
-                  {providerName}
-                </p>
-                {(provider.location?.facility || provider.location?.state) && (
-                  <p className='truncate text-xs text-slate-600'>
-                    {provider.location?.facility}
-                    {provider.location?.facility && provider.location?.state ? (
-                      <span className='text-slate-400'>
-                        {' '}
-                        · {provider.location.state}
-                      </span>
-                    ) : (
-                      provider.location?.state
-                    )}
-                  </p>
-                )}
-                {selectedSlotSummary && (
-                  <p className='truncate text-[11px] text-slate-500'>
-                    {selectedSlotSummary.when} • {selectedSlotSummary.meta}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+        <ProviderHeader
+          provider={provider}
+          selectedSlotSummary={selectedSlotSummary}
+        />
       )}
+
       <Link
         href='/providers'
         className='w-fit text-sm font-semibold text-slate-600 hover:text-slate-900'
@@ -701,18 +187,21 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
         ← Back to providers
       </Link>
 
-      {providerLoading ? (
+      {/* Provider loading/error states */}
+      {providerLoading && (
         <div className='rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500'>
           Loading provider details…
         </div>
-      ) : providerError ? (
+      )}
+
+      {providerError && !providerLoading && (
         <section className='rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-700 shadow-sm'>
           <h2 className='text-base font-semibold text-primary'>
             We can&apos;t find this provider
           </h2>
           <p className='mt-2'>
-            The link you followed may be out of date, or this provider is no longer
-            available. Please go back and choose a different provider.
+            The link you followed may be out of date, or this provider is no
+            longer available. Please go back and choose a different provider.
           </p>
           <Link
             href='/providers'
@@ -721,468 +210,36 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
             Back to providers
           </Link>
         </section>
-      ) : (
-        provider && (
-          <section className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm'>
-            <header
-              ref={headerRef}
-              className='flex flex-col gap-4 md:flex-row md:items-start md:gap-6'
-            >
-              <div className='relative h-32 w-32 flex-none overflow-hidden rounded-full bg-slate-100'>
-                <Image
-                  src={provider.image || PLACEHOLDER_AVATAR}
-                  alt={providerName}
-                  sizes='128px'
-                  unoptimized
-                  fill
-                  placeholder='blur'
-                  blurDataURL='/images/avatar.svg'
-                  className='object-cover'
-                />
-              </div>
-              <div className='space-y-2'>
-              <h1 className='text-3xl font-bold text-slate-900'>
-                {providerName}
-              </h1>
-                {(provider.location?.facility || provider.location?.state) && (
-                  <div className='flex items-center gap-1 text-sm text-slate-600'>
-                    <MapPinIcon className='h-4 w-4 text-secondary-foreground' />
-                    <span>
-                      {provider.location?.facility}
-                      {provider.location?.facility && provider.location?.state ? (
-                        <span className='text-slate-400'>
-                          {' '}
-                          · {provider.location.state}
-                        </span>
-                      ) : (
-                        provider.location?.state
-                      )}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </header>
-            <div className='mt-4'>
-              <ProviderBio
-                text={provider.bio}
-                profileLink={provider.profileLink}
-                showIntroHeading
-              />
-            </div>
-          </section>
-        )
       )}
 
-      <section className='space-y-4'>
-        <div className='flex flex-wrap items-center justify-between gap-3'>
-          <h2 className='text-lg font-semibold text-slate-900'>
-            Upcoming availability
-          </h2>
-          {locationOptions.length > 1 && (
-            <div className='flex items-center gap-2 text-xs text-slate-600'>
-              <span className='font-medium'>Location</span>
-              <Select
-                value={locationFilter}
-                onValueChange={(value) => setLocationFilter(value)}
-              >
-                <SelectTrigger className='h-8 w-40 text-xs'>
-                  <SelectValue placeholder='All locations' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>All locations</SelectItem>
-                  {locationOptions.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-        </div>
+      {/* Availability calendar */}
+      <AvailabilityCalendar
+        loading={availabilityLoading}
+        error={availabilityError}
+        filteredSlots={filteredSlots}
+        allSlots={slots}
+        daySlotMap={daySlotMap}
+        daysWithSlots={daysWithSlots}
+        locationOptions={locationOptions}
+        locationFilter={locationFilter}
+        onLocationFilterChange={setLocationFilter}
+        selectedSlot={selectedSlot}
+        onSlotSelect={handleSlotSelect}
+        defaultMonth={defaultMonth}
+      />
 
-        {availabilityLoading ? (
-          <div className='rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500'>
-            Loading availability…
-          </div>
-        ) : availabilityError ? (
-          <div className='rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-800'>
-            {availabilityError}
-          </div>
-        ) : filteredSlots.length === 0 ? (
-          <div className='rounded-2xl border border-dashed border-slate-200 bg-white p-10 text-center text-sm text-slate-600'>
-            No open slots at the moment. Please check back soon.
-          </div>
-        ) : (
-          <div className='space-y-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6'>
-            <div className='flex flex-wrap items-center justify-between gap-3'>
-              <div className='text-sm text-slate-700'>
-                {selectedDate
-                  ? `Showing times for ${format(selectedDate, 'EEEE, MMM d')}`
-                  : 'Select a date to see available times.'}
-              </div>
-            </div>
-
-            <Calendar
-              mode='single'
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              fromMonth={startOfToday()}
-              disabled={(date: Date) => date < startOfToday()}
-              modifiers={{ hasSlots: daysWithSlots }}
-              modifiersClassNames={{
-                hasSlots: 'font-semibold text-emerald-700',
-                selected:
-                  'bg-secondary text-secondary-foreground rounded-md !ring-0 !border-0',
-                today:
-                  'ring-1 ring-secondary text-secondary-foreground rounded-md'
-              }}
-              components={{
-                DayButton: (props) => <SlotDayButton {...props} daySlotMap={daySlotMap} />
-              }}
-              numberOfMonths={1}
-            />
-
-            <div className='mt-2'>
-              {slotsForSelectedDate.length === 0 ? (
-                <p className='text-sm text-slate-600'>
-                  No open slots for this day. Try another date.
-                </p>
-              ) : (
-                <ul className='grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3'>
-                  {slotsForSelectedDate.map(renderSlot)}
-                </ul>
-              )}
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* Success state is now handled by the modal + redirect */}
-
+      {/* Booking form (shown when slot is selected) */}
       {selectedSlot && (
-        <section
-          ref={bookingFormRef}
-          className='space-y-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6'
-        >
-          <div>
-            <h3 className='text-base font-semibold text-primary'>
-              Complete your booking
-            </h3>
-            {selectedSlotSummary && (
-              <div className='mt-2 inline-flex w-full items-center justify-between gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700 sm:w-auto'>
-                <div className='flex flex-col text-left'>
-                  <span className='font-medium'>{selectedSlotSummary.when}</span>
-                  <span className='text-[11px] text-slate-600'>
-                    {selectedSlotSummary.meta}
-                  </span>
-                </div>
-                <button
-                  type='button'
-                  onClick={() => {
-                    setSelectedSlot(null);
-                    reset();
-                    bookingWorkflow.reset();
-                  }}
-                  className='text-xs font-semibold text-primary hover:underline'
-                >
-                  Clear
-                </button>
-              </div>
-            )}
-          </div>
-
-          <form onSubmit={handleSubmit(handleSubmitBooking)} className='space-y-4'>
-            {/* Name fields */}
-            {showFirstNameField && (
-              <div className='space-y-1'>
-                <Label htmlFor='firstName'>{FIELD_REGISTRY[FieldId.FIRST_NAME].label}</Label>
-                <Controller
-                  name='firstName'
-                  control={form.control}
-                  render={({ field }) => (
-                    <Input
-                      id='firstName'
-                      autoComplete='given-name'
-                      data-phi='true'
-                      data-attr-redact='true'
-                      value={field.value ?? ''}
-                      onChange={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder={FIELD_REGISTRY[FieldId.FIRST_NAME].placeholder}
-                      className={
-                        errors.firstName
-                          ? 'border-red-500 focus-visible:ring-red-500/20'
-                          : undefined
-                      }
-                    />
-                  )}
-                />
-                {errors.firstName && (
-                  <p className='text-xs font-medium text-red-600'>
-                    {errors.firstName.message}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {showLastNameField && (
-              <div className='space-y-1'>
-                <Label htmlFor='lastName'>{FIELD_REGISTRY[FieldId.LAST_NAME].label}</Label>
-                <Controller
-                  name='lastName'
-                  control={form.control}
-                  render={({ field }) => (
-                    <Input
-                      id='lastName'
-                      autoComplete='family-name'
-                      data-phi='true'
-                      data-attr-redact='true'
-                      value={field.value ?? ''}
-                      onChange={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder={FIELD_REGISTRY[FieldId.LAST_NAME].placeholder}
-                      className={
-                        errors.lastName
-                          ? 'border-red-500 focus-visible:ring-red-500/20'
-                          : undefined
-                      }
-                    />
-                  )}
-                />
-                {errors.lastName && (
-                  <p className='text-xs font-medium text-red-600'>
-                    {errors.lastName.message}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {showPhoneField && (
-              <div className='space-y-1'>
-                <Label htmlFor='phone'>Mobile number</Label>
-                <Controller
-                  name='phone'
-                  control={form.control}
-                  render={({ field }) => (
-                    <PhoneInput
-                      id='phone'
-                      data-phi
-                      data-attr-redact
-                      value={(field.value as E164Number) || undefined}
-                      onChange={(value) => field.onChange(value ?? '')}
-                      onBlur={field.onBlur}
-                      className={
-                        errors.phone
-                          ? 'border-red-500 focus-visible:ring-red-500/20'
-                          : undefined
-                      }
-                      usOnly
-                    />
-                  )}
-                />
-                <p className='text-xs text-slate-500'>
-                  We'll use this number to send updates about your appointment. U.S. numbers
-                  only.
-                </p>
-                {errors.phone && (
-                  <p className='text-xs font-medium text-red-600'>
-                    {errors.phone.message}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {showInsuranceField && (
-              <div className='space-y-1'>
-                <Label htmlFor='insurance'>Insurance</Label>
-                <Controller
-                  name='insuranceCarrier'
-                  control={form.control}
-                  render={({ field }) => {
-                    const filteredOptions = INSURANCE_OPTIONS.filter((option) =>
-                      option.label.toLowerCase().includes(insuranceQuery.toLowerCase())
-                    );
-
-                    return (
-                      <div className='relative'>
-                        <Input
-                          id='insurance'
-                          value={insuranceQuery || field.value || ''}
-                          onChange={(event) => {
-                            const next = event.target.value;
-                            setInsuranceQuery(next);
-                            setIsInsuranceDropdownOpen(true);
-
-                            const exactMatch = INSURANCE_OPTIONS.find(
-                              (option) =>
-                                option.label.toLowerCase() === next.toLowerCase()
-                            );
-
-                            if (exactMatch) {
-                              field.onChange(exactMatch.value);
-                            } else if (next === '') {
-                              field.onChange(undefined);
-                            }
-                          }}
-                          onFocus={() => setIsInsuranceDropdownOpen(true)}
-                          onBlur={() => {
-                            // Slight delay to allow option click handlers to run
-                            setTimeout(() => setIsInsuranceDropdownOpen(false), 100);
-                          }}
-                          placeholder='Start typing to search your insurance'
-                          autoComplete='off'
-                        />
-                        {isInsuranceDropdownOpen && filteredOptions.length > 0 && (
-                          <ul className='absolute z-20 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-slate-200 bg-white py-1 text-sm shadow-card'>
-                            {filteredOptions.map((option) => (
-                              <li
-                                key={option.value}
-                                className='cursor-pointer px-3 py-1.5 hover:bg-slate-50'
-                                onMouseDown={(event) => {
-                                  // Prevent input blur before onClick runs
-                                  event.preventDefault();
-                                }}
-                                onClick={() => {
-                                  field.onChange(option.value);
-                                  setInsuranceQuery(option.label);
-                                  setIsInsuranceDropdownOpen(false);
-                                }}
-                              >
-                                {option.label}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    );
-                  }}
-                />
-                <p className='text-xs text-slate-500'>
-                  Please confirm your coverage. If you&apos;re not sure, you can
-                  leave this blank.
-                </p>
-              </div>
-            )}
-
-            {(() => {
-              const modes = slotModes(selectedSlot);
-              if (modes.inPerson && modes.virtual) {
-                return (
-                  <fieldset className='space-y-2'>
-                    <legend className='text-sm font-medium text-slate-700'>
-                      How would you like to attend?
-                    </legend>
-                    <div className='flex flex-col gap-2 sm:flex-row'>
-                      <label className='flex cursor-pointer items-center gap-2 text-sm text-slate-700'>
-                        <input
-                          type='radio'
-                          name='visitMode'
-                          value='In-Person'
-                          checked={visitMode === 'In-Person'}
-                          onChange={() =>
-                            setValue('visitMode', 'In-Person', {
-                              shouldValidate: true
-                            })
-                          }
-                          className='h-4 w-4 accent-primary'
-                        />
-                        <span>
-                          In-person
-                          {selectedSlot.facility ? ` at ${selectedSlot.facility}` : ''}
-                        </span>
-                      </label>
-                      <label className='flex cursor-pointer items-center gap-2 text-sm text-slate-700'>
-                        <input
-                          type='radio'
-                          name='visitMode'
-                          value='Telehealth'
-                          checked={visitMode === 'Telehealth'}
-                          onChange={() =>
-                            setValue('visitMode', 'Telehealth', {
-                              shouldValidate: true
-                            })
-                          }
-                          className='h-4 w-4 accent-primary'
-                        />
-                        <span>Virtual (video visit)</span>
-                      </label>
-                    </div>
-                    {needsLocationChoice && !visitMode && (
-                      <p className='text-xs font-medium text-red-600'>
-                        Please choose in-person or virtual.
-                      </p>
-                    )}
-                  </fieldset>
-                );
-              }
-
-              if (modes.inPerson) {
-                return (
-                  <p className='text-sm text-slate-600'>
-                    This appointment will be <span className='font-semibold'>in-person</span>
-                    {selectedSlot.facility ? ` at ${selectedSlot.facility}` : ''}.
-                  </p>
-                );
-              }
-
-              if (modes.virtual) {
-                return (
-                  <p className='text-sm text-slate-600'>
-                    This appointment will be a{' '}
-                    <span className='font-semibold'>virtual video visit</span>.
-                  </p>
-                );
-              }
-
-              return null;
-            })()}
-
-            {showConsentField && (
-              <div className='space-y-1'>
-                <label className='flex items-start gap-2 text-xs text-slate-700'>
-                  <input
-                    type='checkbox'
-                    checked={consent}
-                    onChange={(event) =>
-                      setValue('consent', event.target.checked, {
-                        shouldValidate: true
-                      })
-                    }
-                    className='mt-0.5 h-4 w-4 rounded border-slate-300 accent-primary'
-                  />
-                  <span>
-                    I consent to receiving calls or text messages at this number about this
-                    appointment (not for marketing messages).
-                  </span>
-                </label>
-                {errors.consent && (
-                  <p className='text-xs font-medium text-red-600'>
-                    {errors.consent.message}
-                  </p>
-                )}
-              </div>
-            )}
-
-            <button
-              type='submit'
-              className='mt-2 inline-flex w-full items-center justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground shadow-card hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400'
-              disabled={!canSubmitBooking}
-            >
-              {bookingWorkflow.state.status === 'starting' 
-                ? 'Starting...'
-                : bookingWorkflow.state.status === 'booking' || bookingWorkflow.state.status === 'redirecting'
-                  ? 'Booking...'
-                  : 'Book appointment'}
-            </button>
-
-            {bookingWorkflow.state.status === 'error' && !bookingWorkflow.isModalOpen && (
-              <div className='mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800'>
-                {bookingWorkflow.state.message}
-              </div>
-            )}
-          </form>
-        </section>
+        <BookingForm
+          selectedSlot={selectedSlot}
+          preferences={preferences}
+          bookingStatus={bookingWorkflow.state.status}
+          bookingError={bookingWorkflow.error}
+          isModalOpen={bookingWorkflow.isModalOpen}
+          onClearSlot={handleClearSlot}
+          onSubmit={handleSubmitBooking}
+          onResetWorkflow={bookingWorkflow.reset}
+        />
       )}
 
       {/* Booking progress modal */}
@@ -1195,6 +252,4 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       />
     </div>
   );
-}
-
-
+};

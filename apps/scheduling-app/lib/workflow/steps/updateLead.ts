@@ -1,4 +1,5 @@
 import { getSalesforceClient } from '../../salesforce';
+import { mapServiceToSalesforce } from '../../../app/providers/_lib/salesforce/transformers';
 
 /**
  * Input for updateLead step
@@ -11,6 +12,8 @@ export interface UpdateLeadInput {
   lastName?: string;
   /** Clinical focus / visit reason (e.g., 'ADHD', 'Anxiety') */
   clinicalFocus?: string;
+  /** Service type / therapeutic modality (e.g., 'Psychiatric', 'Therapy', 'Both', 'Not Sure') */
+  service?: string;
   /** Event type (e.g., 'In-Person', 'Telehealth') */
   eventType?: string;
   /** Provider first name */
@@ -65,6 +68,13 @@ export async function updateLeadStep(
       updateData.Visit_Reason__c = input.clinicalFocus;
     }
 
+    // Medication__c / Therapy__c = Service type mapping
+    if (input.service) {
+      const serviceMapping = mapServiceToSalesforce(input.service);
+      updateData.Medication__c = serviceMapping.Medication__c;
+      updateData.Therapy__c = serviceMapping.Therapy__c;
+    }
+
     // Visit_Preference__c = Event type (e.g., 'In-Person', 'Telehealth')
     if (input.eventType) {
       updateData.Visit_Preference__c = input.eventType;
@@ -109,6 +119,7 @@ export async function updateLeadStep(
       params: {
         leadId: input.leadId,
         clinicalFocus: input.clinicalFocus,
+        service: input.service,
         eventType: input.eventType,
         providerLastName: input.providerLastName,
         facility: input.facility,

@@ -67,13 +67,12 @@ export function StateQuestion({ value, onChange, onContinue }: StateQuestionProp
     const stateCode = await getStateFromGeolocation();
 
     if (stateCode) {
-      // Check if it's a valid US state
       const isValid = ALL_US_STATES.some((s) => s.code === stateCode);
-      if (isValid) {
-        onChange(stateCode);
-      } else {
-        setLocationError("We couldn't detect a valid US state.");
-      }
+        if (isValid) {
+          onChange(stateCode);
+        } else {
+          setLocationError("We couldn't detect a valid US state.");
+        }
     } else {
       setLocationError(
         'Unable to detect your location. Please select your state manually.'

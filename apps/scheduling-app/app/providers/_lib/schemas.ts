@@ -32,10 +32,10 @@ export enum Language {
 }
 
 export enum Modality {
-  Psychiatric = 'Psychiatric',
+  Psychiatric = 'Psychiatry (Medication)',
   Therapy = 'Therapy',
   Both = 'Both',
-  NotSure = 'Not sure'
+  NotSure = 'Not Sure'
 }
 
 export enum ClinicalFocus {
@@ -82,7 +82,6 @@ export enum TimeOfTheDay {
 export enum LocationState {
   CO = 'CO',
   NY = 'NY',
-  TX = 'TX',
   VA = 'VA',
   MD = 'MD',
   DC = 'DC'
@@ -91,7 +90,6 @@ export enum LocationState {
 export const LocationStateToNameMapping: Record<LocationState, string> = {
   CO: 'Colorado',
   NY: 'New York',
-  TX: 'Texas',
   VA: 'Virginia',
   MD: 'Maryland',
   DC: 'Washington DC'
@@ -126,10 +124,7 @@ export enum LocationFacility {
   Melville = 'NY - Melville',
   ValleyStream = 'NY - Valley Stream',
   Massapequa = 'NY - Massapequa',
-  WhitePlains = 'NY - White Plains',
-  Woodlands = 'TX - Woodlands',
-  UpperKirby = 'TX - Upper Kirby',
-  Austin = 'TX - Austin'
+  WhitePlains = 'NY - White Plains'
 }
 
 const transformEmptyToUndefined = <T extends z.ZodType>(schema: T) =>
