@@ -52,6 +52,7 @@ export async function updateLeadStep(
 
     const updateData: Record<string, unknown> = {
       RecordTypeId: '0125w000000BRDxAAO',
+      Status: 'New'
     };
 
     // FirstName = Patient's first name
