@@ -22,6 +22,7 @@ import { BookingProgressModal } from './BookingProgressModal';
 import { useBookingWorkflow } from '../../hooks';
 import { AvailabilitySlot } from '../_lib/types';
 import { format } from 'date-fns';
+import { getAnyStoredLeadId, clearAllBookingStorage, checkLeadStatusAction } from '../_lib/salesforce';
 
 interface ProviderDetailPageProps {
   providerId: string;
@@ -113,6 +114,49 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
   const handleSubmitBooking = async (data: BookingFormValues) => {
     if (!selectedSlot) return;
 
+    // Check Salesforce lead status before proceeding
+    const leadResult = getAnyStoredLeadId();
+    
+    if (!leadResult) {
+      // No lead found - clear storage and redirect to onboarding
+      console.log('[handleSubmitBooking] No lead found, redirecting to onboarding...');
+      clearAllBookingStorage();
+      
+      posthog?.capture('booking_redirected_to_onboarding', {
+        provider_id: selectedSlot.providerId,
+        reason: 'missing_lead_id',
+      });
+      
+      const onboardingUrl = buildUrlWithUtm('/onboarding', { target: pathname });
+      router.push(onboardingUrl);
+      return;
+    }
+
+    // Check if lead exists and is not converted
+    const leadStatus = await checkLeadStatusAction(leadResult.leadId);
+    
+    if (!leadStatus.success || !leadStatus.exists || leadStatus.isConverted) {
+      // Lead doesn't exist or is converted - clear storage and redirect to onboarding
+      console.log('[handleSubmitBooking] Lead invalid or converted, redirecting to onboarding...', {
+        exists: leadStatus.exists,
+        isConverted: leadStatus.isConverted,
+        error: leadStatus.error,
+      });
+      
+      clearAllBookingStorage();
+      
+      posthog?.capture('booking_redirected_to_onboarding', {
+        provider_id: selectedSlot.providerId,
+        reason: leadStatus.isConverted ? 'lead_converted' : 'lead_not_found',
+        lead_id: leadResult.leadId,
+      });
+      
+      const onboardingUrl = buildUrlWithUtm('/onboarding', { target: pathname });
+      router.push(onboardingUrl);
+      return;
+    }
+
+    // Lead is valid and not converted - proceed with booking
     const chosenLocation =
       data.visitMode ??
       selectedSlot.location ??
