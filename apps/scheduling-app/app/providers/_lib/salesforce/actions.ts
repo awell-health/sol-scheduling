@@ -91,6 +91,67 @@ export async function getLeadAction(
   }
 }
 
+/**
+ * Check if a Salesforce lead exists and is not converted.
+ * 
+ * @returns Object with exists (boolean) and isConverted (boolean) flags
+ */
+export async function checkLeadStatusAction(
+  leadId: string
+): Promise<{ success: boolean; exists?: boolean; isConverted?: boolean; error?: string }> {
+  try {
+    if (!leadId || leadId.trim().length === 0) {
+      return { success: false, error: 'Lead ID is required' };
+    }
+
+    const client = getSalesforceClient();
+    console.log('[checkLeadStatusAction] Checking lead status:', leadId);
+
+    const rawLead = await client.getLead(leadId);
+    
+    // IsConverted is a standard Salesforce field (boolean)
+    const isConverted = typeof rawLead.IsConverted === 'boolean' ? rawLead.IsConverted : false;
+    const exists = rawLead.exists;
+
+    console.log('[checkLeadStatusAction] Lead status:', {
+      rawLead,
+      leadId,
+      exists,
+      isConverted,
+    });
+
+    return { 
+      success: true, 
+      exists: true, 
+      isConverted 
+    };
+  } catch (error) {
+    // If lead doesn't exist, Salesforce will return a 404 or similar error
+    const errorMessage = error instanceof Error ? error.message : '';
+    const isNotFound = errorMessage.includes('404') || 
+                       errorMessage.includes('NOT_FOUND') ||
+                       errorMessage.includes('does not exist');
+
+    if (isNotFound) {
+      console.log('[checkLeadStatusAction] Lead not found:', leadId);
+      return { 
+        success: true, 
+        exists: false, 
+        isConverted: false 
+      };
+    }
+
+    console.error('[checkLeadStatusAction] Failed to check lead status:', {
+      error,
+      leadId,
+    });
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
+
 export interface CreateLeadInput {
   phone: string;
   state?: string | null;

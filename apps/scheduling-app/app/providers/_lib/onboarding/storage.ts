@@ -1,5 +1,4 @@
 import type { OnboardingPreferences } from './types';
-import { FieldId, ONBOARDING_STORAGE_KEYS } from '@/lib/fields';
 
 /**
  * Single localStorage key for all onboarding data.
@@ -9,13 +8,13 @@ export const STORAGE_KEYS = {
   ONBOARDING: 'sol.onboarding'
 } as const;
 
-// Storage keys from the field registry - single source of truth
+// Storage keys - hardcoded to avoid any module loading issues
 const KEYS = {
-  state: ONBOARDING_STORAGE_KEYS[FieldId.STATE],
-  service: ONBOARDING_STORAGE_KEYS[FieldId.SERVICE],
-  phone: ONBOARDING_STORAGE_KEYS[FieldId.PHONE],
-  insurance: ONBOARDING_STORAGE_KEYS[FieldId.INSURANCE],
-  consent: ONBOARDING_STORAGE_KEYS[FieldId.CONSENT],
+  state: 'state',
+  service: 'service',
+  phone: 'phone',
+  insurance: 'insurance',
+  consent: 'consent',
 } as const;
 
 /**

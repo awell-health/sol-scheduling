@@ -30,6 +30,11 @@ export interface PostBookingWorkflowResult {
  * 1. Fetch event details from SOL API
  * 2. Update Salesforce lead with booking details
  * 
+ * @deprecated This workflow is no longer used. The booking flow now uses
+ * `bookingWorkflow` which is started via `/api/booking/start` and handles
+ * both booking and post-booking steps with streaming progress updates.
+ * 
+ * @see bookingWorkflow
  * @see https://useworkflow.dev/
  */
 export async function postBookingWorkflow(

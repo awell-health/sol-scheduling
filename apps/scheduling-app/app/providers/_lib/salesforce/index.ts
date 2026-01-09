@@ -2,6 +2,7 @@ export {
   getLeadAction,
   createLeadAction,
   updateLeadAction,
+  checkLeadStatusAction,
   type SalesforceLeadData,
   type CreateLeadInput,
   type UpdateLeadInput,
