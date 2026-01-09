@@ -1,3 +1,4 @@
+import { getWorkflowMetadata } from 'workflow';
 import { getSalesforceClient } from '../../salesforce';
 import { mapServiceToSalesforce } from '../../../app/providers/_lib/salesforce/transformers';
 
@@ -44,13 +45,13 @@ export async function updateLeadStep(
   input: UpdateLeadInput
 ): Promise<UpdateLeadResult> {
   "use step";
+  const metadata = getWorkflowMetadata();
 
   try {
     const client = getSalesforceClient();
 
     const updateData: Record<string, unknown> = {
       RecordTypeId: '0125w000000BRDxAAO',
-      Status: 'Appt Selected',
     };
 
     // FirstName = Patient's first name
@@ -105,9 +106,18 @@ export async function updateLeadStep(
       updateData.Facility__c = input.facility;
     }
 
+    // Magic_Link__c = Confirmation page URL
+    const runId = metadata.workflowRunId;
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : 'https://schedule.solmentalhealth.com';
+    const confirmationUrl = `${baseUrl}/confirmation/${runId}`;
+    updateData.Magic_Link__c = confirmationUrl;
+
     console.log('[updateLeadStep] Updating lead with booking data:', {
       leadId: input.leadId,
       updateData,
+      metadata,
     });
 
     await client.updateLead(input.leadId, updateData);
@@ -124,6 +134,7 @@ export async function updateLeadStep(
         providerLastName: input.providerLastName,
         facility: input.facility,
       },
+      metadata,
     });
     return {
       success: false,

@@ -1,11 +1,11 @@
-name: Deploy Sandbox to Vercel
+name: Deploy Production to Vercel
 
 on:
   workflow_dispatch:
 
 jobs:
   deploy:
-    name: Merge main to sandbox
+    name: Merge main to production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -18,9 +18,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Merge main into sandbox
+      - name: Merge main into production
         run: |
-          git checkout sandbox || git checkout -b sandbox
+          git checkout production || git checkout -b production
           git merge main --no-edit
-          git push origin sandbox
-
+          git push origin production
