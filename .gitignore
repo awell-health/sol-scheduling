@@ -23,7 +23,7 @@ node_modules
 
 stats.html
 
-.env.local
+.env.local*
 !.env.example
 .env
 

@@ -1,0 +1,25 @@
+name: Deploy Production to Vercel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Merge main to production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main into production
+        run: |
+          git checkout production || git checkout -b production
+          git merge main --no-edit
+          git push origin production
