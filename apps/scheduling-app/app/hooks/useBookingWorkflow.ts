@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { getAnyStoredLeadId, clearStoredLeadId } from '../providers/_lib/salesforce';
+import { getAnyStoredLeadId, clearAllBookingStorage } from '../providers/_lib/salesforce';
 import { useBuildUrlWithUtm } from '../providers/_lib/utm';
 import type { PostHog } from 'posthog-js';
 import type { BookingProgress, BookingProgressType } from '../../lib/workflow';
@@ -266,10 +266,10 @@ export function useBookingWorkflow(
                 console.log('[useBookingWorkflow] Session ready, redirecting in 1s...');
                 setCurrentStep('done');
                 
-                // Clear stored lead ID on successful booking
-                const clearedLeadId = clearStoredLeadId();
+                // Clear all booking storage on successful booking
+                const clearedLeadId = clearAllBookingStorage();
                 if (clearedLeadId) {
-                  posthog?.capture('slc_cleared_on_booking', {
+                  posthog?.capture('booking_storage_cleared', {
                     lead_id: clearedLeadId,
                     confirmation_id: redirectConfirmationId,
                   });

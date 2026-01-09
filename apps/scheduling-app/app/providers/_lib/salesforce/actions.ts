@@ -113,28 +113,6 @@ export interface UpdateLeadInput {
 }
 
 /**
- * Input for updating lead after appointment is booked.
- * Uses field names matching the production Salesforce schema.
- */
-export interface UpdateLeadBookingInput {
-  leadId: string;
-  /** Clinical focus / visit reason (e.g., 'ADHD', 'Anxiety') */
-  clinicalFocus?: string;
-  /** Event type (e.g., 'In-Person', 'Telehealth') */
-  eventType?: string;
-  /** Provider first name */
-  providerFirstName?: string;
-  /** Provider last name */
-  providerLastName?: string;
-  /** Appointment start time (ISO string) */
-  slotStartUtc?: string;
-  /** Localized slot time with timezone (e.g., "10:00 AM America/Denver") */
-  localizedTimeWithTimezone?: string;
-  /** Facility name */
-  facility?: string;
-}
-
-/**
  * Extract duplicate lead ID from a Salesforce DUPLICATES_DETECTED error.
  * Returns the lead ID if found, null otherwise.
  */
@@ -351,83 +329,6 @@ export async function updateLeadAction(
         leadId: input.leadId,
         hasInsurance: !!input.insurance,
         hasState: !!input.state,
-      },
-    });
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-}
-
-/**
- * Update Salesforce lead after appointment is booked.
- * Uses the production Salesforce field schema.
- */
-export async function updateLeadBookingAction(
-  input: UpdateLeadBookingInput
-): Promise<{ success: boolean; error?: string }> {
-  try {
-    const client = getSalesforceClient();
-
-    const updateData: Record<string, unknown> = {
-      RecordTypeId: '0125w000000BRDxAAO',
-      Status: 'Appt Selected',
-    };
-
-    // Visit_Reason__c = Clinical focus (e.g., 'ADHD', 'Anxiety')
-    if (input.clinicalFocus) {
-      updateData.Visit_Reason__c = input.clinicalFocus;
-    }
-
-    // Visit_Preference__c = Event type (e.g., 'In-Person', 'Telehealth')
-    if (input.eventType) {
-      updateData.Visit_Preference__c = input.eventType;
-    }
-
-    // Clinician_request_from_Online_Booking__c = "LastName, FirstName"
-    if (input.providerLastName || input.providerFirstName) {
-      const clinicianName = [input.providerLastName, input.providerFirstName]
-        .filter(Boolean)
-        .join(', ');
-      if (clinicianName) {
-        updateData.Clinician_request_from_Online_Booking__c = clinicianName;
-      }
-    }
-
-    // Requested_Appt_Date__c = ISO datetime
-    if (input.slotStartUtc) {
-      // Ensure it's a proper ISO string for Salesforce
-      updateData.Requested_Appt_Date__c = new Date(input.slotStartUtc).toISOString();
-    }
-
-    // Requested_Appt_Time__c = "10:00 AM America/Denver"
-    if (input.localizedTimeWithTimezone) {
-      updateData.Requested_Appt_Time__c = input.localizedTimeWithTimezone;
-    }
-
-    // Facility__c = Facility name
-    if (input.facility) {
-      updateData.Facility__c = input.facility;
-    }
-
-    console.log('[updateLeadBookingAction] Updating lead with booking data:', {
-      leadId: input.leadId,
-      updateData,
-    });
-
-    await client.updateLead(input.leadId, updateData);
-
-    return { success: true };
-  } catch (error) {
-    console.error('[updateLeadBookingAction] Failed to update Salesforce lead:', {
-      error,
-      params: {
-        leadId: input.leadId,
-        clinicalFocus: input.clinicalFocus,
-        eventType: input.eventType,
-        providerLastName: input.providerLastName,
-        facility: input.facility,
       },
     });
     return {

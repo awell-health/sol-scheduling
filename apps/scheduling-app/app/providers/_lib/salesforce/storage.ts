@@ -1,7 +1,7 @@
 import type { SalesforceLeadData } from './actions';
+import { clearPreferencesStorage, STORAGE_KEYS as ONBOARDING_STORAGE_KEYS } from '../onboarding/storage';
 
 const LEAD_STORAGE_KEY = '_slc';
-const LEAD_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
 
 interface StoredLead {
   leadId: string;
@@ -27,28 +27,17 @@ function isLocalStorageAvailable(): boolean {
 }
 
 /**
- * Check if stored lead data has expired (older than 1 hour).
- * Returns the stored data if valid, null if expired or missing.
+ * Get stored lead data if available.
+ * Returns the stored data, or null if missing.
  */
-function getStoredLeadIfValid(): StoredLead | null {
+function getStoredLead(): StoredLead | null {
   if (!isLocalStorageAvailable()) return null;
   
   try {
     const raw = localStorage.getItem(LEAD_STORAGE_KEY);
     if (!raw) return null;
     
-    const data: StoredLead = JSON.parse(raw);
-    const createdAt = new Date(data.createdAt);
-    const now = new Date();
-    const ageMs = now.getTime() - createdAt.getTime();
-    
-    // Check if expired (older than 1 hour)
-    if (ageMs > LEAD_EXPIRY_MS) {
-      localStorage.removeItem(LEAD_STORAGE_KEY);
-      return null;
-    }
-    
-    return data;
+    return JSON.parse(raw) as StoredLead;
   } catch {
     return null;
   }
@@ -79,14 +68,13 @@ export function storeLeadId(leadId: string, phone: string): void {
 
 /**
  * Get the stored lead ID if it matches the given phone.
- * Automatically clears if expired (older than 1 hour).
  * 
- * @returns Object with leadId and wasExpired flag, or null if not found/expired
+ * @returns Object with leadId and wasExpired flag, or null if not found
  */
 export function getStoredLeadId(phone: string): { leadId: string; wasExpired: boolean } | null {
   if (typeof window === 'undefined') return null;
   
-  const data = getStoredLeadIfValid();
+  const data = getStoredLead();
   if (!data) return null;
   
   const normalizedPhone = phone.replace(/\D/g, '');
@@ -101,14 +89,13 @@ export function getStoredLeadId(phone: string): { leadId: string; wasExpired: bo
 
 /**
  * Get any stored lead ID regardless of phone.
- * Automatically clears if expired (older than 1 hour).
  * 
- * @returns Object with leadId and wasExpired flag, or null if not found/expired
+ * @returns Object with leadId and wasExpired flag, or null if not found
  */
 export function getAnyStoredLeadId(): { leadId: string; wasExpired: boolean } | null {
   if (typeof window === 'undefined') return null;
   
-  const data = getStoredLeadIfValid();
+  const data = getStoredLead();
   if (!data) return null;
   
   return { leadId: data.leadId, wasExpired: false };
@@ -163,12 +150,32 @@ export function storeLeadFromSalesforce(leadData: SalesforceLeadData): void {
 
 /**
  * Get the full stored lead data (if available).
- * Automatically clears if expired (older than 1 hour).
  */
 export function getStoredLeadData(): SalesforceLeadData | null {
   if (typeof window === 'undefined') return null;
   
-  const data = getStoredLeadIfValid();
+  const data = getStoredLead();
   return data?.leadData ?? null;
+}
+
+/**
+ * Clear all booking-related storage on successful booking.
+ * Clears both the lead ID (_slc) and onboarding preferences (sol.onboarding).
+ * 
+ * @returns The lead ID that was cleared, or null if none existed
+ */
+export function clearAllBookingStorage(): string | null {
+  // Clear lead ID storage
+  const clearedLeadId = clearStoredLeadId();
+  
+  // Clear onboarding preferences
+  clearPreferencesStorage();
+  
+  console.log('[Salesforce Storage] Cleared all booking storage:', {
+    clearedLeadId,
+    clearedOnboarding: ONBOARDING_STORAGE_KEYS.ONBOARDING,
+  });
+  
+  return clearedLeadId;
 }
 
