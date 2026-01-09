@@ -187,8 +187,8 @@ export async function createLeadAction(
     
     const leadData = {
       RecordTypeId: '0125w000000BRDxAAO',
-      FirstName: 'TEST first',
-      LastName: 'TEST last',
+      FirstName: 'No',
+      LastName: 'Name Yet',
       LeadSource: 'Website - Online Booking',
       Status: 'New',
       Inquiry_Date__c: new Date().toISOString(),

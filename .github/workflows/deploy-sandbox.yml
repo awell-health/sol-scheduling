@@ -1,16 +1,26 @@
 name: Deploy Sandbox to Vercel
 
 on:
-  push:
-    branches:
-      - sandbox
+  workflow_dispatch:
 
 jobs:
   deploy:
-    name: Trigger Vercel Deployment
+    name: Merge main to sandbox
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to Vercel
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
         run: |
-          curl -X POST "${{ secrets.VERCEL_SANDBOX_DEPLOY_HOOK }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main into sandbox
+        run: |
+          git checkout sandbox || git checkout -b sandbox
+          git merge main --no-edit
+          git push origin sandbox
 
