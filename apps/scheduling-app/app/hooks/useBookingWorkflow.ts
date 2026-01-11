@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { getAnyStoredLeadId, clearAllBookingStorage } from '../providers/_lib/salesforce';
+import { getAnyStoredLeadId, clearAllBookingStorage, ensureLeadExistsAction, storeLeadId } from '../providers/_lib/salesforce';
+import { readPreferencesFromStorage } from '../providers/_lib/onboarding/storage';
 import { useBuildUrlWithUtm } from '../providers/_lib/utm';
 import type { PostHog } from 'posthog-js';
 import type { BookingProgress, BookingProgressType } from '../../lib/workflow';
@@ -129,9 +130,13 @@ export function useBookingWorkflow(
       }
     }
 
-    // If still no lead exists, redirect to onboarding to ensure lead is created
-    if (!leadResult) {
-      console.log('[useBookingWorkflow] No lead found, redirecting to onboarding...');
+    // Get stored preferences for lead recreation if needed
+    const storedPreferences = readPreferencesFromStorage();
+    const phone = params.phone || storedPreferences.phone;
+
+    // If no lead ID and no phone, redirect to onboarding
+    if (!leadResult && !phone) {
+      console.log('[useBookingWorkflow] No lead found and no phone, redirecting to onboarding...');
       
       // Build onboarding URL with current page as target (preserving UTM params)
       const currentUrl = pathname || `/providers/${params.providerId}`;
@@ -140,7 +145,7 @@ export function useBookingWorkflow(
       // Capture analytics
       posthog?.capture('booking_redirected_to_onboarding', {
         provider_id: params.providerId,
-        reason: 'missing_lead_id',
+        reason: 'missing_lead_id_and_phone',
       });
       
       // Redirect to onboarding
@@ -149,15 +154,82 @@ export function useBookingWorkflow(
     }
 
     // Track if lead was expired
-    if (leadResult.wasExpired) {
+    if (leadResult?.wasExpired) {
       posthog?.capture('slc_expired', {
         previous_lead_id: leadResult.leadId,
       });
     }
 
-    const leadId = leadResult.leadId;
-
+    // Show starting state while we validate/recreate the lead
     setState({ status: 'starting', eventId: params.eventId });
+
+    // Ensure the lead exists in Salesforce (validates existing or creates new if deleted/converted)
+    let leadId: string;
+    
+    if (phone) {
+      try {
+        console.log('[useBookingWorkflow] Ensuring lead exists...');
+        const ensureResult = await ensureLeadExistsAction({
+          currentLeadId: leadResult?.leadId,
+          phone,
+          state: params.state || storedPreferences.state,
+          service: params.service || storedPreferences.service,
+          insurance: storedPreferences.insurance,
+          consent: storedPreferences.consent,
+          posthogDistinctId: posthog?.get_distinct_id(),
+        });
+
+        if (!ensureResult.success || !ensureResult.leadId) {
+          console.error('[useBookingWorkflow] Failed to ensure lead exists:', ensureResult.error);
+          setError('Unable to verify your information. Please try again.');
+          setState({ status: 'error', message: 'Unable to verify your information. Please try again.' });
+          return;
+        }
+
+        leadId = ensureResult.leadId;
+
+        // If lead was recreated, update localStorage
+        if (ensureResult.wasRecreated) {
+          storeLeadId(leadId, phone);
+          posthog?.capture('lead_recreated_at_booking', {
+            previous_lead_id: leadResult?.leadId,
+            new_lead_id: leadId,
+            reason: 'lead_deleted_or_converted',
+          });
+          console.log('[useBookingWorkflow] Lead was recreated:', {
+            previousLeadId: leadResult?.leadId,
+            newLeadId: leadId,
+          });
+        }
+      } catch (err) {
+        console.error('[useBookingWorkflow] Error ensuring lead exists:', err);
+        // If we have an existing lead ID, try to proceed with it
+        if (leadResult?.leadId) {
+          console.log('[useBookingWorkflow] Falling back to existing lead ID');
+          leadId = leadResult.leadId;
+        } else {
+          setError('Unable to verify your information. Please try again.');
+          setState({ status: 'error', message: 'Unable to verify your information. Please try again.' });
+          return;
+        }
+      }
+    } else if (leadResult?.leadId) {
+      // No phone but have lead ID - use existing (can't recreate without phone)
+      leadId = leadResult.leadId;
+    } else {
+      // Should not reach here due to earlier check, but just in case
+      console.log('[useBookingWorkflow] No lead found, redirecting to onboarding...');
+      const currentUrl = pathname || `/providers/${params.providerId}`;
+      const onboardingUrl = buildUrlWithUtm('/onboarding', { target: currentUrl });
+      posthog?.capture('booking_redirected_to_onboarding', {
+        provider_id: params.providerId,
+        reason: 'missing_lead_id',
+      });
+      router.push(onboardingUrl);
+      return;
+    }
+
+    // Now we have a valid leadId, proceed with booking
     setCurrentStep(null);
     setError(null);
 

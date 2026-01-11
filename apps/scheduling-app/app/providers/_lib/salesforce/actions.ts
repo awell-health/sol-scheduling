@@ -114,7 +114,6 @@ export async function checkLeadStatusAction(
     const exists = rawLead.exists;
 
     console.log('[checkLeadStatusAction] Lead status:', {
-      rawLead,
       leadId,
       exists,
       isConverted,
@@ -131,9 +130,10 @@ export async function checkLeadStatusAction(
     const isNotFound = errorMessage.includes('404') || 
                        errorMessage.includes('NOT_FOUND') ||
                        errorMessage.includes('does not exist');
+    const isDeleted = errorMessage.includes('ENTITY_IS_DELETED');
 
-    if (isNotFound) {
-      console.log('[checkLeadStatusAction] Lead not found:', leadId);
+    if (isNotFound || isDeleted) {
+      console.log('[checkLeadStatusAction] Lead not found or deleted:', leadId);
       return { 
         success: true, 
         exists: false, 
@@ -171,6 +171,32 @@ export interface UpdateLeadInput {
   insurance?: string;
   /** State code (e.g., 'NY', 'CA') */
   state?: string;
+}
+
+export interface EnsureLeadExistsInput {
+  /** Current lead ID to validate (if any) */
+  currentLeadId?: string;
+  /** Phone number (required for lead creation) */
+  phone: string;
+  /** State code (e.g., 'NY', 'CA') */
+  state?: string | null;
+  /** Service type (e.g., 'medication', 'therapy') */
+  service?: string | null;
+  /** Insurance carrier name */
+  insurance?: string | null;
+  /** Contact consent */
+  consent?: boolean | null;
+  /** PostHog distinct ID for analytics */
+  posthogDistinctId?: string;
+}
+
+export interface EnsureLeadExistsResult {
+  success: boolean;
+  /** The valid lead ID (existing or newly created) */
+  leadId?: string;
+  /** Whether a new lead was created because the old one was invalid */
+  wasRecreated?: boolean;
+  error?: string;
 }
 
 /**
@@ -395,6 +421,116 @@ export async function updateLeadAction(
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
+
+/**
+ * Helper to check if an error indicates the lead was deleted or converted.
+ */
+function isLeadDeletedOrConvertedError(errorMessage: string): boolean {
+  return errorMessage.includes('ENTITY_IS_DELETED') || 
+         errorMessage.includes('CONVERTED_LEAD') ||
+         errorMessage.includes('cannot reference converted lead');
+}
+
+/**
+ * Ensure a valid Salesforce lead exists.
+ * 
+ * If the current lead ID is invalid (deleted, converted, or doesn't exist),
+ * creates a new lead with all the provided preferences.
+ * 
+ * This is useful when:
+ * - A lead was created during onboarding but later deleted in Salesforce
+ * - A lead was converted to a Contact/Account
+ * - The lead ID in localStorage is stale
+ * 
+ * @returns Object with the valid lead ID and whether it was recreated
+ */
+export async function ensureLeadExistsAction(
+  input: EnsureLeadExistsInput
+): Promise<EnsureLeadExistsResult> {
+  const { currentLeadId, phone, state, service, insurance, consent, posthogDistinctId } = input;
+
+  console.log('[ensureLeadExistsAction] Checking lead validity:', {
+    currentLeadId,
+    hasPhone: !!phone,
+    state,
+    service,
+    insurance,
+    consent,
+  });
+
+  // If no current lead ID, we need to create one
+  if (!currentLeadId) {
+    console.log('[ensureLeadExistsAction] No lead ID provided, creating new lead');
+    return await createNewLeadWithPreferences();
+  }
+
+  // Check if the lead exists and is valid
+  try {
+    const statusResult = await checkLeadStatusAction(currentLeadId);
+    
+    if (!statusResult.success) {
+      console.log('[ensureLeadExistsAction] Failed to check lead status:', statusResult.error);
+      // If we can't check status, try to create a new lead
+      return await createNewLeadWithPreferences();
+    }
+
+    // If lead doesn't exist, create a new one
+    if (!statusResult.exists) {
+      console.log('[ensureLeadExistsAction] Lead does not exist, creating new lead');
+      return await createNewLeadWithPreferences();
+    }
+
+    // If lead is converted, create a new one
+    if (statusResult.isConverted) {
+      console.log('[ensureLeadExistsAction] Lead is converted, creating new lead');
+      return await createNewLeadWithPreferences();
+    }
+
+    // Lead exists and is valid
+    console.log('[ensureLeadExistsAction] Lead is valid:', currentLeadId);
+    return { success: true, leadId: currentLeadId, wasRecreated: false };
+
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : '';
+    
+    // Check for specific deleted/converted errors
+    if (isLeadDeletedOrConvertedError(errorMessage)) {
+      console.log('[ensureLeadExistsAction] Lead was deleted or converted, creating new lead');
+      return await createNewLeadWithPreferences();
+    }
+
+    console.error('[ensureLeadExistsAction] Unexpected error checking lead:', error);
+    // Try to create a new lead as fallback
+    return await createNewLeadWithPreferences();
+  }
+
+  // Helper function to create a new lead with all preferences
+  async function createNewLeadWithPreferences(): Promise<EnsureLeadExistsResult> {
+    const createResult = await createLeadAction({
+      phone,
+      state: state ?? undefined,
+      service: service ?? undefined,
+      insurance: insurance ?? undefined,
+      consent: consent ?? undefined,
+      posthogDistinctId,
+    });
+
+    if (!createResult.success || !createResult.leadId) {
+      console.error('[ensureLeadExistsAction] Failed to create new lead:', createResult.error);
+      return {
+        success: false,
+        error: createResult.error ?? 'Failed to create new lead',
+      };
+    }
+
+    console.log('[ensureLeadExistsAction] Created new lead:', createResult.leadId);
+    return {
+      success: true,
+      leadId: createResult.leadId,
+      wasRecreated: true,
     };
   }
 }

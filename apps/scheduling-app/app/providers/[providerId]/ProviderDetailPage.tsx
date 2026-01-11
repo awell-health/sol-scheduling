@@ -22,7 +22,7 @@ import { BookingProgressModal } from './BookingProgressModal';
 import { useBookingWorkflow } from '../../hooks';
 import { AvailabilitySlot } from '../_lib/types';
 import { format } from 'date-fns';
-import { getAnyStoredLeadId, clearAllBookingStorage, checkLeadStatusAction } from '../_lib/salesforce';
+import { getAnyStoredLeadId, clearAllBookingStorage, ensureLeadExistsAction, storeLeadId } from '../_lib/salesforce';
 
 interface ProviderDetailPageProps {
   providerId: string;
@@ -117,14 +117,17 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     // Check Salesforce lead status before proceeding
     const leadResult = getAnyStoredLeadId();
     
-    if (!leadResult) {
-      // No lead found - clear storage and redirect to onboarding
-      console.log('[handleSubmitBooking] No lead found, redirecting to onboarding...');
+    // Get phone from form data or preferences
+    const phone = data.phone || preferences.phone;
+
+    // If no lead ID and no phone, redirect to onboarding
+    if (!leadResult && !phone) {
+      console.log('[handleSubmitBooking] No lead found and no phone, redirecting to onboarding...');
       clearAllBookingStorage();
       
       posthog?.capture('booking_redirected_to_onboarding', {
         provider_id: selectedSlot.providerId,
-        reason: 'missing_lead_id',
+        reason: 'missing_lead_id_and_phone',
       });
       
       const onboardingUrl = buildUrlWithUtm('/onboarding', { target: pathname });
@@ -132,31 +135,58 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       return;
     }
 
-    // Check if lead exists and is not converted
-    const leadStatus = await checkLeadStatusAction(leadResult.leadId);
-    
-    if (!leadStatus.success || !leadStatus.exists || leadStatus.isConverted) {
-      // Lead doesn't exist or is converted - clear storage and redirect to onboarding
-      console.log('[handleSubmitBooking] Lead invalid or converted, redirecting to onboarding...', {
-        exists: leadStatus.exists,
-        isConverted: leadStatus.isConverted,
-        error: leadStatus.error,
-      });
-      
-      clearAllBookingStorage();
-      
-      posthog?.capture('booking_redirected_to_onboarding', {
-        provider_id: selectedSlot.providerId,
-        reason: leadStatus.isConverted ? 'lead_converted' : 'lead_not_found',
-        lead_id: leadResult.leadId,
-      });
-      
+    // Ensure lead exists in Salesforce (validates existing or creates new if deleted/converted)
+    if (phone) {
+      try {
+        console.log('[handleSubmitBooking] Ensuring lead exists...');
+        const ensureResult = await ensureLeadExistsAction({
+          currentLeadId: leadResult?.leadId,
+          phone,
+          state: preferences.state,
+          service: preferences.service,
+          insurance: preferences.insurance,
+          consent: preferences.consent,
+          posthogDistinctId: posthog?.get_distinct_id(),
+        });
+
+        if (!ensureResult.success || !ensureResult.leadId) {
+          console.error('[handleSubmitBooking] Failed to ensure lead exists:', ensureResult.error);
+          // Show error but don't redirect - let user retry
+          return;
+        }
+
+        // If lead was recreated, update localStorage
+        if (ensureResult.wasRecreated) {
+          storeLeadId(ensureResult.leadId, phone);
+          posthog?.capture('lead_recreated_at_booking', {
+            previous_lead_id: leadResult?.leadId,
+            new_lead_id: ensureResult.leadId,
+            reason: 'lead_deleted_or_converted',
+          });
+          console.log('[handleSubmitBooking] Lead was recreated:', {
+            previousLeadId: leadResult?.leadId,
+            newLeadId: ensureResult.leadId,
+          });
+        }
+      } catch (err) {
+        console.error('[handleSubmitBooking] Error ensuring lead exists:', err);
+        // If we have no lead ID at all, we need to redirect
+        if (!leadResult?.leadId) {
+          const onboardingUrl = buildUrlWithUtm('/onboarding', { target: pathname });
+          router.push(onboardingUrl);
+          return;
+        }
+        // Otherwise, try to proceed with existing lead ID (might fail but worth trying)
+      }
+    } else if (!leadResult?.leadId) {
+      // No phone and no lead ID - redirect to onboarding
+      console.log('[handleSubmitBooking] No phone and no lead, redirecting to onboarding...');
       const onboardingUrl = buildUrlWithUtm('/onboarding', { target: pathname });
       router.push(onboardingUrl);
       return;
     }
 
-    // Lead is valid and not converted - proceed with booking
+    // Proceed with booking
     const chosenLocation =
       data.visitMode ??
       selectedSlot.location ??
