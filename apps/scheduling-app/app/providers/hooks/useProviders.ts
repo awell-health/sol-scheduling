@@ -169,9 +169,13 @@ export function useProviders({
 
     const updates: Partial<{ state: string | null; service: string | null }> = {};
 
-    const filterState = pendingFilters.location?.state;
-    if (filterState !== preferences.state) {
-      updates.state = filterState ?? null;
+    // Only sync state if location filter is actually set (not undefined)
+    // This prevents clearing the state when filters haven't been initialized yet
+    if (pendingFilters.location !== undefined) {
+      const filterState = pendingFilters.location?.state;
+      if (filterState !== preferences.state) {
+        updates.state = filterState ?? null;
+      }
     }
 
     // Only sync service if therapeuticModality is actually set (not undefined)

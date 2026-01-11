@@ -4,7 +4,8 @@ import { useState, useMemo } from 'react';
 import { usePostHog } from 'posthog-js/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { updateLeadAction, getAnyStoredLeadId } from '../../_lib/salesforce';
+import { ensureLeadExistsAction, updateLeadAction, getAnyStoredLeadId, storeLeadId } from '../../_lib/salesforce';
+import { useOnboarding } from '../../_lib/onboarding/OnboardingContext';
 import { INSURANCE_OPTIONS, FIELD_REGISTRY, FieldId } from '@/lib/fields';
 
 type InsuranceQuestionProps = {
@@ -15,6 +16,7 @@ type InsuranceQuestionProps = {
 
 export function InsuranceQuestion({ value, onChange, onContinue }: InsuranceQuestionProps) {
   const posthog = usePostHog();
+  const { preferences } = useOnboarding();
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -123,22 +125,64 @@ export function InsuranceQuestion({ value, onChange, onContinue }: InsuranceQues
             if (!canContinue || isSubmitting) return;
             setIsSubmitting(true);
 
-            // Fire-and-forget: Update the lead with insurance info
-            const leadResult = getAnyStoredLeadId();
-            if (leadResult && value) {
+            try {
+              // Get the current lead ID from storage
+              const leadResult = getAnyStoredLeadId();
+              const currentLeadId = leadResult?.leadId;
+
               // Track if lead was expired
-              if (leadResult.wasExpired) {
+              if (leadResult?.wasExpired) {
                 posthog?.capture('slc_expired', {
                   previous_lead_id: leadResult.leadId,
                 });
               }
-              void updateLeadAction({ leadId: leadResult.leadId, insurance: value }).catch((error) => {
-                console.error('Failed to update lead insurance:', error);
-              });
+
+              // Ensure lead exists - this will validate the current lead or create a new one
+              // if the lead was deleted or converted in Salesforce
+              if (preferences.phone && value) {
+                const result = await ensureLeadExistsAction({
+                  currentLeadId,
+                  phone: preferences.phone,
+                  state: preferences.state,
+                  service: preferences.service,
+                  insurance: value, // Use the newly selected insurance value
+                  consent: preferences.consent,
+                  posthogDistinctId: posthog?.get_distinct_id(),
+                });
+
+                if (result.success && result.leadId) {
+                  if (result.wasRecreated) {
+                    // New lead was created - update localStorage with the new lead ID
+                    // (the new lead already has the insurance value from creation)
+                    storeLeadId(result.leadId, preferences.phone);
+                    posthog?.capture('lead_recreated', {
+                      previous_lead_id: currentLeadId,
+                      new_lead_id: result.leadId,
+                      reason: 'lead_deleted_or_converted',
+                    });
+                    console.log('[InsuranceQuestion] Lead was recreated:', {
+                      previousLeadId: currentLeadId,
+                      newLeadId: result.leadId,
+                    });
+                  } else {
+                    // Lead exists and is valid - update it with the insurance value
+                    void updateLeadAction({ leadId: result.leadId, insurance: value }).catch((error) => {
+                      console.error('[InsuranceQuestion] Failed to update lead insurance:', error);
+                    });
+                  }
+                } else {
+                  console.error('[InsuranceQuestion] Failed to ensure lead exists:', result.error);
+                  // Continue anyway - don't block the user from completing onboarding
+                }
+              }
+            } catch (error) {
+              console.error('[InsuranceQuestion] Error ensuring lead exists:', error);
+              // Continue anyway - don't block the user
+            } finally {
+              setIsSubmitting(false);
             }
 
             onContinue();
-            setIsSubmitting(false);
           }}
           disabled={!canContinue || isSubmitting}
           flashOnClick

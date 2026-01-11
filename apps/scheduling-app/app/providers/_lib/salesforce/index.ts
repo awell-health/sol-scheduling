@@ -3,9 +3,12 @@ export {
   createLeadAction,
   updateLeadAction,
   checkLeadStatusAction,
+  ensureLeadExistsAction,
   type SalesforceLeadData,
   type CreateLeadInput,
   type UpdateLeadInput,
+  type EnsureLeadExistsInput,
+  type EnsureLeadExistsResult,
 } from './actions';
 
 export {
