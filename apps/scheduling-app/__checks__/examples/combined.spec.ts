@@ -1,4 +1,4 @@
-import { test, expect, cleanupTestLead } from '../fixtures';
+import { test, cleanupTestLead } from '../fixtures';
 
 /**
  * Example Checkly browser check demonstrating combined fixtures
@@ -91,7 +91,6 @@ test.describe('End-to-End Onboarding Flow', () => {
 
   test('complete booking flow stores lead ID in localStorage', async ({
     page,
-    salesforce,
     localStorage,
   }) => {
     // This is a template for testing the complete booking flow

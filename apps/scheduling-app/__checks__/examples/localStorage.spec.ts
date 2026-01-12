@@ -1,4 +1,5 @@
-import { test, expect } from '../fixtures';
+import { test } from '../fixtures';
+import { expect } from '@playwright/test';
 
 /**
  * Example Checkly browser check demonstrating localStorage fixture usage

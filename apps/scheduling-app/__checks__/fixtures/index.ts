@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base } from '@playwright/test';
 import { SalesforceTestClient, createSalesforceFixture, cleanupTestLead } from './salesforce.fixture';
 import { LocalStorageHelper, createLocalStorageFixture, STORAGE_KEYS, type OnboardingStorageData } from './localStorage.fixture';
 
@@ -79,5 +79,3 @@ export const test = base.extend<{
     await use(helper);
   },
 });
-
-export { expect };

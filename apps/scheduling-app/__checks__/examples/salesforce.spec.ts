@@ -1,4 +1,5 @@
-import { test, expect, cleanupTestLead } from '../fixtures';
+import { test, cleanupTestLead } from '../fixtures';
+import { expect } from '@playwright/test';
 
 /**
  * Example Checkly browser check demonstrating Salesforce fixture usage
