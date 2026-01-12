@@ -10,12 +10,18 @@ env:
 
 jobs:
   test-e2e:
-    # Only run when deployment was successful and it's the scheduling app (for monorepo)
-    if: github.event.deployment_status.state == 'success'
+    # Only run on successful Preview deployments (not Production)
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment != 'Production'
     name: Test E2E on Checkly
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Debug - Show deployment info
+        run: |
+          echo "Environment: ${{ github.event.deployment_status.environment }}"
+          echo "Environment URL: ${{ github.event.deployment_status.environment_url }}"
+          echo "State: ${{ github.event.deployment_status.state }}"
+
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.deployment_status.deployment.ref }}
@@ -43,8 +49,3 @@ jobs:
         if: always()
         working-directory: apps/scheduling-app
         run: cat checkly-github-report.md > $GITHUB_STEP_SUMMARY 2>/dev/null || echo "No report generated" > $GITHUB_STEP_SUMMARY
-
-      - name: Deploy checks
-        if: steps.run-checks.outcome == 'success' && github.event.deployment_status.environment == 'Production'
-        working-directory: apps/scheduling-app
-        run: pnpm exec checkly deploy --force
