@@ -24,11 +24,13 @@
     "lint": "turbo run lint",
     "format": "pnpm -r run format",
     "test": "turbo run test",
+    "test:e2e": "pnpm --filter scheduling-app test:checks",
     "storybook": "pnpm --filter @awell-health/sol-scheduling run storybook",
     "build-storybook": "pnpm --filter @awell-health/sol-scheduling run build-storybook",
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
+    "env:pull": "vercel env pull --environment preview apps/scheduling-app/.env.local",
     "prepare": "husky"
   },
   "lint-staged": {
