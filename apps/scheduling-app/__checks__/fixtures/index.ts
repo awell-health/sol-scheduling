@@ -55,7 +55,7 @@ export const test = base.extend<{
   salesforce: SalesforceTestClient;
   localStorage: LocalStorageHelper;
 }>({
-  salesforce: async ({}, use) => {
+  salesforce: async (_, use) => {
     const config = {
       subdomain: process.env.SALESFORCE_SUBDOMAIN ?? '',
       clientId: process.env.SALESFORCE_CLIENT_ID ?? '',

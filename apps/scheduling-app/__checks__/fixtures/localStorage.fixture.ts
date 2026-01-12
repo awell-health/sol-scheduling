@@ -162,7 +162,7 @@ export class LocalStorageHelper {
    */
   async expectValue<T = unknown>(key: string, expected: T): Promise<void> {
     const actual = await this.get<T>(key);
-    expect(actual, `Expected localStorage["${key}"] to equal expected value`).toEqual(expected);
+    expect(actual as unknown).toEqual(expected);
   }
 
   /**
@@ -170,7 +170,7 @@ export class LocalStorageHelper {
    */
   async expectContains(key: string, expected: Record<string, unknown>): Promise<void> {
     const actual = await this.get<Record<string, unknown>>(key);
-    expect(actual, `Expected localStorage["${key}"] to exist`).not.toBeNull();
+    expect(actual).not.toBeNull();
     expect(actual).toMatchObject(expected);
   }
 
@@ -189,9 +189,7 @@ export class LocalStorageHelper {
     expected: OnboardingStorageData[K]
   ): Promise<void> {
     const actual = await this.getOnboardingPreference(key);
-    expect(actual, `Expected onboarding preference "${key}" to equal expected value`).toEqual(
-      expected
-    );
+    expect(actual as unknown).toEqual(expected);
   }
 
   /**
@@ -242,4 +240,4 @@ export function createLocalStorageFixture() {
  */
 export const localStorageTest = createLocalStorageFixture();
 
-export type { LocalStorageHelper };
+export type { LocalStorageHelper as LocalStorageHelperType };
