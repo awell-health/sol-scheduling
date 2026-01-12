@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "playwright test",
     "test:checks": "playwright test __checks__",
     "test:ui": "playwright test --ui",
     "checkly:test": "checkly test",
