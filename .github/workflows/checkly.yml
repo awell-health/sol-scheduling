@@ -10,8 +10,8 @@ env:
 
 jobs:
   test-e2e:
-    # Only run on successful Preview deployments (not Production)
-    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment != 'Production'
+    # Only run on successful Preview deployments
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Preview'
     name: Test E2E on Checkly
     runs-on: ubuntu-latest
     timeout-minutes: 10
