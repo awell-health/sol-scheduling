@@ -30,8 +30,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Install dependencies
         run: pnpm install
@@ -39,7 +37,7 @@ jobs:
       - name: Run Checkly tests
         id: run-checks
         working-directory: apps/scheduling-app
-        run: npx checkly test -e ENVIRONMENT_URL=${{ env.ENVIRONMENT_URL }} --reporter=github --record
+        run: pnpm exec checkly test -e ENVIRONMENT_URL=${{ env.ENVIRONMENT_URL }} --reporter=github --record
 
       - name: Create summary
         if: always()
@@ -49,4 +47,4 @@ jobs:
       - name: Deploy checks
         if: steps.run-checks.outcome == 'success' && github.event.deployment_status.environment == 'Production'
         working-directory: apps/scheduling-app
-        run: npx checkly deploy --force
+        run: pnpm exec checkly deploy --force
