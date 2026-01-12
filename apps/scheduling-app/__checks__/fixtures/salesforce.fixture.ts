@@ -201,7 +201,7 @@ interface SalesforceFixtureOptions {
  */
 export function createSalesforceFixture(options: SalesforceFixtureOptions = {}) {
   return base.extend<{ salesforce: SalesforceTestClient }>({
-    salesforce: async (_, use) => {
+    salesforce: async ({}, use) => {
       const config: SalesforceConfig = {
         subdomain: options.config?.subdomain ?? process.env.SALESFORCE_SUBDOMAIN ?? '',
         clientId: options.config?.clientId ?? process.env.SALESFORCE_CLIENT_ID ?? '',
