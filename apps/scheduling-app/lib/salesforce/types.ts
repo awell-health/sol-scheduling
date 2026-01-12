@@ -44,7 +44,7 @@ export interface LeadCreateData {
 
 // Lead data for updates
 export interface LeadUpdateData {
-  Insurance_Carrier__c?: string;
+  Insurance_Company_Name__c?: string;
   Appointment_Booked__c?: boolean;
   Appointment_Provider_Id__c?: string;
   Appointment_Time__c?: string;
