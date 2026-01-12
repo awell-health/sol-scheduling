@@ -1,0 +1,52 @@
+name: Checkly E2E Tests
+on:
+  deployment_status:
+
+env:
+  CHECKLY_API_KEY: ${{ secrets.CHECKLY_API_KEY }}
+  CHECKLY_ACCOUNT_ID: ${{ secrets.CHECKLY_ACCOUNT_ID }}
+  ENVIRONMENT_URL: ${{ github.event.deployment_status.environment_url }}
+  CHECKLY_TEST_ENVIRONMENT: ${{ github.event.deployment_status.environment }}
+
+jobs:
+  test-e2e:
+    # Only run when deployment was successful and it's the scheduling app (for monorepo)
+    if: github.event.deployment_status.state == 'success'
+    name: Test E2E on Checkly
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment_status.deployment.ref }}
+          fetch-depth: 0
+
+      - name: Set branch name
+        run: echo "CHECKLY_TEST_REPO_BRANCH=$(git show -s --pretty=%D HEAD | tr -s ',' '\n' | sed 's/^ //' | grep -e 'origin/' | head -1 | sed 's/\origin\///g')" >> $GITHUB_ENV
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run Checkly tests
+        id: run-checks
+        working-directory: apps/scheduling-app
+        run: npx checkly test -e ENVIRONMENT_URL=${{ env.ENVIRONMENT_URL }} --reporter=github --record
+
+      - name: Create summary
+        if: always()
+        working-directory: apps/scheduling-app
+        run: cat checkly-github-report.md > $GITHUB_STEP_SUMMARY 2>/dev/null || echo "No report generated" > $GITHUB_STEP_SUMMARY
+
+      - name: Deploy checks
+        if: steps.run-checks.outcome == 'success' && github.event.deployment_status.environment == 'Production'
+        working-directory: apps/scheduling-app
+        run: npx checkly deploy --force
