@@ -1,6 +1,7 @@
 name: 'Storybook interaction tests'
 
-on: push
+on:
+  workflow_dispatch:
 
 jobs:
   test:

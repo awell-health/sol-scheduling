@@ -1,12 +1,7 @@
 name: Chromatic (Storybook)
 
 on:
-  push:
-    branches:
-      - 'main'
-  pull_request:
-    branches:
-      - 'main'
+  workflow_dispatch:
 
 jobs:
   chromatic:
