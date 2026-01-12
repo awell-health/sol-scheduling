@@ -69,14 +69,26 @@ export function PhoneQuestion({
     // Check if we already have a lead for this phone
     const existingLead = getStoredLeadId(phoneDigits);
 
-    // Track if lead was expired
-    if (existingLead?.wasExpired) {
-      posthog.capture('slc_expired', {
-        previous_lead_id: existingLead.leadId,
+    if (existingLead) {
+      console.log('[PhoneQuestion] Using cached lead ID from localStorage:', {
+        leadId: existingLead.leadId,
+        phone: phoneDigits,
+        wasExpired: existingLead.wasExpired,
       });
-    }
-
-    if (!existingLead) {
+      
+      // Track if lead was expired
+      if (existingLead.wasExpired) {
+        posthog.capture('slc_expired', {
+          previous_lead_id: existingLead.leadId,
+        });
+      }
+      
+      // Skip creating a new lead - using cached one
+      // NOTE: If you're testing and want to force create a new lead,
+      // clear localStorage first: localStorage.removeItem('_slc')
+    } else {
+      console.log('[PhoneQuestion] No cached lead found, creating new lead for phone:', phoneDigits);
+      
       // Fire-and-forget: Create lead in background
       createLeadAction({
         phone: e164Phone,
@@ -87,11 +99,17 @@ export function PhoneQuestion({
       })
         .then((result) => {
           if (result.success && result.leadId) {
+            console.log('[PhoneQuestion] Lead created successfully:', {
+              leadId: result.leadId,
+              phone: phoneDigits,
+            });
             storeLeadId(result.leadId, phoneDigits);
+          } else {
+            console.error('[PhoneQuestion] Failed to create lead:', result.error);
           }
         })
         .catch((error) => {
-          console.error('Failed to create lead:', error);
+          console.error('[PhoneQuestion] Failed to create lead:', error);
         });
     }
 

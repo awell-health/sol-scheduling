@@ -297,6 +297,10 @@ export async function createLeadAction(
 
     leadId = result.id;
     isNewLead = true;
+    console.log('[createLeadAction] ✅ NEW LEAD CREATED:', {
+      leadId,
+      phone: input.phone ? `***${input.phone.slice(-4)}` : undefined,
+    });
   } catch (error) {
     // Check if this is a duplicate detection error
     const errorMessage = error instanceof Error ? error.message : '';
@@ -321,7 +325,11 @@ export async function createLeadAction(
     }
 
     // Duplicate detected - update existing lead
-    console.log('[createLeadAction] Duplicate detected, updating existing lead:', duplicateLeadId);
+    console.log('[createLeadAction] ⚠️ DUPLICATE DETECTED by Salesforce - returning existing lead ID instead of creating new one:', {
+      duplicateLeadId,
+      phone: input.phone ? `***${input.phone.slice(-4)}` : undefined,
+      note: 'Salesforce detected a duplicate lead with the same phone number and returned the existing lead ID',
+    });
     leadId = duplicateLeadId;
 
     try {
@@ -360,7 +368,11 @@ export async function createLeadAction(
     await posthog.flush();
   }
 
-  console.log('[createLeadAction] Lead ID:', leadId);
+  console.log('[createLeadAction] Final lead ID returned:', {
+    leadId,
+    isNewLead,
+    phone: input.phone ? `***${input.phone.slice(-4)}` : undefined,
+  });
 
   // --- Step 3: Start re-engagement careflow workflow (durable) ---
   try {
