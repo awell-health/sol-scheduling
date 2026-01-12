@@ -82,7 +82,8 @@ export class SalesforceClient {
   private async request<T>(
     method: 'GET' | 'POST' | 'PATCH',
     path: string,
-    body?: unknown
+    body?: unknown,
+    additionalHeaders?: Record<string, string>
   ): Promise<T> {
     const { accessToken, instanceUrl } = await this.getAccessToken();
     const url = `${instanceUrl}/services/data/${this.config.apiVersion}${path}`;
@@ -92,6 +93,7 @@ export class SalesforceClient {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
+        ...additionalHeaders,
       },
     };
 
@@ -128,7 +130,10 @@ export class SalesforceClient {
     const response = await this.request<unknown>(
       'POST',
       '/sobjects/Lead/',
-      leadData
+      leadData,
+      {
+        'Sforce-Duplicate-Rule-Header': 'allowSave=true',
+      }
     );
 
     return CreateRecordResponseSchema.parse(response);
