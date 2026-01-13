@@ -120,17 +120,11 @@ export class SalesforceClient {
    * Create a new Lead in Salesforce
    */
   async createLead(data: LeadCreateData): Promise<CreateRecordResponse> {
-    // Ensure required fields have defaults
-    const leadData = {
-      Company: '[Not Provided]', // Required field in Salesforce
-      LastName: '[Unknown]', // Required field in Salesforce
-      ...data,
-    };
 
     const response = await this.request<unknown>(
       'POST',
       '/sobjects/Lead/',
-      leadData,
+      data,
       {
         'Sforce-Duplicate-Rule-Header': 'allowSave=true',
       }
