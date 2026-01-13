@@ -42,8 +42,17 @@ export async function writeProgressStep(progress: Omit<BookingProgress, 'timesta
     timestamp: new Date().toISOString(),
   };
 
-  await writer.write(update);
-  writer.releaseLock();
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error('Write operation timed out after 3 seconds')), 3000);
+  });
+
+  try {
+    await Promise.race([writer.write(update), timeoutPromise]);
+  } catch (error) {
+    console.error('[writeProgressStep] Error writing progress:', error);
+  } finally {
+    writer.releaseLock();
+  }
 
   console.log('[writeProgressStep] Progress written:', update);
 }
