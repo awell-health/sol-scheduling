@@ -1,10 +1,11 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { getAnyStoredLeadId, clearAllBookingStorage, ensureLeadExistsAction, storeLeadId } from '../providers/_lib/salesforce';
 import { readPreferencesFromStorage } from '../providers/_lib/onboarding/storage';
 import { useBuildUrlWithUtm } from '../providers/_lib/utm';
 import type { PostHog } from 'posthog-js';
 import type { BookingProgress, BookingProgressType } from '../../lib/workflow';
+import type { BookingFormStatus } from '../providers/[providerId]/components';
 
 export type BookingWorkflowState =
   | { status: 'idle' }
@@ -16,8 +17,9 @@ export type BookingWorkflowState =
       confirmationId: string; 
       currentStep: BookingProgressType;
     }
+  | { status: 'waiting'; confirmationId: string; providerId: string }
   | { status: 'redirecting'; confirmationId: string }
-  | { status: 'error'; message: string };
+  | { status: 'error'; message: string; showProviderAvailability?: boolean };
 
 export interface StartBookingParams {
   eventId: string;
@@ -44,6 +46,8 @@ interface UseBookingWorkflowOptions {
   posthog?: PostHog | null;
 }
 
+export type ConnectionMode = 'sse' | 'polling' | 'idle';
+
 interface UseBookingWorkflowResult {
   /** Current booking state */
   state: BookingWorkflowState;
@@ -59,6 +63,16 @@ interface UseBookingWorkflowResult {
   currentStep: BookingProgressType | 'done' | null;
   /** Error message if any */
   error: string | null;
+  /** Whether to show waiting message */
+  isWaiting: boolean;
+  /** Whether to show provider availability button */
+  showProviderAvailability: boolean;
+  /** Current connection mode: 'sse' (receiving stream), 'polling' (fallback), or 'idle' */
+  connectionMode: ConnectionMode;
+  /** Timestamp of last message received (for debugging/health checks) */
+  lastMessageTime: number | null;
+  /** Status mapped for BookingForm compatibility (waiting → booking) */
+  bookingFormStatus: BookingFormStatus;
 }
 
 /**
@@ -108,8 +122,20 @@ export function useBookingWorkflow(
   const [state, setState] = useState<BookingWorkflowState>({ status: 'idle' });
   const [currentStep, setCurrentStep] = useState<BookingProgressType | 'done' | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [connectionMode, setConnectionMode] = useState<ConnectionMode>('idle');
+  const [lastMessageTime, setLastMessageTime] = useState<number | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const lastParamsRef = useRef<StartBookingParams | null>(null);
+  
+  // Polling fallback state
+  const lastMessageTimeRef = useRef<number | null>(null);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const lastProgressIndexRef = useRef<number>(0);
+  const isPollingRef = useRef<boolean>(false);
+  const currentRunIdRef = useRef<string | null>(null);
+  const pollingStartTimeRef = useRef<number | null>(null);
+  const waitingMessageShownRef = useRef<boolean>(false);
+  const currentEventIdRef = useRef<string | null>(null);
 
   const startBooking = useCallback(async (params: StartBookingParams) => {
     // Store params for retry
@@ -283,6 +309,18 @@ export function useBookingWorkflow(
         currentStep: 'booking_started',
       });
       setCurrentStep('booking_started');
+      
+      // Initialize polling state
+      currentRunIdRef.current = confirmationId;
+      currentEventIdRef.current = params.eventId;
+      const now = Date.now();
+      lastMessageTimeRef.current = now;
+      setLastMessageTime(now);
+      lastProgressIndexRef.current = 0;
+      isPollingRef.current = false;
+      pollingStartTimeRef.current = null;
+      waitingMessageShownRef.current = false;
+      setConnectionMode('sse'); // Start with SSE connection
 
       // Capture analytics
       posthog?.capture('booking_workflow_started', {
@@ -305,6 +343,14 @@ export function useBookingWorkflow(
 
         if (done) {
           console.log('[useBookingWorkflow] Stream ended');
+          
+          // If stream ended but we haven't received session_ready, mark last message time
+          // The useEffect will detect no new messages and start polling after 10 seconds
+          // This handles the case where the Vercel function times out but workflow continues
+          if (currentStep !== 'session_ready' && currentStep !== 'done' && confirmationId) {
+            console.log('[useBookingWorkflow] Stream ended without completion, polling fallback will activate if no progress');
+            // Don't update lastMessageTimeRef - let the useEffect detect stale connection
+          }
           break;
         }
 
@@ -320,6 +366,23 @@ export function useBookingWorkflow(
             try {
               const progress = JSON.parse(sseEvent.data) as BookingProgress;
               console.log('[useBookingWorkflow] Progress:', progress.type, progress.message);
+
+              // Update last message time for polling fallback
+              const now = Date.now();
+              lastMessageTimeRef.current = now;
+              setLastMessageTime(now);
+              lastProgressIndexRef.current += 1;
+              
+              // If we were polling, switch back to SSE mode
+              if (isPollingRef.current) {
+                console.log('[useBookingWorkflow] Received SSE message, switching back from polling to SSE');
+                isPollingRef.current = false;
+                if (pollingIntervalRef.current) {
+                  clearInterval(pollingIntervalRef.current);
+                  pollingIntervalRef.current = null;
+                }
+                setConnectionMode('sse');
+              }
 
               // Update current step
               setCurrentStep(progress.type);
@@ -337,6 +400,13 @@ export function useBookingWorkflow(
                 
                 console.log('[useBookingWorkflow] Session ready, redirecting in 1s...');
                 setCurrentStep('done');
+                
+                // Stop polling if active
+                if (pollingIntervalRef.current) {
+                  clearInterval(pollingIntervalRef.current);
+                  pollingIntervalRef.current = null;
+                  isPollingRef.current = false;
+                }
                 
                 // Clear all booking storage on successful booking
                 const clearedLeadId = clearAllBookingStorage();
@@ -357,6 +427,12 @@ export function useBookingWorkflow(
 
               // Handle errors
               if (progress.type === 'error') {
+                // Stop polling if active
+                if (pollingIntervalRef.current) {
+                  clearInterval(pollingIntervalRef.current);
+                  pollingIntervalRef.current = null;
+                  isPollingRef.current = false;
+                }
                 setError(progress.data?.error || 'Booking failed');
                 setState({ status: 'error', message: progress.data?.error || 'Booking failed' });
                 return;
@@ -396,14 +472,314 @@ export function useBookingWorkflow(
     }
   }, [posthog, router, state.status, pathname, searchParams, buildUrlWithUtm]);
 
+  // Polling function to check workflow status
+  const pollWorkflowStatus = useCallback(async (runId: string, providerId: string) => {
+    if (isPollingRef.current === false) {
+      console.log('[useBookingWorkflow] Starting polling fallback for runId:', runId);
+      isPollingRef.current = true;
+      pollingStartTimeRef.current = Date.now();
+      posthog?.capture('booking_polling_started', { confirmation_id: runId });
+    }
+
+    try {
+      const response = await fetch(`/api/workflow/${runId}/status?startIndex=${lastProgressIndexRef.current}`);
+      
+      if (!response.ok) {
+        console.error('[useBookingWorkflow] Polling failed:', response.status);
+        return;
+      }
+
+      const data = await response.json();
+      console.log('[useBookingWorkflow] Polling response:', data);
+
+      // Check if we've been polling for more than 1 minute
+      const pollingDuration = pollingStartTimeRef.current 
+        ? Date.now() - pollingStartTimeRef.current 
+        : 0;
+      const ONE_MINUTE = 60000;
+
+      // Process any new progress updates
+      if (data.progressUpdates && data.progressUpdates.length > 0) {
+        console.log('[useBookingWorkflow] Found', data.progressUpdates.length, 'new progress updates via polling');
+        
+        // Reset waiting message flag since we got progress
+        waitingMessageShownRef.current = false;
+        
+        for (const progress of data.progressUpdates) {
+          lastProgressIndexRef.current += 1;
+          const now = Date.now();
+          lastMessageTimeRef.current = now;
+          setLastMessageTime(now);
+          
+          setCurrentStep(progress.type);
+          
+          setState((prev) => {
+            if (prev.status === 'waiting') {
+              return {
+                status: 'booking',
+                eventId: currentEventIdRef.current || '',
+                providerId: prev.providerId,
+                confirmationId: prev.confirmationId,
+                currentStep: progress.type,
+              };
+            }
+            if (prev.status !== 'booking') return prev;
+            return { ...prev, currentStep: progress.type };
+          });
+
+          // Handle session_ready
+          if (progress.type === 'session_ready') {
+            const redirectConfirmationId = progress.data?.confirmationId || runId;
+            
+            console.log('[useBookingWorkflow] Session ready via polling, redirecting in 1s...');
+            setCurrentStep('done');
+            
+            // Stop polling
+            if (pollingIntervalRef.current) {
+              clearInterval(pollingIntervalRef.current);
+              pollingIntervalRef.current = null;
+              isPollingRef.current = false;
+            }
+            pollingStartTimeRef.current = null;
+            setConnectionMode('idle'); // Will be set to 'redirecting' by state change
+            
+            // Clear all booking storage on successful booking
+            const clearedLeadId = clearAllBookingStorage();
+            if (clearedLeadId) {
+              posthog?.capture('booking_storage_cleared', {
+                lead_id: clearedLeadId,
+                confirmation_id: redirectConfirmationId,
+              });
+            }
+            
+            // Wait 1 second to show "Done! Redirecting..." state
+            setTimeout(() => {
+              setState({ status: 'redirecting', confirmationId: redirectConfirmationId });
+              router.push(`/confirmation/${redirectConfirmationId}`);
+            }, 1000);
+            return;
+          }
+
+          // Handle errors
+          if (progress.type === 'error') {
+            if (pollingIntervalRef.current) {
+              clearInterval(pollingIntervalRef.current);
+              pollingIntervalRef.current = null;
+              isPollingRef.current = false;
+            }
+            pollingStartTimeRef.current = null;
+            setError(progress.data?.error || 'Booking failed');
+            setState({ status: 'error', message: progress.data?.error || 'Booking failed' });
+            return;
+          }
+        }
+      }
+
+      // Check workflow status
+      if (data.status === 'completed') {
+        console.log('[useBookingWorkflow] Workflow completed via polling');
+        
+        // Stop polling
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
+          pollingIntervalRef.current = null;
+          isPollingRef.current = false;
+        }
+        pollingStartTimeRef.current = null;
+        setConnectionMode('idle'); // Will be set appropriately by state change
+
+        // If we have latest progress, use it
+        if (data.latestProgress) {
+          const progress = data.latestProgress as BookingProgress;
+          if (progress.type === 'session_ready') {
+            const redirectConfirmationId = progress.data?.confirmationId || runId;
+            setCurrentStep('done');
+            
+            const clearedLeadId = clearAllBookingStorage();
+            if (clearedLeadId) {
+              posthog?.capture('booking_storage_cleared', {
+                lead_id: clearedLeadId,
+                confirmation_id: redirectConfirmationId,
+              });
+            }
+            
+            setTimeout(() => {
+              setState({ status: 'redirecting', confirmationId: redirectConfirmationId });
+              router.push(`/confirmation/${redirectConfirmationId}`);
+            }, 1000);
+            return;
+          }
+        }
+        
+        // If completed but no session_ready, redirect to confirmation anyway
+        // (workflow completed successfully but stream timed out)
+        console.log('[useBookingWorkflow] Workflow completed but no session_ready, redirecting anyway');
+        posthog?.capture('booking_completed_via_polling_no_session_ready', { confirmation_id: runId });
+        
+        const clearedLeadId = clearAllBookingStorage();
+        if (clearedLeadId) {
+          posthog?.capture('booking_storage_cleared', {
+            lead_id: clearedLeadId,
+            confirmation_id: runId,
+          });
+        }
+        
+        setCurrentStep('done');
+        setTimeout(() => {
+          setState({ status: 'redirecting', confirmationId: runId });
+          router.push(`/confirmation/${runId}`);
+        }, 1000);
+      } else if (data.status === 'failed' || data.status === 'cancelled') {
+        // Scenario 2: Unrecoverable error
+        console.log('[useBookingWorkflow] Workflow', data.status, 'via polling');
+        
+        // Stop polling
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
+          pollingIntervalRef.current = null;
+          isPollingRef.current = false;
+        }
+        pollingStartTimeRef.current = null;
+        setConnectionMode('idle'); // Will be set appropriately by state change
+        
+        setError('We were unable to complete your booking. Please try again.');
+        setState({ 
+          status: 'error', 
+          message: 'We were unable to complete your booking. Please try again.',
+          showProviderAvailability: true,
+        });
+        posthog?.capture('booking_failed_unrecoverable', { confirmation_id: runId, status: data.status });
+      } else if (data.status === 'running' || data.status === 'pending') {
+        // Scenario 3: Still working, show waiting message
+        if (!waitingMessageShownRef.current) {
+          console.log('[useBookingWorkflow] Workflow still running, showing waiting message');
+          waitingMessageShownRef.current = true;
+          setState((prev) => {
+            if (prev.status === 'booking' || prev.status === 'waiting') {
+              return {
+                status: 'waiting',
+                confirmationId: runId,
+                providerId: providerId,
+              };
+            }
+            return prev;
+          });
+          posthog?.capture('booking_waiting_message_shown', { confirmation_id: runId });
+        }
+        
+        // Check if we've been waiting for more than 1 minute
+        if (pollingDuration >= ONE_MINUTE) {
+          // Scenario 3 timeout: Show error with provider availability button
+          console.log('[useBookingWorkflow] Polling timeout after 1 minute, showing error');
+          
+          if (pollingIntervalRef.current) {
+            clearInterval(pollingIntervalRef.current);
+            pollingIntervalRef.current = null;
+            isPollingRef.current = false;
+          }
+          pollingStartTimeRef.current = null;
+          
+          setError('We\'re sorry, but we ran into an error somewhere along the way, and we recommend you attempt booking again.');
+          setState({
+            status: 'error',
+            message: 'We\'re sorry, but we ran into an error somewhere along the way, and we recommend you attempt booking again.',
+            showProviderAvailability: true,
+          });
+          posthog?.capture('booking_polling_timeout_escape_hatch', { 
+            confirmation_id: runId,
+            polling_duration_ms: pollingDuration,
+          });
+        }
+      }
+    } catch (err) {
+      console.error('[useBookingWorkflow] Polling error:', err);
+      // Don't stop polling on error - keep trying
+    }
+  }, [posthog, router]);
+
+  // Effect to start polling after 10 seconds of no messages
+  useEffect(() => {
+    if ((state.status !== 'booking' && state.status !== 'waiting') || !currentRunIdRef.current) {
+      // Stop polling if not in booking/waiting state
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+        isPollingRef.current = false;
+      }
+      pollingStartTimeRef.current = null;
+      setConnectionMode('idle');
+      return;
+    }
+
+    const checkForStaleConnection = () => {
+      if (!lastMessageTimeRef.current || !currentRunIdRef.current) return;
+      
+      const timeSinceLastMessage = Date.now() - lastMessageTimeRef.current;
+      const POLLING_THRESHOLD = 10000; // 10 seconds
+
+      if (timeSinceLastMessage >= POLLING_THRESHOLD && !isPollingRef.current) {
+        console.log('[useBookingWorkflow] No messages for', timeSinceLastMessage, 'ms, starting polling fallback');
+        
+        // Get providerId from state
+        const providerId = state.status === 'booking' ? state.providerId : 
+                          state.status === 'waiting' ? state.providerId : '';
+        
+        if (!providerId) {
+          console.error('[useBookingWorkflow] Cannot start polling without providerId');
+          return;
+        }
+        
+        // Switch to polling mode
+        setConnectionMode('polling');
+        
+        // Start polling every 5 seconds
+        pollWorkflowStatus(currentRunIdRef.current, providerId);
+        pollingIntervalRef.current = setInterval(() => {
+          if (currentRunIdRef.current) {
+            pollWorkflowStatus(currentRunIdRef.current, providerId);
+          }
+        }, 5000); // Poll every 5 seconds
+      }
+    };
+
+    // Check every 2 seconds if we need to start polling
+    const checkInterval = setInterval(checkForStaleConnection, 2000);
+
+    return () => {
+      clearInterval(checkInterval);
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+        isPollingRef.current = false;
+      }
+    };
+  }, [state, pollWorkflowStatus]);
+
   const reset = useCallback(() => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
+    
+    // Stop polling
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
+      isPollingRef.current = false;
+    }
+    
+    lastMessageTimeRef.current = null;
+    lastProgressIndexRef.current = 0;
+    currentRunIdRef.current = null;
+    currentEventIdRef.current = null;
+    pollingStartTimeRef.current = null;
+    waitingMessageShownRef.current = false;
+    
     setState({ status: 'idle' });
     setCurrentStep(null);
     setError(null);
+    setConnectionMode('idle');
+    setLastMessageTime(null);
   }, []);
 
   const retry = useCallback(async () => {
@@ -420,8 +796,15 @@ export function useBookingWorkflow(
 
   const isModalOpen = state.status === 'starting' || 
                       state.status === 'booking' || 
+                      state.status === 'waiting' ||
                       state.status === 'redirecting' ||
                       (state.status === 'error' && currentStep !== null);
+
+  const isWaiting = state.status === 'waiting';
+  const showProviderAvailability = state.status === 'error' && 'showProviderAvailability' in state && state.showProviderAvailability === true;
+  
+  // Map internal status to BookingForm-compatible status
+  const bookingFormStatus: BookingFormStatus = state.status === 'waiting' ? 'booking' : state.status;
 
   return {
     state,
@@ -431,5 +814,10 @@ export function useBookingWorkflow(
     isModalOpen,
     currentStep,
     error,
+    isWaiting,
+    showProviderAvailability,
+    connectionMode,
+    lastMessageTime,
+    bookingFormStatus,
   };
 }

@@ -307,7 +307,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
         <BookingForm
           selectedSlot={selectedSlot}
           preferences={preferences}
-          bookingStatus={bookingWorkflow.state.status}
+          bookingStatus={bookingWorkflow.bookingFormStatus}
           bookingError={bookingWorkflow.error}
           isModalOpen={bookingWorkflow.isModalOpen}
           onClearSlot={handleClearSlot}
@@ -321,8 +321,15 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
         isOpen={bookingWorkflow.isModalOpen}
         currentStep={bookingWorkflow.currentStep}
         error={bookingWorkflow.error}
+        isWaiting={bookingWorkflow.isWaiting}
+        showProviderAvailability={bookingWorkflow.showProviderAvailability}
         onRetry={bookingWorkflow.retry}
         onDismiss={bookingWorkflow.reset}
+        onProviderAvailability={() => {
+          bookingWorkflow.reset();
+          // Scroll to top to show availability calendar
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
     </div>
   );

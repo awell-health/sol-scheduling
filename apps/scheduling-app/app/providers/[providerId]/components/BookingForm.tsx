@@ -57,13 +57,16 @@ interface SelectedSlotSummary {
   meta: string;
 }
 
+/** Status values accepted by BookingForm */
+export type BookingFormStatus = 'idle' | 'starting' | 'booking' | 'redirecting' | 'error' | 'success';
+
 interface BookingFormProps {
   /** The selected slot to book */
   selectedSlot: AvailabilitySlot;
   /** Onboarding preferences for pre-filling */
   preferences: OnboardingPreferences;
   /** Booking workflow status */
-  bookingStatus: 'idle' | 'starting' | 'booking' | 'redirecting' | 'error' | 'success';
+  bookingStatus: BookingFormStatus;
   /** Error message from booking workflow */
   bookingError: string | null;
   /** Whether the modal is open */

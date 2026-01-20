@@ -17,10 +17,16 @@ interface BookingProgressModalProps {
   isOpen: boolean;
   currentStep: BookingProgressType | 'done' | null;
   error?: string | null;
+  /** Whether to show "waiting" message */
+  isWaiting?: boolean;
+  /** Whether to show "Provider Availability" button */
+  showProviderAvailability?: boolean;
   /** Called when user clicks "Try Again" */
   onRetry?: () => void;
   /** Called when user clicks "Cancel" / dismiss */
   onDismiss?: () => void;
+  /** Called when user clicks "Provider Availability" */
+  onProviderAvailability?: () => void;
 }
 
 /**
@@ -38,8 +44,11 @@ export function BookingProgressModal({
   isOpen, 
   currentStep, 
   error,
+  isWaiting = false,
+  showProviderAvailability = false,
   onRetry,
   onDismiss,
+  onProviderAvailability,
 }: BookingProgressModalProps) {
   // Determine step statuses based on current progress
   const steps = useMemo((): ProgressStep[] => {
@@ -140,6 +149,15 @@ export function BookingProgressModal({
           {error ? 'Booking Issue' : 'Booking Your Appointment'}
         </h2>
         
+        {/* Waiting message */}
+        {isWaiting && !error && (
+          <div className="mb-6 rounded-lg bg-blue-50 p-4">
+            <p className="text-center text-sm text-blue-700">
+              Thank you for waiting! Things are still working...
+            </p>
+          </div>
+        )}
+        
         {/* Progress steps */}
         <div className="space-y-4">
           {steps.map((step) => (
@@ -184,29 +202,41 @@ export function BookingProgressModal({
           <div className="mt-6 space-y-4">
             <div className="rounded-lg bg-red-50 p-4">
               <p className="text-center text-sm text-red-700">
-                We encountered an issue while booking your appointment. Don&apos;t worry – you can try again.
+                {error}
               </p>
             </div>
             
             <div className="flex gap-3">
-              {onDismiss && (
+              {showProviderAvailability && onProviderAvailability ? (
                 <button
                   type="button"
-                  onClick={onDismiss}
-                  className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  onClick={onProviderAvailability}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
                 >
-                  Cancel
+                  Provider Availability
                 </button>
-              )}
-              {onRetry && (
-                <button
-                  type="button"
-                  onClick={onRetry}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  Try Again
-                </button>
+              ) : (
+                <>
+                  {onDismiss && (
+                    <button
+                      type="button"
+                      onClick={onDismiss}
+                      className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                  {onRetry && (
+                    <button
+                      type="button"
+                      onClick={onRetry}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                      Try Again
+                    </button>
+                  )}
+                </>
               )}
             </div>
           </div>
