@@ -1,5 +1,5 @@
 import './globals.css'
-import { PostHogProvider } from './providers/PostHogProvider'
+import { PostHogProvider } from '../lib/tracking'
 
 export const metadata = {
   title: 'Scheduling App',
@@ -10,7 +10,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-      {/* <script async src="//s.ksrndkehqnwntyxlhgto.com/*****.js"></script> */}
       </head>
       <body>
         <PostHogProvider>
