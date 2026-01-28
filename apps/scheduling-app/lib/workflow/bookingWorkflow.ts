@@ -116,15 +116,21 @@ export async function bookingWorkflow(
     data: { eventId: bookingResult.eventId },
   });
 
-  // Format localized time with timezone for Salesforce
+  // Format localized date and time for Salesforce (using patient's timezone)
+  const localizedDate = input.patientTimezone && eventDetails.startsAt
+    ? new Date(eventDetails.startsAt).toLocaleDateString('en-CA', { // en-CA gives YYYY-MM-DD format
+        timeZone: input.patientTimezone,
+      })
+    : undefined;
+
   const localizedTimeWithTimezone = input.patientTimezone && eventDetails.startsAt
-  ? `${new Date(eventDetails.startsAt).toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit',
-      hour12: true,
-      timeZone: input.patientTimezone,
-    })} ${input.patientTimezone}`
-  : undefined;
+    ? `${new Date(eventDetails.startsAt).toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true,
+        timeZone: input.patientTimezone,
+      })} ${input.patientTimezone}`
+    : undefined;
 
   // Step 5: Upsert patient in Awell and update Salesforce lead
   await Promise.all([
@@ -145,6 +151,7 @@ export async function bookingWorkflow(
       providerFirstName: eventDetails.providerFirstName,
       providerLastName: eventDetails.providerLastName,
       slotStartUtc: eventDetails.startsAt,
+      localizedDate,
       localizedTimeWithTimezone,
       facility: eventDetails.facility,
     }),
