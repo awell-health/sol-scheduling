@@ -121,7 +121,7 @@ import { Button } from './button';
 const meta: Meta<typeof Button> = {
   title: 'UI/Button',
   component: Button,
-  tags: ['autodocs'],
+  tags: ['autodocs']
 };
 
 export default meta;
@@ -130,21 +130,22 @@ type Story = StoryObj<typeof Button>;
 export const Primary: Story = {
   args: {
     children: 'Click me',
-    variant: 'default',
-  },
+    variant: 'default'
+  }
 };
 
 export const WithInteraction: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button'));
-  },
+  }
 };
 ```
 
 ### Story Locations
 
 Stories should be co-located with components:
+
 - `components/ui/*.stories.tsx` - Base UI components
 - `app/providers/components/*.stories.tsx` - Feature components
 
@@ -164,19 +165,19 @@ Import the combined fixture for full functionality:
 ```typescript
 import { test, expect, mockOnboardingData } from '../__checks__/fixtures';
 
-test('completes booking flow', async ({ 
-  page, 
-  localStorage,    // localStorage helper
-  apiMock,         // API mocking helper
-  salesforce,      // Salesforce API client (requires env vars)
+test('completes booking flow', async ({
+  page,
+  localStorage, // localStorage helper
+  apiMock, // API mocking helper
+  salesforce // Salesforce API client (requires env vars)
 }) => {
   // Set up API mocks
   await apiMock.setupMocks();
-  
+
   // Pre-seed localStorage to skip onboarding
   await page.goto('/');
   await localStorage.setOnboardingData(mockOnboardingData.complete);
-  
+
   // Navigate and test
   await page.goto('/providers');
   await expect(page.getByText('Sarah Johnson')).toBeVisible();
@@ -190,12 +191,13 @@ test('shows error on booking failure', async ({ page, apiMock }) => {
   // Configure mock behavior
   apiMock.configure({ bookingError: true });
   await apiMock.setupMocks();
-  
+
   // ... test error UI
 });
 ```
 
 Available mock configurations:
+
 - `emptyProviders: true` - Return empty provider list
 - `noAvailability: true` - Return no available slots
 - `bookingError: true` - Simulate booking failure
@@ -215,23 +217,35 @@ await localStorage.setOnboardingData({ state: 'CO', service: 'medication' });
 await localStorage.expectOnboardingContains({ state: 'CO' });
 ```
 
-## Phase 1 Tasks (Next Steps)
+## Phase 1 Progress
 
-The foundation is complete. Phase 1 involves writing actual tests:
+### Unit Tests (Completed)
 
-### Unit Tests to Write
-- [ ] `lib/workflow/__tests__/` - Workflow step tests
+- [x] `lib/workflow/__tests__/bookAppointment.test.ts` - 10 tests
+- [x] `lib/workflow/__tests__/getEventDetails.test.ts` - 15 tests
+- [x] `lib/workflow/__tests__/fetchEventDetails.test.ts` - 16 tests
+- [x] `lib/workflow/__tests__/writeProgress.test.ts` - 11 tests
+- [x] `lib/workflow/__tests__/updateLead.test.ts` - 27 tests
+- [x] `lib/workflow/__tests__/awellSteps.test.ts` - 25 tests
+- [x] `app/providers/_lib/salesforce/__tests__/transformers.test.ts` - 33 tests
+- [x] `lib/__tests__/sol-utils.test.ts` - 5 tests
+
+**Total: 142 passing**
+
+### Remaining Phase 1 Tasks
+
 - [ ] `app/providers/__tests__/actions.test.ts` - Server action tests
 - [ ] `app/hooks/__tests__/` - Hook tests (useBookingWorkflow, etc.)
-- [ ] `lib/__tests__/sol-utils.test.ts` - Utility function tests
 
 ### Storybook Stories to Create
+
 - [ ] `components/ui/*.stories.tsx` - Button, Input, Select, Calendar, etc.
 - [ ] `app/providers/components/*.stories.tsx` - ProviderCard, Filters, etc.
 - [ ] `app/providers/[providerId]/components/*.stories.tsx` - Booking components
 - [ ] `app/providers/components/OnboardingFlow/*.stories.tsx` - Onboarding steps
 
 ### E2E Tests to Write
+
 - [ ] `tests/onboarding.spec.ts` - Complete onboarding flow
 - [ ] `tests/provider-selection.spec.ts` - Filtering and selection
 - [ ] `tests/booking.spec.ts` - Booking workflow (mocked)
@@ -243,11 +257,11 @@ The foundation is complete. Phase 1 involves writing actual tests:
 
 When writing tests, if you need to mock more than 2-3 dependencies, pause and assess whether the code needs refactoring first. Common patterns to watch for:
 
-| Smell | Symptom | Refactor |
-|-------|---------|----------|
-| God hook | Hook does fetching + state + side effects + UI logic | Split into data hook + logic hook + UI hook |
-| Inline API calls | Function makes fetch calls directly | Extract to injectable service/action |
-| Direct localStorage access | Component reads/writes storage directly | Extract to storage service |
-| Chained async operations | Function orchestrates multiple async steps | Extract each step as pure function |
+| Smell                      | Symptom                                              | Refactor                                    |
+| -------------------------- | ---------------------------------------------------- | ------------------------------------------- |
+| God hook                   | Hook does fetching + state + side effects + UI logic | Split into data hook + logic hook + UI hook |
+| Inline API calls           | Function makes fetch calls directly                  | Extract to injectable service/action        |
+| Direct localStorage access | Component reads/writes storage directly              | Extract to storage service                  |
+| Chained async operations   | Function orchestrates multiple async steps           | Extract each step as pure function          |
 
 Tests should be simple. If they're not, the code needs work first.

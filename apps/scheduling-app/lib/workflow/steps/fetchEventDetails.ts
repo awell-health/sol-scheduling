@@ -111,8 +111,8 @@ export async function fetchEventDetailsStep(
   const providerName = providerFirstName && providerLastName
     ? `${providerFirstName} ${providerLastName}`
     : eventData.provider?.name
-      ?? [providerFirstName, providerLastName].filter(Boolean).join(' ')
-      ?? 'Provider';
+      || [providerFirstName, providerLastName].filter(Boolean).join(' ')
+      || 'Provider';
 
   const providerImage = providerData?.image ?? eventData.provider?.image ?? undefined;
 
