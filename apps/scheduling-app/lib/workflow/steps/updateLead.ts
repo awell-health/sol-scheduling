@@ -23,6 +23,8 @@ export interface UpdateLeadInput {
   providerLastName?: string;
   /** Appointment start time (ISO string) */
   slotStartUtc?: string;
+  /** Localized date in patient's timezone (YYYY-MM-DD format) */
+  localizedDate?: string;
   /** Localized slot time with timezone (e.g., "10:00 AM America/Denver") */
   localizedTimeWithTimezone?: string;
   /** Facility name */
@@ -92,8 +94,11 @@ export async function updateLeadStep(
       }
     }
 
-    // Requested_Appt_Date__c = ISO datetime
-    if (input.slotStartUtc) {
+    // Requested_Appt_Date__c = Date in patient's local timezone (YYYY-MM-DD)
+    // Use localizedDate if available (preferred), otherwise fall back to UTC
+    if (input.localizedDate) {
+      updateData.Requested_Appt_Date__c = input.localizedDate;
+    } else if (input.slotStartUtc) {
       updateData.Requested_Appt_Date__c = input.slotStartUtc;
     }
 

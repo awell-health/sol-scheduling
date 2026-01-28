@@ -1,6 +1,6 @@
 export { ProviderHeader } from './ProviderHeader';
 export { AvailabilityCalendar, getSlotModes } from './AvailabilityCalendar';
-export { BookingForm, type BookingFormValues } from './BookingForm';
+export { BookingForm, type BookingFormValues, type BookingFormStatus } from './BookingForm';
 
 
 
