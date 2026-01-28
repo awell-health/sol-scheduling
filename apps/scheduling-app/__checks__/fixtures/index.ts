@@ -1,6 +1,7 @@
-import { test as base } from '@playwright/test';
+import { test as base, expect } from '@playwright/test';
 import { SalesforceTestClient, createSalesforceFixture, cleanupTestLead } from './salesforce.fixture';
 import { LocalStorageHelper, createLocalStorageFixture, STORAGE_KEYS, type OnboardingStorageData } from './localStorage.fixture';
+import { ApiMockHelper, createApiMockFixture, mockProviders, mockProviderDetails, mockAvailability, mockBookingResponse, mockOnboardingData, mockWorkflowProgress } from './api.fixture';
 
 export {
   // Salesforce fixture exports
@@ -12,12 +13,23 @@ export {
   createLocalStorageFixture,
   STORAGE_KEYS,
   type OnboardingStorageData,
+  // API mock fixture exports
+  ApiMockHelper,
+  createApiMockFixture,
+  // Mock data exports
+  mockProviders,
+  mockProviderDetails,
+  mockAvailability,
+  mockBookingResponse,
+  mockOnboardingData,
+  mockWorkflowProgress,
 };
 
 export type { SalesforceLeadData, SalesforceToken, SalesforceConfig } from './salesforce.fixture';
+export type { ApiMockConfig } from './api.fixture';
 
 /**
- * Combined test fixture with both Salesforce and localStorage helpers
+ * Combined test fixture with Salesforce, localStorage, and API mock helpers
  * 
  * @example
  * ```ts
@@ -26,8 +38,12 @@ export type { SalesforceLeadData, SalesforceToken, SalesforceConfig } from './sa
  * test('onboarding creates lead and stores preferences', async ({ 
  *   page, 
  *   salesforce, 
- *   localStorage 
+ *   localStorage,
+ *   apiMock,
  * }) => {
+ *   // Set up API mocks before navigating
+ *   await apiMock.setupMocks();
+ *   
  *   await page.goto('/providers');
  *   
  *   // Complete onboarding flow...
@@ -50,10 +66,31 @@ export type { SalesforceLeadData, SalesforceToken, SalesforceConfig } from './sa
  *   }
  * });
  * ```
+ * 
+ * @example
+ * ```ts
+ * // Testing error states with API mocks
+ * test('shows error when booking fails', async ({ page, apiMock, localStorage }) => {
+ *   // Configure mocks for error scenario
+ *   apiMock.configure({ bookingError: true });
+ *   await apiMock.setupMocks();
+ *   
+ *   // Pre-seed localStorage to skip onboarding
+ *   await page.goto('/');
+ *   await localStorage.setOnboardingData(mockOnboardingData.complete);
+ *   
+ *   await page.goto('/providers/provider-psychiatry-1');
+ *   // ... complete booking flow
+ *   
+ *   // Assert error message is displayed
+ *   await expect(page.getByText('Booking failed')).toBeVisible();
+ * });
+ * ```
  */
 export const test = base.extend<{
   salesforce: SalesforceTestClient;
   localStorage: LocalStorageHelper;
+  apiMock: ApiMockHelper;
 }>({
   salesforce: async ({}, use) => {
     const config = {
@@ -78,4 +115,12 @@ export const test = base.extend<{
     const helper = new LocalStorageHelper(page);
     await use(helper);
   },
+
+  apiMock: async ({ page }, use) => {
+    const helper = new ApiMockHelper(page);
+    await use(helper);
+  },
 });
+
+// Re-export expect for convenience
+export { expect };
