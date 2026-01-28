@@ -416,7 +416,7 @@ export function useBookingWorkflow(
                     confirmation_id: redirectConfirmationId,
                   });
                 }
-                
+
                 // Wait 1 second to show "Done! Redirecting..." state
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 
@@ -551,7 +551,7 @@ export function useBookingWorkflow(
                 confirmation_id: redirectConfirmationId,
               });
             }
-            
+
             // Wait 1 second to show "Done! Redirecting..." state
             setTimeout(() => {
               setState({ status: 'redirecting', confirmationId: redirectConfirmationId });
@@ -602,7 +602,7 @@ export function useBookingWorkflow(
                 confirmation_id: redirectConfirmationId,
               });
             }
-            
+
             setTimeout(() => {
               setState({ status: 'redirecting', confirmationId: redirectConfirmationId });
               router.push(`/confirmation/${redirectConfirmationId}`);
