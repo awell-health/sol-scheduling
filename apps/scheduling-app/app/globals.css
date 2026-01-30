@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Override react-day-picker default focus/selected styles */
+.rdp-day_button:focus,
+.rdp-day_button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.rdp-selected .rdp-day_button,
+.rdp-day_button[aria-selected='true'] {
+  background-color: #d3e2e4 !important; /* secondary color */
+  color: #415457 !important; /* secondary-foreground */
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.rdp-selected .rdp-day_button:focus,
+.rdp-selected .rdp-day_button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}

@@ -1,14 +1,14 @@
 # Testing Infrastructure
 
-This document describes the testing infrastructure set up for the scheduling-app.
+This document describes the testing infrastructure for the scheduling-app.
 
 ## Overview
 
 The testing suite consists of three layers:
 
-1. **Unit/Integration Tests** - Vitest with React Testing Library
-2. **UI Component Documentation** - Storybook with interaction tests
-3. **End-to-End Tests** - Playwright with custom fixtures
+1. **Unit/Integration Tests** - Vitest with React Testing Library (237 tests)
+2. **UI Component Tests** - Storybook with interaction tests (165 tests)
+3. **End-to-End Tests** - Playwright with custom fixtures (to be written)
 
 ## Quick Start
 
@@ -20,6 +20,7 @@ pnpm test:coverage     # Generate coverage report
 
 # Storybook
 pnpm storybook         # Start dev server on http://localhost:6006
+pnpm test:storybook    # Run Storybook interaction tests
 pnpm build-storybook   # Build static Storybook
 
 # E2E tests
@@ -33,39 +34,34 @@ pnpm test:ui           # Run with Playwright UI mode
 apps/scheduling-app/
 ├── .storybook/              # Storybook configuration
 │   ├── main.ts              # Framework, addons, stories paths
-│   └── preview.ts           # Global decorators, parameters, MSW init
+│   ├── preview.ts           # Global decorators, parameters, MSW init
+│   └── mocks/               # Storybook-specific module stubs
 ├── mocks/                   # MSW mock infrastructure
 │   ├── browser.ts           # Browser worker for Storybook
 │   ├── fixtures.ts          # Mock data (providers, availability, etc.)
 │   ├── handlers.ts          # API route handlers
-│   ├── index.ts             # Barrel exports
 │   └── server.ts            # Node.js server for Vitest
 ├── __checks__/fixtures/     # Playwright test fixtures
 │   ├── api.fixture.ts       # Network-level API mocking
-│   ├── index.ts             # Combined test fixture
 │   ├── localStorage.fixture.ts
 │   └── salesforce.fixture.ts
-├── lib/__tests__/           # Unit tests for lib/
-├── app/**/__tests__/        # Unit tests for app/ (to be created)
-├── tests/                   # Playwright E2E tests
-│   └── example.spec.ts      # Example E2E test template
-├── vitest.config.ts         # Vitest configuration
-├── vitest.setup.ts          # Test setup (MSW, Testing Library)
-└── playwright.config.ts     # Playwright configuration
+├── components/ui/*.stories.tsx    # UI component stories
+├── app/**/*.stories.tsx           # Feature component stories
+├── lib/**/__tests__/              # Unit tests
+├── app/**/__tests__/              # Server action tests
+└── tests/                         # Playwright E2E tests
 ```
 
 ## Unit Tests (Vitest)
 
-### Configuration
-
-- **Environment**: jsdom
-- **Global setup**: MSW server starts before tests, resets between tests
-- **Path aliases**: `@/` maps to project root (matches tsconfig)
+- **Environment**: jsdom with MSW for API mocking
+- **Path aliases**: `@/` maps to project root
+- **Coverage**: Workflow steps, server actions, hooks, utilities
 
 ### Writing Tests
 
 ```typescript
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 describe('MyComponent', () => {
@@ -76,47 +72,29 @@ describe('MyComponent', () => {
 });
 ```
 
-### Using MSW in Tests
-
-The MSW server is automatically started in `vitest.setup.ts`. To override handlers for specific tests:
+### Using MSW
 
 ```typescript
 import { server } from '@/mocks/server';
 import { createErrorHandler } from '@/mocks/handlers';
 
 it('handles API errors', async () => {
-  server.use(
-    createErrorHandler('/api/v2/provider', 500, 'Internal Server Error')
-  );
+  server.use(createErrorHandler('/api/v2/provider', 500, 'Server Error'));
   // ... test error handling
 });
 ```
 
-### Available Mock Data
-
-Import from `@/mocks/fixtures`:
-
-- `mockProviders` - Array of provider data
-- `mockProviderDetails` - Provider details by ID
-- `mockAvailability` - Availability slots
-- `mockBookingResponse` - Success/error booking responses
-- `mockOnboardingData` - Pre-filled onboarding localStorage data
-- `mockWorkflowProgress` - Workflow step progress states
-
 ## Storybook
 
-### Configuration
-
-- **Framework**: `@storybook/react-vite` (Vite-based for fast builds)
+- **Framework**: `@storybook/nextjs-vite`
 - **Addons**: essentials, interactions, a11y
-- **MSW**: Automatically initialized in preview for API mocking
+- **MSW**: Initialized in preview for API mocking
 
 ### Writing Stories
 
 ```typescript
-// components/ui/Button.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from './button';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { fn, within, userEvent, expect } from 'storybook/test';
 
 const meta: Meta<typeof Button> = {
   title: 'UI/Button',
@@ -127,141 +105,91 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-export const Primary: Story = {
-  args: {
-    children: 'Click me',
-    variant: 'default'
-  }
+export const Default: Story = {
+  args: { children: 'Click me' }
 };
 
 export const WithInteraction: Story = {
-  play: async ({ canvasElement }) => {
+  args: { onClick: fn() },
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button'));
+    await expect(args.onClick).toHaveBeenCalled();
   }
 };
 ```
 
-### Story Locations
-
-Stories should be co-located with components:
-
-- `components/ui/*.stories.tsx` - Base UI components
-- `app/providers/components/*.stories.tsx` - Feature components
-
 ## Playwright E2E Tests
 
-### Configuration
-
-- **Base URL**: `http://localhost:3000` (configurable via `PLAYWRIGHT_BASE_URL`)
-- **Web Server**: Auto-starts `pnpm dev` before tests
-- **Browsers**: Chromium, Firefox, WebKit + Mobile Chrome/Safari
-- **Artifacts**: Screenshots and video on failure
+- **Base URL**: `http://localhost:3000`
+- **Browsers**: Chromium, Firefox, WebKit + Mobile
+- **Fixtures**: API mocking, localStorage helpers, Salesforce client
 
 ### Test Fixtures
 
-Import the combined fixture for full functionality:
-
 ```typescript
-import { test, expect, mockOnboardingData } from '../__checks__/fixtures';
+import { test, expect } from '../__checks__/fixtures';
 
-test('completes booking flow', async ({
-  page,
-  localStorage, // localStorage helper
-  apiMock, // API mocking helper
-  salesforce // Salesforce API client (requires env vars)
-}) => {
-  // Set up API mocks
+test('completes booking flow', async ({ page, localStorage, apiMock }) => {
   await apiMock.setupMocks();
-
-  // Pre-seed localStorage to skip onboarding
   await page.goto('/');
-  await localStorage.setOnboardingData(mockOnboardingData.complete);
-
-  // Navigate and test
+  await localStorage.setOnboardingData({ state: 'CO', service: 'Therapy' });
   await page.goto('/providers');
   await expect(page.getByText('Sarah Johnson')).toBeVisible();
 });
 ```
 
-### API Mocking in E2E
+## Remaining Work
 
-```typescript
-test('shows error on booking failure', async ({ page, apiMock }) => {
-  // Configure mock behavior
-  apiMock.configure({ bookingError: true });
-  await apiMock.setupMocks();
-
-  // ... test error UI
-});
-```
-
-Available mock configurations:
-
-- `emptyProviders: true` - Return empty provider list
-- `noAvailability: true` - Return no available slots
-- `bookingError: true` - Simulate booking failure
-- `networkError: true` - Simulate network failure
-- `delay: number` - Add artificial delay (ms)
-
-### localStorage Helper
-
-```typescript
-// Read onboarding data
-const data = await localStorage.getOnboardingData();
-
-// Set onboarding data
-await localStorage.setOnboardingData({ state: 'CO', service: 'medication' });
-
-// Assert expectations
-await localStorage.expectOnboardingContains({ state: 'CO' });
-```
-
-## Phase 1 Progress
-
-### Unit Tests (Completed)
-
-- [x] `lib/workflow/__tests__/bookAppointment.test.ts` - 10 tests
-- [x] `lib/workflow/__tests__/getEventDetails.test.ts` - 15 tests
-- [x] `lib/workflow/__tests__/fetchEventDetails.test.ts` - 16 tests
-- [x] `lib/workflow/__tests__/writeProgress.test.ts` - 11 tests
-- [x] `lib/workflow/__tests__/updateLead.test.ts` - 27 tests
-- [x] `lib/workflow/__tests__/awellSteps.test.ts` - 25 tests
-- [x] `app/providers/_lib/salesforce/__tests__/transformers.test.ts` - 33 tests
-- [x] `lib/__tests__/sol-utils.test.ts` - 5 tests
-
-**Total: 142 passing**
-
-### Remaining Phase 1 Tasks
-
-- [ ] `app/providers/__tests__/actions.test.ts` - Server action tests
-- [ ] `app/hooks/__tests__/` - Hook tests (useBookingWorkflow, etc.)
-
-### Storybook Stories to Create
-
-- [ ] `components/ui/*.stories.tsx` - Button, Input, Select, Calendar, etc.
-- [ ] `app/providers/components/*.stories.tsx` - ProviderCard, Filters, etc.
-- [ ] `app/providers/[providerId]/components/*.stories.tsx` - Booking components
-- [ ] `app/providers/components/OnboardingFlow/*.stories.tsx` - Onboarding steps
-
-### E2E Tests to Write
+### E2E Tests
 
 - [ ] `tests/onboarding.spec.ts` - Complete onboarding flow
 - [ ] `tests/provider-selection.spec.ts` - Filtering and selection
 - [ ] `tests/booking.spec.ts` - Booking workflow (mocked)
 - [ ] `tests/confirmation.spec.ts` - Confirmation page
 
+### Accessibility (A11y) Fixes
+
+The Storybook test runner includes axe-core accessibility testing. Currently set to `'todo'` mode (warnings only). To enforce strict compliance, change in `.storybook/preview.ts`:
+
+```typescript
+a11y: {
+  test: 'error'; // Fail tests on violations
+}
+```
+
+#### Known Issues Summary
+
+| Violation Type | Count | WCAG Level | Fix                                                |
+| -------------- | ----- | ---------- | -------------------------------------------------- |
+| Color Contrast | ~90   | AA         | Adjust slate color usage for small text            |
+| Button Name    | ~15   | A          | Add `aria-label` to icon buttons and empty selects |
+| Form Labels    | ~5    | A          | Add labels to form inputs in stories               |
+
+#### Color Contrast Fixes Needed
+
+| Issue                                          | Fix                                |
+| ---------------------------------------------- | ---------------------------------- |
+| `text-slate-500` on light backgrounds (4.22:1) | Use `text-slate-600` for 12px text |
+| `text-slate-400` placeholders (2.85:1)         | Use `text-slate-500` minimum       |
+| `text-primary` on `bg-slate-50` (4.14:1)       | Use on white backgrounds only      |
+
+#### Resources
+
+- [axe-core Rules](https://dequeuniversity.com/rules/axe/)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Contrast Checker](https://webaim.org/resources/contrastchecker/)
+
 ## Guiding Principle
 
 **If a unit requires extensive mocking, it's a code smell.**
 
-When writing tests, if you need to mock more than 2-3 dependencies, pause and assess whether the code needs refactoring first. Common patterns to watch for:
+When writing tests, if you need to mock more than 2-3 dependencies, the code likely needs refactoring first:
 
-| Smell                      | Symptom                                              | Refactor                                    |
-| -------------------------- | ---------------------------------------------------- | ------------------------------------------- |
-| God hook                   | Hook does fetching + state + side effects + UI logic | Split into data hook + logic hook + UI hook |
-| Inline API calls           | Function makes fetch calls directly                  | Extract to injectable service/action        |
-| Direct localStorage access | Component reads/writes storage directly              | Extract to storage service                  |
-| Chained async operations   | Function orchestrates multiple async steps           | Extract each step as pure function          |
+| Smell               | Symptom                                   | Refactor                       |
+| ------------------- | ----------------------------------------- | ------------------------------ |
+| God hook            | Hook does fetching + state + side effects | Split into data/logic/UI hooks |
+| Inline API calls    | Function makes fetch calls directly       | Extract to injectable service  |
+| Direct localStorage | Component reads/writes storage            | Extract to storage service     |
 
 Tests should be simple. If they're not, the code needs work first.

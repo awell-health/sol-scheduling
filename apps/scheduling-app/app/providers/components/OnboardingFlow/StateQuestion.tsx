@@ -56,7 +56,11 @@ async function getStateFromGeolocation(): Promise<string | null> {
   });
 }
 
-export function StateQuestion({ value, onChange, onContinue }: StateQuestionProps) {
+export function StateQuestion({
+  value,
+  onChange,
+  onContinue
+}: StateQuestionProps) {
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
 
@@ -68,11 +72,11 @@ export function StateQuestion({ value, onChange, onContinue }: StateQuestionProp
 
     if (stateCode) {
       const isValid = ALL_US_STATES.some((s) => s.code === stateCode);
-        if (isValid) {
-          onChange(stateCode);
-        } else {
-          setLocationError("We couldn't detect a valid US state.");
-        }
+      if (isValid) {
+        onChange(stateCode);
+      } else {
+        setLocationError("We couldn't detect a valid US state.");
+      }
     } else {
       setLocationError(
         'Unable to detect your location. Please select your state manually.'
@@ -99,7 +103,12 @@ export function StateQuestion({ value, onChange, onContinue }: StateQuestionProp
 
       <div className='space-y-4'>
         <Select value={value ?? ''} onValueChange={onChange}>
-          <SelectTrigger className='h-14 w-full text-base' data-phi='true' data-attr-redact='true'>
+          <SelectTrigger
+            className='h-14 w-full text-base'
+            aria-label='Select your state'
+            data-phi='true'
+            data-attr-redact='true'
+          >
             <SelectValue placeholder='Select your state' />
           </SelectTrigger>
           <SelectContent className='max-h-[300px]'>
