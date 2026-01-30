@@ -8,7 +8,7 @@ import {
   useOnboarding,
   useBuildUrlWithUtm,
   isSupportedState,
-  getBorderingTargetState,
+  getBorderingTargetState
 } from '../_lib/onboarding';
 import { useProvider, useAvailability } from './hooks';
 import {
@@ -16,20 +16,26 @@ import {
   AvailabilityCalendar,
   BookingForm,
   getSlotModes,
-  type BookingFormValues,
+  type BookingFormValues
 } from './components';
 import { BookingProgressModal } from './BookingProgressModal';
 import { useBookingWorkflow } from '../../hooks';
 import { AvailabilitySlot } from '../_lib/types';
 import { format } from 'date-fns';
-import { getAnyStoredLeadId, clearAllBookingStorage, ensureLeadExistsAction, storeLeadId } from '../_lib/salesforce';
+import {
+  getAnyStoredLeadId,
+  clearAllBookingStorage,
+  ensureLeadExistsAction,
+  storeLeadId
+} from '../_lib/salesforce';
+import { trackAppointment } from '../../../lib/tracking';
 
 interface ProviderDetailPageProps {
   providerId: string;
 }
 
 export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
-  providerId,
+  providerId
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -45,7 +51,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
   const {
     provider,
     loading: providerLoading,
-    error: providerError,
+    error: providerError
   } = useProvider(providerId);
 
   const {
@@ -58,11 +64,13 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
     locationOptions,
     locationFilter,
     setLocationFilter,
-    defaultMonth,
+    defaultMonth
   } = useAvailability(providerId);
 
   // Booking state
-  const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(
+    null
+  );
   const bookingWorkflow = useBookingWorkflow({ posthog });
 
   // Redirect to onboarding if not complete
@@ -80,18 +88,24 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
         const borderTarget = getBorderingTargetState(preferences.state);
         if (borderTarget) {
           const url = buildUrlWithUtm('/onboarding/bordering', {
-            state: preferences.state,
+            state: preferences.state
           });
           router.replace(url);
         } else {
           const url = buildUrlWithUtm('/not-available', {
-            state: preferences.state,
+            state: preferences.state
           });
           router.replace(url);
         }
       }
     }
-  }, [isInitialized, isOnboardingComplete, preferences.state, router, buildUrlWithUtm]);
+  }, [
+    isInitialized,
+    isOnboardingComplete,
+    preferences.state,
+    router,
+    buildUrlWithUtm
+  ]);
 
   // Determine if we're redirecting
   const isRedirecting =
@@ -116,21 +130,25 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
 
     // Check Salesforce lead status before proceeding
     const leadResult = getAnyStoredLeadId();
-    
+
     // Get phone from form data or preferences
     const phone = data.phone || preferences.phone;
 
     // If no lead ID and no phone, redirect to onboarding
     if (!leadResult && !phone) {
-      console.log('[handleSubmitBooking] No lead found and no phone, redirecting to onboarding...');
+      console.log(
+        '[handleSubmitBooking] No lead found and no phone, redirecting to onboarding...'
+      );
       clearAllBookingStorage();
-      
+
       posthog?.capture('booking_redirected_to_onboarding', {
         provider_id: selectedSlot.providerId,
-        reason: 'missing_lead_id_and_phone',
+        reason: 'missing_lead_id_and_phone'
       });
-      
-      const onboardingUrl = buildUrlWithUtm('/onboarding', { target: pathname });
+
+      const onboardingUrl = buildUrlWithUtm('/onboarding', {
+        target: pathname
+      });
       router.push(onboardingUrl);
       return;
     }
@@ -146,11 +164,14 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
           service: preferences.service,
           insurance: preferences.insurance,
           consent: preferences.consent,
-          posthogDistinctId: posthog?.get_distinct_id(),
+          posthogDistinctId: posthog?.get_distinct_id()
         });
 
         if (!ensureResult.success || !ensureResult.leadId) {
-          console.error('[handleSubmitBooking] Failed to ensure lead exists:', ensureResult.error);
+          console.error(
+            '[handleSubmitBooking] Failed to ensure lead exists:',
+            ensureResult.error
+          );
           // Show error but don't redirect - let user retry
           return;
         }
@@ -161,18 +182,20 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
           posthog?.capture('lead_recreated_at_booking', {
             previous_lead_id: leadResult?.leadId,
             new_lead_id: ensureResult.leadId,
-            reason: 'lead_deleted_or_converted',
+            reason: 'lead_deleted_or_converted'
           });
           console.log('[handleSubmitBooking] Lead was recreated:', {
             previousLeadId: leadResult?.leadId,
-            newLeadId: ensureResult.leadId,
+            newLeadId: ensureResult.leadId
           });
         }
       } catch (err) {
         console.error('[handleSubmitBooking] Error ensuring lead exists:', err);
         // If we have no lead ID at all, we need to redirect
         if (!leadResult?.leadId) {
-          const onboardingUrl = buildUrlWithUtm('/onboarding', { target: pathname });
+          const onboardingUrl = buildUrlWithUtm('/onboarding', {
+            target: pathname
+          });
           router.push(onboardingUrl);
           return;
         }
@@ -180,8 +203,12 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       }
     } else if (!leadResult?.leadId) {
       // No phone and no lead ID - redirect to onboarding
-      console.log('[handleSubmitBooking] No phone and no lead, redirecting to onboarding...');
-      const onboardingUrl = buildUrlWithUtm('/onboarding', { target: pathname });
+      console.log(
+        '[handleSubmitBooking] No phone and no lead, redirecting to onboarding...'
+      );
+      const onboardingUrl = buildUrlWithUtm('/onboarding', {
+        target: pathname
+      });
       router.push(onboardingUrl);
       return;
     }
@@ -208,7 +235,15 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       state: preferences.state ?? undefined,
       patientTimezone: browserTimezone,
       clinicalFocus: clinicalFocusFromUrl,
-      service: preferences.service ?? undefined,
+      service: preferences.service ?? undefined
+    });
+
+    // Track appointment conversion in WhatConverts (after successful booking start)
+    trackAppointment({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: phone || '',
+      appointmentTime: selectedSlot.slotstart
     });
   };
 
@@ -229,7 +264,7 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
             modeText = selectedSlot.eventType;
           }
           return `${selectedSlot.duration} mins • ${modeText}`;
-        })(),
+        })()
       }
     : null;
 
