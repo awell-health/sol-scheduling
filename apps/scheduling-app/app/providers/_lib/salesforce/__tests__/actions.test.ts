@@ -19,8 +19,8 @@ const {
   mockPostHogFlush: vi.fn()
 }));
 
-// Mock Salesforce client
-vi.mock('@/lib/salesforce', () => ({
+// Mock Salesforce client - use relative path from this test file
+vi.mock('../../../../../lib/salesforce', () => ({
   getSalesforceClient: () => ({
     getLead: mockGetLead,
     createLead: mockCreateLead,
@@ -42,8 +42,8 @@ vi.mock('workflow/api', () => ({
   start: mockStart
 }));
 
-// Mock field registry
-vi.mock('@/lib/fields', () => ({
+// Mock field registry - use relative path
+vi.mock('../../../../../lib/fields', () => ({
   FieldId: {
     PHONE: 'phone',
     STATE: 'state',

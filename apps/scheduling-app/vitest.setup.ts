@@ -3,6 +3,12 @@ import { cleanup } from '@testing-library/react';
 import { afterEach, beforeAll, afterAll } from 'vitest';
 import { server } from './mocks/server';
 
+// Set dummy environment variables for tests that may instantiate clients
+// These are overridden by mocks but provide fallback if mock fails
+process.env.SALESFORCE_SUBDOMAIN = 'test';
+process.env.SALESFORCE_CLIENT_ID = 'test-client-id';
+process.env.SALESFORCE_CLIENT_SECRET = 'test-client-secret';
+
 // Cleanup after each test case
 afterEach(() => {
   cleanup();
