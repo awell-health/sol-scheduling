@@ -1,16 +1,5 @@
 import { AwellSdk, type Environment } from '@awell-health/awell-sdk';
 
-const INTAKE_CAREFLOW_DEFINITION_ID = process.env.INTAKE_CAREFLOW_DEFINITION_ID;
-
-/** Data point definition ID for eventId baseline info */
-const EVENT_ID_DATA_POINT_DEFINITION_ID = process.env.INTAKE_CAREFLOW_DPD_BOOKED_EVENT_ID || 'TFZDB1ls7D3P';
-
-/** Data point definition ID for providerId baseline info */
-const PROVIDER_ID_DATA_POINT_DEFINITION_ID = process.env.INTAKE_CAREFLOW_DPD_PROVIDER_ID || 'jArwfvoTRlFJ';
-
-/** Data point definition ID for confirmationId (workflow runId) baseline info */
-const CONFIRMATION_ID_DATA_POINT_DEFINITION_ID = process.env.INTAKE_CAREFLOW_DPD_BOOKING_CONFIRMATION_ID || 'ORVnKhrsQ0hT';
-
 /**
  * Input for startIntakeCareflow step
  */
@@ -68,17 +57,23 @@ export async function startIntakeCareflowStep(
 ): Promise<StartIntakeCareflowResult> {
   "use step";
 
+  // Read env vars at runtime (not module load time) for testability
+  const definitionId = process.env.INTAKE_CAREFLOW_DEFINITION_ID;
+  const eventIdDataPointDefinitionId = process.env.INTAKE_CAREFLOW_DPD_BOOKED_EVENT_ID || 'TFZDB1ls7D3P';
+  const providerIdDataPointDefinitionId = process.env.INTAKE_CAREFLOW_DPD_PROVIDER_ID || 'jArwfvoTRlFJ';
+  const confirmationIdDataPointDefinitionId = process.env.INTAKE_CAREFLOW_DPD_BOOKING_CONFIRMATION_ID || 'ORVnKhrsQ0hT';
+
   console.log('[startIntakeCareflowStep] Starting intake careflow:', {
     salesforceLeadId: input.salesforceLeadId,
     eventId: input.eventId,
     providerId: input.providerId,
     confirmationId: input.confirmationId,
-    definitionId: INTAKE_CAREFLOW_DEFINITION_ID,
+    definitionId,
   });
 
   const awell = getAwellClient();
 
-  if (!INTAKE_CAREFLOW_DEFINITION_ID) {
+  if (!definitionId) {
     throw new Error('[startIntakeCareflowStep] INTAKE_CAREFLOW_DEFINITION_ID environment variable is not set');
   }
 
@@ -90,7 +85,7 @@ export async function startIntakeCareflowStep(
     startPathwayWithPatientIdentifier: {
       __args: {
         input: {
-          pathway_definition_id: INTAKE_CAREFLOW_DEFINITION_ID,
+          pathway_definition_id: definitionId,
           patient_identifier: {
             system: getSalesforceIdentifierSystem(),
             value: input.salesforceLeadId,
@@ -98,15 +93,15 @@ export async function startIntakeCareflowStep(
           create_patient: true,
           data_points: [
             {
-              data_point_definition_id: EVENT_ID_DATA_POINT_DEFINITION_ID,
+              data_point_definition_id: eventIdDataPointDefinitionId,
               value: input.eventId,
             },
             {
-              data_point_definition_id: PROVIDER_ID_DATA_POINT_DEFINITION_ID,
+              data_point_definition_id: providerIdDataPointDefinitionId,
               value: input.providerId,
             },
             {
-              data_point_definition_id: CONFIRMATION_ID_DATA_POINT_DEFINITION_ID,
+              data_point_definition_id: confirmationIdDataPointDefinitionId,
               value: input.confirmationId,
             },
           ],

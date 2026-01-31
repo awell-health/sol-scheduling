@@ -37,7 +37,7 @@ export function useProvider(providerId: string): UseProviderResult {
           posthog?.capture('api_call_provider', {
             provider_id: providerId,
             frontend_rt_ms: frontendMs,
-            sol_api_rt_ms: response._timing?.solApiMs,
+            sol_api_rt_ms: response._timing?.solApiMs
           });
         }
       } catch (err) {
@@ -63,6 +63,3 @@ export function useProvider(providerId: string): UseProviderResult {
 
   return { provider, loading, error };
 }
-
-
-
