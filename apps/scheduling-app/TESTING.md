@@ -123,30 +123,145 @@ export const WithInteraction: Story = {
 
 - **Base URL**: `http://localhost:3000`
 - **Browsers**: Chromium, Firefox, WebKit + Mobile
-- **Fixtures**: API mocking, localStorage helpers, Salesforce client
+- **Fixtures**: API mocking, localStorage helpers, Salesforce mocking, workflow mocking
 
-### Test Fixtures
+### Test Strategy: Two Tiers
+
+#### Tier 1: Fully Mocked Tests (Default)
+
+All external services are mocked at the network level. These tests are:
+
+- Fast and deterministic
+- Safe to run in CI on every PR
+- No external dependencies or cleanup needed
 
 ```typescript
-import { test, expect } from '../__checks__/fixtures';
+import { test, expect, mockOnboardingData } from '../__checks__/fixtures';
 
-test('completes booking flow', async ({ page, localStorage, apiMock }) => {
+test('booking flow with mocked services', async ({
+  page,
+  apiMock,
+  salesforceMock,
+  workflowMock,
+  testLead,
+  localStorage
+}) => {
+  // Create mock lead (no API call)
+  const lead = testLead.createMockLead();
+
+  // Set up all mocks before navigation
   await apiMock.setupMocks();
+  await salesforceMock.setupMocks();
+  await workflowMock.setupMocks();
+
+  // Pre-seed onboarding data
   await page.goto('/');
-  await localStorage.setOnboardingData({ state: 'CO', service: 'Therapy' });
-  await page.goto('/providers');
-  await expect(page.getByText('Sarah Johnson')).toBeVisible();
+  await localStorage.setOnboardingData({
+    state: 'CO',
+    service: 'medication',
+    phone: lead.phone
+  });
+
+  // Navigate and test
+  await page.goto('/providers/provider-psychiatry-1');
+  await page.click('[data-testid="book-button"]');
+
+  // Assert workflow was triggered with correct data
+  workflowMock.assertWorkflowStarted({ salesforceLeadId: lead.id });
 });
+```
+
+#### Tier 2: Integration Tests (Real Salesforce Sandbox)
+
+For testing actual Salesforce integration. These tests:
+
+- Create real leads in Salesforce sandbox
+- Automatically clean up leads after each test
+- Run separately (not on every PR)
+
+```bash
+# Run integration tests
+USE_REAL_SALESFORCE=true pnpm playwright test tests/integration/
+```
+
+```typescript
+test('creates real lead @integration', async ({ testLead, salesforce }) => {
+  // Create real lead (auto-cleaned up after test)
+  const lead = await testLead.createRealLead({ state: 'NY' });
+
+  // Verify in Salesforce
+  const sfLead = await salesforce.getLead(lead.id);
+  expect(sfLead.State).toBe('NY');
+});
+```
+
+### Available Fixtures
+
+| Fixture          | Purpose                                         | Mode        |
+| ---------------- | ----------------------------------------------- | ----------- |
+| `apiMock`        | Mock SOL API (providers, availability, booking) | Mocked      |
+| `salesforceMock` | Mock Salesforce API at network level            | Mocked      |
+| `workflowMock`   | Mock booking workflow API calls                 | Mocked      |
+| `testLead`       | Generate mock lead IDs or create real leads     | Both        |
+| `localStorage`   | Read/write localStorage values                  | Both        |
+| `salesforce`     | Real Salesforce client (requires credentials)   | Integration |
+
+### Workflow Mocking
+
+The booking workflow orchestrates multiple services (SOL API, Salesforce, Awell). The `workflowMock` fixture intercepts workflow API calls:
+
+```typescript
+test('booking shows confirmation', async ({ page, workflowMock }) => {
+  await workflowMock.setupMocks();
+
+  // ... complete booking flow
+
+  // Assert workflow was started
+  workflowMock.assertWorkflowStarted({ eventId: 'event-123' });
+
+  // Check intercepted requests
+  const requests = workflowMock.getInterceptedRequests();
+  expect(requests).toHaveLength(1);
+});
+
+// Simulate workflow failure
+test('shows error on workflow failure', async ({ workflowMock }) => {
+  workflowMock.configure({
+    shouldFail: true,
+    errorMessage: 'Booking failed'
+  });
+  await workflowMock.setupMocks();
+  // ...
+});
+```
+
+### Salesforce Lead Management
+
+The `testLead` fixture manages both mock and real leads:
+
+```typescript
+// Mock mode (default) - no API calls
+const mockLead = testLead.createMockLead();
+// Returns: { id: '00Q_MOCK_...', phone: '+1555...', isReal: false }
+
+// Real mode (USE_REAL_SALESFORCE=true) - creates in sandbox
+const realLead = await testLead.createRealLead({ state: 'CO' });
+// Returns: { id: '00Q...', phone: '+1555...', isReal: true }
+// Automatically cleaned up after test!
+
+// Register externally created lead for cleanup
+testLead.registerForCleanup(leadId, phone);
 ```
 
 ## Remaining Work
 
 ### E2E Tests
 
-- [ ] `tests/onboarding.spec.ts` - Complete onboarding flow
+- [x] `tests/onboarding.spec.ts` - Complete onboarding flow
 - [ ] `tests/provider-selection.spec.ts` - Filtering and selection
-- [ ] `tests/booking.spec.ts` - Booking workflow (mocked)
+- [x] `tests/booking.spec.ts` - Booking workflow (mocked)
 - [ ] `tests/confirmation.spec.ts` - Confirmation page
+- [x] `tests/integration/salesforce-integration.spec.ts` - Real Salesforce tests
 
 ### Accessibility (A11y) Fixes
 
