@@ -3,7 +3,7 @@ import { Frequency } from 'checkly/constructs';
 
 /**
  * Checkly configuration for SOL Scheduling App
- * 
+ *
  * Run checks with: npx checkly test
  * Deploy checks with: npx checkly deploy
  */
@@ -23,10 +23,10 @@ export default defineConfig({
     ignoreDirectoriesMatch: [],
     browserChecks: {
       frequency: Frequency.EVERY_10M,
-      testMatch: '**/__checks__/**/*.spec.ts',
-    },
+      testMatch: '**/__checks__/**/*.spec.ts'
+    }
   },
   cli: {
-    runLocation: 'us-east-1',
-  },
+    runLocation: 'us-east-1'
+  }
 });
