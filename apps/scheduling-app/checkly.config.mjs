@@ -17,7 +17,7 @@ export default defineConfig({
     muted: false,
     runtimeId: '2025.04',
     frequency: Frequency.EVERY_10M,
-    locations: ['us-east-1', 'us-west-1'],
+    locations: ['us-east-1', 'eu-central-1'],
     tags: ['scheduling', 'sol'],
     checkMatch: '**/__checks__/**/*.check.ts',
     ignoreDirectoriesMatch: [],
