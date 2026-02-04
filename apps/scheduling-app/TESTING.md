@@ -266,17 +266,20 @@ testLead.registerForCleanup(leadId, phone);
 ### Known Limitations
 
 **Server-side operations cannot be mocked with Playwright:**
+
 - Salesforce API calls (happen via Next.js server actions)
 - Booking workflow (runs server-side)
 - Lead creation/updates
 
 **Workarounds:**
+
 1. Use real Salesforce sandbox with `testLead.registerForCleanup()` for automatic cleanup
 2. Or add `E2E_TEST_MODE` env var check in server actions to return mock data
 
 ### Checkly Integration
 
 Tests in `__checks__/` run on Checkly every 10 minutes:
+
 - `salesforce.spec.ts` - Verifies Salesforce API connectivity
 
 **Note:** Browser tests using `page.evaluate` (like localStorage fixture) fail in Checkly's VM2 sandbox. Keep those in `tests/` for local runs only.
