@@ -39,6 +39,97 @@ export const INSURANCE_OPTIONS: FieldOption[] = [
 ];
 
 /**
+ * Insurance carrier groups for SOL API.
+ * Maps user-selected insurance values to the broader carrier groups expected by the API.
+ * 
+ * The API filters providers by carrier group, not individual insurers.
+ * For example, "Cigna" and "Allegiance" both map to "Cigna / Evernorth / Allegiance".
+ */
+export const INSURANCE_CARRIER_GROUPS = {
+  AETNA: 'Aetna',
+  CIGNA_EVERNORTH_ALLEGIANCE: 'Cigna / Evernorth / Allegiance',
+  ELEVANCE_BCBS: 'Elevance / BCBS / Anthem / Carelon / Beacon / Kaiser / Empire / Carefirst',
+  EMBLEM_HEALTH: 'EmblemHealth',
+  FIRST_HEALTH: 'First Health',
+  HEALTHFIRST: 'Healthfirst',
+  MAGNACARE: 'Magnacare',
+  MEDICAID: 'Medicaid',
+  MEDICARE: 'Medicare',
+  MULTIPLAN_CLARITEV: 'Multiplan / Claritev',
+  NORTHWELL_DIRECT: 'Northwell Direct',
+  UNITED_OPTUM_OXFORD_UMR: 'United / Optum / Oxford / UMR',
+  OSCAR: 'Oscar',
+  TRICARE: 'Tricare',
+  _1199: '1199',
+  OTHER: 'Other',
+} as const;
+
+export type InsuranceCarrierGroup = typeof INSURANCE_CARRIER_GROUPS[keyof typeof INSURANCE_CARRIER_GROUPS];
+
+/**
+ * Maps user-selected insurance values to SOL API carrier groups.
+ * 
+ * Key: User-selected insurance value (from INSURANCE_OPTIONS)
+ * Value: Carrier group to send to SOL API
+ */
+export const INSURANCE_TO_CARRIER_GROUP: Record<typeof INSURANCE_OPTIONS[number]['value'], InsuranceCarrierGroup> = {
+  // Aetna group
+  'Aetna': INSURANCE_CARRIER_GROUPS.AETNA,
+  
+  // Cigna / Evernorth / Allegiance group
+  'Allegiance': INSURANCE_CARRIER_GROUPS.CIGNA_EVERNORTH_ALLEGIANCE,
+  'Cigna': INSURANCE_CARRIER_GROUPS.CIGNA_EVERNORTH_ALLEGIANCE,
+  
+  // Elevance / BCBS group (largest group)
+  'BCBS - Anthem': INSURANCE_CARRIER_GROUPS.ELEVANCE_BCBS,
+  'BCBS - Empire': INSURANCE_CARRIER_GROUPS.ELEVANCE_BCBS,
+  'BCBS - Carefirst': INSURANCE_CARRIER_GROUPS.ELEVANCE_BCBS,
+  'BCBS - TX': INSURANCE_CARRIER_GROUPS.ELEVANCE_BCBS,
+  'Elevance / Carelon': INSURANCE_CARRIER_GROUPS.ELEVANCE_BCBS,
+  'Kaiser': INSURANCE_CARRIER_GROUPS.ELEVANCE_BCBS,
+  
+  // Individual carriers (1:1 mapping)
+  'EmblemHealth': INSURANCE_CARRIER_GROUPS.EMBLEM_HEALTH,
+  'First Health': INSURANCE_CARRIER_GROUPS.FIRST_HEALTH,
+  'Healthfirst': INSURANCE_CARRIER_GROUPS.HEALTHFIRST,
+  'Magnacare': INSURANCE_CARRIER_GROUPS.MAGNACARE,
+  'Medicaid': INSURANCE_CARRIER_GROUPS.MEDICAID,
+  'Medicare': INSURANCE_CARRIER_GROUPS.MEDICARE,
+  'Multiplan / Claritev': INSURANCE_CARRIER_GROUPS.MULTIPLAN_CLARITEV,
+  'Northwell Direct': INSURANCE_CARRIER_GROUPS.NORTHWELL_DIRECT,
+  'Oscar': INSURANCE_CARRIER_GROUPS.OSCAR,
+  'Tricare': INSURANCE_CARRIER_GROUPS.TRICARE,
+  '1199': INSURANCE_CARRIER_GROUPS._1199,
+  'Other': INSURANCE_CARRIER_GROUPS.OTHER,
+  
+  // United / Optum / Oxford / UMR group
+  'Optum': INSURANCE_CARRIER_GROUPS.UNITED_OPTUM_OXFORD_UMR,
+  'Oxford': INSURANCE_CARRIER_GROUPS.UNITED_OPTUM_OXFORD_UMR,
+  'UMR': INSURANCE_CARRIER_GROUPS.UNITED_OPTUM_OXFORD_UMR,
+  'UnitedHealthcare': INSURANCE_CARRIER_GROUPS.UNITED_OPTUM_OXFORD_UMR,
+};
+
+/**
+ * Converts a user-selected insurance value to the SOL API carrier group.
+ * 
+ * @param userInsurance - The insurance value selected by the user (e.g., "Cigna", "BCBS - Anthem")
+ * @returns The carrier group for the API (e.g., "Cigna / Evernorth / Allegiance"), or undefined if no mapping
+ * 
+ * @example
+ * mapInsuranceToCarrierGroup('Cigna') // => 'Cigna / Evernorth / Allegiance'
+ * mapInsuranceToCarrierGroup('BCBS - Anthem') // => 'Elevance / BCBS / Anthem / Carelon / Beacon / Kaiser / Empire / Carefirst'
+ * mapInsuranceToCarrierGroup('Self-pay') // => undefined (no filtering)
+ */
+export function mapInsuranceToCarrierGroup(userInsurance: string | null | undefined): InsuranceCarrierGroup | undefined {
+  if (!userInsurance) return undefined;
+  
+  // Self-pay should not filter by insurance
+  if (userInsurance === 'Self-pay') return undefined;
+  
+  return INSURANCE_TO_CARRIER_GROUP[userInsurance];
+}
+
+/**
  * Service type options.
  */
 export const SERVICE_OPTIONS: FieldOption[] = [

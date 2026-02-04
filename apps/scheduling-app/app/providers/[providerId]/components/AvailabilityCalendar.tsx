@@ -10,10 +10,13 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '../../../../components/ui/select';
 import { Button } from '../../../../components/ui/button';
-import { MapPinIcon, VideoCameraIcon } from '../../components/icons/ProviderIcons';
+import {
+  MapPinIcon,
+  VideoCameraIcon
+} from '../../components/icons/ProviderIcons';
 import { AvailabilitySlot } from '../../_lib/types';
 import { getLocalDayKey } from '../hooks';
 
@@ -94,7 +97,7 @@ function getSlotModes(slot: AvailabilitySlot) {
   // Business rule: any in-person visit can also be virtual
   return {
     inPerson: isInPerson,
-    virtual: isTelehealth || isInPerson,
+    virtual: isTelehealth || isInPerson
   };
 }
 
@@ -113,7 +116,7 @@ export function AvailabilityCalendar({
   onLocationFilterChange,
   selectedSlot,
   onSlotSelect,
-  defaultMonth,
+  defaultMonth
 }: AvailabilityCalendarProps) {
   const searchParams = useSearchParams();
   const hasInitializedFromUrl = useRef(false);
@@ -141,7 +144,9 @@ export function AvailabilityCalendar({
       return;
     }
 
-    const matchingSlot = allSlots.find((slot) => slot.eventId === eventIdFromUrl);
+    const matchingSlot = allSlots.find(
+      (slot) => slot.eventId === eventIdFromUrl
+    );
     if (matchingSlot) {
       const matchDate = new Date(matchingSlot.slotstart);
       setSelectedDate(matchDate);
@@ -299,15 +304,13 @@ export function AvailabilityCalendar({
           disabled={(date: Date) => date < startOfToday()}
           modifiers={{ hasSlots: daysWithSlots }}
           modifiersClassNames={{
-            hasSlots: 'font-semibold text-emerald-700',
-            selected:
-              'bg-secondary text-secondary-foreground rounded-md !ring-0 !border-0',
-            today: 'ring-1 ring-secondary text-secondary-foreground rounded-md',
+            // Only custom modifiers - selected/today/disabled use Calendar defaults
+            hasSlots: 'font-semibold text-emerald-700'
           }}
           components={{
             DayButton: (props) => (
               <SlotDayButton {...props} daySlotMap={daySlotMap} />
-            ),
+            )
           }}
           numberOfMonths={1}
         />
@@ -329,6 +332,3 @@ export function AvailabilityCalendar({
 }
 
 export { getSlotModes };
-
-
-

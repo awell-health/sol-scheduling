@@ -66,7 +66,7 @@ export function useAvailability(providerId: string): UseAvailabilityResult {
         const sortedSlots = providerSlots
           .map((slot) => ({
             ...slot,
-            slotstart: slot.slotstart,
+            slotstart: slot.slotstart
           }))
           .sort(
             (first, second) =>
@@ -81,7 +81,7 @@ export function useAvailability(providerId: string): UseAvailabilityResult {
             provider_id: providerId,
             frontend_rt_ms: frontendMs,
             sol_api_rt_ms: response._timing?.solApiMs,
-            slot_count: sortedSlots.length,
+            slot_count: sortedSlots.length
           });
         }
       } catch (err) {
@@ -175,11 +175,8 @@ export function useAvailability(providerId: string): UseAvailabilityResult {
     daysWithSlots,
     locationFilter,
     setLocationFilter,
-    defaultMonth,
+    defaultMonth
   };
 }
 
 export { getLocalDayKey };
-
-
-

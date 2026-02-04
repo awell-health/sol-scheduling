@@ -1,7 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { SERVICE_OPTIONS_WITH_DESCRIPTIONS, FIELD_REGISTRY, FieldId } from '@/lib/fields';
+import {
+  SERVICE_OPTIONS_WITH_DESCRIPTIONS,
+  FIELD_REGISTRY,
+  FieldId
+} from '@/lib/fields';
 
 type ServiceQuestionProps = {
   value: string | null;
@@ -44,6 +48,7 @@ export function ServiceQuestion({
               value={option.value}
               checked={value === option.value}
               onChange={() => onChange(option.value)}
+              aria-label={option.label}
               className='mt-1 h-5 w-5 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
             />
             <div>
