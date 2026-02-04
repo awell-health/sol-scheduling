@@ -14,6 +14,7 @@ import {
   type OnboardingPreferences,
 } from '../_lib/onboarding';
 import { getProvidersAction } from '../actions';
+import { mapInsuranceToCarrierGroup } from '../../../lib/fields/registry';
 
 const DEFAULT_FILTERS: ProviderSearchFilters = {
   age: '35',
@@ -142,7 +143,7 @@ export function useProviders({
   useEffect(() => {
     if (!isInitialized) return;
 
-    const { state, service } = preferences;
+    const { state, service, insurance } = preferences;
 
     // Map service string to Modality enum
     const modality = mapServiceToModality(service);
@@ -153,10 +154,14 @@ export function useProviders({
       location = { state: state as LocationState } as ProviderSearchFilters['location'];
     }
 
+    // Map user-selected insurance to carrier group for API filtering
+    const insuranceCarrierGroup = mapInsuranceToCarrierGroup(insurance);
+
     const nextFilters: ProviderSearchFilters = {
       ...DEFAULT_FILTERS,
       ...(modality ? { therapeuticModality: modality } : {}),
       ...(location ? { location } : {}),
+      ...(insuranceCarrierGroup ? { insurance: insuranceCarrierGroup } : {}),
     };
 
     setPendingFilters(nextFilters);
