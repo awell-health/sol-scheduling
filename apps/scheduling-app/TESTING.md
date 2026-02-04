@@ -257,11 +257,39 @@ testLead.registerForCleanup(leadId, phone);
 
 ### E2E Tests
 
-- [x] `tests/onboarding.spec.ts` - Complete onboarding flow
-- [ ] `tests/provider-selection.spec.ts` - Filtering and selection
-- [x] `tests/booking.spec.ts` - Booking workflow (mocked)
-- [ ] `tests/confirmation.spec.ts` - Confirmation page
-- [x] `tests/integration/salesforce-integration.spec.ts` - Real Salesforce tests
+- [x] `tests/onboarding.spec.ts` - Onboarding flow (8 tests)
+- [x] `tests/booking.spec.ts` - Basic booking page test
+- [ ] `tests/provider-detail.spec.ts` - Provider detail page with real provider IDs
+- [ ] `tests/booking-flow.spec.ts` - Full booking flow (requires server-side workflow mocking)
+- [ ] `tests/confirmation.spec.ts` - Confirmation page after booking
+
+### Known Limitations
+
+**Server-side operations cannot be mocked with Playwright:**
+
+- Salesforce API calls (happen via Next.js server actions)
+- Booking workflow (runs server-side)
+- Lead creation/updates
+
+**Workarounds:**
+
+1. Use real Salesforce sandbox with `testLead.registerForCleanup()` for automatic cleanup
+2. Or add `E2E_TEST_MODE` env var check in server actions to return mock data
+
+### Checkly Integration
+
+Tests in `__checks__/` run on Checkly every 10 minutes:
+
+- `salesforce.spec.ts` - Verifies Salesforce API connectivity
+
+**Note:** Browser tests using `page.evaluate` (like localStorage fixture) fail in Checkly's VM2 sandbox. Keep those in `tests/` for local runs only.
+
+### Future Improvements
+
+- [ ] Add `data-testid` attributes to key UI elements for stable selectors
+- [ ] Create MSW handlers for server-side mocking (Node.js mode)
+- [ ] Add visual regression tests with Playwright screenshots
+- [ ] Set up Checkly alerts for production monitoring
 
 ### Accessibility (A11y) Fixes
 
