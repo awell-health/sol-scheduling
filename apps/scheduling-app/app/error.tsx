@@ -48,14 +48,14 @@ export default function Error({
       </Link>
 
       <p className='mt-10 text-xs text-slate-400'>
-        If this keeps happening, please visit{' '}
+        Or, please call us at{' '}
         <a
-          href='https://solmentalhealth.com/contact'
+          href='tel:8447451861'
           className='font-medium text-primary hover:underline'
         >
-          solmentalhealth.com/contact
+          (844) 745-1861
         </a>{' '}
-        for help.
+        to schedule your appointment.
       </p>
     </main>
   );

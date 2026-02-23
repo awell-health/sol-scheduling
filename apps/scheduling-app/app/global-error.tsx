@@ -242,18 +242,18 @@ export default function GlobalError({
               marginTop: '2.5rem'
             }}
           >
-            If this keeps happening, please visit{' '}
+            Or, please call us at{' '}
             <a
-              href='https://solmentalhealth.com/contact'
+              href='tel:8447451861'
               style={{
                 color: SOL_TEAL,
                 textDecoration: 'none',
                 fontWeight: 500
               }}
             >
-              solmentalhealth.com/contact
+              (844) 745-1861
             </a>{' '}
-            for help.
+            to schedule your appointment.
           </p>
         </main>
       </body>
