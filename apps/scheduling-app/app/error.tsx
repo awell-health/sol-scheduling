@@ -1,8 +1,11 @@
 'use client';
 
+import Image from 'next/image';
+import Link from 'next/link';
+
 export default function Error({
   error,
-  reset,
+  reset: _reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
@@ -20,14 +23,40 @@ export default function Error({
   }
 
   return (
-    <div className='flex min-h-[50vh] flex-col items-center justify-center gap-4 p-4'>
-      <h2 className='text-lg font-semibold'>Something went wrong</h2>
-      <button
-        onClick={() => reset()}
-        className='rounded-md bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800'
+    <main className='flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-4 py-8 text-center'>
+      <Image
+        src='/images/sol_logo.svg'
+        alt='SOL Mental Health'
+        width={123}
+        height={83}
+        className='mb-8'
+        priority
+      />
+
+      <h1 className='mb-3 text-2xl font-semibold text-secondary-foreground'>
+        We hit a snag
+      </h1>
+      <p className='mb-8 max-w-md text-base leading-relaxed text-slate-500'>
+        Something unexpected happened, but we can get you back on track.
+      </p>
+
+      <Link
+        href='/'
+        className='rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90'
       >
-        Try again
-      </button>
-    </div>
+        Schedule your appointment
+      </Link>
+
+      <p className='mt-10 text-xs text-slate-400'>
+        If this keeps happening, please visit{' '}
+        <a
+          href='https://solmentalhealth.com/contact'
+          className='font-medium text-primary hover:underline'
+        >
+          solmentalhealth.com/contact
+        </a>{' '}
+        for help.
+      </p>
+    </main>
   );
 }
