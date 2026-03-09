@@ -265,7 +265,7 @@ describe('Salesforce Actions', () => {
           RecordTypeId: '0125w000000BRDxAAO',
           FirstName: 'No',
           LastName: 'Name Yet',
-          LeadSource: 'Website - Online Booking',
+          LeadSource: 'Website - No Appt Selected',
           Status: 'New'
         })
       );

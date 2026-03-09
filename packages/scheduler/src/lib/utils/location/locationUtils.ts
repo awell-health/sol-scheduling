@@ -14,7 +14,8 @@ export const stateToFacilitiesMap: Record<LocationState, LocationFacility[]> = {
     LocationFacility.Boulder,
     LocationFacility.HighlandsRanch,
     LocationFacility.Broomfield,
-    LocationFacility.Parker
+    LocationFacility.Parker,
+    LocationFacility.CastleRock
   ],
   MD: [
     LocationFacility.Gaithersburg,
@@ -35,7 +36,8 @@ export const stateToFacilitiesMap: Record<LocationState, LocationFacility[]> = {
     LocationFacility.Melville,
     LocationFacility.ValleyStream,
     LocationFacility.Massapequa,
-    LocationFacility.WhitePlains
+    LocationFacility.WhitePlains,
+    LocationFacility.Hauppauge
   ],
   TX: [
     LocationFacility.Woodlands,

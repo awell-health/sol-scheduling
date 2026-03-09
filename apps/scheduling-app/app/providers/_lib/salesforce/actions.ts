@@ -233,7 +233,7 @@ function extractDuplicateLeadId(errorMessage: string): string | null {
 
 /**
  * Create a new Salesforce lead when phone number is captured.
- * Uses the same field mapping as the Website - Online Booking source.
+ * Uses the same field mapping as the Website - No Appt Selected source.
  * If a duplicate is detected, updates the existing lead instead.
  */
 export async function createLeadAction(
@@ -276,7 +276,7 @@ export async function createLeadAction(
       RecordTypeId: '0125w000000BRDxAAO',
       FirstName: 'No',
       LastName: 'Name Yet',
-      LeadSource: 'Website - Online Booking',
+      LeadSource: 'Website - No Appt Selected',
       Status: 'New',
       Inquiry_Date__c: new Date().toISOString(),
       Phone: formattedPhone,
