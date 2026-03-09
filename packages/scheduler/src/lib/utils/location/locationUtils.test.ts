@@ -16,7 +16,8 @@ describe('Utility Functions for Location and Facility', () => {
         LocationFacility.Boulder,
         LocationFacility.HighlandsRanch,
         LocationFacility.Broomfield,
-        LocationFacility.Parker
+        LocationFacility.Parker,
+        LocationFacility.CastleRock
       ]);
     });
 
@@ -58,7 +59,8 @@ describe('Utility Functions for Location and Facility', () => {
         LocationFacility.Melville,
         LocationFacility.ValleyStream,
         LocationFacility.Massapequa,
-        LocationFacility.WhitePlains
+        LocationFacility.WhitePlains,
+        LocationFacility.Hauppauge
       ]);
     });
 
