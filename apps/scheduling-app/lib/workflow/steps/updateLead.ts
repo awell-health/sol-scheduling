@@ -7,6 +7,8 @@ import { mapServiceToSalesforce } from '../../../app/providers/_lib/salesforce/t
  */
 export interface UpdateLeadInput {
   leadId: string;
+  /** Lead source */
+  leadSource?: string;
   /** Patient's first name */
   firstName?: string;
   /** Patient's last name */
@@ -54,9 +56,13 @@ export async function updateLeadStep(
 
     const updateData: Record<string, unknown> = {
       RecordTypeId: '0125w000000BRDxAAO',
-      Status: 'New',
-      LeadSource: 'Website - Appt Selected'
+      Status: 'New'
     };
+
+    // LeadSource = Lead source
+    if (input.leadSource) {
+      updateData.LeadSource = input.leadSource;
+    }
 
     // FirstName = Patient's first name
     if (input.firstName) {

@@ -143,6 +143,7 @@ export async function bookingWorkflow(
     }),
     updateLeadStep({
       leadId: input.salesforceLeadId,
+      leadSource: 'Website - Appt Selected',
       firstName: input.firstName,
       lastName: input.lastName,
       clinicalFocus: input.clinicalFocus,
