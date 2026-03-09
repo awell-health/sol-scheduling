@@ -211,6 +211,9 @@ describe('startIntakeCareflowStep', () => {
     process.env.AWELL_ENVIRONMENT = 'sandbox';
     process.env.SALESFORCE_IDENTIFIER_SYSTEM = 'salesforce-system';
     process.env.INTAKE_CAREFLOW_DEFINITION_ID = 'intake-def-123';
+    process.env.INTAKE_CAREFLOW_DPD_BOOKED_EVENT_ID = 'dpd-event-123';
+    process.env.INTAKE_CAREFLOW_DPD_PROVIDER_ID = 'dpd-provider-123';
+    process.env.INTAKE_CAREFLOW_DPD_BOOKING_CONFIRMATION_ID = 'dpd-conf-123';
   });
 
   afterEach(() => {
@@ -218,6 +221,9 @@ describe('startIntakeCareflowStep', () => {
     delete process.env.AWELL_ENVIRONMENT;
     delete process.env.SALESFORCE_IDENTIFIER_SYSTEM;
     delete process.env.INTAKE_CAREFLOW_DEFINITION_ID;
+    delete process.env.INTAKE_CAREFLOW_DPD_BOOKED_EVENT_ID;
+    delete process.env.INTAKE_CAREFLOW_DPD_PROVIDER_ID;
+    delete process.env.INTAKE_CAREFLOW_DPD_BOOKING_CONFIRMATION_ID;
   });
 
   it('starts careflow with data points', async () => {
