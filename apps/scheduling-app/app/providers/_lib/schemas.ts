@@ -105,6 +105,7 @@ export enum LocationFacility {
   HighlandsRanch = 'CO - Highlands Ranch',
   Broomfield = 'CO - Broomfield',
   Parker = 'CO - Parker',
+  CastleRock = 'CO - Castle Rock',
   SilverSpring = 'MD - Silver Spring',
   Gaithersburg = 'MD - Gaithersburg',
   Frederick = 'MD - Frederick',
@@ -124,7 +125,8 @@ export enum LocationFacility {
   Melville = 'NY - Melville',
   ValleyStream = 'NY - Valley Stream',
   Massapequa = 'NY - Massapequa',
-  WhitePlains = 'NY - White Plains'
+  WhitePlains = 'NY - White Plains',
+  Hauppauge = 'NY - Hauppauge'
 }
 
 const transformEmptyToUndefined = <T extends z.ZodType>(schema: T) =>

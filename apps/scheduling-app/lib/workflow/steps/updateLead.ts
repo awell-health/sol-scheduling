@@ -54,7 +54,8 @@ export async function updateLeadStep(
 
     const updateData: Record<string, unknown> = {
       RecordTypeId: '0125w000000BRDxAAO',
-      Status: 'New'
+      Status: 'New',
+      LeadSource: 'Website - Appt Selected'
     };
 
     // FirstName = Patient's first name
