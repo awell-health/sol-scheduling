@@ -1,24 +1,33 @@
 /**
- * WhatConverts tracking utilities
+ * WhatConverts tracking utilities — same `$wc_leads.track.appointment` for all cases.
  *
- * Usage:
+ * Early funnel (onboarding phone step): phone only; omit or empty `appointmentTime`
+ * and names so WhatConverts receives blank appointment time until the user books.
+ *
+ * Full booking (if ever needed again): pass names, phone, and `appointmentTime`.
+ *
  *   import { trackAppointment } from '@/lib/tracking/whatconverts'
+ *
+ *   trackAppointment({ phone: '+18883437185', appointmentTime: '' })
  *
  *   trackAppointment({
  *     firstName: 'Joe',
  *     lastName: 'Smith',
  *     phone: '+18883437185',
  *     appointmentTime: new Date(),
- *     email: 'joe.smith@example.com', // optional
+ *     email: 'joe.smith@example.com',
  *   })
  */
 
+/** External 152343.js may attach `track.appointment` shortly after first paint. */
+const TRACKER_RETRY_MS = 100
+const TRACKER_MAX_WAIT_MS = 8000
+
 interface AppointmentTrackingData {
-  firstName: string
-  lastName: string
   phone: string
-  appointmentTime: Date | string
-  /** Optional - include if available */
+  firstName?: string
+  lastName?: string
+  appointmentTime?: Date | string
   email?: string
 }
 
@@ -34,27 +43,18 @@ declare global {
   }
 }
 
-/**
- * Track an appointment conversion in WhatConverts
- */
-export function trackAppointment(data: AppointmentTrackingData): void {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  if (!window.$wc_leads) {
-    console.warn('[WhatConverts] Tracker not loaded, skipping appointment tracking')
-    return
-  }
-
+function buildTrackingRecord(data: AppointmentTrackingData): Record<string, string> {
+  const rawTime = data.appointmentTime
   const appointmentTime =
-    data.appointmentTime instanceof Date
-      ? formatDateTime(data.appointmentTime)
-      : data.appointmentTime
+    rawTime === undefined || rawTime === ''
+      ? ''
+      : rawTime instanceof Date
+        ? formatDateTime(rawTime)
+        : rawTime
 
   const trackingData: Record<string, string> = {
-    'First Name': data.firstName,
-    'Last Name': data.lastName,
+    'First Name': data.firstName ?? '',
+    'Last Name': data.lastName ?? '',
     'Phone Number': data.phone,
     'Appointment Time': appointmentTime,
   }
@@ -63,7 +63,48 @@ export function trackAppointment(data: AppointmentTrackingData): void {
     trackingData['Email Address'] = data.email
   }
 
-  window.$wc_leads.track.appointment(trackingData)
+  return trackingData
+}
+
+function trySendAppointment(trackingData: Record<string, string>): boolean {
+  const track = window.$wc_leads?.track
+  const appointment = track?.appointment
+  if (typeof appointment === 'function') {
+    appointment.call(track, trackingData)
+    console.log('[WhatConverts] track.appointment sent', trackingData)
+    return true
+  }
+  return false
+}
+
+/**
+ * Track an appointment conversion in WhatConverts.
+ * Retries briefly if the async tracker script has not attached `track.appointment` yet.
+ */
+export function trackAppointment(data: AppointmentTrackingData): void {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const trackingData = buildTrackingRecord(data)
+
+  if (trySendAppointment(trackingData)) {
+    return
+  }
+
+  const started = Date.now()
+  const id = window.setInterval(() => {
+    if (trySendAppointment(trackingData)) {
+      window.clearInterval(id)
+      return
+    }
+    if (Date.now() - started >= TRACKER_MAX_WAIT_MS) {
+      window.clearInterval(id)
+      console.warn(
+        '[WhatConverts] Tracker not ready after retry window, skipping appointment tracking'
+      )
+    }
+  }, TRACKER_RETRY_MS)
 }
 
 /**

@@ -14,6 +14,7 @@ import {
   getStoredLeadId,
 } from '../../_lib/salesforce';
 import { FIELD_REGISTRY, FieldId } from '@/lib/fields';
+import { trackAppointment } from '@/lib/tracking';
 
 type PhoneQuestionProps = {
   value: string | null;
@@ -112,6 +113,8 @@ export function PhoneQuestion({
           console.error('[PhoneQuestion] Failed to create lead:', error);
         });
     }
+
+    trackAppointment({ phone: e164Phone, appointmentTime: '' });
 
     // Continue immediately - don't wait for Salesforce
     onContinue();
