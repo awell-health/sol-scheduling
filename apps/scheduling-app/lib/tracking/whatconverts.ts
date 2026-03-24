@@ -1,24 +1,29 @@
 /**
- * WhatConverts tracking utilities
+ * WhatConverts tracking utilities — same `$wc_leads.track.appointment` for all cases.
  *
- * Usage:
+ * Early funnel (onboarding phone step): phone only; omit or empty `appointmentTime`
+ * and names so WhatConverts receives blank appointment time until the user books.
+ *
+ * Full booking (if ever needed again): pass names, phone, and `appointmentTime`.
+ *
  *   import { trackAppointment } from '@/lib/tracking/whatconverts'
+ *
+ *   trackAppointment({ phone: '+18883437185', appointmentTime: '' })
  *
  *   trackAppointment({
  *     firstName: 'Joe',
  *     lastName: 'Smith',
  *     phone: '+18883437185',
  *     appointmentTime: new Date(),
- *     email: 'joe.smith@example.com', // optional
+ *     email: 'joe.smith@example.com',
  *   })
  */
 
 interface AppointmentTrackingData {
-  firstName: string
-  lastName: string
   phone: string
-  appointmentTime: Date | string
-  /** Optional - include if available */
+  firstName?: string
+  lastName?: string
+  appointmentTime?: Date | string
   email?: string
 }
 
@@ -47,14 +52,17 @@ export function trackAppointment(data: AppointmentTrackingData): void {
     return
   }
 
+  const rawTime = data.appointmentTime
   const appointmentTime =
-    data.appointmentTime instanceof Date
-      ? formatDateTime(data.appointmentTime)
-      : data.appointmentTime
+    rawTime === undefined || rawTime === ''
+      ? ''
+      : rawTime instanceof Date
+        ? formatDateTime(rawTime)
+        : rawTime
 
   const trackingData: Record<string, string> = {
-    'First Name': data.firstName,
-    'Last Name': data.lastName,
+    'First Name': data.firstName ?? '',
+    'Last Name': data.lastName ?? '',
     'Phone Number': data.phone,
     'Appointment Time': appointmentTime,
   }

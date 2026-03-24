@@ -28,8 +28,6 @@ import {
   ensureLeadExistsAction,
   storeLeadId
 } from '../_lib/salesforce';
-import { trackAppointment } from '../../../lib/tracking';
-
 interface ProviderDetailPageProps {
   providerId: string;
 }
@@ -236,14 +234,6 @@ export const ProviderDetailPage: React.FC<ProviderDetailPageProps> = ({
       patientTimezone: browserTimezone,
       clinicalFocus: clinicalFocusFromUrl,
       service: preferences.service ?? undefined
-    });
-
-    // Track appointment conversion in WhatConverts (after successful booking start)
-    trackAppointment({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      phone: phone || '',
-      appointmentTime: selectedSlot.slotstart
     });
   };
 
