@@ -19,6 +19,10 @@
  *   })
  */
 
+/** External 152343.js may attach `track.appointment` shortly after first paint. */
+const TRACKER_RETRY_MS = 100
+const TRACKER_MAX_WAIT_MS = 8000
+
 interface AppointmentTrackingData {
   phone: string
   firstName?: string
@@ -39,19 +43,7 @@ declare global {
   }
 }
 
-/**
- * Track an appointment conversion in WhatConverts
- */
-export function trackAppointment(data: AppointmentTrackingData): void {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  if (!window.$wc_leads) {
-    console.warn('[WhatConverts] Tracker not loaded, skipping appointment tracking')
-    return
-  }
-
+function buildTrackingRecord(data: AppointmentTrackingData): Record<string, string> {
   const rawTime = data.appointmentTime
   const appointmentTime =
     rawTime === undefined || rawTime === ''
@@ -71,7 +63,48 @@ export function trackAppointment(data: AppointmentTrackingData): void {
     trackingData['Email Address'] = data.email
   }
 
-  window.$wc_leads.track.appointment(trackingData)
+  return trackingData
+}
+
+function trySendAppointment(trackingData: Record<string, string>): boolean {
+  const track = window.$wc_leads?.track
+  const appointment = track?.appointment
+  if (typeof appointment === 'function') {
+    appointment.call(track, trackingData)
+    console.log('[WhatConverts] track.appointment sent', trackingData)
+    return true
+  }
+  return false
+}
+
+/**
+ * Track an appointment conversion in WhatConverts.
+ * Retries briefly if the async tracker script has not attached `track.appointment` yet.
+ */
+export function trackAppointment(data: AppointmentTrackingData): void {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const trackingData = buildTrackingRecord(data)
+
+  if (trySendAppointment(trackingData)) {
+    return
+  }
+
+  const started = Date.now()
+  const id = window.setInterval(() => {
+    if (trySendAppointment(trackingData)) {
+      window.clearInterval(id)
+      return
+    }
+    if (Date.now() - started >= TRACKER_MAX_WAIT_MS) {
+      window.clearInterval(id)
+      console.warn(
+        '[WhatConverts] Tracker not ready after retry window, skipping appointment tracking'
+      )
+    }
+  }, TRACKER_RETRY_MS)
 }
 
 /**
