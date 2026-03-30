@@ -48,11 +48,17 @@ function buildTrackingRecord(data: AppointmentTrackingData): Record<string, stri
     'Phone Number': data.phone,
   }
 
-  if (data.firstName) trackingData['First Name'] = data.firstName
-  if (data.lastName) trackingData['Last Name'] = data.lastName
-  if (data.email) trackingData['Email Address'] = data.email
+  const firstName = data.firstName?.trim()
+  const lastName = data.lastName?.trim()
+  const email = data.email?.trim()
 
-  const rawTime = data.appointmentTime
+  if (firstName) trackingData['First Name'] = firstName
+  if (lastName) trackingData['Last Name'] = lastName
+  if (email) trackingData['Email Address'] = email
+
+  const rawTime = data.appointmentTime instanceof Date
+    ? data.appointmentTime
+    : data.appointmentTime?.trim()
   if (rawTime && rawTime !== '') {
     trackingData['Appointment Time'] =
       rawTime instanceof Date ? formatDateTime(rawTime) : rawTime
