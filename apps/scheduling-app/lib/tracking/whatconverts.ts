@@ -44,23 +44,18 @@ declare global {
 }
 
 function buildTrackingRecord(data: AppointmentTrackingData): Record<string, string> {
-  const rawTime = data.appointmentTime
-  const appointmentTime =
-    rawTime === undefined || rawTime === ''
-      ? ''
-      : rawTime instanceof Date
-        ? formatDateTime(rawTime)
-        : rawTime
-
   const trackingData: Record<string, string> = {
-    'First Name': data.firstName ?? '',
-    'Last Name': data.lastName ?? '',
     'Phone Number': data.phone,
-    'Appointment Time': appointmentTime,
   }
 
-  if (data.email) {
-    trackingData['Email Address'] = data.email
+  if (data.firstName) trackingData['First Name'] = data.firstName
+  if (data.lastName) trackingData['Last Name'] = data.lastName
+  if (data.email) trackingData['Email Address'] = data.email
+
+  const rawTime = data.appointmentTime
+  if (rawTime && rawTime !== '') {
+    trackingData['Appointment Time'] =
+      rawTime instanceof Date ? formatDateTime(rawTime) : rawTime
   }
 
   return trackingData
