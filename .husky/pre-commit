@@ -1,2 +1,1 @@
-export PATH="$HOME/.nvm/versions/node/v24.12.0/bin:$PATH"
 pnpm --filter @awell-health/sol-scheduling exec lint-staged
