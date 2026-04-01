@@ -27,6 +27,8 @@ interface FilterPillProps<T extends string> {
   clearable?: boolean;
   /** Whether apply is in progress */
   isSubmitting?: boolean;
+  /** Values that should be rendered as disabled/greyed-out in the dropdown */
+  disabledValues?: T[];
 }
 
 const basePillClasses =
@@ -48,6 +50,7 @@ export function FilterPill<T extends string>({
   disabled = false,
   clearable = true,
   isSubmitting = false,
+  disabledValues,
 }: FilterPillProps<T>) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   
@@ -112,22 +115,29 @@ export function FilterPill<T extends string>({
       {isOpen && (
         <div className='absolute left-0 z-30 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-4 shadow-card'>
           <div className='max-h-64 space-y-2 overflow-y-auto text-sm'>
-            {options.map((option) => (
-              <label
-                key={option.value}
-                className='flex items-center gap-2 text-slate-700'
-              >
-                <input
-                  type='radio'
-                  name={filterKey}
-                  value={option.value}
-                  checked={draftValue === option.value}
-                  onChange={() => setDraftValue(option.value)}
-                  className='h-4 w-4 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
+            {options.map((option) => {
+              const isOptionDisabled = disabledValues?.includes(option.value) ?? false;
+              return (
+                <label
+                  key={option.value}
+                  className={clsx(
+                    'flex items-center gap-2',
+                    isOptionDisabled ? 'cursor-not-allowed opacity-40 text-slate-400' : 'text-slate-700'
+                  )}
+                >
+                  <input
+                    type='radio'
+                    name={filterKey}
+                    value={option.value}
+                    checked={draftValue === option.value}
+                    onChange={() => { if (!isOptionDisabled) setDraftValue(option.value); }}
+                    disabled={isOptionDisabled}
+                    className='h-4 w-4 rounded-full border-slate-300 text-primary accent-primary focus:ring-primary/30'
+                  />
+                  <span>{option.label}</span>
+                </label>
+              );
+            })}
           </div>
           <div className='mt-4 flex items-center justify-between text-sm'>
             {clearable ? (
