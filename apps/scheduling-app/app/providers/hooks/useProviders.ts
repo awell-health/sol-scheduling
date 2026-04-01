@@ -14,7 +14,7 @@ import {
   type OnboardingPreferences,
 } from '../_lib/onboarding';
 import { getProvidersAction } from '../actions';
-import { mapInsuranceToCarrierGroup } from '../../../lib/fields/registry';
+import { mapInsuranceToCarrierGroup, INSURANCE_CARRIER_GROUPS } from '../../../lib/fields/registry';
 
 const DEFAULT_FILTERS: ProviderSearchFilters = {
   age: '35',
@@ -85,6 +85,12 @@ const FILTER_MESSAGES: FilterMessageConfig[] = [
       "You've selected 'Not Sure' for a service type. We recommend booking with psychiatry first, so we are showing those clinicians below. If you would like to start with therapy, please filter to 'Therapy' instead. Our team will ultimately help you schedule with both services either way.",
     variant: 'info',
   },
+  {
+    condition: (filters) => filters.insurance === INSURANCE_CARRIER_GROUPS.MEDICARE,
+    message:
+      "Your first appointment must be with one of our psychiatry clinicians (shown below). They will establish your treatment plan. They may also refer you to one of our therapists if appropriate.",
+    variant: 'info',
+  },
 ];
 
 function getFilterMessage(
@@ -148,6 +154,10 @@ export function useProviders({
     // Map service string to Modality enum
     const modality = mapServiceToModality(service);
 
+    // Medicare patients must always see psychiatric clinicians
+    const isMedicare = insurance === INSURANCE_CARRIER_GROUPS.MEDICARE;
+    const effectiveModality = isMedicare ? Modality.Psychiatric : modality;
+
     // Build location filter if state is valid
     let location: ProviderSearchFilters['location'] | undefined;
     if (state && isLocationState(state)) {
@@ -159,7 +169,7 @@ export function useProviders({
 
     const nextFilters: ProviderSearchFilters = {
       ...DEFAULT_FILTERS,
-      ...(modality ? { therapeuticModality: modality } : {}),
+      ...(effectiveModality ? { therapeuticModality: effectiveModality } : {}),
       ...(location ? { location } : {}),
       ...(insuranceCarrierGroup ? { insurance: insuranceCarrierGroup } : {}),
     };
