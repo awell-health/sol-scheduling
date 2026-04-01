@@ -154,8 +154,12 @@ export function useProviders({
     // Map service string to Modality enum
     const modality = mapServiceToModality(service);
 
-    // Medicare patients must always see psychiatric clinicians
-    const isMedicare = insurance === INSURANCE_CARRIER_GROUPS.MEDICARE;
+    // Map user-selected insurance to carrier group for API filtering
+    const insuranceCarrierGroup = mapInsuranceToCarrierGroup(insurance);
+
+    // Medicare patients must always see psychiatric clinicians — check against
+    // the normalized carrier group so any future Medicare plan aliases also match
+    const isMedicare = insuranceCarrierGroup === INSURANCE_CARRIER_GROUPS.MEDICARE;
     const effectiveModality = isMedicare ? Modality.Psychiatric : modality;
 
     // Build location filter if state is valid
@@ -163,9 +167,6 @@ export function useProviders({
     if (state && isLocationState(state)) {
       location = { state: state as LocationState } as ProviderSearchFilters['location'];
     }
-
-    // Map user-selected insurance to carrier group for API filtering
-    const insuranceCarrierGroup = mapInsuranceToCarrierGroup(insurance);
 
     const nextFilters: ProviderSearchFilters = {
       ...DEFAULT_FILTERS,
