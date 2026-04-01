@@ -29,7 +29,7 @@ import {
   TimeOfTheDay,
 } from '../_lib/types';
 import { clearPreferencesStorage } from '../_lib/onboarding';
-import { SERVICE_OPTIONS } from '../../../lib/fields/registry';
+import { SERVICE_OPTIONS, INSURANCE_CARRIER_GROUPS } from '../../../lib/fields/registry';
 import { FilterPill, ActiveFilterTag, type FilterOption } from './filters';
 
 type ProviderFiltersProps = {
@@ -321,6 +321,11 @@ export function ProviderFilters({
             }
             onClose={() => setActiveDesktopFilter(null)}
             isSubmitting={isSubmitting}
+            disabledValues={
+              values.insurance === INSURANCE_CARRIER_GROUPS.MEDICARE
+                ? serviceOptions.map((o) => o.value).filter((v) => v !== Modality.Psychiatric)
+                : undefined
+            }
           />
 
           {/* Delivery */}
@@ -523,7 +528,14 @@ export function ProviderFilters({
                     </SelectTrigger>
                     <SelectContent>
                       {serviceOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
+                        <SelectItem
+                          key={option.value}
+                          value={option.value}
+                          disabled={
+                            values.insurance === INSURANCE_CARRIER_GROUPS.MEDICARE &&
+                            option.value !== Modality.Psychiatric
+                          }
+                        >
                           {option.label}
                         </SelectItem>
                       ))}
