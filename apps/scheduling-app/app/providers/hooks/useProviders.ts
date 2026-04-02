@@ -88,7 +88,7 @@ const FILTER_MESSAGES: FilterMessageConfig[] = [
   {
     condition: (filters) => filters.insurance === INSURANCE_CARRIER_GROUPS.MEDICARE,
     message:
-      "Your first appointment must be with one of our psychiatry clinicians (shown below). They will establish your treatment plan. They may also refer you to one of our therapists if appropriate.",
+      "Your first appointment must be with one of our psychiatry clinicians (shown below). They will establish your treatment plan and can refer you to one of our therapists.",
     variant: 'info',
   },
 ];
